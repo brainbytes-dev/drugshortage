@@ -1,0 +1,85 @@
+// Prisma schema for Drug Shortage Dashboard
+// Learn more: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Shortage {
+  id                    Int      @id @default(autoincrement())
+  gtin                  String   @unique
+  pharmacode            String
+  bezeichnung           String
+  firma                 String
+  atcCode               String
+  gengrp                String
+  statusCode            Int
+  statusText            String
+  datumLieferfahigkeit  String
+  datumLetzteMutation   String
+  tageSeitMeldung       Int
+  detailUrl             String
+  alternativenUrl       String?
+  // Detail page fields
+  ersteMeldung          String?
+  ersteMeldungDurch     String?
+  ersteInfoDurchFirma   String?
+  artDerInfoDurchFirma  String?
+  voraussichtlicheDauer String?
+  bemerkungen           String?
+  // Tracking
+  firstSeenAt           DateTime
+  lastSeenAt            DateTime
+  isActive              Boolean  @default(true)
+
+  @@map("shortages")
+}
+
+model OverviewStats {
+  id                            Int      @id @default(autoincrement())
+  scrapedAt                     DateTime
+  totalPackungen                Int
+  totalProdukte                 Int
+  betroffeneAtcGruppen          Int
+  pflichtlager                  Int
+  bwl                           Int
+  bwlWho                        Int
+  who                           Int
+  kassenpflichtigSL             Int
+  kassenpflichtigSLTotal        Int
+  prozentSLNichtLieferbar       Float
+  dauerUnter2Wochen             Int
+  dauer2bis6Wochen              Int
+  dauerUeber6WochenBis6Monate   Int
+  dauerUeber6MonateBis1Jahr     Int
+  dauerUeber1Bis2Jahre          Int
+  dauerUeber2Jahre              Int
+  swissmedicListeA              Int
+  swissmedicListeATotal         Int
+  swissmedicListeB              Int
+  swissmedicListeBTotal         Int
+  swissmedicListeC              Int
+  swissmedicListeCTotal         Int
+  swissmedicUebrige             Int
+  swissmedicUebrigeTotal        Int
+  firmenRanking                 Json
+  atcGruppen                    Json
+
+  @@map("overview_stats")
+}
+
+model ScrapeRun {
+  id             Int      @id @default(autoincrement())
+  scrapedAt      DateTime
+  totalCount     Int
+  newEntries     Int
+  removedEntries Int
+  status         String   // 'success' | 'error'
+  errorMessage   String?
+
+  @@map("scrape_runs")
+}
