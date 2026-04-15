@@ -16,7 +16,7 @@ export interface AlternativesResponse {
 }
 
 const FETCH_HEADERS = {
-  'User-Agent': 'drugshortage-dashboard/1.0 (+https://drugshortage-theta.vercel.app; contact: admin@proflowlabsai.com)',
+  'User-Agent': 'engpass-radar/1.0 (+https://drugshortage-theta.vercel.app; contact: admin@proflowlabsai.com)',
 }
 
 // Re-fetch if cached data is older than 24h
