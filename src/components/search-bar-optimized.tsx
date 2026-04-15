@@ -12,7 +12,7 @@ export function SearchBar() {
   const [, startTransition] = useTransition()
   const [value, setValue] = useState(searchParams.get('search') ?? '')
   const inputRef = useRef<HTMLInputElement>(null)
-  const debounceTimerRef = useRef<NodeJS.Timeout>()
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null)
 
   // Sync input when URL changes externally
   useEffect(() => {
