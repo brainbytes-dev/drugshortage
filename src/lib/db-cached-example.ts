@@ -10,44 +10,37 @@ export async function getKPIStatsCached(): Promise<KPIStats> {
   return getCached(
     'kpi-stats',
     async () => {
-      // Original query from db.ts
-      const [total, topFirma, atcGroups, avgDays, lastScrape] = await Promise.all([
-        prisma.shortage.count({ where: { isActive: true } }),
+      // Mirror db.ts getKPIStats — no raw SQL
+      const active = await prisma.shortage.findMany({
+        where: { isActive: true },
+        select: { firma: true, atcCode: true, tageSeitMeldung: true },
+      })
 
-        prisma.shortage.groupBy({
-          by: ['firma'],
-          where: { isActive: true },
-          _count: { _all: true },
-          orderBy: { _count: { firma: 'desc' } },
-          take: 1,
-        }),
+      const firmaCounts = active.reduce<Record<string, number>>((acc, s) => {
+        acc[s.firma] = (acc[s.firma] ?? 0) + 1
+        return acc
+      }, {})
 
-        prisma.$queryRaw<{ count: bigint }[]>`
-          SELECT COUNT(DISTINCT "atcCode") as count
-          FROM "Shortage"
-          WHERE "isActive" = true
-        `,
+      const topFirmaEntry = Object.entries(firmaCounts).sort((a, b) => b[1] - a[1])[0]
+      const uniqueAtcGroups = new Set(active.map(s => s.atcCode)).size
+      const avgDays =
+        active.length > 0
+          ? Math.round(active.reduce((sum, s) => sum + (s.tageSeitMeldung ?? 0), 0) / active.length)
+          : 0
 
-        prisma.shortage.aggregate({
-          where: { isActive: true },
-          _avg: { tageSeitMeldung: true },
-        }),
+      const lastRun = await prisma.scrapeRun.findFirst({
+        where: { status: 'success' },
+        orderBy: { scrapedAt: 'desc' },
+        select: { scrapedAt: true },
+      })
 
-        prisma.scrapeRun.findFirst({
-          where: { status: 'success' },
-          orderBy: { scrapedAt: 'desc' },
-          select: { scrapedAt: true },
-        }),
-      ])
-
-      const top = topFirma[0]
       return {
-        totalActive: total,
-        topFirma: top?.firma ?? 'N/A',
-        topFirmaCount: top?._count._all ?? 0,
-        uniqueAtcGroups: Number(atcGroups[0]?.count ?? 0),
-        avgDaysSinceMeldung: Math.round(avgDays._avg.tageSeitMeldung ?? 0),
-        lastScrapedAt: lastScrape?.scrapedAt?.toISOString() ?? null,
+        totalActive: active.length,
+        topFirma: topFirmaEntry?.[0] ?? '-',
+        topFirmaCount: topFirmaEntry?.[1] ?? 0,
+        uniqueAtcGroups,
+        avgDaysSinceMeldung: avgDays,
+        lastScrapedAt: lastRun?.scrapedAt.toISOString() ?? null,
       }
     },
     300 // ✅ Cache for 5 minutes
