@@ -44,7 +44,7 @@ A modern dashboard that tracks current drug shortages in Switzerland. Data is sc
 ### Installation
 
 ```bash
-git clone https://github.com/brainbytes-dev/drugshortage.git
+git clone https://github.com/brainbytes-dev/engpassradar.git
 cd drugshortage
 npm install
 ```

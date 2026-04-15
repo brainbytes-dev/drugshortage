@@ -137,7 +137,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             <a href="/datenschutz" className="underline hover:text-foreground">Datenschutz</a>
             <span>·</span>
             <a
-              href="https://github.com/brainbytes-dev/drugshortage"
+              href="https://github.com/brainbytes-dev/engpassradar"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
