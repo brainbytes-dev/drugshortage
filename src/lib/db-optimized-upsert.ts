@@ -62,7 +62,7 @@ export async function upsertShortagesOptimized(
   // ✅ For updates, use raw SQL for better performance
   if (toUpdateData.length > 0) {
     // Build a VALUES clause for batch update
-    const values = toUpdateData.map(({ gtin, data }) => {
+    const values = toUpdateData.map(({ data }) => {
       // Escape single quotes for SQL safety
       const esc = (s: string | null) => s ? s.replace(/'/g, "''") : ''
       return `(

@@ -2,16 +2,13 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { getAllDrugSlugs, getShortageBySlug, getOddbByGtin } from '@/lib/db'
+import { getShortageBySlug, getOddbByGtin } from '@/lib/db'
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-export async function generateStaticParams() {
-  const slugs = await getAllDrugSlugs()
-  return slugs.map(s => ({ slug: s.slug }))
-}
+export const revalidate = 3600 // ISR: revalidate every hour
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
