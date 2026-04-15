@@ -1,10 +1,12 @@
 import { Suspense } from 'react'
-import { queryShortages, getKPIStats, getFirmaList } from '@/lib/db'
+import { queryShortages, getKPIStats, getFirmaList, getOverviewStats } from '@/lib/db'
 import { KPICards } from '@/components/kpi-cards'
 import { SearchBar } from '@/components/search-bar'
 import { FilterBar } from '@/components/filter-bar'
 import { ShortagesTable } from '@/components/shortages-table'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { FirmaRankingSheet } from '@/components/firma-ranking-sheet'
+import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet'
 import type { ShortagesQuery } from '@/lib/types'
 
 interface PageProps {
@@ -25,10 +27,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     perPage: 50,
   }
 
-  const [response, kpi, firmaList] = await Promise.all([
+  const [response, kpi, firmaList, overview] = await Promise.all([
     queryShortages(query),
     getKPIStats(),
     getFirmaList(),
+    getOverviewStats(),
   ])
 
   const lastUpdated = kpi.lastScrapedAt
@@ -40,6 +43,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   return (
     <main className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+
         {/* Header */}
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -53,24 +57,53 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           <ThemeToggle />
         </div>
 
-        {/* Tagline / Context */}
-        <div className="rounded-lg border bg-muted/40 px-5 py-4 space-y-1.5">
-          <p className="text-sm font-semibold tracking-tight">
+        {/* Info Banner */}
+        <div className="rounded-lg border bg-muted/40 px-5 py-4">
+          <p className="text-sm font-semibold tracking-tight mb-1">
             Wissen, was fehlt. Bevor der Patient davorsteht.
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
-            Dieses Dashboard zeigt alle aktuellen Medikamenten-Lieferengpässe in der Schweiz —
-            durchsuchbar, filterbar nach Hersteller und ATC-Code, täglich aktualisiert.
-            Datenquelle:{' '}
-            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
-              className="underline hover:text-foreground">drugshortage.ch</a>.{' '}
-            <a href="https://github.com/brainbytes-dev/drugshortage" target="_blank" rel="noopener noreferrer"
-              className="underline hover:text-foreground">GitHub →</a>
-          </p>
+          <div className="grid sm:grid-cols-3 gap-4 mt-3">
+            <div>
+              <p className="text-xs font-medium text-foreground mb-0.5">Datenquelle</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Täglich aktualisiert aus{' '}
+                <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
+                  className="underline hover:text-foreground">drugshortage.ch</a>
+                {' '}— der offiziellen Schweizer Engpassliste. Keine Gewähr auf Vollständigkeit.
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-foreground mb-0.5">Für wen</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Spitalapotheken, öffentliche Apotheken und Fachpersonen, die täglich prüfen müssen,
+                welche Medikamente in der Schweiz nicht lieferbar sind.
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-medium text-foreground mb-0.5">Open Source</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Kostenlos, Open Source, keine Registrierung.{' '}
+                <a href="https://github.com/brainbytes-dev/drugshortage" target="_blank" rel="noopener noreferrer"
+                  className="underline hover:text-foreground">Code auf GitHub →</a>
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* KPI Cards */}
         <KPICards stats={kpi} />
+
+        {/* Overview Buttons */}
+        {overview && (overview.firmenRanking.length > 0 || overview.atcGruppen.length > 0) && (
+          <div className="flex flex-wrap gap-2">
+            {overview.firmenRanking.length > 0 && (
+              <FirmaRankingSheet firmenRanking={overview.firmenRanking} />
+            )}
+            {overview.atcGruppen.length > 0 && (
+              <AtcGruppenSheet atcGruppen={overview.atcGruppen} />
+            )}
+          </div>
+        )}
 
         {/* Search + Filters */}
         <Suspense fallback={null}>
@@ -106,6 +139,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             <a href="/datenschutz" className="underline hover:text-foreground">Datenschutz</a>
           </p>
         </div>
+
       </div>
     </main>
   )
