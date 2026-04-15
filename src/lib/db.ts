@@ -67,81 +67,71 @@ export async function upsertShortages(
   incoming: Shortage[],
 ): Promise<{ newEntries: number; removedEntries: number }> {
   const now = new Date()
-  let newEntries = 0
-  let removedEntries = 0
-
   const incomingGtins = new Set(incoming.map(s => s.gtin))
 
-  // Upsert each incoming shortage
-  for (const shortage of incoming) {
-    const existing = await prisma.shortage.findUnique({ where: { gtin: shortage.gtin } })
+  const toShortageData = (s: Shortage, firstSeenAt: Date) => ({
+    gtin: s.gtin,
+    pharmacode: s.pharmacode,
+    bezeichnung: s.bezeichnung,
+    firma: s.firma,
+    atcCode: s.atcCode,
+    gengrp: s.gengrp,
+    statusCode: s.statusCode,
+    statusText: s.statusText,
+    datumLieferfahigkeit: s.datumLieferfahigkeit,
+    datumLetzteMutation: s.datumLetzteMutation,
+    tageSeitMeldung: s.tageSeitMeldung,
+    detailUrl: s.detailUrl,
+    alternativenUrl: s.alternativenUrl ?? null,
+    ersteMeldung: s.ersteMeldung ?? null,
+    ersteMeldungDurch: s.ersteMeldungDurch ?? null,
+    ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
+    artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
+    voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
+    bemerkungen: s.bemerkungen ?? null,
+    firstSeenAt,
+    lastSeenAt: now,
+    isActive: true,
+  })
 
-    if (existing) {
-      await prisma.shortage.update({
-        where: { gtin: shortage.gtin },
-        data: {
-          pharmacode: shortage.pharmacode,
-          bezeichnung: shortage.bezeichnung,
-          firma: shortage.firma,
-          atcCode: shortage.atcCode,
-          gengrp: shortage.gengrp,
-          statusCode: shortage.statusCode,
-          statusText: shortage.statusText,
-          datumLieferfahigkeit: shortage.datumLieferfahigkeit,
-          datumLetzteMutation: shortage.datumLetzteMutation,
-          tageSeitMeldung: shortage.tageSeitMeldung,
-          detailUrl: shortage.detailUrl,
-          alternativenUrl: shortage.alternativenUrl ?? null,
-          ersteMeldung: shortage.ersteMeldung ?? null,
-          ersteMeldungDurch: shortage.ersteMeldungDurch ?? null,
-          ersteInfoDurchFirma: shortage.ersteInfoDurchFirma ?? null,
-          artDerInfoDurchFirma: shortage.artDerInfoDurchFirma ?? null,
-          voraussichtlicheDauer: shortage.voraussichtlicheDauer ?? null,
-          bemerkungen: shortage.bemerkungen ?? null,
-          lastSeenAt: now,
-          isActive: true,
-        },
-      })
-    } else {
-      newEntries++
-      await prisma.shortage.create({
-        data: {
-          gtin: shortage.gtin,
-          pharmacode: shortage.pharmacode,
-          bezeichnung: shortage.bezeichnung,
-          firma: shortage.firma,
-          atcCode: shortage.atcCode,
-          gengrp: shortage.gengrp,
-          statusCode: shortage.statusCode,
-          statusText: shortage.statusText,
-          datumLieferfahigkeit: shortage.datumLieferfahigkeit,
-          datumLetzteMutation: shortage.datumLetzteMutation,
-          tageSeitMeldung: shortage.tageSeitMeldung,
-          detailUrl: shortage.detailUrl,
-          alternativenUrl: shortage.alternativenUrl ?? null,
-          ersteMeldung: shortage.ersteMeldung ?? null,
-          ersteMeldungDurch: shortage.ersteMeldungDurch ?? null,
-          ersteInfoDurchFirma: shortage.ersteInfoDurchFirma ?? null,
-          artDerInfoDurchFirma: shortage.artDerInfoDurchFirma ?? null,
-          voraussichtlicheDauer: shortage.voraussichtlicheDauer ?? null,
-          bemerkungen: shortage.bemerkungen ?? null,
-          firstSeenAt: now,
-          lastSeenAt: now,
-          isActive: true,
-        },
+  const { newEntries, removedEntries } = await prisma.$transaction(async (tx) => {
+    // 1. Fetch all existing GTINs in one query
+    const existingRows = await tx.shortage.findMany({
+      select: { gtin: true, firstSeenAt: true },
+    })
+    const existingMap = new Map(existingRows.map(r => [r.gtin, r.firstSeenAt]))
+
+    const toCreate = incoming.filter(s => !existingMap.has(s.gtin))
+    const toUpdate = incoming.filter(s => existingMap.has(s.gtin))
+
+    // 2. Batch create new entries
+    if (toCreate.length) {
+      await tx.shortage.createMany({
+        data: toCreate.map(s => toShortageData(s, now)),
+        skipDuplicates: true,
       })
     }
-  }
 
-  // Mark shortages not in incoming as inactive
-  const deactivated = await prisma.shortage.updateMany({
-    where: {
-      isActive: true,
-      gtin: { notIn: Array.from(incomingGtins) },
-    },
-    data: { isActive: false, lastSeenAt: now },
+    // 3. Parallel updates for existing entries
+    if (toUpdate.length) {
+      await Promise.all(
+        toUpdate.map(s =>
+          tx.shortage.update({
+            where: { gtin: s.gtin },
+            data: toShortageData(s, existingMap.get(s.gtin)!),
+          }),
+        ),
+      )
+    }
+
+    // 4. Deactivate shortages not in this scrape
+    const deactivated = await tx.shortage.updateMany({
+      where: { isActive: true, gtin: { notIn: Array.from(incomingGtins) } },
+      data: { isActive: false, lastSeenAt: now },
+    })
+
+    return { newEntries: toCreate.length, removedEntries: deactivated.count }
   })
-  removedEntries = deactivated.count
 
   return { newEntries, removedEntries }
 }

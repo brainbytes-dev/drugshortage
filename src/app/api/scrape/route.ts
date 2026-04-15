@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { fetchAndParse } from '@/lib/scraper'
-import { upsertShortages } from '@/lib/db'
+import { upsertShortages, saveOverviewStats } from '@/lib/db'
 
 export async function POST(request: Request) {
   const auth = request.headers.get('authorization')
@@ -10,8 +10,9 @@ export async function POST(request: Request) {
   }
 
   try {
-    const shortages = await fetchAndParse()
+    const { shortages, overview } = await fetchAndParse()
     const { newEntries, removedEntries } = await upsertShortages(shortages)
+    await saveOverviewStats({ ...overview, scrapedAt: new Date().toISOString() })
     return NextResponse.json({
       success: true,
       total: shortages.length,

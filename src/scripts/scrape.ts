@@ -1,11 +1,12 @@
 import { fetchAndParse } from '../lib/scraper'
-import { upsertShortages } from '../lib/db'
+import { upsertShortages, saveOverviewStats } from '../lib/db'
 
 async function main() {
   console.log('[scrape] Starting...')
-  const shortages = await fetchAndParse()
+  const { shortages, overview } = await fetchAndParse()
   console.log(`[scrape] Fetched ${shortages.length} shortages`)
   const { newEntries, removedEntries } = await upsertShortages(shortages)
+  await saveOverviewStats({ ...overview, scrapedAt: new Date().toISOString() })
   console.log(`[scrape] Done. New: ${newEntries}, Removed: ${removedEntries}`)
 }
 

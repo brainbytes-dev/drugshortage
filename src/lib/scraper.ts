@@ -1,5 +1,5 @@
 import * as cheerio from 'cheerio'
-import type { Shortage } from './types'
+import type { Shortage, OverviewStats, FirmaRanking, AtcGruppeStats } from './types'
 
 const BASE_URL = 'https://www.drugshortage.ch'
 const SOURCE_URL = `${BASE_URL}/UebersichtaktuelleLieferengpaesse2.aspx`
@@ -102,7 +102,88 @@ async function enrichWithDetails(shortages: Shortage[]): Promise<void> {
   }
 }
 
-export async function fetchAndParse(): Promise<Shortage[]> {
+/** Parse aggregate overview statistics from the main page */
+export function parseOverviewStats(html: string): Omit<OverviewStats, 'scrapedAt'> {
+  const $ = cheerio.load(html)
+
+  const tableText = (tableIndex: number, row: number, col: number): string =>
+    $('table').eq(tableIndex).find('tr').eq(row).find('td').eq(col).text().trim()
+
+  const num = (s: string) => parseInt(s.replace(/[^0-9]/g, ''), 10) || 0
+
+  // Table 0: Packungen / Produkte
+  const totalPackungen = num(tableText(0, 1, 0))
+  const totalProdukte = num(tableText(0, 1, 1))
+
+  // Table 1: ATC-Gruppen
+  const betroffeneAtcGruppen = num(tableText(1, 1, 0))
+
+  // Table 2: Regulatory + duration (header row 0, data row 1)
+  const reg = (col: number) => tableText(2, 1, col)
+  const slRaw = reg(4) // "684 von total 9856"
+  const slMatch = slRaw.match(/(\d+)\s*von\s*total\s*(\d+)/)
+
+  // Table 3: Swissmedic
+  const swissRaw = (col: number) => {
+    const raw = tableText(3, 1, col) // "128 von 2942"
+    const m = raw.match(/(\d+)\s*von\s*(\d+)/)
+    return m ? [parseInt(m[1]), parseInt(m[2])] : [0, 0]
+  }
+  const [swA, swATotal] = swissRaw(0)
+  const [swB, swBTotal] = swissRaw(1)
+  const [swC, swCTotal] = swissRaw(2)
+  const [swU, swUTotal] = swissRaw(3)
+
+  // Table 5: Firmen-Ranking (header row 0, data from row 1)
+  const firmenRanking: FirmaRanking[] = []
+  $('table').eq(5).find('tr').slice(1).each((_, row) => {
+    const cells = $(row).find('td')
+    if (cells.length < 4) return
+    const bewertung = parseInt($(cells[0]).text().trim(), 10)
+    const firma = $(cells[1]).text().trim()
+    const total = num($(cells[2]).text())
+    const offen = num($(cells[3]).text())
+    if (firma) firmenRanking.push({ bewertung, firma, anzahlProdukteTotal: total, anzahlOffeneEngpaesse: offen })
+  })
+
+  // Table 6: ATC-Gruppen Breakdown
+  const atcGruppen: AtcGruppeStats[] = []
+  $('table').eq(6).find('tr').slice(1).each((_, row) => {
+    const cells = $(row).find('td')
+    if (cells.length < 3) return
+    const atcCode = $(cells[0]).text().trim()
+    const bezeichnung = $(cells[1]).text().trim()
+    const anzahl = num($(cells[2]).text())
+    if (atcCode) atcGruppen.push({ atcCode, bezeichnung, anzahl })
+  })
+
+  return {
+    totalPackungen,
+    totalProdukte,
+    betroffeneAtcGruppen,
+    pflichtlager: num(reg(0)),
+    bwl: num(reg(1)),
+    bwlWho: num(reg(2)),
+    who: num(reg(3)),
+    kassenpflichtigSL: slMatch ? parseInt(slMatch[1]) : 0,
+    kassenpflichtigSLTotal: slMatch ? parseInt(slMatch[2]) : 0,
+    prozentSLNichtLieferbar: parseFloat(reg(5)) || 0,
+    dauerUnter2Wochen: num(reg(6)),
+    dauer2bis6Wochen: num(reg(7)),
+    dauerUeber6WochenBis6Monate: num(reg(8)),
+    dauerUeber6MonateBis1Jahr: num(reg(9)),
+    dauerUeber1Bis2Jahre: num(reg(10)),
+    dauerUeber2Jahre: num(reg(11)),
+    swissmedicListeA: swA, swissmedicListeATotal: swATotal,
+    swissmedicListeB: swB, swissmedicListeBTotal: swBTotal,
+    swissmedicListeC: swC, swissmedicListeCTotal: swCTotal,
+    swissmedicUebrige: swU, swissmedicUebrigeTotal: swUTotal,
+    firmenRanking,
+    atcGruppen,
+  }
+}
+
+export async function fetchAndParse(): Promise<{ shortages: Shortage[]; overview: Omit<OverviewStats, 'scrapedAt'> }> {
   const res = await fetch(SOURCE_URL, { headers: FETCH_HEADERS })
   if (!res.ok) {
     throw new Error(`Failed to fetch source: ${res.status} ${res.statusText}`)
@@ -110,10 +191,11 @@ export async function fetchAndParse(): Promise<Shortage[]> {
 
   const html = await res.text()
   const shortages = parseShortagesFromHtml(html)
+  const overview = parseOverviewStats(html)
 
   console.log(`[scraper] Fetched ${shortages.length} entries, enriching with detail pages...`)
   await enrichWithDetails(shortages)
   console.log(`[scraper] Detail enrichment complete`)
 
-  return shortages
+  return { shortages, overview }
 }
