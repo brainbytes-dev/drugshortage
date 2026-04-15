@@ -2,16 +2,13 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { getAllDrugSlugs, getShortageBySlug } from '@/lib/db'
+import { getShortageBySlug, getOddbByGtin } from '@/lib/db'
 
 interface PageProps {
   params: Promise<{ slug: string }>
 }
 
-export async function generateStaticParams() {
-  const slugs = await getAllDrugSlugs()
-  return slugs.map(s => ({ slug: s.slug }))
-}
+export const revalidate = 3600 // ISR: revalidate every hour
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
@@ -36,6 +33,8 @@ export default async function MedikamentPage({ params }: PageProps) {
   if (!shortage) {
     notFound()
   }
+
+  const oddb = await getOddbByGtin(shortage.gtin).catch(() => null)
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -126,8 +125,31 @@ export default async function MedikamentPage({ params }: PageProps) {
                   : <span className="text-muted-foreground">–</span>}
               </dd>
             </div>
+
+            {oddb?.substanz && (
+              <div className="flex flex-col gap-0.5">
+                <dt className="text-muted-foreground">Wirkstoff</dt>
+                <dd>{oddb.substanz}</dd>
+              </div>
+            )}
+
+            {oddb?.prodno && (
+              <div className="flex flex-col gap-0.5">
+                <dt className="text-muted-foreground">Swissmedic-Nr</dt>
+                <dd className="font-mono text-xs">{oddb.prodno}</dd>
+              </div>
+            )}
           </dl>
         </section>
+
+        {oddb?.zusammensetzung && (
+          <section className="space-y-2">
+            <h2 className="font-semibold text-base">Zusammensetzung</h2>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {oddb.zusammensetzung}
+            </p>
+          </section>
+        )}
 
         {shortage.bemerkungen && (
           <section className="space-y-2">

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Sheet,
@@ -51,17 +51,22 @@ function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (beze
   const [data, setData] = useState<AlternativesResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+  const [, startTransition] = useTransition()
 
   useEffect(() => {
     const cacheKey = `alt_${gtin}`
     const cached = sessionStorage.getItem(cacheKey)
     if (cached) {
-      setData(JSON.parse(cached))
-      setLoading(false)
+      startTransition(() => {
+        setData(JSON.parse(cached))
+        setLoading(false)
+      })
       return
     }
-    setLoading(true)
-    setError(false)
+    startTransition(() => {
+      setLoading(true)
+      setError(false)
+    })
     fetch(`/api/alternatives?gtin=${encodeURIComponent(gtin)}`)
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
       .then(d => {

@@ -15,7 +15,7 @@ export function SearchBar() {
 
   // Sync input when URL changes externally (back/forward, filter reset)
   useEffect(() => {
-    setValue(searchParams.get('search') ?? '')
+    startTransition(() => setValue(searchParams.get('search') ?? ''))
   }, [searchParams])
 
   // Cmd+K / Ctrl+K → focus search
