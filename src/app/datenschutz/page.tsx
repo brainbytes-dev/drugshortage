@@ -100,8 +100,8 @@ export default function DatenschutzPage() {
             Da wir keine personenbezogenen Daten von Besuchern erheben, entfallen die
             typischen Auskunfts-, Berichtigungs- und Löschungsrechte in der Praxis. Bei Fragen
             wenden Sie sich an:{' '}
-            <a href="mailto:admin@proflowlabsai.com" className="underline hover:text-foreground">
-              admin@proflowlabsai.com
+            <a href="mailto:info@engpassradar.ch" className="underline hover:text-foreground">
+              info@engpassradar.ch
             </a>
           </p>
         </section>
