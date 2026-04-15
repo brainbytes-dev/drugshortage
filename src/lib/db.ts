@@ -1,4 +1,4 @@
-import { prisma } from './prisma'
+import { prisma } from './prisma-optimized'
 import type { Shortage, ShortagesQuery, ShortagesResponse, KPIStats, OverviewStats } from './types'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
