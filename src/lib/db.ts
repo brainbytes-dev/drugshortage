@@ -140,30 +140,41 @@ export async function upsertCompletedShortages(incoming: Shortage[]): Promise<{ 
   const CHUNK = 500
   let totalInserted = 0
 
-  const toRow = (s: Shortage) => ({
-    gtin: s.gtin,
-    pharmacode: s.pharmacode,
-    bezeichnung: s.bezeichnung,
-    firma: s.firma,
-    atcCode: s.atcCode,
-    gengrp: s.gengrp,
-    statusCode: s.statusCode,
-    statusText: s.statusText,
-    datumLieferfahigkeit: s.datumLieferfahigkeit,
-    datumLetzteMutation: s.datumLetzteMutation,
-    tageSeitMeldung: s.tageSeitMeldung,
-    detailUrl: s.detailUrl,
-    alternativenUrl: s.alternativenUrl ?? null,
-    ersteMeldung: s.ersteMeldung ?? null,
-    ersteMeldungDurch: s.ersteMeldungDurch ?? null,
-    ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
-    artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
-    voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
-    bemerkungen: s.bemerkungen ?? null,
-    firstSeenAt: now,
-    lastSeenAt: now,
-    isActive: false,
+  // Build a GTIN → {pharmacode, gengrp} map from existing DB rows so we can
+  // backfill these fields for historical entries that were never scraped as active.
+  const existingRows = await prisma.shortage.findMany({
+    select: { gtin: true, pharmacode: true, gengrp: true },
   })
+  const knownMap = new Map(existingRows.map(r => [r.gtin, { pharmacode: r.pharmacode, gengrp: r.gengrp }]))
+
+  const toRow = (s: Shortage) => {
+    const known = knownMap.get(s.gtin)
+    return {
+      gtin: s.gtin,
+      // Prefer known values from DB (from when it was active) over empty strings
+      pharmacode: s.pharmacode || known?.pharmacode || '',
+      bezeichnung: s.bezeichnung,
+      firma: s.firma,
+      atcCode: s.atcCode,
+      gengrp: s.gengrp || known?.gengrp || '',
+      statusCode: s.statusCode,
+      statusText: s.statusText,
+      datumLieferfahigkeit: s.datumLieferfahigkeit,
+      datumLetzteMutation: s.datumLetzteMutation,
+      tageSeitMeldung: s.tageSeitMeldung,
+      detailUrl: s.detailUrl,
+      alternativenUrl: s.alternativenUrl ?? null,
+      ersteMeldung: s.ersteMeldung ?? null,
+      ersteMeldungDurch: s.ersteMeldungDurch ?? null,
+      ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
+      artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
+      voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
+      bemerkungen: s.bemerkungen ?? null,
+      firstSeenAt: now,
+      lastSeenAt: now,
+      isActive: false,
+    }
+  }
 
   // Split into enriched (have atcCode from detail page) vs raw (no detail enrichment)
   const enriched = incoming.filter(s => s.atcCode)
@@ -181,20 +192,24 @@ export async function upsertCompletedShortages(incoming: Shortage[]): Promise<{ 
 
   // Enriched entries: upsert so detail data is written even if row already exists
   for (const s of enriched) {
+    const row = toRow(s)
     await prisma.shortage.upsert({
       where: { gtin: s.gtin },
-      create: { ...toRow(s) },
+      create: row,
       update: {
-        atcCode: s.atcCode,
-        statusCode: s.statusCode,
-        statusText: s.statusText,
-        datumLieferfahigkeit: s.datumLieferfahigkeit || undefined,
-        ersteMeldung: s.ersteMeldung ?? null,
-        ersteMeldungDurch: s.ersteMeldungDurch ?? null,
-        ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
-        artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
-        voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
-        detailUrl: s.detailUrl || undefined,
+        atcCode: row.atcCode,
+        pharmacode: row.pharmacode || undefined,
+        gengrp: row.gengrp || undefined,
+        statusCode: row.statusCode,
+        statusText: row.statusText,
+        isActive: false,
+        datumLieferfahigkeit: row.datumLieferfahigkeit || undefined,
+        ersteMeldung: row.ersteMeldung ?? null,
+        ersteMeldungDurch: row.ersteMeldungDurch ?? null,
+        ersteInfoDurchFirma: row.ersteInfoDurchFirma ?? null,
+        artDerInfoDurchFirma: row.artDerInfoDurchFirma ?? null,
+        voraussichtlicheDauer: row.voraussichtlicheDauer ?? null,
+        detailUrl: row.detailUrl || undefined,
         lastSeenAt: now,
       },
     })
