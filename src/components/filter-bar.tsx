@@ -41,11 +41,14 @@ export function FilterBar({ firmaList }: FilterBarProps) {
     [router, pathname, searchParams]
   )
 
+  const statusValue = (searchParams.get('status') ?? 'all') as string
+  const firmaValue = (searchParams.get('firma') ?? 'all') as string
+
   return (
     <div className="flex flex-wrap gap-2">
-      <Select
-        value={searchParams.get('status') ?? 'all'}
-        onValueChange={v => updateParam('status', v)}
+      <Select<string>
+        value={statusValue}
+        onValueChange={v => updateParam('status', v ?? 'all')}
       >
         <SelectTrigger className="w-[200px]">
           <SelectValue placeholder="Status" />
@@ -58,9 +61,9 @@ export function FilterBar({ firmaList }: FilterBarProps) {
         </SelectContent>
       </Select>
 
-      <Select
-        value={searchParams.get('firma') ?? 'all'}
-        onValueChange={v => updateParam('firma', v)}
+      <Select<string>
+        value={firmaValue}
+        onValueChange={v => updateParam('firma', v ?? 'all')}
       >
         <SelectTrigger className="w-[220px]">
           <SelectValue placeholder="Firma" />
