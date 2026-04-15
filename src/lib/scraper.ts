@@ -4,7 +4,9 @@ import type { Shortage, OverviewStats, FirmaRanking, AtcGruppeStats } from './ty
 const BASE_URL = 'https://www.drugshortage.ch'
 const SOURCE_URL = `${BASE_URL}/UebersichtaktuelleLieferengpaesse2.aspx`
 const DETAIL_CONCURRENCY = 10
-const FETCH_HEADERS = { 'User-Agent': 'drugshortage-dashboard/1.0' }
+const FETCH_HEADERS = {
+  'User-Agent': 'drugshortage-dashboard/1.0 (+https://drugshortage-app.vercel.app; contact: admin@proflowlabsai.com)',
+}
 
 export function parseShortagesFromHtml(html: string): Shortage[] {
   const $ = cheerio.load(html)
