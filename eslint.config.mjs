@@ -14,6 +14,10 @@ const eslintConfig = defineConfig([
     "next-env.d.ts",
     // Claude Code helper files (not project source)
     ".claude/**",
+    // Vercel build output (generated, not source)
+    ".vercel/**",
+    // Test files with legacy require() patterns
+    "tests/**",
   ]),
 ]);
 
