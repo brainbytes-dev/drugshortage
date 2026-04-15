@@ -46,7 +46,25 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
               <DetailRow label="GTIN" value={shortage.gtin} />
               <DetailRow label="Pharmacode" value={shortage.pharmacode} />
               <DetailRow label="Voraussichtlich lieferbar" value={shortage.datumLieferfahigkeit} />
+              {shortage.voraussichtlicheDauer && (
+                <DetailRow label="Voraussichtliche Dauer" value={shortage.voraussichtlicheDauer} />
+              )}
               <DetailRow label="Letzte Mutation" value={shortage.datumLetzteMutation} />
+              {shortage.ersteMeldung && (
+                <DetailRow label="Erste Meldung" value={shortage.ersteMeldung} />
+              )}
+              {shortage.ersteMeldungDurch && (
+                <DetailRow label="Gemeldet durch" value={shortage.ersteMeldungDurch} />
+              )}
+              {shortage.ersteInfoDurchFirma && (
+                <DetailRow label="Info durch Firma" value={shortage.ersteInfoDurchFirma} />
+              )}
+              {shortage.artDerInfoDurchFirma && (
+                <DetailRow label="Art der Info" value={shortage.artDerInfoDurchFirma} />
+              )}
+              {shortage.bemerkungen && (
+                <DetailRow label="Bemerkungen" value={shortage.bemerkungen} />
+              )}
               <DetailRow label="Tage seit erster Meldung" value={shortage.tageSeitMeldung} />
               <DetailRow label="Generic Group" value={shortage.gengrp} />
               <DetailRow
@@ -66,6 +84,21 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
                   </a>
                 }
               />
+              {shortage.alternativenUrl && (
+                <DetailRow
+                  label="Mögliche Alternativen"
+                  value={
+                    <a
+                      href={shortage.alternativenUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+                    >
+                      Alternativen ansehen <ExternalLink className="h-3 w-3" />
+                    </a>
+                  }
+                />
+              )}
             </div>
           </>
         )}
