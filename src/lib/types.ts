@@ -60,3 +60,53 @@ export interface KPIStats {
   avgDaysSinceMeldung: number
   lastScrapedAt: string | null
 }
+
+/** Aggregate statistics scraped from the overview page */
+export interface OverviewStats {
+  scrapedAt: string
+  // Summary counts
+  totalPackungen: number          // "nicht lieferbare Packungen"
+  totalProdukte: number           // "nicht lieferbare Produkte/Dosierungen"
+  betroffeneAtcGruppen: number    // unique ATC groups
+  // Regulatory flags (counts among shortages)
+  pflichtlager: number
+  bwl: number
+  bwlWho: number
+  who: number
+  kassenpflichtigSL: number       // absolute count
+  kassenpflichtigSLTotal: number  // total SL products
+  prozentSLNichtLieferbar: number
+  // Duration breakdown (counts)
+  dauerUnter2Wochen: number
+  dauer2bis6Wochen: number
+  dauerUeber6WochenBis6Monate: number
+  dauerUeber6MonateBis1Jahr: number
+  dauerUeber1Bis2Jahre: number
+  dauerUeber2Jahre: number
+  // Swissmedic categories
+  swissmedicListeA: number
+  swissmedicListeATotal: number
+  swissmedicListeB: number
+  swissmedicListeBTotal: number
+  swissmedicListeC: number
+  swissmedicListeCTotal: number
+  swissmedicUebrige: number
+  swissmedicUebrigeTotal: number
+  // Company rankings
+  firmenRanking: FirmaRanking[]
+  // ATC level-2 breakdown
+  atcGruppen: AtcGruppeStats[]
+}
+
+export interface FirmaRanking {
+  bewertung: number               // 1–4
+  firma: string
+  anzahlProdukteTotal: number
+  anzahlOffeneEngpaesse: number
+}
+
+export interface AtcGruppeStats {
+  atcCode: string                 // e.g. "C09"
+  bezeichnung: string             // e.g. "Mittel mit Wirkung auf das Renin-Angiotensin-System"
+  anzahl: number
+}
