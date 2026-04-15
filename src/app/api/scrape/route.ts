@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { fetchAndParse } from '@/lib/scraper'
-import { upsertShortages, saveOverviewStats } from '@/lib/db'
+import { fetchAndParse, fetchAndParseCompleted } from '@/lib/scraper'
+import { upsertShortages, saveOverviewStats, upsertCompletedShortages } from '@/lib/db'
 
 export async function POST(request: Request) {
   const auth = request.headers.get('authorization')
@@ -13,11 +13,16 @@ export async function POST(request: Request) {
     const { shortages, overview } = await fetchAndParse()
     const { newEntries, removedEntries } = await upsertShortages(shortages)
     await saveOverviewStats({ ...overview, scrapedAt: new Date().toISOString() })
+
+    const completedShortages = await fetchAndParseCompleted()
+    const { inserted: historicalInserted } = await upsertCompletedShortages(completedShortages)
+
     return NextResponse.json({
       success: true,
       total: shortages.length,
       newEntries,
       removedEntries,
+      historicalInserted,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
