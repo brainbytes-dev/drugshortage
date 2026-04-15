@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Impressum — Swiss Drug Shortage Tracker',
+  title: 'Impressum — engpass.radar',
+  robots: { index: false, follow: false },
 }
 
 export default function ImpressumPage() {

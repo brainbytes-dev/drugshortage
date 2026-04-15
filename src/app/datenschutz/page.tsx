@@ -3,7 +3,8 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Datenschutz — Swiss Drug Shortage Tracker',
+  title: 'Datenschutz — engpass.radar',
+  robots: { index: false, follow: false },
 }
 
 export default function DatenschutzPage() {
