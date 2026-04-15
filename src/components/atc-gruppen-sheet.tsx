@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Sheet,
   SheetContent,
@@ -17,6 +18,8 @@ interface AtcGruppenSheetProps {
 
 export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
   const [search, setSearch] = useState('')
+  const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   const sorted = [...atcGruppen].sort((a, b) => b.anzahl - a.anzahl)
   const filtered = sorted.filter(g =>
@@ -26,8 +29,13 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
 
   const max = sorted[0]?.anzahl ?? 1
 
+  function handleAtcClick(atcCode: string) {
+    setOpen(false)
+    router.push(`/?atc=${encodeURIComponent(atcCode)}`)
+  }
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         render={<button className="flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors" />}
       >
@@ -41,7 +49,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
         <SheetHeader className="mb-4">
           <SheetTitle>ATC-Gruppen</SheetTitle>
           <p className="text-xs text-muted-foreground">
-            Betroffene Wirkstoffgruppen nach Anzahl aktiver Engpässe, absteigend sortiert.
+            Betroffene Wirkstoffgruppen nach Anzahl aktiver Engpässe. Gruppe anklicken zum Filtern.
           </p>
         </SheetHeader>
 
@@ -57,7 +65,11 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
           {filtered.map(g => {
             const pct = Math.round((g.anzahl / max) * 100)
             return (
-              <div key={g.atcCode} className="py-3 space-y-1.5">
+              <button
+                key={g.atcCode}
+                onClick={() => handleAtcClick(g.atcCode)}
+                className="w-full py-3 space-y-1.5 text-left hover:bg-muted/50 -mx-2 px-2 rounded-md transition-colors"
+              >
                 <div className="flex items-start justify-between gap-2">
                   <div className="min-w-0">
                     <span className="text-xs font-mono font-semibold text-primary">{g.atcCode}</span>
@@ -71,7 +83,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
                     style={{ width: `${pct}%` }}
                   />
                 </div>
-              </div>
+              </button>
             )
           })}
           {filtered.length === 0 && (
