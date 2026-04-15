@@ -435,6 +435,51 @@ export async function getAllDrugSlugs(): Promise<Array<{ slug: string; bezeichnu
   return result
 }
 
+// ── BWL Integration ───────────────────────────────────────────────────────────
+
+export async function upsertBwlShortages(
+  entries: import('./bwl-scraper').BwlShortageData[]
+): Promise<{ upserted: number }> {
+  const now = new Date()
+  let upserted = 0
+
+  for (const entry of entries) {
+    if (!entry.gtin) continue
+    await prisma.bwlShortage.upsert({
+      where: { gtin: entry.gtin },
+      create: {
+        gtin: entry.gtin,
+        atcCode: entry.atcCode,
+        bezeichnung: entry.bezeichnung,
+        eintrittsdatum: entry.eintrittsdatum ?? null,
+        voraussichtlicheDauer: entry.voraussichtlicheDauer ?? null,
+        bemerkungen: entry.bemerkungen ?? null,
+        datumPublikation: entry.datumPublikation ?? null,
+        letzteAktualisierung: entry.letzteAktualisierung ?? null,
+        fetchedAt: now,
+      },
+      update: {
+        atcCode: entry.atcCode,
+        bezeichnung: entry.bezeichnung,
+        eintrittsdatum: entry.eintrittsdatum ?? null,
+        voraussichtlicheDauer: entry.voraussichtlicheDauer ?? null,
+        bemerkungen: entry.bemerkungen ?? null,
+        datumPublikation: entry.datumPublikation ?? null,
+        letzteAktualisierung: entry.letzteAktualisierung ?? null,
+        fetchedAt: now,
+      },
+    })
+    upserted++
+  }
+
+  return { upserted }
+}
+
+export async function getBwlGtins(): Promise<string[]> {
+  const rows = await prisma.bwlShortage.findMany({ select: { gtin: true } })
+  return rows.map(r => r.gtin)
+}
+
 export async function getOverviewStats(): Promise<OverviewStats | null> {
   const row = await prisma.overviewStats.findFirst({
     orderBy: { scrapedAt: 'desc' },

@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { queryShortages, getOverviewStats } from '@/lib/db'
+import { queryShortages, getOverviewStats, getBwlGtins } from '@/lib/db'
 import { getKPIStatsCached as getKPIStats, getFirmaListCached as getFirmaList } from '@/lib/db-cached-example'
 import { KPICards } from '@/components/kpi-cards'
 import { SearchBar } from '@/components/search-bar-optimized'
@@ -30,11 +30,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     perPage: 50,
   }
 
-  const [response, kpi, firmaList, overview] = await Promise.all([
+  const [response, kpi, firmaList, overview, bwlGtins] = await Promise.all([
     queryShortages(query),
     getKPIStats(),
     getFirmaList(),
     getOverviewStats(),
+    getBwlGtins().catch(() => [] as string[]),
   ])
 
   const lastUpdated = kpi.lastScrapedAt
@@ -120,6 +121,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             total={response.total}
             page={response.page}
             perPage={response.perPage}
+            bwlGtins={bwlGtins}
           />
         </Suspense>
 

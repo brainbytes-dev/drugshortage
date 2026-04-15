@@ -16,6 +16,7 @@ interface ShortagesTableProps {
   total: number
   page: number
   perPage: number
+  bwlGtins?: string[]
 }
 
 const COLUMNS: { key: keyof Shortage; label: string; sortable?: boolean }[] = [
@@ -27,8 +28,9 @@ const COLUMNS: { key: keyof Shortage; label: string; sortable?: boolean }[] = [
   { key: 'atcCode', label: 'ATC' },
 ]
 
-export function ShortagesTable({ shortages, total, page, perPage }: ShortagesTableProps) {
+export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: ShortagesTableProps) {
   const [selected, setSelected] = useState<Shortage | null>(null)
+  const bwlSet = new Set(bwlGtins ?? [])
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -86,8 +88,15 @@ export function ShortagesTable({ shortages, total, page, perPage }: ShortagesTab
                   onClick={() => setSelected(s)}
                   className="cursor-pointer hover:bg-muted/50 transition-colors"
                 >
-                  <TableCell className="font-medium max-w-[280px] truncate" title={s.bezeichnung}>
-                    {s.bezeichnung}
+                  <TableCell className="font-medium max-w-[280px]" title={s.bezeichnung}>
+                    <span className="flex items-center gap-1.5 min-w-0">
+                      <span className="truncate">{s.bezeichnung}</span>
+                      {bwlSet.has(s.gtin) && (
+                        <span className="shrink-0 text-[10px] font-bold tracking-wide text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">
+                          BWL
+                        </span>
+                      )}
+                    </span>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                     {s.firma}
