@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { queryShortages, getKPIStats, getFirmaList, getAtcList } from '@/lib/db'
+import { queryShortages, getKPIStats, getFirmaList } from '@/lib/db'
 import type { ShortagesQuery } from '@/lib/types'
 
 export async function GET(request: Request) {
@@ -15,12 +15,11 @@ export async function GET(request: Request) {
     perPage: Math.min(200, Math.max(1, parseInt(searchParams.get('perPage') ?? '50', 10) || 50)),
   }
 
-  const [response, kpi, firmaList, atcList] = await Promise.all([
+  const [response, kpi, firmaList] = await Promise.all([
     queryShortages(query),
     getKPIStats(),
     getFirmaList(),
-    getAtcList(),
   ])
 
-  return NextResponse.json({ ...response, kpi, firmaList, atcList })
+  return NextResponse.json({ ...response, kpi, firmaList })
 }

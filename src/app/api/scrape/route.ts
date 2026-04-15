@@ -4,9 +4,8 @@ import { upsertShortages } from '@/lib/db'
 
 export async function POST(request: Request) {
   const auth = request.headers.get('authorization')
-  const expected = `Bearer ${process.env.CRON_SECRET}`
-
-  if (auth !== expected) {
+  const secret = process.env.CRON_SECRET
+  if (!secret || auth !== `Bearer ${secret}`) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
