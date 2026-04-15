@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Sheet,
   SheetContent,
@@ -27,9 +28,12 @@ function DetailRow({ label, value }: { label: string; value: React.ReactNode }) 
   )
 }
 
-function AlternativeRow({ alt }: { alt: Alternative }) {
+function AlternativeRow({ alt, onClick }: { alt: Alternative; onClick: () => void }) {
   return (
-    <div className="py-2 border-b last:border-0">
+    <button
+      onClick={onClick}
+      className="w-full py-2 border-b last:border-0 text-left hover:bg-muted/50 -mx-2 px-2 rounded-md transition-colors"
+    >
       <p className="text-sm font-medium leading-snug">{alt.bezeichnung}</p>
       <div className="flex items-center gap-2 mt-0.5">
         <span className="text-xs text-muted-foreground">{alt.firma}</span>
@@ -39,21 +43,31 @@ function AlternativeRow({ alt }: { alt: Alternative }) {
           </Badge>
         )}
       </div>
-    </div>
+    </button>
   )
 }
 
-function AlternativesSection({ gtin }: { gtin: string }) {
+function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (bezeichnung: string) => void }) {
   const [data, setData] = useState<AlternativesResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
   useEffect(() => {
+    const cacheKey = `alt_${gtin}`
+    const cached = sessionStorage.getItem(cacheKey)
+    if (cached) {
+      setData(JSON.parse(cached))
+      setLoading(false)
+      return
+    }
     setLoading(true)
     setError(false)
     fetch(`/api/alternatives?gtin=${encodeURIComponent(gtin)}`)
       .then(r => r.ok ? r.json() : Promise.reject(r.status))
-      .then(setData)
+      .then(d => {
+        sessionStorage.setItem(cacheKey, JSON.stringify(d))
+        setData(d)
+      })
       .catch(() => setError(true))
       .finally(() => setLoading(false))
   }, [gtin])
@@ -77,7 +91,7 @@ function AlternativesSection({ gtin }: { gtin: string }) {
             Alternativpräparate ({data!.alleAlternativen.length})
           </p>
           <div className="divide-y">
-            {data!.alleAlternativen.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} />)}
+            {data!.alleAlternativen.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} onClick={() => onSelect(a.bezeichnung)} />)}
           </div>
         </div>
       )}
@@ -87,7 +101,7 @@ function AlternativesSection({ gtin }: { gtin: string }) {
             Co-Marketing (identisch)
           </p>
           <div className="divide-y">
-            {data!.coMarketing.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} />)}
+            {data!.coMarketing.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} onClick={() => onSelect(a.bezeichnung)} />)}
           </div>
         </div>
       )}
@@ -97,7 +111,7 @@ function AlternativesSection({ gtin }: { gtin: string }) {
             Gleiche Firma (andere Packung)
           </p>
           <div className="divide-y">
-            {data!.gleicheFirma.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} />)}
+            {data!.gleicheFirma.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} onClick={() => onSelect(a.bezeichnung)} />)}
           </div>
         </div>
       )}
@@ -106,6 +120,13 @@ function AlternativesSection({ gtin }: { gtin: string }) {
 }
 
 export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
+  const router = useRouter()
+
+  function handleAlternativeSelect(bezeichnung: string) {
+    onClose()
+    router.push(`/?search=${encodeURIComponent(bezeichnung)}`)
+  }
+
   return (
     <Sheet open={!!shortage} onOpenChange={open => !open && onClose()}>
       <SheetContent className="w-full sm:max-w-md overflow-y-auto px-6 py-6">
@@ -155,7 +176,7 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
             {/* Alternativen */}
             <div className="mt-6">
               <h3 className="text-sm font-semibold mb-3">Mögliche Alternativen</h3>
-              <AlternativesSection gtin={shortage.gtin} />
+              <AlternativesSection gtin={shortage.gtin} onSelect={handleAlternativeSelect} />
             </div>
 
             {/* Quelle */}
