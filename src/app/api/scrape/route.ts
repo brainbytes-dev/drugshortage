@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
 import { fetchAndParse, fetchAndParseCompleted } from '@/lib/scraper'
 import { upsertShortagesOptimized as upsertShortages } from '@/lib/db-optimized-upsert'
-import { saveOverviewStats, upsertCompletedShortages } from '@/lib/db'
+import { saveOverviewStats, upsertCompletedShortages, upsertBwlShortages } from '@/lib/db'
 import { invalidateStatsCache } from '@/lib/db-cached-example'
+import { fetchBwlData } from '@/lib/bwl-scraper'
 
 export async function POST(request: Request) {
   const auth = request.headers.get('authorization')
@@ -28,12 +29,22 @@ export async function POST(request: Request) {
       console.error('[scrape] Historical fetch failed (non-fatal):', histErr)
     }
 
+    let bwlUpserted = 0
+    try {
+      const bwlData = await fetchBwlData()
+      const result = await upsertBwlShortages(bwlData)
+      bwlUpserted = result.upserted
+    } catch (bwlErr) {
+      console.error('[scrape] BWL fetch failed (non-fatal):', bwlErr)
+    }
+
     return NextResponse.json({
       success: true,
       total: shortages.length,
       newEntries,
       removedEntries,
       historicalInserted,
+      bwlUpserted,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
