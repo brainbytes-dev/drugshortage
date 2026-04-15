@@ -5,6 +5,7 @@ import { SearchBar } from '@/components/search-bar'
 import { FilterBar } from '@/components/filter-bar'
 import { ShortagesTable } from '@/components/shortages-table'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { Github } from 'lucide-react'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet'
 import type { ShortagesQuery } from '@/lib/types'
@@ -82,9 +83,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             <div>
               <p className="text-xs font-medium text-foreground mb-0.5">Open Source</p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Kostenlos, Open Source, keine Registrierung.{' '}
-                <a href="https://github.com/brainbytes-dev/drugshortage" target="_blank" rel="noopener noreferrer"
-                  className="underline hover:text-foreground">Code auf GitHub →</a>
+                Kostenlos, Open Source, keine Registrierung.
               </p>
             </div>
           </div>
@@ -137,6 +136,16 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             <a href="/impressum" className="underline hover:text-foreground">Impressum</a>
             <span>·</span>
             <a href="/datenschutz" className="underline hover:text-foreground">Datenschutz</a>
+            <span>·</span>
+            <a
+              href="https://github.com/brainbytes-dev/drugshortage"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground transition-colors"
+              aria-label="GitHub"
+            >
+              <Github className="h-3.5 w-3.5" />
+            </a>
           </p>
         </div>
 
