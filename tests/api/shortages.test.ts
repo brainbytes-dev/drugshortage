@@ -5,7 +5,7 @@ import fs from 'fs'
 import path from 'path'
 
 const TEST_DB_PATH = path.join(process.cwd(), 'data', 'test-api-shortages.json')
-process.env.DB_PATH = TEST_DB_PATH
+const ORIGINAL_DB_PATH = process.env.DB_PATH
 
 const mockShortage: Shortage = {
   gtin: '7680494930101',
@@ -25,6 +25,10 @@ const mockShortage: Shortage = {
   isActive: true,
 }
 
+beforeAll(() => {
+  process.env.DB_PATH = TEST_DB_PATH
+})
+
 beforeEach(async () => {
   fs.writeFileSync(TEST_DB_PATH, JSON.stringify([]))
   await upsertShortages([mockShortage])
@@ -32,6 +36,7 @@ beforeEach(async () => {
 
 afterAll(() => {
   if (fs.existsSync(TEST_DB_PATH)) fs.unlinkSync(TEST_DB_PATH)
+  process.env.DB_PATH = ORIGINAL_DB_PATH
 })
 
 test('GET /api/shortages returns data array', async () => {
