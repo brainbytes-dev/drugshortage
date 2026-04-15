@@ -101,7 +101,9 @@ async function enrichWithDetails(shortages: Shortage[]): Promise<void> {
         if (!res.ok) return
         const html = await res.text()
         const detail = parseDetailFromHtml(html)
-        Object.assign(shortage, detail)
+        // Only assign defined values — undefined would overwrite existing fields
+        const filtered = Object.fromEntries(Object.entries(detail).filter(([, v]) => v !== undefined))
+        Object.assign(shortage, filtered)
       } catch {
         // silently skip failed detail fetches
       }
