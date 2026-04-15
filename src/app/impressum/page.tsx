@@ -26,14 +26,14 @@ export default function ImpressumPage() {
         <section className="space-y-1 text-sm">
           <h2 className="font-semibold text-base">Betreiber dieser Website</h2>
           <p className="text-muted-foreground">
-            [Vorname Nachname / Firmenname]<br />
-            [Strasse Nr.]<br />
-            [PLZ Ort], Schweiz
+            Henrik Rühe<br />
+            Buchenweg 18<br />
+            5036 Oberentfelden, Schweiz
           </p>
           <p className="text-muted-foreground mt-2">
             E-Mail:{' '}
-            <a href="mailto:admin@proflowlabsai.com" className="underline hover:text-foreground">
-              admin@proflowlabsai.com
+            <a href="mailto:info@engpassradar.ch" className="underline hover:text-foreground">
+              info@engpassradar.ch
             </a>
           </p>
         </section>
