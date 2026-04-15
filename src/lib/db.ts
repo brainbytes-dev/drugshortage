@@ -137,36 +137,44 @@ export async function upsertShortages(
 
 export async function upsertCompletedShortages(incoming: Shortage[]): Promise<{ inserted: number }> {
   const now = new Date()
+  const CHUNK = 500
+  let totalInserted = 0
 
-  const result = await prisma.shortage.createMany({
-    data: incoming.map(s => ({
-      gtin: s.gtin,
-      pharmacode: s.pharmacode,
-      bezeichnung: s.bezeichnung,
-      firma: s.firma,
-      atcCode: s.atcCode,
-      gengrp: s.gengrp,
-      statusCode: s.statusCode,
-      statusText: s.statusText,
-      datumLieferfahigkeit: s.datumLieferfahigkeit,
-      datumLetzteMutation: s.datumLetzteMutation,
-      tageSeitMeldung: s.tageSeitMeldung,
-      detailUrl: s.detailUrl,
-      alternativenUrl: s.alternativenUrl ?? null,
-      ersteMeldung: s.ersteMeldung ?? null,
-      ersteMeldungDurch: s.ersteMeldungDurch ?? null,
-      ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
-      artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
-      voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
-      bemerkungen: s.bemerkungen ?? null,
-      firstSeenAt: now,
-      lastSeenAt: now,
-      isActive: false,
-    })),
-    skipDuplicates: true,
+  const toRow = (s: Shortage) => ({
+    gtin: s.gtin,
+    pharmacode: s.pharmacode,
+    bezeichnung: s.bezeichnung,
+    firma: s.firma,
+    atcCode: s.atcCode,
+    gengrp: s.gengrp,
+    statusCode: s.statusCode,
+    statusText: s.statusText,
+    datumLieferfahigkeit: s.datumLieferfahigkeit,
+    datumLetzteMutation: s.datumLetzteMutation,
+    tageSeitMeldung: s.tageSeitMeldung,
+    detailUrl: s.detailUrl,
+    alternativenUrl: s.alternativenUrl ?? null,
+    ersteMeldung: s.ersteMeldung ?? null,
+    ersteMeldungDurch: s.ersteMeldungDurch ?? null,
+    ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
+    artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
+    voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
+    bemerkungen: s.bemerkungen ?? null,
+    firstSeenAt: now,
+    lastSeenAt: now,
+    isActive: false,
   })
 
-  return { inserted: result.count }
+  for (let i = 0; i < incoming.length; i += CHUNK) {
+    const chunk = incoming.slice(i, i + CHUNK)
+    const result = await prisma.shortage.createMany({
+      data: chunk.map(toRow),
+      skipDuplicates: true,
+    })
+    totalInserted += result.count
+  }
+
+  return { inserted: totalInserted }
 }
 
 export async function queryShortages(query: ShortagesQuery): Promise<ShortagesResponse> {
