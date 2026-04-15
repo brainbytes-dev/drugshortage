@@ -32,6 +32,7 @@ export function SearchBar() {
     <div className="relative flex-1">
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
+        key={searchParams.get('search') ?? ''}
         placeholder="Medikament, Firma oder ATC-Code suchen…"
         defaultValue={searchParams.get('search') ?? ''}
         onChange={handleChange}

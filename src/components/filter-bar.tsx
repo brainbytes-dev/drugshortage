@@ -46,7 +46,7 @@ export function FilterBar({ firmaList }: FilterBarProps) {
 
   return (
     <div className="flex flex-wrap gap-2">
-      <Select<string>
+      <Select
         value={statusValue}
         onValueChange={v => updateParam('status', v ?? 'all')}
       >
@@ -61,7 +61,7 @@ export function FilterBar({ firmaList }: FilterBarProps) {
         </SelectContent>
       </Select>
 
-      <Select<string>
+      <Select
         value={firmaValue}
         onValueChange={v => updateParam('firma', v ?? 'all')}
       >
