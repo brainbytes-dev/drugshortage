@@ -24,7 +24,7 @@ export function parseShortagesFromHtml(html: string): Shortage[] {
 
     const statusText = getText(3)
     const statusCode = parseInt(statusText.charAt(0), 10)
-    if (isNaN(statusCode) || statusCode < 1 || statusCode > 5) continue
+    if (isNaN(statusCode)) continue
 
     const detailHref = getHref(0)
     const detailUrl = detailHref
