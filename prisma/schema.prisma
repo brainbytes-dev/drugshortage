@@ -72,6 +72,14 @@ model OverviewStats {
   @@map("overview_stats")
 }
 
+model AlternativesCache {
+  gtin      String   @id
+  data      Json
+  fetchedAt DateTime @updatedAt
+
+  @@map("alternatives_cache")
+}
+
 model ScrapeRun {
   id             Int      @id @default(autoincrement())
   scrapedAt      DateTime
