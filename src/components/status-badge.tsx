@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils'
 
 interface StatusBadgeProps {
   code: number
-  text?: string
   showText?: boolean
 }
 
