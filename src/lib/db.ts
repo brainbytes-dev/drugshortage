@@ -363,6 +363,26 @@ export async function saveOverviewStats(stats: OverviewStats): Promise<void> {
   })
 }
 
+export async function saveScrapeRun(run: {
+  scrapedAt: string
+  totalCount: number
+  newEntries: number
+  removedEntries: number
+  status: 'success' | 'error'
+  errorMessage?: string
+}): Promise<void> {
+  await prisma.scrapeRun.create({
+    data: {
+      scrapedAt: new Date(run.scrapedAt),
+      totalCount: run.totalCount,
+      newEntries: run.newEntries,
+      removedEntries: run.removedEntries,
+      status: run.status,
+      errorMessage: run.errorMessage ?? null,
+    },
+  })
+}
+
 export async function getOverviewStats(): Promise<OverviewStats | null> {
   const row = await prisma.overviewStats.findFirst({
     orderBy: { scrapedAt: 'desc' },

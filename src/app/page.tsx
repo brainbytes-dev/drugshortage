@@ -52,9 +52,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             <h1 className="text-xl font-semibold tracking-tight group-hover:opacity-80 transition-opacity">
               engpass<span className="text-primary">.radar</span>
             </h1>
-            <p className="text-xs text-muted-foreground">
-              Stand: {lastUpdated}
-            </p>
           </Link>
           <ThemeToggle />
         </div>
@@ -93,17 +90,18 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         {/* KPI Cards */}
         <KPICards stats={kpi} />
 
-        {/* Overview Buttons */}
-        {overview && (overview.firmenRanking.length > 0 || overview.atcGruppen.length > 0) && (
-          <div className="flex flex-wrap gap-2">
-            {overview.firmenRanking.length > 0 && (
-              <FirmaRankingSheet firmenRanking={overview.firmenRanking} />
-            )}
-            {overview.atcGruppen.length > 0 && (
-              <AtcGruppenSheet atcGruppen={overview.atcGruppen} />
-            )}
-          </div>
-        )}
+        {/* Overview Buttons + Stand */}
+        <div className="flex flex-wrap items-center gap-2">
+          {overview && overview.firmenRanking.length > 0 && (
+            <FirmaRankingSheet firmenRanking={overview.firmenRanking} />
+          )}
+          {overview && overview.atcGruppen.length > 0 && (
+            <AtcGruppenSheet atcGruppen={overview.atcGruppen} />
+          )}
+          <span className="text-xs text-muted-foreground ml-auto">
+            Stand: {lastUpdated}
+          </span>
+        </div>
 
         {/* Search + Filters */}
         <Suspense fallback={null}>
