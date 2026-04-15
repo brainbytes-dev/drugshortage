@@ -1,5 +1,4 @@
 import { prisma } from './prisma'
-import { Prisma } from '@prisma/client'
 import type { Shortage, ShortagesQuery, ShortagesResponse, KPIStats, OverviewStats } from './types'
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -306,8 +305,10 @@ export async function saveOverviewStats(stats: OverviewStats): Promise<void> {
       swissmedicListeCTotal: stats.swissmedicListeCTotal,
       swissmedicUebrige: stats.swissmedicUebrige,
       swissmedicUebrigeTotal: stats.swissmedicUebrigeTotal,
-      firmenRanking: stats.firmenRanking as unknown as Prisma.InputJsonValue,
-      atcGruppen: stats.atcGruppen as unknown as Prisma.InputJsonValue,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      firmenRanking: stats.firmenRanking as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      atcGruppen: stats.atcGruppen as any,
     },
   })
 }
