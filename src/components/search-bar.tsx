@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useCallback, useTransition } from 'react'
+import { useCallback, useTransition, useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
@@ -10,13 +10,20 @@ export function SearchBar() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
   const [, startTransition] = useTransition()
+  const [value, setValue] = useState(searchParams.get('search') ?? '')
+
+  // Sync input when URL changes externally (back/forward, filter reset)
+  useEffect(() => {
+    setValue(searchParams.get('search') ?? '')
+  }, [searchParams])
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value
+      setValue(newValue)
       const params = new URLSearchParams(searchParams.toString())
-      const value = e.target.value
-      if (value) {
-        params.set('search', value)
+      if (newValue) {
+        params.set('search', newValue)
       } else {
         params.delete('search')
       }
@@ -32,9 +39,8 @@ export function SearchBar() {
     <div className="relative flex-1">
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
-        key={searchParams.get('search') ?? ''}
         placeholder="Medikament, Firma oder ATC-Code suchen…"
-        defaultValue={searchParams.get('search') ?? ''}
+        value={value}
         onChange={handleChange}
         className="pl-9"
       />
