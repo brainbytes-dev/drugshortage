@@ -5,7 +5,7 @@ const BASE_URL = 'https://www.drugshortage.ch'
 const SOURCE_URL = `${BASE_URL}/UebersichtaktuelleLieferengpaesse2.aspx`
 const DETAIL_CONCURRENCY = 10
 const FETCH_HEADERS = {
-  'User-Agent': 'engpass-radar/1.0 (+https://drugshortage-theta.vercel.app; contact: admin@proflowlabsai.com)',
+  'User-Agent': 'engpass-radar/1.0 (+https://engpass-radar.vercel.app; contact: admin@proflowlabsai.com)',
 }
 
 export function parseShortagesFromHtml(html: string): Shortage[] {
