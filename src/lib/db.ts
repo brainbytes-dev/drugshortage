@@ -435,6 +435,57 @@ export async function getAllDrugSlugs(): Promise<Array<{ slug: string; bezeichnu
   return result
 }
 
+// ── ODDB Integration ─────────────────────────────────────────────────────────
+
+export async function upsertOddbProducts(
+  products: import('./oddb-scraper').OddbProductData[]
+): Promise<{ upserted: number }> {
+  const CHUNK = 200
+  let upserted = 0
+
+  for (let i = 0; i < products.length; i += CHUNK) {
+    const chunk = products.slice(i, i + CHUNK)
+    await Promise.all(
+      chunk.map(p =>
+        prisma.oddbProduct.upsert({
+          where: { gtin: p.gtin },
+          create: {
+            gtin: p.gtin,
+            prodno: p.prodno,
+            bezeichnungDe: p.bezeichnungDe,
+            atcCode: p.atcCode,
+            substanz: p.substanz,
+            zusammensetzung: p.zusammensetzung,
+          },
+          update: {
+            prodno: p.prodno,
+            bezeichnungDe: p.bezeichnungDe,
+            atcCode: p.atcCode,
+            substanz: p.substanz,
+            zusammensetzung: p.zusammensetzung,
+          },
+        })
+      )
+    )
+    upserted += chunk.length
+  }
+
+  return { upserted }
+}
+
+export async function getOddbByGtin(gtin: string): Promise<{
+  prodno: string
+  substanz: string | null
+  zusammensetzung: string | null
+  atcCode: string
+} | null> {
+  const row = await prisma.oddbProduct.findUnique({
+    where: { gtin },
+    select: { prodno: true, substanz: true, zusammensetzung: true, atcCode: true },
+  })
+  return row ?? null
+}
+
 // ── BWL Integration ───────────────────────────────────────────────────────────
 
 export async function upsertBwlShortages(
