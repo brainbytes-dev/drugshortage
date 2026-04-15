@@ -16,7 +16,7 @@ export interface AlternativesResponse {
 }
 
 const FETCH_HEADERS = {
-  'User-Agent': 'engpass-radar/1.0 (+https://engpass-radar.vercel.app; contact: admin@proflowlabsai.com)',
+  'User-Agent': 'engpass-radar/1.0 (+https://engpassradar.vercel.app; contact: info@engpassradar.ch)',
 }
 
 // Re-fetch if cached data is older than 24h

@@ -7,6 +7,8 @@ import { ShortagesTable } from '@/components/shortages-table'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet'
+import { ResetFiltersButton } from '@/components/reset-filters-button'
+import Link from 'next/link'
 import type { ShortagesQuery } from '@/lib/types'
 
 interface PageProps {
@@ -46,14 +48,14 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         {/* Header */}
         <div className="flex items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-semibold tracking-tight">
+          <Link href="/" className="group">
+            <h1 className="text-xl font-semibold tracking-tight group-hover:opacity-80 transition-opacity">
               engpass<span className="text-primary">.radar</span>
             </h1>
             <p className="text-xs text-muted-foreground">
               Stand: {lastUpdated}
             </p>
-          </div>
+          </Link>
           <ThemeToggle />
         </div>
 
@@ -105,9 +107,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         {/* Search + Filters */}
         <Suspense fallback={null}>
-          <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
             <SearchBar />
             <FilterBar firmaList={firmaList} />
+            <ResetFiltersButton />
           </div>
         </Suspense>
 
