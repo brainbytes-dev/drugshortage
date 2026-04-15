@@ -45,9 +45,34 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
         <SheetHeader className="mb-4">
           <SheetTitle>Firmen-Ranking</SheetTitle>
           <p className="text-xs text-muted-foreground">
-            Hersteller nach Anzahl aktiver Lieferengpässe. Bewertung gemäss drugshortage.ch.
+            Hersteller nach Anzahl aktiver Lieferengpässe, sortiert nach Bewertung von{' '}
+            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
+              className="underline hover:text-foreground">drugshortage.ch</a>.
           </p>
         </SheetHeader>
+
+        {/* Bewertungs-Legende */}
+        <div className="mb-4 rounded-md border bg-muted/40 px-3 py-2.5">
+          <p className="text-xs font-medium mb-2">Bewertung (Quelle: drugshortage.ch)</p>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Badge variant="default" className="text-[10px] px-1.5 py-0">Gut</Badge>
+              <span>&lt; 5 % Produkte betroffen</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Mittel</Badge>
+              <span>5–15 % Produkte betroffen</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">Schlecht</Badge>
+              <span>15–30 % Produkte betroffen</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Kritisch</Badge>
+              <span>&gt; 30 % Produkte betroffen</span>
+            </div>
+          </div>
+        </div>
 
         <input
           type="search"

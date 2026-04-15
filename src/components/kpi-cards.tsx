@@ -39,7 +39,12 @@ export function KPICards({ stats }: KPICardsProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-2xl font-bold truncate">{card.value}</p>
+            <p
+              className={`font-bold leading-tight ${String(card.value).length > 16 ? 'text-sm' : 'text-2xl'}`}
+              title={String(card.value)}
+            >
+              {card.value}
+            </p>
             <p className="text-xs text-muted-foreground mt-1">{card.sub}</p>
           </CardContent>
         </Card>
