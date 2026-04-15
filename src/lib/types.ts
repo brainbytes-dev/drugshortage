@@ -12,6 +12,14 @@ export interface Shortage {
   datumLetzteMutation: string  // "DD.MM.YYYY"
   tageSeitMeldung: number
   detailUrl: string
+  alternativenUrl?: string     // link to alternatives page
+  // Detail page fields (fetched separately)
+  ersteMeldung?: string        // "DD.MM.YYYY" — date of first report
+  ersteMeldungDurch?: string   // who reported it
+  ersteInfoDurchFirma?: string // first info from the company
+  artDerInfoDurchFirma?: string
+  voraussichtlicheDauer?: string // e.g. "mittel langer Engpass (2 bis 6 Wochen)"
+  bemerkungen?: string
   firstSeenAt: string          // ISO timestamp
   lastSeenAt: string           // ISO timestamp
   isActive: boolean
