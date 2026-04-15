@@ -92,6 +92,21 @@ model ScrapeRun {
   @@map("scrape_runs")
 }
 
+// ODDB product enrichment — from download.hin.ch/download/oddb2xml (daily)
+// Contains: GTIN, Swissmedic-Nr, Wirkstoff, Zusammensetzung, ATC
+model OddbProduct {
+  id              Int      @id @default(autoincrement())
+  gtin            String   @unique
+  prodno          String   // Swissmedic product number e.g. "0060201"
+  bezeichnungDe   String
+  atcCode         String
+  substanz        String?
+  zusammensetzung String?
+  fetchedAt       DateTime @updatedAt
+
+  @@map("oddb_products")
+}
+
 // BWL federal supply shortage list (Bundesamt für wirtschaftliche Landesversorgung)
 // Source: https://www.bwl.admin.ch/de/meldestelle-heilmittel
 model BwlShortage {
