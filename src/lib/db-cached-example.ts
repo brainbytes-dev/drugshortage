@@ -18,7 +18,7 @@ export async function getKPIStatsCached(): Promise<KPIStats> {
           by: ['firma'],
           where: { isActive: true },
           _count: { _all: true },
-          orderBy: { _count: { _all: 'desc' } },
+          orderBy: { _count: { firma: 'desc' } },
           take: 1,
         }),
 
@@ -47,7 +47,7 @@ export async function getKPIStatsCached(): Promise<KPIStats> {
         topFirmaCount: top?._count._all ?? 0,
         uniqueAtcGroups: Number(atcGroups[0]?.count ?? 0),
         avgDaysSinceMeldung: Math.round(avgDays._avg.tageSeitMeldung ?? 0),
-        lastScrapedAt: lastScrape?.scrapedAt ?? null,
+        lastScrapedAt: lastScrape?.scrapedAt?.toISOString() ?? null,
       }
     },
     300 // ✅ Cache for 5 minutes
