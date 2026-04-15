@@ -8,6 +8,7 @@ export function parseShortagesFromHtml(html: string): Shortage[] {
   const $ = cheerio.load(html)
   const rows = $('#GridView1 tr').toArray()
   const shortages: Shortage[] = []
+  const now = new Date().toISOString()
 
   for (const row of rows.slice(1)) {
     const cells = $(row).find('td')
@@ -43,8 +44,8 @@ export function parseShortagesFromHtml(html: string): Shortage[] {
       datumLetzteMutation: getText(4),
       tageSeitMeldung: parseInt(getText(8), 10) || 0,
       detailUrl,
-      firstSeenAt: new Date().toISOString(),
-      lastSeenAt: new Date().toISOString(),
+      firstSeenAt: now,
+      lastSeenAt: now,
       isActive: true,
     })
   }
@@ -55,7 +56,6 @@ export function parseShortagesFromHtml(html: string): Shortage[] {
 export async function fetchAndParse(): Promise<Shortage[]> {
   const response = await fetch(SOURCE_URL, {
     headers: { 'User-Agent': 'drugshortage-dashboard/1.0' },
-    next: { revalidate: 0 },
   })
 
   if (!response.ok) {
