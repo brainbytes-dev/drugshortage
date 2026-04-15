@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
   Sheet,
   SheetContent,
@@ -25,13 +26,20 @@ interface FirmaRankingSheetProps {
 
 export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
   const [search, setSearch] = useState('')
+  const [open, setOpen] = useState(false)
+  const router = useRouter()
 
   const filtered = firmenRanking.filter(f =>
     f.firma.toLowerCase().includes(search.toLowerCase())
   )
 
+  function handleFirmaClick(firma: string) {
+    setOpen(false)
+    router.push(`/?firma=${encodeURIComponent(firma)}`)
+  }
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
         render={<button className="flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors" />}
       >
@@ -86,7 +94,11 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
           {filtered.map((f, i) => {
             const bew = BEWERTUNG_LABEL[f.bewertung]
             return (
-              <div key={f.firma} className="flex items-center gap-3 py-2.5">
+              <button
+                key={f.firma}
+                onClick={() => handleFirmaClick(f.firma)}
+                className="w-full flex items-center gap-3 py-2.5 -mx-2 px-2 rounded-md text-left hover:bg-muted/50 transition-colors"
+              >
                 <span className="w-6 text-xs text-muted-foreground text-right shrink-0">
                   {i + 1}
                 </span>
@@ -101,7 +113,7 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
                     {bew.label}
                   </Badge>
                 )}
-              </div>
+              </button>
             )
           })}
           {filtered.length === 0 && (
