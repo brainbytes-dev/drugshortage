@@ -32,7 +32,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   ])
 
   const lastUpdated = kpi.lastScrapedAt
-    ? new Date(kpi.lastScrapedAt).toLocaleDateString('de-CH', {
+    ? new Date(kpi.lastScrapedAt).toLocaleString('de-CH', {
         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
       })
     : 'noch nicht aktualisiert'
@@ -64,7 +64,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         <KPICards stats={kpi} />
 
         {/* Search + Filters */}
-        <Suspense>
+        <Suspense fallback={null}>
           <div className="flex flex-col sm:flex-row gap-2">
             <SearchBar />
             <FilterBar firmaList={firmaList} />
@@ -72,7 +72,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </Suspense>
 
         {/* Table */}
-        <Suspense>
+        <Suspense fallback={null}>
           <ShortagesTable
             shortages={response.data}
             total={response.total}
