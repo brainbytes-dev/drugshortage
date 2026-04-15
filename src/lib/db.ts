@@ -202,7 +202,7 @@ export async function upsertCompletedShortages(incoming: Shortage[]): Promise<{ 
         gengrp: row.gengrp || undefined,
         statusCode: row.statusCode,
         statusText: row.statusText,
-        isActive: false,
+        // Don't override isActive=true — active scrape controls that flag
         datumLieferfahigkeit: row.datumLieferfahigkeit || undefined,
         ersteMeldung: row.ersteMeldung ?? null,
         ersteMeldungDurch: row.ersteMeldungDurch ?? null,
