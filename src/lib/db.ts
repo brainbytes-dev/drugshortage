@@ -406,6 +406,8 @@ export async function getAllAtcCodes(): Promise<Array<{ atc: string; bezeichnung
   return rows.map(r => ({ atc: r.atcCode, bezeichnung: r.bezeichnung }))
 }
 
+// NOTE: Full table scan — intentional for now (~700 rows). Revisit with an indexed
+// computed column or a separate slug lookup table if the table grows significantly.
 export async function getShortageBySlug(slug: string): Promise<Shortage | null> {
   const rows = await prisma.shortage.findMany({
     where: { isActive: true },
@@ -423,10 +425,12 @@ export async function getAllDrugSlugs(): Promise<Array<{ slug: string; bezeichnu
   const result: Array<{ slug: string; bezeichnung: string; pharmacode: string }> = []
   for (const r of rows) {
     const slug = toSlug(r.bezeichnung)
-    if (!seen.has(slug)) {
-      seen.add(slug)
-      result.push({ slug, bezeichnung: r.bezeichnung, pharmacode: r.pharmacode })
+    if (seen.has(slug)) {
+      console.warn(`[getAllDrugSlugs] slug collision: "${slug}" (${r.bezeichnung})`)
+      continue
     }
+    seen.add(slug)
+    result.push({ slug, bezeichnung: r.bezeichnung, pharmacode: r.pharmacode })
   }
   return result
 }
