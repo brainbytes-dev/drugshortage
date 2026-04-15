@@ -14,8 +14,14 @@ export async function POST(request: Request) {
     const { newEntries, removedEntries } = await upsertShortages(shortages)
     await saveOverviewStats({ ...overview, scrapedAt: new Date().toISOString() })
 
-    const completedShortages = await fetchAndParseCompleted()
-    const { inserted: historicalInserted } = await upsertCompletedShortages(completedShortages)
+    let historicalInserted = 0
+    try {
+      const completedShortages = await fetchAndParseCompleted()
+      const result = await upsertCompletedShortages(completedShortages)
+      historicalInserted = result.inserted
+    } catch (histErr) {
+      console.error('[scrape] Historical fetch failed (non-fatal):', histErr)
+    }
 
     return NextResponse.json({
       success: true,
