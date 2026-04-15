@@ -136,6 +136,40 @@ export async function upsertShortages(
   return { newEntries, removedEntries }
 }
 
+export async function upsertCompletedShortages(incoming: Shortage[]): Promise<{ inserted: number }> {
+  const now = new Date()
+
+  const result = await prisma.shortage.createMany({
+    data: incoming.map(s => ({
+      gtin: s.gtin,
+      pharmacode: s.pharmacode,
+      bezeichnung: s.bezeichnung,
+      firma: s.firma,
+      atcCode: s.atcCode,
+      gengrp: s.gengrp,
+      statusCode: s.statusCode,
+      statusText: s.statusText,
+      datumLieferfahigkeit: s.datumLieferfahigkeit,
+      datumLetzteMutation: s.datumLetzteMutation,
+      tageSeitMeldung: s.tageSeitMeldung,
+      detailUrl: s.detailUrl,
+      alternativenUrl: s.alternativenUrl ?? null,
+      ersteMeldung: s.ersteMeldung ?? null,
+      ersteMeldungDurch: s.ersteMeldungDurch ?? null,
+      ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
+      artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
+      voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
+      bemerkungen: s.bemerkungen ?? null,
+      firstSeenAt: now,
+      lastSeenAt: now,
+      isActive: false,
+    })),
+    skipDuplicates: true,
+  })
+
+  return { inserted: result.count }
+}
+
 export async function queryShortages(query: ShortagesQuery): Promise<ShortagesResponse> {
   const perPage = query.perPage ?? 50
   const page = query.page ?? 1

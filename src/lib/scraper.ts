@@ -183,6 +183,26 @@ export function parseOverviewStats(html: string): Omit<OverviewStats, 'scrapedAt
   }
 }
 
+const COMPLETED_URL = 'https://www.drugshortage.ch/index.php/abgeschlossen/'
+
+export async function fetchAndParseCompleted(): Promise<Shortage[]> {
+  const res = await fetch(COMPLETED_URL, { headers: FETCH_HEADERS })
+  if (!res.ok) {
+    throw new Error(`Failed to fetch completed shortages: ${res.status} ${res.statusText}`)
+  }
+
+  const html = await res.text()
+  const shortages = parseShortagesFromHtml(html)
+
+  // Override isActive to false for all historical records
+  for (const s of shortages) {
+    s.isActive = false
+  }
+
+  console.log(`[scraper] Fetched ${shortages.length} completed (historical) entries`)
+  return shortages
+}
+
 export async function fetchAndParse(): Promise<{ shortages: Shortage[]; overview: Omit<OverviewStats, 'scrapedAt'> }> {
   const res = await fetch(SOURCE_URL, { headers: FETCH_HEADERS })
   if (!res.ok) {
