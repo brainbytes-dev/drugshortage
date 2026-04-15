@@ -60,6 +60,23 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           </p>
         </div>
 
+        {/* Tagline / Context */}
+        <div className="rounded-lg border bg-muted/40 px-5 py-4 space-y-1.5">
+          <p className="text-sm font-semibold tracking-tight">
+            Wissen, was fehlt. Bevor der Patient davorsteht.
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
+            Dieses Dashboard zeigt alle aktuellen Medikamenten-Lieferengpässe in der Schweiz —
+            durchsuchbar, filterbar nach Hersteller und ATC-Code, täglich aktualisiert.
+            Datenquelle:{' '}
+            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
+              className="underline hover:text-foreground">drugshortage.ch</a>.
+            Entwickelt von einem Schweizer Neurologen als Open-Source-Projekt.{' '}
+            <a href="https://github.com/brainbytes-dev/drugshortage" target="_blank" rel="noopener noreferrer"
+              className="underline hover:text-foreground">GitHub →</a>
+          </p>
+        </div>
+
         {/* KPI Cards */}
         <KPICards stats={kpi} />
 
@@ -82,14 +99,21 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </Suspense>
 
         {/* Footer */}
-        <p className="text-xs text-muted-foreground text-center pt-4 border-t">
-          Daten von{' '}
-          <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
-            className="underline hover:text-foreground">
-            drugshortage.ch
-          </a>
-          {' '}· täglich aktualisiert · keine Gewähr auf Vollständigkeit
-        </p>
+        <div className="text-xs text-muted-foreground text-center pt-4 border-t space-y-1">
+          <p>
+            Daten von{' '}
+            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
+              className="underline hover:text-foreground">
+              drugshortage.ch
+            </a>
+            {' '}· täglich aktualisiert · keine Gewähr auf Vollständigkeit
+          </p>
+          <p className="flex items-center justify-center gap-3">
+            <a href="/impressum" className="underline hover:text-foreground">Impressum</a>
+            <span>·</span>
+            <a href="/datenschutz" className="underline hover:text-foreground">Datenschutz</a>
+          </p>
+        </div>
       </div>
     </main>
   )
