@@ -165,13 +165,40 @@ export async function upsertCompletedShortages(incoming: Shortage[]): Promise<{ 
     isActive: false,
   })
 
-  for (let i = 0; i < incoming.length; i += CHUNK) {
-    const chunk = incoming.slice(i, i + CHUNK)
+  // Split into enriched (have atcCode from detail page) vs raw (no detail enrichment)
+  const enriched = incoming.filter(s => s.atcCode)
+  const raw = incoming.filter(s => !s.atcCode)
+
+  // Raw entries: insert-only, skip if already in DB
+  for (let i = 0; i < raw.length; i += CHUNK) {
+    const chunk = raw.slice(i, i + CHUNK)
     const result = await prisma.shortage.createMany({
       data: chunk.map(toRow),
       skipDuplicates: true,
     })
     totalInserted += result.count
+  }
+
+  // Enriched entries: upsert so detail data is written even if row already exists
+  for (const s of enriched) {
+    await prisma.shortage.upsert({
+      where: { gtin: s.gtin },
+      create: { ...toRow(s) },
+      update: {
+        atcCode: s.atcCode,
+        statusCode: s.statusCode,
+        statusText: s.statusText,
+        datumLieferfahigkeit: s.datumLieferfahigkeit || undefined,
+        ersteMeldung: s.ersteMeldung ?? null,
+        ersteMeldungDurch: s.ersteMeldungDurch ?? null,
+        ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
+        artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
+        voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
+        detailUrl: s.detailUrl || undefined,
+        lastSeenAt: now,
+      },
+    })
+    totalInserted++
   }
 
   return { inserted: totalInserted }
