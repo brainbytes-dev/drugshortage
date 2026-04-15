@@ -1,6 +1,6 @@
 import * as cheerio from 'cheerio'
 import { NextResponse } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/prisma-optimized'
 
 export interface Alternative {
   bezeichnung: string

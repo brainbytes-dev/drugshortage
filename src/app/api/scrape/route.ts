@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { fetchAndParse, fetchAndParseCompleted } from '@/lib/scraper'
-import { upsertShortages, saveOverviewStats, upsertCompletedShortages } from '@/lib/db'
+import { upsertShortagesOptimized as upsertShortages, upsertCompletedShortages } from '@/lib/db-optimized-upsert'
+import { saveOverviewStats } from '@/lib/db'
+import { invalidateStatsCache } from '@/lib/db-cached-example'
 
 export async function POST(request: Request) {
   const auth = request.headers.get('authorization')
@@ -13,6 +15,9 @@ export async function POST(request: Request) {
     const { shortages, overview } = await fetchAndParse()
     const { newEntries, removedEntries } = await upsertShortages(shortages)
     await saveOverviewStats({ ...overview, scrapedAt: new Date().toISOString() })
+
+    // ✅ Invalidate caches after data update
+    invalidateStatsCache()
 
     let historicalInserted = 0
     try {
