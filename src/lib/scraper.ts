@@ -59,7 +59,7 @@ export function parseShortagesFromHtml(html: string): Shortage[] {
   return shortages
 }
 
-/** Parse label→value pairs from a detail page */
+/** Parse label→value pairs from a detail page (works for both active and completed) */
 export function parseDetailFromHtml(html: string): Partial<Shortage> {
   const $ = cheerio.load(html)
   const fields: Record<string, string> = {}
@@ -72,13 +72,20 @@ export function parseDetailFromHtml(html: string): Partial<Shortage> {
     if (label && value && value !== '0') fields[label] = value
   })
 
+  // "Status des Engpasses" e.g. "9 abgeschlossen" → statusCode=9
+  const statusRaw = fields['Status des Engpasses']
+  const statusCode = statusRaw ? parseInt(statusRaw.charAt(0), 10) : undefined
+
   return {
+    atcCode: fields['ATC-Code'] || undefined,
     ersteMeldung: fields['erste Meldung'] || undefined,
     ersteMeldungDurch: fields['erste Meldung durch'] || undefined,
     ersteInfoDurchFirma: fields['erste Info durch die Firma'] || undefined,
     artDerInfoDurchFirma: fields['Art der Info durch die Firma'] || undefined,
     voraussichtlicheDauer: fields['voraussichtliche Dauer'] || undefined,
+    datumLieferfahigkeit: fields['ca. Datum der Wiederherstellung der Lieferfähigkeit'] || undefined,
     bemerkungen: fields['Bemerkungen'] || undefined,
+    ...(statusRaw && !isNaN(statusCode!) ? { statusCode, statusText: statusRaw } : {}),
   }
 }
 
@@ -198,6 +205,10 @@ export function parseCompletedFromHtml(html: string): Shortage[] {
     if (cells.length < 6) continue
 
     const getText = (i: number) => $(cells[i]).text().trim()
+    const detailHref = $(cells[0]).find('a').attr('href') ?? ''
+    const detailUrl = detailHref
+      ? `${BASE_URL}/${detailHref}`
+      : ''
 
     const gtin = getText(5)
     if (!gtin) continue
@@ -209,14 +220,14 @@ export function parseCompletedFromHtml(html: string): Shortage[] {
       ersteMeldung: getText(2) || undefined,
       datumLetzteMutation: getText(3),
       tageSeitMeldung: parseInt(getText(4), 10) || 0,
-      // Fields not present on the completed page — use empty defaults
+      detailUrl,
+      // Fields not on this page — enriched via detail pages for recent entries
       pharmacode: '',
       atcCode: '',
       gengrp: '',
-      statusCode: 0,
-      statusText: 'Abgeschlossen',
+      statusCode: 9,
+      statusText: '9 abgeschlossen',
       datumLieferfahigkeit: '',
-      detailUrl: '',
       firstSeenAt: now,
       lastSeenAt: now,
       isActive: false,
@@ -225,6 +236,10 @@ export function parseCompletedFromHtml(html: string): Shortage[] {
 
   return shortages
 }
+
+// Enrich the most recent completed entries with detail-page data (ATC, status, etc.)
+// Older entries are stored as-is to avoid 24k+ HTTP requests on every run
+const COMPLETED_ENRICH_LIMIT = 500
 
 export async function fetchAndParseCompleted(): Promise<Shortage[]> {
   const res = await fetch(COMPLETED_URL, { headers: FETCH_HEADERS })
@@ -235,6 +250,14 @@ export async function fetchAndParseCompleted(): Promise<Shortage[]> {
   const html = await res.text()
   const shortages = parseCompletedFromHtml(html)
   console.log(`[scraper] Fetched ${shortages.length} completed (historical) entries`)
+
+  // Enrich only the most recent entries (list is newest-first)
+  const toEnrich = shortages.slice(0, COMPLETED_ENRICH_LIMIT).filter(s => s.detailUrl)
+  if (toEnrich.length > 0) {
+    console.log(`[scraper] Enriching ${toEnrich.length} recent completed entries with detail data...`)
+    await enrichWithDetails(toEnrich)
+  }
+
   return shortages
 }
 
