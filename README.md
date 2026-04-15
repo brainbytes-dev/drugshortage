@@ -1,36 +1,172 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Swiss Drug Shortage Tracker
+
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
+A modern dashboard that tracks current drug shortages in Switzerland. Data is scraped daily from [drugshortage.ch](https://www.drugshortage.ch) and displayed with KPI cards, full-text search, status/company filters, sortable table, and a detail drawer.
+
+---
+
+## Features
+
+- **Daily scrape** — cheerio-based parser pulls the full ASP.NET table from drugshortage.ch
+- **KPI cards** — active shortage count, top manufacturer, ATC group coverage, average days since report
+- **Search** — real-time full-text search across drug name, company, and ATC code
+- **Filters** — filter by status level (1–5) and manufacturer
+- **Sortable table** — sort by any column; URL-driven so links are shareable
+- **Detail drawer** — click any row to see GTIN, pharmacode, delivery date, mutation history, and source link
+- **Cron endpoint** — `POST /api/scrape` secured with a Bearer token, wired to Vercel Cron
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | Next.js 14 (App Router, Server Components) |
+| Language | TypeScript 5 |
+| Styling | Tailwind CSS + shadcn/ui |
+| Scraping | cheerio |
+| Data | File-based JSON (swappable to Supabase) |
+| Testing | Jest + ts-jest |
+| Deployment | Vercel |
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+- Node.js 18+
+- npm 9+
+
+### Installation
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/brainbytes-dev/drugshortage.git
+cd drugshortage
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env.local` file in the project root:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+CRON_SECRET=your-secret-here
+```
 
-## Learn More
+> `CRON_SECRET` protects the `POST /api/scrape` endpoint. Use a long random string in production.
 
-To learn more about Next.js, take a look at the following resources:
+### Run Locally
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+# Fetch current shortage data
+npm run scrape
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+# Start development server
+npm run dev
+```
 
-## Deploy on Vercel
+Open [http://localhost:3000](http://localhost:3000).
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start Next.js development server |
+| `npm run build` | Production build |
+| `npm run start` | Start production server |
+| `npm run lint` | Run ESLint |
+| `npm test` | Run Jest test suite |
+| `npm run scrape` | Fetch and store current shortages |
+
+---
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── api/
+│   │   ├── scrape/route.ts      # POST — cron trigger (Bearer auth)
+│   │   └── shortages/route.ts   # GET  — search, filter, paginate
+│   ├── layout.tsx
+│   └── page.tsx                 # Dashboard (Server Component)
+├── components/
+│   ├── filter-bar.tsx           # Status + company dropdowns
+│   ├── kpi-cards.tsx            # 4-card KPI grid
+│   ├── search-bar.tsx           # Full-text search input
+│   ├── shortage-drawer.tsx      # Detail slide-out
+│   ├── shortages-table.tsx      # Sortable, paginated table
+│   └── status-badge.tsx         # Color-coded status badge
+├── lib/
+│   ├── db.ts                    # JSON data layer
+│   ├── scraper.ts               # cheerio HTML parser
+│   └── types.ts                 # TypeScript interfaces
+└── scripts/
+    └── scrape.ts                # CLI scrape script
+data/
+└── shortages.json               # Local DB (gitignored)
+tests/
+├── api/shortages.test.ts
+└── lib/
+    ├── db.test.ts
+    └── scraper.test.ts
+```
+
+---
+
+## Data Layer
+
+All shortage data is stored in `data/shortages.json` (gitignored). The file is managed exclusively through `src/lib/db.ts`:
+
+- **`upsertShortages(incoming)`** — inserts new records, updates existing ones by GTIN, soft-deletes missing entries (`isActive: false`)
+- **`queryShortages(query)`** — filters, sorts, and paginates active records
+- **`getKPIStats()`** — aggregates KPI metrics
+- **`getFirmaList()`** — unique sorted manufacturer list for the filter dropdown
+
+The data layer is designed to be swapped for Supabase with minimal changes to the API routes.
+
+---
+
+## Cron Job (Vercel)
+
+`vercel.json` configures a daily scrape at 03:00 UTC:
+
+```json
+{
+  "crons": [
+    {
+      "path": "/api/scrape",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
+```
+
+Set `CRON_SECRET` in your Vercel environment variables to match your `.env.local` value.
+
+---
+
+## Deployment
+
+1. Push to GitHub
+2. Import the repo at [vercel.com/new](https://vercel.com/new)
+3. Add `CRON_SECRET` as an environment variable
+4. Deploy — Vercel runs the daily cron automatically
+
+---
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+## License
+
+[MIT](LICENSE) — © 2026 BrainBytes
