@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { fetchAndParse, fetchAndParseCompleted } from '@/lib/scraper'
-import { upsertShortagesOptimized as upsertShortages, upsertCompletedShortages } from '@/lib/db-optimized-upsert'
-import { saveOverviewStats } from '@/lib/db'
+import { upsertShortagesOptimized as upsertShortages } from '@/lib/db-optimized-upsert'
+import { saveOverviewStats, upsertCompletedShortages } from '@/lib/db'
 import { invalidateStatsCache } from '@/lib/db-cached-example'
 
 export async function POST(request: Request) {
