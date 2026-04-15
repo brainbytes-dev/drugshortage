@@ -18,9 +18,9 @@ export function KPICards({ stats }: KPICardsProps) {
       sub: `${stats.topFirmaCount} Engpässe`,
     },
     {
-      title: 'Betroffene ATC-Gruppen',
+      title: 'Betroffene Wirkstoffe',
       value: stats.uniqueAtcGroups.toLocaleString('de-CH'),
-      sub: 'verschiedene Wirkstoffe',
+      sub: 'gemäss ATC-Klassifikation',
     },
     {
       title: 'Ø Dauer',
@@ -39,12 +39,17 @@ export function KPICards({ stats }: KPICardsProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <p
-              className={`font-bold leading-tight ${String(card.value).length > 16 ? 'text-sm' : 'text-2xl'}`}
-              title={String(card.value)}
-            >
-              {card.value}
-            </p>
+            <div className="min-h-[2.5rem] flex items-center">
+              <p
+                className={`font-bold leading-tight ${
+                String(card.value).length > 20 ? 'text-sm' :
+                String(card.value).length > 12 ? 'text-lg' :
+                'text-2xl'
+              }`}
+              >
+                {card.value}
+              </p>
+            </div>
             <p className="text-xs text-muted-foreground mt-1">{card.sub}</p>
           </CardContent>
         </Card>
