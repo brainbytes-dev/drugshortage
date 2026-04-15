@@ -251,7 +251,6 @@ export async function queryShortages(query: ShortagesQuery): Promise<ShortagesRe
   }
 
   // Build orderBy
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let orderBy: Record<string, string> | undefined
   if (query.sort) {
     const [field, dir] = query.sort.split(':')
