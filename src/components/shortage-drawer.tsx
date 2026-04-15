@@ -29,7 +29,7 @@ function DetailRow({ label, value }: { label: string; value: React.ReactNode }) 
 export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
   return (
     <Sheet open={!!shortage} onOpenChange={open => !open && onClose()}>
-      <SheetContent className="w-full sm:max-w-md overflow-y-auto">
+      <SheetContent className="w-full sm:max-w-md overflow-y-auto px-6 py-6">
         {shortage && (
           <>
             <SheetHeader className="mb-4">
