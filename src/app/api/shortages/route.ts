@@ -10,9 +10,9 @@ export async function GET(request: Request) {
     status: searchParams.get('status') ?? undefined,
     firma: searchParams.get('firma') ?? undefined,
     atc: searchParams.get('atc') ?? undefined,
-    page: parseInt(searchParams.get('page') ?? '1', 10),
+    page: Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1),
     sort: searchParams.get('sort') ?? 'tageSeitMeldung:desc',
-    perPage: parseInt(searchParams.get('perPage') ?? '50', 10),
+    perPage: Math.min(200, Math.max(1, parseInt(searchParams.get('perPage') ?? '50', 10) || 50)),
   }
 
   const [response, kpi, firmaList, atcList] = await Promise.all([

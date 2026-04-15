@@ -2,15 +2,19 @@ import fs from 'fs'
 import path from 'path'
 import type { Shortage, ShortagesQuery, ShortagesResponse, KPIStats } from './types'
 
-const DB_PATH = process.env.DB_PATH ?? path.join(process.cwd(), 'data', 'shortages.json')
+function getDbPath(): string {
+  return process.env.DB_PATH ?? path.join(process.cwd(), 'data', 'shortages.json')
+}
 
 function readDB(): Shortage[] {
+  const DB_PATH = getDbPath()
   if (!fs.existsSync(DB_PATH)) return []
   const raw = fs.readFileSync(DB_PATH, 'utf-8')
   try { return JSON.parse(raw) } catch { return [] }
 }
 
 function writeDB(data: Shortage[]): void {
+  const DB_PATH = getDbPath()
   fs.writeFileSync(DB_PATH, JSON.stringify(data, null, 2))
 }
 
