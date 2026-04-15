@@ -183,7 +183,48 @@ export function parseOverviewStats(html: string): Omit<OverviewStats, 'scrapedAt
   }
 }
 
-const COMPLETED_URL = 'https://www.drugshortage.ch/index.php/abgeschlossen/'
+// The Abgeschlossen page embeds this iframe — direct ASPX URL has the data
+const COMPLETED_URL = 'https://drugshortage.ch/abgeschlosseneLieferengpaesse.aspx'
+
+/** Parse the completed-shortages page (6 columns: Bezeichnung|Firma|ErsteMeldung|LetzteMutation|Tage|GTIN) */
+export function parseCompletedFromHtml(html: string): Shortage[] {
+  const $ = cheerio.load(html)
+  const rows = $('#GridView1 tr').toArray()
+  const shortages: Shortage[] = []
+  const now = new Date().toISOString()
+
+  for (const row of rows.slice(1)) {
+    const cells = $(row).find('td')
+    if (cells.length < 6) continue
+
+    const getText = (i: number) => $(cells[i]).text().trim()
+
+    const gtin = getText(5)
+    if (!gtin) continue
+
+    shortages.push({
+      gtin,
+      bezeichnung: getText(0),
+      firma: getText(1),
+      ersteMeldung: getText(2) || undefined,
+      datumLetzteMutation: getText(3),
+      tageSeitMeldung: parseInt(getText(4), 10) || 0,
+      // Fields not present on the completed page — use empty defaults
+      pharmacode: '',
+      atcCode: '',
+      gengrp: '',
+      statusCode: 0,
+      statusText: 'Abgeschlossen',
+      datumLieferfahigkeit: '',
+      detailUrl: '',
+      firstSeenAt: now,
+      lastSeenAt: now,
+      isActive: false,
+    })
+  }
+
+  return shortages
+}
 
 export async function fetchAndParseCompleted(): Promise<Shortage[]> {
   const res = await fetch(COMPLETED_URL, { headers: FETCH_HEADERS })
@@ -192,13 +233,7 @@ export async function fetchAndParseCompleted(): Promise<Shortage[]> {
   }
 
   const html = await res.text()
-  const shortages = parseShortagesFromHtml(html)
-
-  // Override isActive to false for all historical records
-  for (const s of shortages) {
-    s.isActive = false
-  }
-
+  const shortages = parseCompletedFromHtml(html)
   console.log(`[scraper] Fetched ${shortages.length} completed (historical) entries`)
   return shortages
 }
