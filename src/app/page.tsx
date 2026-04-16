@@ -75,7 +75,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
           {/* Use-case pills */}
           <div className="flex flex-wrap justify-center gap-2 text-sm">
-            {['Spitalapotheke', 'Offizinapotheke', 'Forschung & Medien'].map(label => (
+            {['Spitalapotheke', 'Apotheke & Drogerie', 'Forschung & Medien'].map(label => (
               <span key={label} className="rounded-full border bg-muted/40 px-3 py-1 text-muted-foreground">
                 {label}
               </span>
