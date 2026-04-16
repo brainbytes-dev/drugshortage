@@ -92,13 +92,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
           {/* Subtitle */}
           <p className="hero-animate hero-animate-3 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Alle Medikamenten-Lieferengpässe der Schweiz — täglich aktualisiert,
-            kostenlos, ohne Login.
+            Strukturierte Engpassdaten für die Schweizer Arzneimittelversorgung —
+            täglich aktualisiert, kostenlos, kein Login.
           </p>
 
           {/* Use-case pills */}
           <div className="hero-animate hero-animate-4 flex flex-wrap justify-center gap-2 text-sm">
-            {['Spitalapotheke', 'Apotheke & Drogerie', 'Forschung & Medien'].map(label => (
+            {['Spitalapotheke', 'Apotheke & Drogerie', 'Forschung & Medien', 'Beschaffung'].map(label => (
               <span
                 key={label}
                 className="rounded-full border border-border/70 bg-muted/30 px-3.5 py-1 text-muted-foreground backdrop-blur-sm"
