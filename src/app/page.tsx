@@ -136,9 +136,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             {' '}· täglich aktualisiert · keine Gewähr auf Vollständigkeit
           </p>
           <p className="flex items-center justify-center gap-3">
-            <a href="/impressum" className="underline hover:text-foreground">Impressum</a>
+            <a href="/impressum" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Impressum</a>
             <span>·</span>
-            <a href="/datenschutz" className="underline hover:text-foreground">Datenschutz</a>
+            <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Datenschutz</a>
             <span>·</span>
             <a
               href="https://github.com/brainbytes-dev/engpassradar"
