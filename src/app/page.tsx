@@ -179,52 +179,41 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-20 sm:mb-24">
             Wie es funktioniert
           </p>
-          <div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {[
               {
                 step: '01',
-                title: 'Täglich\ngescraped',
+                title: 'Täglich gescraped',
                 body: 'Jeden Morgen liegen die neuesten Engpass-Meldungen aus allen offiziellen Schweizer Quellen bereit — ohne dass Sie selbst drei Portale prüfen müssen.',
               },
               {
                 step: '02',
-                title: 'Aufbereitet &\nangereichert',
+                title: 'Aufbereitet & angereichert',
                 body: "Wirkstoff, ATC-Code und Hersteller sind sofort zugeordnet. Über 8'600 Fälle, sauber verknüpft und lückenlos nachvollziehbar.",
               },
               {
                 step: '03',
-                title: 'Sofort\nabrufbar',
+                title: 'Sofort abrufbar',
                 body: 'Volltextsuche, Filter nach Firma oder ATC-Gruppe, Detailseite pro Präparat. Kein Login, kein Abo, kostenlos.',
               },
             ].map(({ step, title, body }) => (
               <div
                 key={step}
-                className="relative grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6 lg:gap-24 py-16 sm:py-20 border-t border-border/40 overflow-hidden"
+                className="group relative flex flex-col gap-5 rounded-xl border border-border/60 bg-card p-8 sm:p-10 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_8px_30px_-8px_oklch(0.52_0.09_200/0.15)]"
               >
-                {/* Massive ghost number — background design element */}
+                {/* Ghost number */}
                 <span
                   aria-hidden
-                  className="absolute right-0 top-1/2 -translate-y-1/2 text-[160px] sm:text-[220px] font-black leading-none select-none pointer-events-none tabular-nums text-foreground/[0.025]"
+                  className="absolute -right-2 -bottom-4 text-[96px] font-black leading-none select-none pointer-events-none tabular-nums text-foreground/[0.04] group-hover:text-primary/[0.07] transition-colors duration-300"
                 >
                   {step}
                 </span>
 
-                {/* Left col: step label + big title */}
-                <div className="relative">
-                  <span className="block text-[11px] font-semibold tabular-nums text-primary tracking-[0.18em] mb-5">
-                    {step}
-                  </span>
-                  <h3 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold leading-[1.05] tracking-tight whitespace-pre-line">
-                    {title}
-                  </h3>
-                </div>
-
-                {/* Right col: body, bottom-aligned */}
-                <div className="relative flex lg:items-end">
-                  <p className="text-[15px] text-muted-foreground leading-relaxed max-w-prose">
-                    {body}
-                  </p>
-                </div>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary tabular-nums">
+                  {step}
+                </span>
+                <h3 className="text-xl font-bold leading-snug tracking-tight">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
