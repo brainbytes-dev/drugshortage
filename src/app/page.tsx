@@ -184,17 +184,17 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               {
                 step: '01',
                 title: 'Täglich gescraped',
-                body: 'Jede Nacht werden die aktuellen Lieferengpässe aus den offiziellen Schweizer Quellen abgerufen: drugshortage.ch, BWL und ODDB-Stammdaten.',
+                body: 'Jeden Morgen liegen die neuesten Engpass-Meldungen aus allen offiziellen Schweizer Quellen bereit — ohne dass Sie selbst drei Portale prüfen müssen.',
               },
               {
                 step: '02',
                 title: 'Aufbereitet & angereichert',
-                body: "Duplikate werden entfernt, Wirkstoffe und ATC-Codes ergänzt, historische Einträge archiviert. Über 8'600 Fälle seit Projektstart.",
+                body: "Wirkstoff, ATC-Code und Hersteller sind sofort zugeordnet. Über 8'600 Fälle, sauber verknüpft und lückenlos nachvollziehbar.",
               },
               {
                 step: '03',
                 title: 'Sofort abrufbar',
-                body: 'Volltextsuche, Firmen- und ATC-Filter, Einzelseiten pro Medikament. Kein Login, kein Abo, keine Kosten.',
+                body: 'Volltextsuche, Filter nach Firma oder ATC-Gruppe, Detailseite pro Präparat. Kein Login, kein Abo, kostenlos.',
               },
             ].map(({ step, title, body }) => (
               <div
@@ -224,23 +224,23 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             {[
               {
                 q: 'Woher stammen die Daten?',
-                a: 'Die Engpass-Meldungen kommen von drugshortage.ch (Swissmedic-Quelle) und dem Bundesamt für wirtschaftliche Landesversorgung (BWL). Stammdaten wie Wirkstoff und ATC-Code werden aus ODDB/HIN ergänzt.',
+                a: 'Engpass-Meldungen kommen direkt von drugshortage.ch und dem Bundesamt für wirtschaftliche Landesversorgung (BWL). Wirkstoff- und ATC-Daten werden automatisch aus öffentlichen Referenzdatenbanken ergänzt.',
               },
               {
                 q: 'Wie aktuell sind die Daten?',
-                a: 'Die Daten werden täglich automatisch aktualisiert. Den genauen Zeitpunkt des letzten Imports sieht man im Badge oben auf der Seite.',
+                a: 'Die Daten werden jede Nacht automatisch abgeglichen. Oben auf der Seite sehen Sie jederzeit, wann der letzte Import gelaufen ist.',
               },
               {
                 q: 'Kostet das etwas?',
-                a: 'Nein. Das Dashboard ist kostenlos. Wer das Projekt unterstützen möchte, kann via "Buy Me a Coffee" im Header einen Kaffee spendieren.',
+                a: 'Komplett kostenlos — ohne Haken. Das Projekt wird in der Freizeit betrieben. Wer möchte, kann es unterstützen — freut uns, ist aber kein Muss.',
               },
               {
                 q: 'Kann ich die Daten herunterladen oder per API abrufen?',
-                a: 'Eine öffentliche API und ein CSV-Export sind in Planung. Für Forschungszwecke bitte direkt via GitHub-Issue melden — wir priorisieren nach Bedarf.',
+                a: 'API und CSV-Export sind in Arbeit. Wer die Daten für Forschung oder eigene Systeme braucht, meldet sich am besten via GitHub-Issue — wir priorisieren nach Bedarf.',
               },
               {
                 q: 'Haftung und Gewähr',
-                a: 'Das Dashboard dient ausschliesslich zur Information. Für medizinische oder pharmazeutische Entscheidungen sind stets die offiziellen Quellen massgebend.',
+                a: 'engpass.radar ist ein Informationswerkzeug, kein Ersatz für die offiziellen Quellen. Für klinische oder pharmazeutische Entscheide gelten immer die Primärquellen.',
               },
             ].map(({ q, a }) => (
               <details key={q} className="group py-6 cursor-pointer">
