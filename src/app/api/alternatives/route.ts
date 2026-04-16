@@ -63,7 +63,12 @@ export async function GET(request: Request) {
   if (cached) {
     const age = Date.now() - cached.fetchedAt.getTime()
     if (age < CACHE_TTL_MS) {
-      return NextResponse.json(cached.data)
+      return NextResponse.json(cached.data, {
+        headers: {
+          // Cache for 1 hour, since DB cache is valid for 24h
+          'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+        },
+      })
     }
   }
 
@@ -75,10 +80,19 @@ export async function GET(request: Request) {
       create: { gtin, data: data as object },
       update: { data: data as object },
     })
-    return NextResponse.json(data)
+    return NextResponse.json(data, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=86400',
+      },
+    })
   } catch (err) {
     // On fetch error, return stale cache if available
-    if (cached) return NextResponse.json(cached.data)
+    if (cached) return NextResponse.json(cached.data, {
+      headers: {
+        // Stale data - cache for 5 minutes only
+        'Cache-Control': 'public, s-maxage=300',
+      },
+    })
     return NextResponse.json({ error: String(err) }, { status: 502 })
   }
 }

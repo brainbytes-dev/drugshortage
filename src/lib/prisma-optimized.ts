@@ -35,12 +35,25 @@ export const prisma = globalForPrisma.prisma ?? createPrismaClient()
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
 // ✅ Graceful shutdown - close connections on process exit
-if (process.env.NODE_ENV === 'production') {
-  process.on('SIGTERM', async () => {
-    console.log('SIGTERM received, closing database connections...')
+let isShuttingDown = false // ✅ Guard to prevent double-close
+
+const shutdownHandler = async (signal: string) => {
+  if (isShuttingDown) return // ✅ Already shutting down
+  isShuttingDown = true
+
+  console.log(`${signal} received, closing database connections...`)
+  try {
     await prisma.$disconnect()
     if (globalForPrisma.pool) {
       await globalForPrisma.pool.end()
     }
-  })
+    console.log('Database connections closed')
+  } catch (err) {
+    console.error('Error closing connections:', err)
+  }
+}
+
+if (process.env.NODE_ENV === 'production') {
+  process.on('SIGTERM', () => shutdownHandler('SIGTERM'))
+  process.on('SIGINT', () => shutdownHandler('SIGINT'))
 }

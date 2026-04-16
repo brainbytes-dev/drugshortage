@@ -14,13 +14,14 @@ interface FilterBarProps {
   firmaList: string[]
 }
 
+// ✅ Moved outside component to prevent recreation on every render
 const STATUS_OPTIONS = [
   { value: '1', label: '1 — Direkt gemeldet (Grün)' },
   { value: '2', label: '2 — Gemeldet (Gelbgrün)' },
   { value: '3', label: '3 — Sporadisch (Orange)' },
   { value: '4', label: '4 — Nicht informiert (Rot)' },
   { value: '5', label: '5 — Verhandlung (Gelb)' },
-]
+] as const // ✅ Make readonly to prevent accidental mutations
 
 export function FilterBar({ firmaList }: FilterBarProps) {
   const router = useRouter()
