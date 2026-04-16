@@ -175,39 +175,56 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
       {/* ── Wie es funktioniert ─────────────────────────────────── */}
       <section className="border-t border-border/40">
-        <div className="max-w-5xl mx-auto px-4 py-20 sm:py-28">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 py-24 sm:py-32">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-20 sm:mb-24">
             Wie es funktioniert
           </p>
-          <div className="divide-y divide-border/40">
+          <div>
             {[
               {
                 step: '01',
-                title: 'Täglich gescraped',
+                title: 'Täglich\ngescraped',
                 body: 'Jeden Morgen liegen die neuesten Engpass-Meldungen aus allen offiziellen Schweizer Quellen bereit — ohne dass Sie selbst drei Portale prüfen müssen.',
               },
               {
                 step: '02',
-                title: 'Aufbereitet & angereichert',
+                title: 'Aufbereitet &\nangereichert',
                 body: "Wirkstoff, ATC-Code und Hersteller sind sofort zugeordnet. Über 8'600 Fälle, sauber verknüpft und lückenlos nachvollziehbar.",
               },
               {
                 step: '03',
-                title: 'Sofort abrufbar',
+                title: 'Sofort\nabrufbar',
                 body: 'Volltextsuche, Filter nach Firma oder ATC-Gruppe, Detailseite pro Präparat. Kein Login, kein Abo, kostenlos.',
               },
             ].map(({ step, title, body }) => (
               <div
                 key={step}
-                className="group grid grid-cols-[56px_1fr] sm:grid-cols-[80px_220px_1fr] gap-x-8 gap-y-1 py-10 sm:py-12 items-baseline"
+                className="relative grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-6 lg:gap-24 py-16 sm:py-20 border-t border-border/40 overflow-hidden"
               >
-                <span className="text-[42px] sm:text-[56px] font-black leading-none text-primary/[0.10] group-hover:text-primary/[0.18] transition-colors duration-300 tabular-nums">
+                {/* Massive ghost number — background design element */}
+                <span
+                  aria-hidden
+                  className="absolute right-0 top-1/2 -translate-y-1/2 text-[160px] sm:text-[220px] font-black leading-none select-none pointer-events-none tabular-nums text-foreground/[0.025]"
+                >
                   {step}
                 </span>
-                <h3 className="text-[15px] font-semibold leading-snug pt-0.5">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed col-span-2 sm:col-span-1 mt-2 sm:mt-0">
-                  {body}
-                </p>
+
+                {/* Left col: step label + big title */}
+                <div className="relative">
+                  <span className="block text-[11px] font-semibold tabular-nums text-primary tracking-[0.18em] mb-5">
+                    {step}
+                  </span>
+                  <h3 className="text-4xl sm:text-5xl lg:text-[3.5rem] font-bold leading-[1.05] tracking-tight whitespace-pre-line">
+                    {title}
+                  </h3>
+                </div>
+
+                {/* Right col: body, bottom-aligned */}
+                <div className="relative flex lg:items-end">
+                  <p className="text-[15px] text-muted-foreground leading-relaxed max-w-prose">
+                    {body}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
