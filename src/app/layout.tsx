@@ -3,6 +3,8 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ScrollToTop } from '@/components/scroll-to-top'
+import { SiteHeader } from '@/components/site-header'
+import { SiteFooter } from '@/components/site-footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -16,7 +18,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="de" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <ThemeProvider>
-          {children}
+          <div className="min-h-screen flex flex-col">
+            <SiteHeader />
+            <div className="flex-1">{children}</div>
+            <SiteFooter />
+          </div>
           <ScrollToTop />
         </ThemeProvider>
       </body>

@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Impressum — engpass.radar',
@@ -9,16 +8,8 @@ export const metadata: Metadata = {
 
 export default function ImpressumPage() {
   return (
-    <main className="min-h-screen bg-background">
+    <main className="bg-background">
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Zurück zur Übersicht
-        </Link>
-
         <div className="space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">Impressum</h1>
           <p className="text-sm text-muted-foreground">Angaben gemäss Art. 13 DSG (Schweiz)</p>
