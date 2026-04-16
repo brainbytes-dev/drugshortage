@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="de" suppressHydrationWarning>
-      <head>
+      <body className={`${inter.className} antialiased`}>
         {/* Google AdSense — activated via NEXT_PUBLIC_ADSENSE_ID env var */}
         {ADSENSE_ID && (
           <Script
@@ -33,8 +33,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             strategy="lazyOnload"
           />
         )}
-      </head>
-      <body className={`${inter.className} antialiased`}>
         {/* Google Analytics — activated via NEXT_PUBLIC_GA_ID env var */}
         {GA_ID && (
           <>
