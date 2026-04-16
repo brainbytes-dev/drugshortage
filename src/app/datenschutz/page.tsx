@@ -344,18 +344,18 @@ const content = `
 export default function DatenschutzPage() {
   return (
     <main className="bg-background">
-      <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
+      <div className="max-w-3xl mx-auto px-6 py-16">
         <article
-          className="prose prose-sm dark:prose-invert max-w-none
-            [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:tracking-tight [&_h1]:mb-4
-            [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-3
+          className="
+            [&_h1]:text-3xl [&_h1]:font-bold [&_h1]:tracking-tight [&_h1]:mb-2 [&_h1]:pb-8 [&_h1]:border-b
+            [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-10 [&_h2]:mb-3
             [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-2
-            [&_p]:text-sm [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-3
-            [&_ul]:text-sm [&_ul]:text-muted-foreground [&_ul]:mb-3
-            [&_li]:mb-1
+            [&_p]:text-base [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-4
+            [&_ul]:text-base [&_ul]:text-muted-foreground [&_ul]:mb-4 [&_ul]:ml-5 [&_ul]:list-disc [&_ul]:list-outside
+            [&_li]:mb-2 [&_li]:leading-relaxed
             [&_a]:underline [&_a]:hover:text-foreground
             [&_strong]:text-foreground [&_strong]:font-semibold
-            [&_.seal]:mt-8 [&_.seal]:pt-4 [&_.seal]:border-t [&_.seal]:border-border [&_.seal]:text-xs [&_.seal]:text-muted-foreground"
+            [&_.seal]:mt-10 [&_.seal]:pt-6 [&_.seal]:border-t [&_.seal]:border-border [&_.seal]:text-sm [&_.seal]:text-muted-foreground"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       </div>
