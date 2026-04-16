@@ -9,7 +9,6 @@ import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import { ResetFiltersButton } from '@/components/reset-filters-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
-import Link from 'next/link'
 import type { ShortagesQuery } from '@/lib/types'
 
 interface PageProps {
