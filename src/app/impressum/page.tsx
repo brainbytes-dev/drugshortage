@@ -40,23 +40,50 @@ export default function ImpressumPage() {
         </section>
 
         <section className="space-y-2 text-sm">
-          <h2 className="font-semibold text-base">Datenquelle</h2>
+          <h2 className="font-semibold text-base">Datenquellen</h2>
           <p className="text-muted-foreground">
-            Die auf dieser Website angezeigten Daten zu Medikamenten-Lieferengpässen stammen von{' '}
-            <a
-              href="https://www.drugshortage.ch"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline hover:text-foreground"
-            >
-              drugshortage.ch
-            </a>
-            . Die Daten werden täglich automatisch abgerufen und aufbereitet. Wir erheben keinen
-            Anspruch auf die Vollständigkeit oder Richtigkeit der angezeigten Informationen.
+            Die auf dieser Website angezeigten Daten stammen aus folgenden öffentlichen Quellen,
+            die automatisch abgerufen und aufbereitet werden:
           </p>
+          <ul className="text-muted-foreground list-disc list-inside space-y-1">
+            <li>
+              <a
+                href="https://www.drugshortage.ch"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground"
+              >
+                drugshortage.ch
+              </a>{' '}
+              — Aktive und historische Medikamenten-Lieferengpässe (täglich)
+            </li>
+            <li>
+              <a
+                href="https://www.bwl.admin.ch/de/meldestelle-heilmittel"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground"
+              >
+                Bundesamt für wirtschaftliche Landesversorgung (BWL)
+              </a>{' '}
+              — Versorgungsstörungen bei Heilmitteln (täglich)
+            </li>
+            <li>
+              <a
+                href="https://download.hin.ch/download/oddb2xml/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-foreground"
+              >
+                HIN / oddb2xml
+              </a>{' '}
+              — Schweizer Arzneimittelstammdaten (Wirkstoff, Zusammensetzung, Swissmedic-Nr), wöchentlich
+            </li>
+          </ul>
           <p className="text-muted-foreground">
-            Massgebliche und verbindliche Informationen finden sich ausschliesslich auf den
-            offiziellen Seiten von Swissmedic und drugshortage.ch.
+            Wir erheben keinen Anspruch auf die Vollständigkeit oder Richtigkeit der angezeigten
+            Informationen. Massgebliche und verbindliche Informationen finden sich ausschliesslich
+            auf den offiziellen Seiten von Swissmedic und drugshortage.ch.
           </p>
         </section>
 
