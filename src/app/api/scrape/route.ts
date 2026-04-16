@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { fetchAndParse, fetchAndParseCompleted } from '@/lib/scraper'
-import { upsertShortagesOptimized as upsertShortages } from '@/lib/db-optimized-upsert'
-import { saveOverviewStats, upsertCompletedShortages, upsertBwlShortages } from '@/lib/db'
+import { upsertShortagesOptimizedSafe as upsertShortages } from '@/lib/db-optimized-upsert-safe'
+import { saveOverviewStats, saveScrapeRun, upsertCompletedShortages, upsertBwlShortages } from '@/lib/db'
 import { invalidateStatsCache } from '@/lib/db-cached-example'
 import { fetchBwlData } from '@/lib/bwl-scraper'
 
@@ -16,6 +16,15 @@ export async function POST(request: Request) {
     const { shortages, overview } = await fetchAndParse()
     const { newEntries, removedEntries } = await upsertShortages(shortages)
     await saveOverviewStats({ ...overview, scrapedAt: new Date().toISOString() })
+
+    // ✅ Record scrape run so lastScrapedAt timestamp stays current
+    await saveScrapeRun({
+      scrapedAt: new Date().toISOString(),
+      totalCount: shortages.length,
+      newEntries,
+      removedEntries,
+      status: 'success',
+    })
 
     // ✅ Invalidate caches after data update
     invalidateStatsCache()
