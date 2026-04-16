@@ -238,7 +238,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               },
               {
                 q: 'Kostet das etwas?',
-                a: <>Ja, wirklich kostenlos. Das Projekt wird in der Freizeit betrieben. Wer es trotzdem <a href="https://buymeacoffee.com/brainbytes" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">unterstützen möchte</a>, freut uns sehr.</>,
+                a: <>Ja, wirklich kostenlos. Das Projekt wird in der Freizeit betrieben. Wer es unterstützen möchte, kann dies <a href="https://buymeacoffee.com/brainbytes" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-foreground transition-colors">hier</a> tun.</>,
               },
               {
                 q: 'Kann ich die Daten herunterladen oder per API abrufen?',
