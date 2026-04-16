@@ -47,35 +47,38 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     <main className="bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
 
-        {/* Info Banner */}
-        <div className="rounded-lg border bg-muted/40 px-5 py-4">
-          <p className="text-sm font-semibold tracking-tight mb-1">
-            Wissen, was fehlt. Bevor der Patient davorsteht.
-          </p>
-          <div className="grid sm:grid-cols-3 gap-4 mt-3">
-            <div>
-              <p className="text-xs font-medium text-foreground mb-0.5">Datenquelle</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Täglich aktualisiert aus{' '}
-                <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
-                  className="underline hover:text-foreground">drugshortage.ch</a>
-                {' '}— der offiziellen Schweizer Engpassliste. Keine Gewähr auf Vollständigkeit.
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-foreground mb-0.5">Für wen</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Spitalapotheken, öffentliche Apotheken und Fachpersonen, die täglich prüfen müssen,
-                welche Medikamente in der Schweiz nicht lieferbar sind.
-              </p>
-            </div>
-            <div>
-              <p className="text-xs font-medium text-foreground mb-0.5">Open Source</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Kostenlos, Open Source, keine Registrierung.
-              </p>
-            </div>
+        {/* Hero */}
+        <div className="py-4 space-y-4">
+          <div className="space-y-2">
+            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              Wissen, was fehlt.{' '}
+              <span className="text-muted-foreground font-normal">Bevor der Patient davorsteht.</span>
+            </h1>
+            <p className="text-muted-foreground max-w-2xl">
+              Alle Lieferengpässe der Schweiz auf einen Blick — täglich aktualisiert,
+              kostenlos, ohne Login. Für Spital- und Offizinapotheken.
+            </p>
           </div>
+
+          {/* Use-case labels */}
+          <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
+            <span><span className="font-medium text-foreground">Spitalapotheke</span> — Engpässe früh erkennen</span>
+            <span><span className="font-medium text-foreground">Offizinapotheke</span> — Alternativen schnell finden</span>
+            <span><span className="font-medium text-foreground">Forschung & Medien</span> — Versorgungslage analysieren</span>
+          </div>
+
+          <p className="text-xs text-muted-foreground">
+            Daten aus{' '}
+            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
+              className="underline hover:text-foreground">drugshortage.ch</a>
+            {', '}
+            <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer"
+              className="underline hover:text-foreground">BWL</a>
+            {' und '}
+            <a href="https://download.hin.ch/download/oddb2xml/" target="_blank" rel="noopener noreferrer"
+              className="underline hover:text-foreground">HIN/ODDB</a>
+            {' · Letzte Aktualisierung: '}{lastUpdated}
+          </p>
         </div>
 
         {/* KPI Cards */}
@@ -89,9 +92,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           {overview && overview.atcGruppen.length > 0 && (
             <AtcGruppenSheet atcGruppen={overview.atcGruppen} />
           )}
-          <span className="text-xs text-muted-foreground ml-auto">
-            Stand: {lastUpdated}
-          </span>
         </div>
 
         {/* Search + Filters */}
