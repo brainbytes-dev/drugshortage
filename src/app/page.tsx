@@ -47,46 +47,71 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     <>
       {/* Hero — full viewport */}
       <section className="relative flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] text-center px-4 overflow-hidden">
-        {/* Subtle radial gradient background */}
+
+        {/* Animated gradient blob */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,hsl(var(--primary)/0.08),transparent)]"
+          className="hero-blob pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full opacity-[0.07] blur-3xl"
+          style={{ background: 'radial-gradient(ellipse, oklch(0.52 0.09 200), oklch(0.62 0.14 225) 60%, transparent)' }}
+        />
+        {/* Second accent blob */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-0 right-0 w-[400px] h-[300px] rounded-full opacity-[0.04] blur-3xl"
+          style={{ background: 'radial-gradient(ellipse, oklch(0.62 0.14 225), transparent)' }}
         />
 
-        <div className="relative z-10 max-w-3xl mx-auto space-y-6">
-          {/* Badge */}
-          <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs text-muted-foreground bg-muted/50">
-            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-            Letzte Aktualisierung: {lastUpdated}
-          </span>
+        {/* Curtain gradient — KPI cards bleed through at bottom */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-0 inset-x-0 h-40 bg-gradient-to-t from-background via-background/60 to-transparent z-20"
+        />
+
+        <div className="relative z-10 max-w-3xl mx-auto space-y-7">
+
+          {/* Live badge */}
+          <div className="hero-animate hero-animate-1 flex justify-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/50 px-3.5 py-1.5 text-xs text-muted-foreground backdrop-blur-sm">
+              <span className="h-1.5 w-1.5 rounded-full bg-green-500" />
+              Letzte Aktualisierung: {lastUpdated}
+            </span>
+          </div>
 
           {/* Headline */}
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
-            Wissen, was fehlt.
-            <br />
-            <span className="text-muted-foreground font-normal">Bevor der Patient davorsteht.</span>
-          </h1>
+          <div className="hero-animate hero-animate-2">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.1]">
+              Wissen, was{' '}
+              <span className="gradient-text">fehlt.</span>
+              <br />
+              <span className="text-muted-foreground font-normal text-3xl sm:text-4xl lg:text-5xl">
+                Bevor der Patient davorsteht.
+              </span>
+            </h1>
+          </div>
 
           {/* Subtitle */}
-          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+          <p className="hero-animate hero-animate-3 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
             Alle Medikamenten-Lieferengpässe der Schweiz — täglich aktualisiert,
             kostenlos, ohne Login.
           </p>
 
           {/* Use-case pills */}
-          <div className="flex flex-wrap justify-center gap-2 text-sm">
+          <div className="hero-animate hero-animate-4 flex flex-wrap justify-center gap-2 text-sm">
             {['Spitalapotheke', 'Apotheke & Drogerie', 'Forschung & Medien'].map(label => (
-              <span key={label} className="rounded-full border bg-muted/40 px-3 py-1 text-muted-foreground">
+              <span
+                key={label}
+                className="rounded-full border border-border/70 bg-muted/30 px-3.5 py-1 text-muted-foreground backdrop-blur-sm"
+              >
                 {label}
               </span>
             ))}
           </div>
 
           {/* CTA */}
-          <div className="pt-2">
+          <div className="hero-animate hero-animate-5 pt-1">
             <a
               href="#dashboard"
-              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-md hover:shadow-[0_0_0_4px_oklch(0.52_0.09_200/0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out"
             >
               Engpässe prüfen
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
@@ -96,13 +121,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           </div>
 
           {/* Source line */}
-          <p className="text-xs text-muted-foreground pt-2">
+          <p className="hero-animate hero-animate-5 text-xs text-muted-foreground">
             Daten aus{' '}
-            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">drugshortage.ch</a>
+            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">drugshortage.ch</a>
             {', '}
-            <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">BWL</a>
+            <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">BWL</a>
             {' und '}
-            <a href="https://download.hin.ch/download/oddb2xml/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">HIN/ODDB</a>
+            <a href="https://download.hin.ch/download/oddb2xml/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">HIN/ODDB</a>
           </p>
         </div>
       </section>
