@@ -8,6 +8,7 @@ import { ShortagesTable } from '@/components/shortages-table'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import { ResetFiltersButton } from '@/components/reset-filters-button'
+import { HeroAutoSkip } from '@/components/hero-auto-skip'
 import Link from 'next/link'
 import type { ShortagesQuery } from '@/lib/types'
 
@@ -45,6 +46,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   return (
     <>
+      <HeroAutoSkip />
       {/* Hero — full viewport */}
       <section className="relative flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] text-center px-4 overflow-hidden">
 
