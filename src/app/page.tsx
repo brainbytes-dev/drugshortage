@@ -44,42 +44,72 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     : 'noch nicht aktualisiert'
 
   return (
-    <main className="bg-background">
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+    <>
+      {/* Hero — full viewport */}
+      <section className="relative flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] text-center px-4 overflow-hidden">
+        {/* Subtle radial gradient background */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,hsl(var(--primary)/0.08),transparent)]"
+        />
 
-        {/* Hero */}
-        <div className="py-4 space-y-4">
-          <div className="space-y-2">
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">
-              Wissen, was fehlt.{' '}
-              <span className="text-muted-foreground font-normal">Bevor der Patient davorsteht.</span>
-            </h1>
-            <p className="text-muted-foreground max-w-2xl">
-              Alle Lieferengpässe der Schweiz auf einen Blick — täglich aktualisiert,
-              kostenlos, ohne Login. Für Spital- und Offizinapotheken.
-            </p>
+        <div className="relative z-10 max-w-3xl mx-auto space-y-6">
+          {/* Badge */}
+          <span className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs text-muted-foreground bg-muted/50">
+            <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
+            Letzte Aktualisierung: {lastUpdated}
+          </span>
+
+          {/* Headline */}
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight leading-tight">
+            Wissen, was fehlt.
+            <br />
+            <span className="text-muted-foreground font-normal">Bevor der Patient davorsteht.</span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="text-lg text-muted-foreground max-w-xl mx-auto">
+            Alle Medikamenten-Lieferengpässe der Schweiz — täglich aktualisiert,
+            kostenlos, ohne Login.
+          </p>
+
+          {/* Use-case pills */}
+          <div className="flex flex-wrap justify-center gap-2 text-sm">
+            {['Spitalapotheke', 'Offizinapotheke', 'Forschung & Medien'].map(label => (
+              <span key={label} className="rounded-full border bg-muted/40 px-3 py-1 text-muted-foreground">
+                {label}
+              </span>
+            ))}
           </div>
 
-          {/* Use-case labels */}
-          <div className="flex flex-wrap gap-x-6 gap-y-1 text-sm text-muted-foreground">
-            <span><span className="font-medium text-foreground">Spitalapotheke</span> — Engpässe früh erkennen</span>
-            <span><span className="font-medium text-foreground">Offizinapotheke</span> — Alternativen schnell finden</span>
-            <span><span className="font-medium text-foreground">Forschung & Medien</span> — Versorgungslage analysieren</span>
+          {/* CTA */}
+          <div className="pt-2">
+            <a
+              href="#dashboard"
+              className="inline-flex items-center gap-2 rounded-md bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Engpässe prüfen
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </a>
           </div>
 
-          <p className="text-xs text-muted-foreground">
+          {/* Source line */}
+          <p className="text-xs text-muted-foreground pt-2">
             Daten aus{' '}
-            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
-              className="underline hover:text-foreground">drugshortage.ch</a>
+            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">drugshortage.ch</a>
             {', '}
-            <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer"
-              className="underline hover:text-foreground">BWL</a>
+            <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">BWL</a>
             {' und '}
-            <a href="https://download.hin.ch/download/oddb2xml/" target="_blank" rel="noopener noreferrer"
-              className="underline hover:text-foreground">HIN/ODDB</a>
-            {' · Letzte Aktualisierung: '}{lastUpdated}
+            <a href="https://download.hin.ch/download/oddb2xml/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">HIN/ODDB</a>
           </p>
         </div>
+      </section>
+
+      {/* Dashboard */}
+      <main id="dashboard" className="bg-background">
+      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
 
         {/* KPI Cards */}
         <KPICards stats={kpi} />
@@ -115,6 +145,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </Suspense>
 
       </div>
-    </main>
+      </main>
+    </>
   )
 }
