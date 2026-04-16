@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { Coffee } from 'lucide-react'
+import { BookHeart } from 'lucide-react'
 
 export function SiteHeader() {
   return (
@@ -12,17 +12,19 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <a
             href="https://buymeacoffee.com/brainbytes"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-muted/40 px-2.5 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:border-border hover:bg-muted/70 transition-all duration-150"
           >
-            <Coffee className="h-3.5 w-3.5" />
+            <BookHeart className="h-3.5 w-3.5" />
             <span className="hidden sm:inline">Unterstützen</span>
           </a>
-          <ThemeToggle />
+          <div className="rounded-md border border-border/60 bg-muted/40">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
     </header>
