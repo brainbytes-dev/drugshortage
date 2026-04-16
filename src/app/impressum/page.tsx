@@ -90,20 +90,62 @@ export default function ImpressumPage() {
         <section className="space-y-2 text-sm">
           <h2 className="font-semibold text-base">Haftungsausschluss</h2>
           <p className="text-muted-foreground">
-            Diese Website dient ausschliesslich zu Informationszwecken. Die bereitgestellten
-            Informationen stellen keine medizinische oder pharmakologische Beratung dar und
-            ersetzen nicht die Auskunft durch Fachpersonen (Ärzte, Apotheker). Der Betreiber
-            übernimmt keine Haftung für Schäden, die aus der Nutzung oder Nicht-Nutzung der
-            angezeigten Informationen entstehen.
+            Der Autor behält sich das Recht vor, keine Verantwortung für die Richtigkeit,
+            Genauigkeit, Aktualität, Zuverlässigkeit und Vollständigkeit der Informationen zu
+            übernehmen.
+          </p>
+          <p className="text-muted-foreground">
+            Haftungsansprüche gegen den Autor wegen Schäden materieller oder immaterieller Art,
+            welche aus dem Zugriff oder der Nutzung bzw. Nichtnutzung der veröffentlichten
+            Informationen, durch Missbrauch der Verbindung oder durch technische Störungen
+            entstanden sind, werden ausgeschlossen.
+          </p>
+          <p className="text-muted-foreground">
+            Alle Angebote sind freibleibend und unverbindlich. Der Autor behält es sich
+            ausdrücklich vor, Teile der Seiten oder das gesamte Angebot ohne gesonderte
+            Ankündigung zu verändern, zu ergänzen, zu löschen oder die Veröffentlichung
+            zeitweise oder endgültig einzustellen.
           </p>
         </section>
 
         <section className="space-y-2 text-sm">
-          <h2 className="font-semibold text-base">Urheberrecht</h2>
+          <h2 className="font-semibold text-base">Haftung für Links</h2>
           <p className="text-muted-foreground">
-            Die Aufbereitung, Darstellung und das Design dieser Website sind urheberrechtlich
-            geschützt. Die Rohdaten der Lieferengpässe stammen von drugshortage.ch und werden
-            mit Quellenangabe wiedergegeben.
+            Verweise und Links auf Webseiten Dritter liegen ausserhalb unseres
+            Verantwortungsbereiches. Jegliche Verantwortung für solche Websites wird abgelehnt.
+            Der Zugang und die Benutzung solcher Websites erfolgt auf eigenes Risiko des
+            Benutzers.
+          </p>
+        </section>
+
+        <section className="space-y-2 text-sm">
+          <h2 className="font-semibold text-base">Urheberrechte</h2>
+          <p className="text-muted-foreground">
+            Das Urheberrecht und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen
+            Dateien auf der Website gehören ausschliesslich Henrik Rühe oder den speziell
+            genannten Rechteinhabern. Für die Reproduktion jeglicher Elemente muss im Voraus
+            die schriftliche Zustimmung der Urheberrechtsinhaber eingeholt werden.
+          </p>
+        </section>
+
+        <section className="space-y-2 text-sm">
+          <h2 className="font-semibold text-base">Datenschutz</h2>
+          <p className="text-muted-foreground">
+            Gestützt auf Artikel 13 der Schweizerischen Bundesverfassung und die
+            Datenschutzbestimmungen des Bundes (Datenschutzgesetz, DSG) hat jede Person
+            Anspruch auf den Schutz ihrer Privatsphäre und auf Schutz vor Missbrauch ihrer
+            persönlichen Daten. Wir halten uns an diese Bestimmungen. Persönliche Daten werden
+            streng vertraulich behandelt und nicht verkauft oder an Dritte weitergegeben.
+          </p>
+          <p className="text-muted-foreground">
+            In enger Zusammenarbeit mit unseren Hosting-Providern sind wir bestrebt, die
+            Datenbanken so weit wie möglich vor unberechtigtem Zugriff, Verlust, Missbrauch
+            oder Fälschung zu schützen. Weitere Informationen zum Datenschutz entnehmen Sie
+            bitte unserer{' '}
+            <Link href="/datenschutz" className="underline hover:text-foreground">
+              Datenschutzerklärung
+            </Link>
+            .
           </p>
         </section>
       </div>
