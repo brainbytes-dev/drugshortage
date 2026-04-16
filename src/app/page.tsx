@@ -9,6 +9,7 @@ import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import { ResetFiltersButton } from '@/components/reset-filters-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
+import { NewsletterForm } from '@/components/newsletter-form'
 import type { ShortagesQuery } from '@/lib/types'
 
 interface PageProps {
@@ -255,28 +256,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             Wöchentlicher Newsletter — unter 300 Wörter, neue Engpässe, aufgelöste Fälle.
             Kein Spam, jederzeit abbestellbar.
           </p>
-          {/* Buttondown embed — replace USERNAME with your handle */}
-          <form
-            action="https://buttondown.com/api/emails/embed-subscribe/engpassradar"
-            method="post"
-            target="popupwindow"
-            onSubmit={() => window.open('https://buttondown.com/engpassradar', 'popupwindow')}
-            className="flex flex-col sm:flex-row gap-2 justify-center"
-          >
-            <input
-              type="email"
-              name="email"
-              placeholder="ihre@email.ch"
-              required
-              className="flex-1 min-w-0 rounded-lg border border-border bg-background px-4 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-            />
-            <button
-              type="submit"
-              className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity whitespace-nowrap"
-            >
-              Abonnieren
-            </button>
-          </form>
+          <NewsletterForm />
           <p className="text-xs text-muted-foreground">
             Powered by{' '}
             <a href="https://buttondown.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">
