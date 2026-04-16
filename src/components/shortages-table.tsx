@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -19,6 +19,7 @@ interface ShortagesTableProps {
   bwlGtins?: string[]
 }
 
+// ✅ Moved outside component to prevent recreation on every render
 const COLUMNS: { key: keyof Shortage; label: string; sortable?: boolean }[] = [
   { key: 'bezeichnung', label: 'Bezeichnung', sortable: true },
   { key: 'firma', label: 'Firma', sortable: true },
@@ -26,11 +27,12 @@ const COLUMNS: { key: keyof Shortage; label: string; sortable?: boolean }[] = [
   { key: 'datumLieferfahigkeit', label: 'Lieferbar ab' },
   { key: 'tageSeitMeldung', label: 'Tage', sortable: true },
   { key: 'atcCode', label: 'ATC' },
-]
+] as const // ✅ Make readonly to prevent accidental mutations
 
 export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: ShortagesTableProps) {
   const [selected, setSelected] = useState<Shortage | null>(null)
-  const bwlSet = new Set(bwlGtins ?? [])
+  // ✅ Only recreate Set when bwlGtins changes (prevents unnecessary re-renders)
+  const bwlSet = useMemo(() => new Set(bwlGtins ?? []), [bwlGtins])
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()

@@ -1,8 +1,20 @@
+/**
+ * ⚠️ DEPRECATED: Use db-optimized-upsert-safe.ts instead
+ *
+ * This file uses $executeRawUnsafe with manual string escaping, which is:
+ * 1. SQL injection risk (despite escaping)
+ * 2. Slower than parameterized queries
+ * 3. Harder to maintain
+ *
+ * Migration: Replace all imports with the safe version
+ */
+
 import { prisma } from './prisma'
 import type { Shortage } from './types'
 
 /**
- * Optimized version of upsertShortages with reduced redundant computations
+ * @deprecated Use upsertShortagesOptimizedSafe from db-optimized-upsert-safe.ts
+ * This version uses unsafe raw SQL. The safe version uses Prisma's parameterized queries.
  */
 export async function upsertShortagesOptimized(
   incoming: Shortage[],

@@ -1,6 +1,12 @@
 /**
- * Simple in-memory cache with TTL
- * For production, consider Redis or Vercel KV
+ * ⚠️ DEPRECATED: Use cache-lru.ts instead for production
+ *
+ * Simple in-memory cache with TTL (NO SIZE LIMITS - memory leak risk)
+ * This implementation is kept for testing only.
+ *
+ * For production, use:
+ * - cache-lru.ts (LRU cache with memory limits) - RECOMMENDED
+ * - Redis or Vercel KV for distributed caching
  */
 
 interface CacheEntry<T> {

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
-import { queryShortages, getKPIStats, getFirmaList } from '@/lib/db'
+import { queryShortagesCached } from '@/lib/db-cached-queries'
+import { getKPIStatsCached, getFirmaListCached } from '@/lib/db-cached-example'
 import type { ShortagesQuery } from '@/lib/types'
 
 export async function GET(request: Request) {
@@ -15,11 +16,21 @@ export async function GET(request: Request) {
     perPage: Math.min(200, Math.max(1, parseInt(searchParams.get('perPage') ?? '50', 10) || 50)),
   }
 
+  // ✅ Now uses cached query results (2min TTL) - major performance boost
   const [response, kpi, firmaList] = await Promise.all([
-    queryShortages(query),
-    getKPIStats(),
-    getFirmaList(),
+    queryShortagesCached(query),
+    getKPIStatsCached(),
+    getFirmaListCached(),
   ])
 
-  return NextResponse.json({ ...response, kpi, firmaList })
+  return NextResponse.json(
+    { ...response, kpi, firmaList },
+    {
+      headers: {
+        // Cache for 5 minutes, serve stale for 1 hour while revalidating
+        'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=3600',
+        'Vary': 'Accept-Encoding',
+      },
+    }
+  )
 }
