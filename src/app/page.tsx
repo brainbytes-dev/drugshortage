@@ -173,6 +173,120 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
       </div>
       </main>
+
+      {/* ── Wie es funktioniert ─────────────────────────────────── */}
+      <section className="border-t border-border/40 bg-muted/20">
+        <div className="max-w-5xl mx-auto px-4 py-16 sm:py-20">
+          <h2 className="text-2xl font-bold tracking-tight text-center mb-12">
+            Wie es funktioniert
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+            {[
+              {
+                step: '01',
+                title: 'Täglich gescraped',
+                body: 'Jede Nacht werden die Lieferengpässe von drugshortage.ch, dem BWL sowie den ODDB-Stammdaten automatisch abgerufen — ohne manuelle Pflege.',
+              },
+              {
+                step: '02',
+                title: 'Aufbereitet & angereichert',
+                body: 'Duplikate werden entfernt, Wirkstoffe und ATC-Codes ergänzt, historische Einträge archiviert. Über 8\'600 Fälle seit Projektstart.',
+              },
+              {
+                step: '03',
+                title: 'Sofort abrufbar',
+                body: 'Volltextsuche, Firmen- und ATC-Filter, Einzelseiten pro Medikament mit Schema.org-Markup. Kein Login, kein Abo, keine Kosten.',
+              },
+            ].map(({ step, title, body }) => (
+              <div key={step} className="flex flex-col gap-3">
+                <span className="text-4xl font-black text-primary/20 leading-none">{step}</span>
+                <h3 className="text-base font-semibold">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── FAQ ─────────────────────────────────────────────────── */}
+      <section className="border-t border-border/40">
+        <div className="max-w-3xl mx-auto px-4 py-16 sm:py-20">
+          <h2 className="text-2xl font-bold tracking-tight text-center mb-12">
+            Häufige Fragen
+          </h2>
+          <dl className="space-y-8">
+            {[
+              {
+                q: 'Woher stammen die Daten?',
+                a: 'Die Engpass-Meldungen kommen von drugshortage.ch (Swissmedic-Quelle) und dem Bundesamt für wirtschaftliche Landesversorgung (BWL). Stammdaten wie Wirkstoff und ATC-Code werden aus ODDB/HIN ergänzt.',
+              },
+              {
+                q: 'Wie aktuell sind die Daten?',
+                a: 'Die Datenbank wird täglich um 3 Uhr morgens automatisch aktualisiert. Den genauen Zeitpunkt des letzten Imports sieht man im Hero-Badge oben auf der Seite.',
+              },
+              {
+                q: 'Kostet das etwas?',
+                a: 'Nein. Das Dashboard ist kostenlos und Open Source (MIT-Lizenz). Wer das Projekt unterstützen möchte, kann via "Buy Me a Coffee" im Header einen Kaffee spendieren.',
+              },
+              {
+                q: 'Kann ich die Daten herunterladen oder per API abrufen?',
+                a: 'Eine öffentliche API und ein CSV-Export sind in Planung. Für Forschungszwecke bitte direkt via GitHub-Issue melden — wir priorisieren nach Bedarf.',
+              },
+              {
+                q: 'Haftung und Gewähr',
+                a: 'Das Dashboard dient ausschliesslich zur Information. Für medizinische oder pharmazeutische Entscheidungen sind stets die offiziellen Quellen (Swissmedic, drugshortage.ch) massgebend. Alle Details im Impressum.',
+              },
+            ].map(({ q, a }) => (
+              <div key={q} className="grid sm:grid-cols-[1fr_2fr] gap-2 sm:gap-6">
+                <dt className="font-semibold text-sm leading-relaxed">{q}</dt>
+                <dd className="text-sm text-muted-foreground leading-relaxed">{a}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </section>
+
+      {/* ── Newsletter ──────────────────────────────────────────── */}
+      <section className="border-t border-border/40 bg-muted/20">
+        <div className="max-w-xl mx-auto px-4 py-16 sm:py-20 text-center space-y-5">
+          <h2 className="text-2xl font-bold tracking-tight">
+            Neue Engpässe direkt ins Postfach
+          </h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Wöchentlicher Newsletter — unter 300 Wörter, neue Engpässe, aufgelöste Fälle.
+            Kein Spam, jederzeit abbestellbar.
+          </p>
+          {/* Buttondown embed — replace USERNAME with your handle */}
+          <form
+            action="https://buttondown.com/api/emails/embed-subscribe/engpassradar"
+            method="post"
+            target="popupwindow"
+            onSubmit={() => window.open('https://buttondown.com/engpassradar', 'popupwindow')}
+            className="flex flex-col sm:flex-row gap-2 justify-center"
+          >
+            <input
+              type="email"
+              name="email"
+              placeholder="ihre@email.ch"
+              required
+              className="flex-1 min-w-0 rounded-lg border border-border bg-background px-4 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+            <button
+              type="submit"
+              className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity whitespace-nowrap"
+            >
+              Abonnieren
+            </button>
+          </form>
+          <p className="text-xs text-muted-foreground">
+            Powered by{' '}
+            <a href="https://buttondown.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">
+              Buttondown
+            </a>
+            {' — '}DSG-konform, Daten in der EU.
+          </p>
+        </div>
+      </section>
     </>
   )
 }
