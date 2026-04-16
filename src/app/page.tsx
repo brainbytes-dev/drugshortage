@@ -9,7 +9,6 @@ import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import { ResetFiltersButton } from '@/components/reset-filters-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
-import { NewsletterForm } from '@/components/newsletter-form'
 import type { ShortagesQuery } from '@/lib/types'
 
 interface PageProps {
@@ -175,12 +174,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </main>
 
       {/* ── Wie es funktioniert ─────────────────────────────────── */}
-      <section className="border-t border-border/40 bg-muted/20">
-        <div className="max-w-5xl mx-auto px-4 py-16 sm:py-20">
-          <h2 className="text-2xl font-bold tracking-tight text-center mb-12">
+      <section className="border-t border-border/40">
+        <div className="max-w-5xl mx-auto px-4 py-20 sm:py-28">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
             Wie es funktioniert
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          </p>
+          <div className="divide-y divide-border/40">
             {[
               {
                 step: '01',
@@ -190,7 +189,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               {
                 step: '02',
                 title: 'Aufbereitet & angereichert',
-                body: 'Duplikate werden entfernt, Wirkstoffe und ATC-Codes ergänzt, historische Einträge archiviert. Über 8\'600 Fälle seit Projektstart.',
+                body: "Duplikate werden entfernt, Wirkstoffe und ATC-Codes ergänzt, historische Einträge archiviert. Über 8'600 Fälle seit Projektstart.",
               },
               {
                 step: '03',
@@ -198,10 +197,17 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 body: 'Volltextsuche, Firmen- und ATC-Filter, Einzelseiten pro Medikament mit Schema.org-Markup. Kein Login, kein Abo, keine Kosten.',
               },
             ].map(({ step, title, body }) => (
-              <div key={step} className="flex flex-col gap-3">
-                <span className="text-4xl font-black text-primary/20 leading-none">{step}</span>
-                <h3 className="text-base font-semibold">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+              <div
+                key={step}
+                className="group grid grid-cols-[56px_1fr] sm:grid-cols-[80px_220px_1fr] gap-x-8 gap-y-1 py-10 sm:py-12 items-baseline"
+              >
+                <span className="text-[42px] sm:text-[56px] font-black leading-none text-primary/[0.10] group-hover:text-primary/[0.18] transition-colors duration-300 tabular-nums">
+                  {step}
+                </span>
+                <h3 className="text-[15px] font-semibold leading-snug pt-0.5">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed col-span-2 sm:col-span-1 mt-2 sm:mt-0">
+                  {body}
+                </p>
               </div>
             ))}
           </div>
@@ -209,12 +215,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────── */}
-      <section className="border-t border-border/40">
-        <div className="max-w-3xl mx-auto px-4 py-16 sm:py-20">
-          <h2 className="text-2xl font-bold tracking-tight text-center mb-12">
+      <section className="border-t border-border/40 bg-muted/[0.15]">
+        <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
             Häufige Fragen
-          </h2>
-          <dl className="space-y-8">
+          </p>
+          <div className="divide-y divide-border/40">
             {[
               {
                 q: 'Woher stammen die Daten?',
@@ -237,35 +243,31 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 a: 'Das Dashboard dient ausschliesslich zur Information. Für medizinische oder pharmazeutische Entscheidungen sind stets die offiziellen Quellen (Swissmedic, drugshortage.ch) massgebend. Alle Details im Impressum.',
               },
             ].map(({ q, a }) => (
-              <div key={q} className="grid sm:grid-cols-[1fr_2fr] gap-2 sm:gap-6">
-                <dt className="font-semibold text-sm leading-relaxed">{q}</dt>
-                <dd className="text-sm text-muted-foreground leading-relaxed">{a}</dd>
-              </div>
+              <details key={q} className="group py-6 cursor-pointer">
+                <summary className="flex items-center justify-between gap-6 list-none select-none">
+                  <span className="text-[15px] font-semibold leading-snug group-hover:text-primary transition-colors duration-200">
+                    {q}
+                  </span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    className="h-4 w-4 shrink-0 text-muted-foreground group-open:rotate-45 transition-transform duration-200 ease-out"
+                    aria-hidden
+                  >
+                    <path strokeLinecap="round" d="M8 2v12M2 8h12" />
+                  </svg>
+                </summary>
+                <p className="mt-4 text-sm text-muted-foreground leading-relaxed pr-10">{a}</p>
+              </details>
             ))}
-          </dl>
+          </div>
         </div>
       </section>
 
-      {/* ── Newsletter ──────────────────────────────────────────── */}
-      <section className="border-t border-border/40 bg-muted/20">
-        <div className="max-w-xl mx-auto px-4 py-16 sm:py-20 text-center space-y-5">
-          <h2 className="text-2xl font-bold tracking-tight">
-            Neue Engpässe direkt ins Postfach
-          </h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Wöchentlicher Newsletter — unter 300 Wörter, neue Engpässe, aufgelöste Fälle.
-            Kein Spam, jederzeit abbestellbar.
-          </p>
-          <NewsletterForm />
-          <p className="text-xs text-muted-foreground">
-            Powered by{' '}
-            <a href="https://buttondown.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">
-              Buttondown
-            </a>
-            {' — '}DSG-konform, Daten in der EU.
-          </p>
-        </div>
-      </section>
+      {/* Newsletter hidden — pending Buttondown account setup */}
     </>
   )
 }
