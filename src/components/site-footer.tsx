@@ -1,7 +1,9 @@
 export function SiteFooter() {
+  const year = new Date().getFullYear()
   return (
     <footer className="border-t mt-auto">
       <div className="max-w-7xl mx-auto px-4 py-6 text-xs text-muted-foreground text-center space-y-1">
+        <p>© {year} engpass.radar</p>
         <p>
           Daten von{' '}
           <a
