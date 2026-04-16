@@ -10,7 +10,12 @@ export function SiteHeader() {
             engpass<span className="text-primary">.radar</span>
           </span>
         </Link>
-        <ThemeToggle />
+
+        <div className="flex items-center gap-2">
+          <div className="rounded-md border border-border/60 bg-muted/40">
+            <ThemeToggle />
+          </div>
+        </div>
       </div>
     </header>
   )

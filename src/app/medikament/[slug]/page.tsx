@@ -36,13 +36,42 @@ export default async function MedikamentPage({ params }: PageProps) {
 
   const oddb = await getOddbByGtin(shortage.gtin).catch(() => null)
 
-  const jsonLd = {
+  const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
     '@type': 'Drug',
     name: shortage.bezeichnung,
-    manufacturer: { '@type': 'Organization', name: shortage.firma },
-    description: `Lieferengpass in der Schweiz seit ${shortage.tageSeitMeldung} Tagen`,
     url: `https://engpassradar.ch/medikament/${slug}`,
+    manufacturer: { '@type': 'Organization', name: shortage.firma },
+    description: `Lieferengpass für ${shortage.bezeichnung} von ${shortage.firma} in der Schweiz. Status: ${shortage.statusText}. Seit ${shortage.tageSeitMeldung} Tagen gemeldet.`,
+    ...(oddb?.substanz && { activeIngredient: oddb.substanz }),
+    ...(oddb?.zusammensetzung && { nonProprietaryName: oddb.zusammensetzung }),
+    ...(oddb?.prodno && {
+      code: {
+        '@type': 'MedicalCode',
+        codeValue: oddb.prodno,
+        codingSystem: 'Swissmedic',
+      },
+    }),
+    ...(shortage.atcCode && {
+      code: [
+        ...(oddb?.prodno ? [{
+          '@type': 'MedicalCode',
+          codeValue: oddb.prodno,
+          codingSystem: 'Swissmedic',
+        }] : []),
+        {
+          '@type': 'MedicalCode',
+          codeValue: shortage.atcCode,
+          codingSystem: 'ATC',
+        },
+      ],
+    }),
+    ...(shortage.datumLieferfahigkeit && {
+      availabilityStarts: shortage.datumLieferfahigkeit,
+    }),
+    ...(shortage.ersteMeldung && {
+      availabilityEnds: shortage.ersteMeldung,
+    }),
   }
 
   return (

@@ -85,6 +85,21 @@ class LRUCache {
     }
   }
 
+  /**
+   * ✅ Delete all entries with keys starting with a prefix
+   * Useful for invalidating query caches (e.g., deleteByPrefix('query:'))
+   */
+  deleteByPrefix(prefix: string): number {
+    let deleted = 0
+    for (const key of this.cache.keys()) {
+      if (key.startsWith(prefix)) {
+        this.delete(key)
+        deleted++
+      }
+    }
+    return deleted
+  }
+
   clear(): void {
     this.cache.clear()
     this.currentSize = 0
@@ -159,4 +174,23 @@ export async function getCachedLRU<T>(
 // ✅ Export stats for monitoring
 export function getCacheStats() {
   return lruCache.getStats()
+}
+
+// ✅ Cleanup handlers to prevent memory leaks
+if (process.env.VERCEL || process.env.NODE_ENV === 'production') {
+  // Serverless: cleanup before function exits
+  process.on('beforeExit', () => {
+    lruCache.destroy()
+  })
+}
+
+// ✅ Development: cleanup on module hot reload
+if (process.env.NODE_ENV !== 'production') {
+  // @ts-expect-error - module.hot is a webpack feature
+  if (typeof module !== 'undefined' && module.hot) {
+    // @ts-expect-error - module.hot.dispose is a webpack HMR API
+    module.hot.dispose(() => {
+      lruCache.destroy()
+    })
+  }
 }
