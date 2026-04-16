@@ -184,7 +184,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               {
                 step: '01',
                 title: 'Täglich gescraped',
-                body: 'Jede Nacht werden die Lieferengpässe von drugshortage.ch, dem BWL sowie den ODDB-Stammdaten automatisch abgerufen — ohne manuelle Pflege.',
+                body: 'Jede Nacht werden die aktuellen Lieferengpässe aus den offiziellen Schweizer Quellen abgerufen: drugshortage.ch, BWL und ODDB-Stammdaten.',
               },
               {
                 step: '02',
@@ -194,7 +194,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               {
                 step: '03',
                 title: 'Sofort abrufbar',
-                body: 'Volltextsuche, Firmen- und ATC-Filter, Einzelseiten pro Medikament mit Schema.org-Markup. Kein Login, kein Abo, keine Kosten.',
+                body: 'Volltextsuche, Firmen- und ATC-Filter, Einzelseiten pro Medikament. Kein Login, kein Abo, keine Kosten.',
               },
             ].map(({ step, title, body }) => (
               <div
@@ -228,11 +228,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               },
               {
                 q: 'Wie aktuell sind die Daten?',
-                a: 'Die Datenbank wird täglich um 3 Uhr morgens automatisch aktualisiert. Den genauen Zeitpunkt des letzten Imports sieht man im Hero-Badge oben auf der Seite.',
+                a: 'Die Daten werden täglich automatisch aktualisiert. Den genauen Zeitpunkt des letzten Imports sieht man im Badge oben auf der Seite.',
               },
               {
                 q: 'Kostet das etwas?',
-                a: 'Nein. Das Dashboard ist kostenlos und Open Source (MIT-Lizenz). Wer das Projekt unterstützen möchte, kann via "Buy Me a Coffee" im Header einen Kaffee spendieren.',
+                a: 'Nein. Das Dashboard ist kostenlos. Wer das Projekt unterstützen möchte, kann via "Buy Me a Coffee" im Header einen Kaffee spendieren.',
               },
               {
                 q: 'Kann ich die Daten herunterladen oder per API abrufen?',
@@ -240,7 +240,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               },
               {
                 q: 'Haftung und Gewähr',
-                a: 'Das Dashboard dient ausschliesslich zur Information. Für medizinische oder pharmazeutische Entscheidungen sind stets die offiziellen Quellen (Swissmedic, drugshortage.ch) massgebend. Alle Details im Impressum.',
+                a: 'Das Dashboard dient ausschliesslich zur Information. Für medizinische oder pharmazeutische Entscheidungen sind stets die offiziellen Quellen massgebend.',
               },
             ].map(({ q, a }) => (
               <details key={q} className="group py-6 cursor-pointer">
