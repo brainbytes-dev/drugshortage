@@ -161,10 +161,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         {/* Search + Filters */}
         <Suspense fallback={null}>
           <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
-            <NeueMeldungenButton />
             <SearchBar />
             <FilterBar firmaList={firmaList} />
             <ResetFiltersButton />
+            <NeueMeldungenButton />
             <ExportCsvButton />
           </div>
         </Suspense>
