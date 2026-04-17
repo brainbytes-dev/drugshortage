@@ -3,7 +3,7 @@
 import { useSearchParams, useRouter } from 'next/navigation'
 import { X } from 'lucide-react'
 
-const FILTER_PARAMS = ['search', 'status', 'firma', 'atc']
+const FILTER_PARAMS = ['search', 'status', 'firma', 'atc', 'neu']
 
 export function ResetFiltersButton() {
   const searchParams = useSearchParams()

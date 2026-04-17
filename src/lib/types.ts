@@ -47,6 +47,7 @@ export interface ShortagesQuery {
   status?: string       // comma-separated codes e.g. "1,4"
   firma?: string
   atc?: string
+  neu?: boolean         // filter: tageSeitMeldung <= 7
   page?: number
   sort?: string         // e.g. "tageSeitMeldung:desc"
   perPage?: number
