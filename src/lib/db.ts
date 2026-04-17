@@ -539,6 +539,23 @@ export async function getWeeklyTimeline(weeks = 52): Promise<WeeklyDataPoint[]> 
   return rows
 }
 
+export async function getHistoricalByGengrp(
+  gengrp: string,
+  excludeGtin: string
+): Promise<Shortage[]> {
+  if (!gengrp) return []
+  const rows = await prisma.shortage.findMany({
+    where: {
+      gengrp,
+      gtin: { not: excludeGtin },
+      isActive: false,
+    },
+    orderBy: { tageSeitMeldung: 'desc' },
+    take: 20,
+  })
+  return rows.map(mapShortage)
+}
+
 export async function getOverviewStats(): Promise<OverviewStats | null> {
   const row = await prisma.overviewStats.findFirst({
     orderBy: { scrapedAt: 'desc' },
