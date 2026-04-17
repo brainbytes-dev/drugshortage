@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimeline, queryOffMarketDrugs, getOffMarketStats } from '@/lib/db'
+import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimeline, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt } from '@/lib/db'
 import { getKPIStatsCached as getKPIStats, getFirmaListCached as getFirmaList } from '@/lib/db-cached-example'
 import { KPICards } from '@/components/kpi-cards'
 import { SearchBar } from '@/components/search-bar-optimized'
@@ -43,7 +43,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     perPage: 50,
   }
 
-  const [response, kpi, firmaList, overview, bwlGtins, weeklyTimeline, offMarketResponse, offMarketStats] = await Promise.all([
+  const [response, kpi, firmaList, overview, bwlGtins, weeklyTimeline, offMarketResponse, offMarketStats, lastScrapedAt] = await Promise.all([
     isOffMarket ? Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }) : queryShortages(query),
     getKPIStats(),
     isOffMarket ? Promise.resolve([] as string[]) : getFirmaList(),
@@ -59,10 +59,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         })
       : Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }),
     getOffMarketStats().catch(() => ({ ausserHandel: 0, vertriebseingestellt: 0 })),
+    getLastScrapedAt().catch(() => null),
   ])
 
-  const lastUpdated = kpi.lastScrapedAt
-    ? new Date(kpi.lastScrapedAt).toLocaleString('de-CH', {
+  const lastUpdated = lastScrapedAt
+    ? new Date(lastScrapedAt).toLocaleString('de-CH', {
         day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
       })
     : 'noch nicht aktualisiert'
