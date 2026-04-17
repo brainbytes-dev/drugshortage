@@ -39,9 +39,18 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
   const [pageInput, setPageInput] = useState(String(page))
   const pageInputRef = useRef<HTMLInputElement>(null)
   const [, startTransition] = useTransition()
+  const savedScrollY = useRef<number | null>(null)
 
   // Keep input in sync when page changes externally (filter reset, sort, etc.)
-  useEffect(() => { setPageInput(String(page)) }, [page])
+  // Also restore scroll position after server re-render completes
+  useEffect(() => {
+    setPageInput(String(page))
+    if (savedScrollY.current !== null) {
+      window.scrollTo({ top: savedScrollY.current, behavior: 'instant' })
+      savedScrollY.current = null
+    }
+  }, [page, shortages])
+
   // ✅ Only recreate Set when bwlGtins changes (prevents unnecessary re-renders)
   const bwlSet = useMemo(() => new Set(bwlGtins ?? []), [bwlGtins])
   const router = useRouter()
@@ -51,6 +60,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
   const totalPages = Math.ceil(total / perPage)
 
   const navigate = (params: Record<string, string>) => {
+    savedScrollY.current = window.scrollY
     const p = new URLSearchParams(searchParams.toString())
     for (const [k, v] of Object.entries(params)) {
       if (v) p.set(k, v)
