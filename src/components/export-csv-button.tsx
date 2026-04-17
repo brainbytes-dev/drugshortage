@@ -2,7 +2,6 @@
 
 import { useSearchParams } from 'next/navigation'
 import { Download } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 
 export function ExportCsvButton() {
   const searchParams = useSearchParams()
@@ -18,9 +17,12 @@ export function ExportCsvButton() {
   }
 
   return (
-    <Button variant="outline" size="sm" onClick={handleExport}>
-      <Download className="h-4 w-4" />
+    <button
+      onClick={handleExport}
+      className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
+    >
+      <Download className="h-3.5 w-3.5" />
       CSV Export
-    </Button>
+    </button>
   )
 }
