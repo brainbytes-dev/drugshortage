@@ -113,7 +113,7 @@ export default function MetodikPage() {
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Längere Engpässe sind schwerer überbrückbar. Die Dauer basiert auf
-              <em> Tage seit Meldung</em> aus drugshortage.ch (Feld "Gemeldet am").
+              <em> Tage seit Meldung</em> aus drugshortage.ch (Feld &quot;Gemeldet am&quot;).
             </p>
             <table className="w-full text-xs border-collapse">
               <thead>

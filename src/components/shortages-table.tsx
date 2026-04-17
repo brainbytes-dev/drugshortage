@@ -36,16 +36,13 @@ const NEU_THRESHOLD_DAYS = 7
 
 export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: ShortagesTableProps) {
   const [selected, setSelected] = useState<Shortage | null>(null)
-  const [pageInput, setPageInput] = useState(String(page))
   const pageInputRef = useRef<HTMLInputElement>(null)
   const tableRef = useRef<HTMLDivElement>(null)
   const [, startTransition] = useTransition()
   const scrollToTable = useRef(false)
 
-  // Keep input in sync when page changes externally.
-  // On explicit page navigation, scroll to the table top (not page top).
+  // Scroll to table top on explicit page navigation.
   useEffect(() => {
-    setPageInput(String(page))
     if (scrollToTable.current) {
       scrollToTable.current = false
       const el = tableRef.current
@@ -174,7 +171,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               variant="outline"
               size="sm"
               disabled={page <= 1}
-              onClick={() => { setPageInput('1'); navigate({ page: '1' }, 'table') }}
+              onClick={() => navigate({ page: '1' }, 'table')}
               title="Erste Seite"
             >
               <ChevronsLeft className="h-4 w-4" />
@@ -184,25 +181,25 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               variant="outline"
               size="sm"
               disabled={page <= 1}
-              onClick={() => { const p = String(page - 1); setPageInput(p); navigate({ page: p }, 'table') }}
+              onClick={() => navigate({ page: String(page - 1) }, 'table')}
               title="Vorherige Seite"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
-            {/* Manual page input */}
+            {/* Manual page input — key={page} resets the uncontrolled input when page changes */}
             <input
+              key={page}
               ref={pageInputRef}
               type="number"
               min={1}
               max={totalPages}
-              value={pageInput}
-              onChange={e => setPageInput(e.target.value)}
+              defaultValue={String(page)}
               onBlur={() => {
-                const n = parseInt(pageInput, 10)
+                const n = parseInt(pageInputRef.current?.value ?? '', 10)
                 if (!isNaN(n) && n >= 1 && n <= totalPages && n !== page) {
                   navigate({ page: String(n) }, 'table')
-                } else {
-                  setPageInput(String(page))
+                } else if (pageInputRef.current) {
+                  pageInputRef.current.value = String(page)
                 }
               }}
               onKeyDown={e => {
@@ -216,7 +213,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               variant="outline"
               size="sm"
               disabled={page >= totalPages}
-              onClick={() => { const p = String(page + 1); setPageInput(p); navigate({ page: p }, 'table') }}
+              onClick={() => navigate({ page: String(page + 1) }, 'table')}
               title="Nächste Seite"
             >
               <ChevronRight className="h-4 w-4" />
@@ -226,7 +223,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               variant="outline"
               size="sm"
               disabled={page >= totalPages}
-              onClick={() => { const p = String(totalPages); setPageInput(p); navigate({ page: p }, 'table') }}
+              onClick={() => navigate({ page: String(totalPages) }, 'table')}
               title="Letzte Seite"
             >
               <ChevronsRight className="h-4 w-4" />

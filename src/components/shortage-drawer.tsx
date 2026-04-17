@@ -10,7 +10,6 @@ import {
   SheetTitle,
   SheetDescription,
 } from '@/components/ui/sheet'
-import { toSlug } from '@/lib/slug'
 import { Badge } from '@/components/ui/badge'
 import { StatusBadge } from './status-badge'
 import type { Shortage } from '@/lib/types'
@@ -142,7 +141,7 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
             <SheetHeader className="mb-4">
               <SheetTitle className="text-base leading-tight">
                 <Link
-                  href={`/medikament/${toSlug(shortage.bezeichnung)}`}
+                  href={`/medikament/${shortage.slug ?? shortage.gtin}`}
                   onClick={onClose}
                   className="hover:text-primary hover:underline underline-offset-2 transition-colors"
                 >

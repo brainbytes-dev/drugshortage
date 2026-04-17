@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
-import { fetchOddbProducts } from '@/lib/oddb-scraper'
-import { upsertOddbProducts } from '@/lib/db'
+import { fetchOddbProducts, fetchOddbArticlePrices } from '@/lib/oddb-scraper'
+import { upsertOddbProducts, upsertOddbPrices } from '@/lib/db'
 
 // Runs independently of the daily scrape — call weekly or on-demand
 export async function POST(request: Request) {
@@ -14,7 +14,16 @@ export async function POST(request: Request) {
     const products = await fetchOddbProducts()
     const { upserted } = await upsertOddbProducts(products)
 
-    return NextResponse.json({ success: true, total: products.length, upserted })
+    let pricesUpserted = 0
+    try {
+      const prices = await fetchOddbArticlePrices()
+      const result = await upsertOddbPrices(prices)
+      pricesUpserted = result.upserted
+    } catch (priceErr) {
+      console.error('[scrape-oddb] Price fetch failed (non-fatal):', priceErr)
+    }
+
+    return NextResponse.json({ success: true, total: products.length, upserted, pricesUpserted })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
     return NextResponse.json({ error: message }, { status: 500 })

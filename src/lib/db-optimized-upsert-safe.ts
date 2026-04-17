@@ -1,6 +1,7 @@
 import { prisma } from './prisma-optimized'
 import type { Shortage } from './types'
 import { Prisma } from '@prisma/client'
+import { toSlug } from './slug'
 
 /**
  * ✅ SQL-injection-safe bulk upsert using Prisma's parameterized queries.
@@ -39,6 +40,7 @@ export async function upsertShortagesOptimizedSafe(
     await prisma.shortage.createMany({
       data: toCreate.map(s => ({
         gtin: s.gtin,
+        slug: toSlug(s.bezeichnung) || null,
         pharmacode: s.pharmacode,
         bezeichnung: s.bezeichnung,
         firma: s.firma,
@@ -79,7 +81,7 @@ export async function upsertShortagesOptimizedSafe(
       const values = chunk.map(s => {
         const firstSeenAt = existingMap.get(s.gtin)!.firstSeenAt
         return Prisma.sql`(
-          ${s.gtin}, ${s.pharmacode}, ${s.bezeichnung}, ${s.firma},
+          ${s.gtin}, ${toSlug(s.bezeichnung) || null}, ${s.pharmacode}, ${s.bezeichnung}, ${s.firma},
           ${s.atcCode}, ${s.gengrp}, ${s.statusCode}, ${s.statusText},
           ${s.datumLieferfahigkeit ?? ''}, ${s.datumLetzteMutation ?? ''},
           ${s.tageSeitMeldung ?? 0}, ${s.detailUrl ?? ''},
@@ -92,7 +94,7 @@ export async function upsertShortagesOptimizedSafe(
 
       const query = Prisma.sql`
         INSERT INTO "shortages" (
-          gtin, pharmacode, bezeichnung, firma, "atcCode", gengrp,
+          gtin, slug, pharmacode, bezeichnung, firma, "atcCode", gengrp,
           "statusCode", "statusText", "datumLieferfahigkeit",
           "datumLetzteMutation", "tageSeitMeldung", "detailUrl",
           "alternativenUrl", "ersteMeldung", "ersteMeldungDurch",
@@ -102,6 +104,7 @@ export async function upsertShortagesOptimizedSafe(
         )
         VALUES ${Prisma.join(values)}
         ON CONFLICT (gtin) DO UPDATE SET
+          slug = COALESCE(EXCLUDED.slug, "shortages".slug),
           pharmacode = EXCLUDED.pharmacode,
           bezeichnung = EXCLUDED.bezeichnung,
           firma = EXCLUDED.firma,

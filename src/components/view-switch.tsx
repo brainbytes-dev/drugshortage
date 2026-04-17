@@ -7,13 +7,14 @@ const VIEWS = [
   { key: 'engpaesse', label: 'Engpässe' },
   { key: 'ausser-handel', label: 'Ausser Handel' },
   { key: 'vertriebseinstellung', label: 'Vertriebseinstellung' },
+  { key: 'historisch', label: 'Historisch' },
 ] as const
 
 type ViewKey = typeof VIEWS[number]['key']
 
 interface ViewSwitchProps {
   active: string
-  counts?: { engpaesse: number; ausserHandel: number; vertriebseingestellt: number }
+  counts?: { engpaesse: number; ausserHandel: number; vertriebseingestellt: number; historisch: number }
 }
 
 export function ViewSwitch({ active, counts }: ViewSwitchProps) {
@@ -30,6 +31,7 @@ export function ViewSwitch({ active, counts }: ViewSwitchProps) {
     } else {
       p.set('view', view)
     }
+    p.delete('sort')
     // Reset page and search when switching views
     p.delete('page')
     p.delete('search')
@@ -42,6 +44,7 @@ export function ViewSwitch({ active, counts }: ViewSwitchProps) {
     'engpaesse': counts?.engpaesse,
     'ausser-handel': counts?.ausserHandel,
     'vertriebseinstellung': counts?.vertriebseingestellt,
+    'historisch': counts?.historisch,
   }
 
   return (

@@ -1,12 +1,31 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import { Treemap, ResponsiveContainer } from 'recharts'
 import { useRouter } from 'next/navigation'
 import type { AtcGruppeStats } from '@/lib/types'
 
 interface AtcTreemapProps {
   data: AtcGruppeStats[]
+}
+
+interface TreemapCellProps {
+  x?: number
+  y?: number
+  width?: number
+  height?: number
+  name?: string
+  value?: number
+  bezeichnung?: string
+  root?: { children?: readonly { value?: number }[] | null }
+}
+
+interface TooltipState {
+  name: string
+  bezeichnung: string
+  value: number
+  x: number
+  y: number
 }
 
 // Note: oklch() in SVG fill attributes requires Chrome 111+, Firefox 113+, Safari 15.4+
@@ -16,24 +35,32 @@ function getColor(value: number, max: number): { fill: string; textColor: string
   return { fill: 'oklch(0.52 0.09 200)', textColor: '#fff' }
 }
 
-// recharts custom content props are not strongly typed
-function makeCustomCell(router: ReturnType<typeof useRouter>) {
-  return function CustomCell(props: any) {
-    const { x, y, width, height, name, value, bezeichnung } = props
+export function AtcTreemap({ data }: AtcTreemapProps) {
+  const router = useRouter()
+  const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
-    const root = props.root
+  const treemapData = useMemo(
+    () => data.map(d => ({ name: d.atcCode, value: d.anzahl, bezeichnung: d.bezeichnung })),
+    [data]
+  )
+
+  const renderCell = useCallback((props: TreemapCellProps) => {
+    const { x = 0, y = 0, width = 0, height = 0, name, value = 0, bezeichnung, root } = props
+
     const maxVal = root?.children
-      ? Math.max(...root.children.map((c: any) => c.value ?? 0))
+      ? Math.max(...root.children.map(c => c.value ?? 0))
       : value
 
     const { fill, textColor } = getColor(value, maxVal)
-
     const showCode = width > 40 && height > 30
     const showCount = height > 50
 
     return (
       <g
-        onClick={() => router.push(`/?atc=${encodeURIComponent(name)}`, { scroll: false })}
+        onClick={() => router.push(`/?atc=${encodeURIComponent(name ?? '')}`, { scroll: false })}
+        onMouseEnter={e => setTooltip({ name: name ?? '', bezeichnung: bezeichnung ?? '', value, x: e.clientX, y: e.clientY })}
+        onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : null)}
+        onMouseLeave={() => setTooltip(null)}
         className="cursor-pointer"
         role="button"
         aria-label={`${name}: ${bezeichnung} — ${value} Engpässe`}
@@ -77,17 +104,7 @@ function makeCustomCell(router: ReturnType<typeof useRouter>) {
         )}
       </g>
     )
-  }
-}
-
-export function AtcTreemap({ data }: AtcTreemapProps) {
-  const router = useRouter()
-  const CustomCell = useMemo(() => makeCustomCell(router), [router])
-
-  const treemapData = useMemo(
-    () => data.map(d => ({ name: d.atcCode, value: d.anzahl, bezeichnung: d.bezeichnung })),
-    [data]
-  )
+  }, [router])
 
   if (data.length === 0) {
     return (
@@ -107,9 +124,23 @@ export function AtcTreemap({ data }: AtcTreemapProps) {
         <Treemap
           data={treemapData}
           dataKey="value"
-          content={<CustomCell />}
+          content={renderCell}
         />
       </ResponsiveContainer>
+
+      {/* Fixed tooltip — follows cursor via clientX/Y */}
+      {tooltip && (
+        <div
+          className="pointer-events-none fixed z-50 rounded-md border bg-card px-3 py-2 text-sm shadow-lg"
+          style={{ left: tooltip.x + 12, top: tooltip.y - 48 }}
+        >
+          <p className="font-semibold text-foreground">{tooltip.name}</p>
+          {tooltip.bezeichnung && (
+            <p className="text-muted-foreground text-xs max-w-[220px] truncate">{tooltip.bezeichnung}</p>
+          )}
+          <p className="text-primary font-medium mt-0.5">{tooltip.value} Engpässe</p>
+        </div>
+      )}
     </div>
   )
 }

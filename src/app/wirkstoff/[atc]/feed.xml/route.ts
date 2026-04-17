@@ -1,5 +1,5 @@
 import { getShortagesByAtc } from '@/lib/db'
-import { shortageToItem, rssEnvelope, RSS_HEADERS, escapeXml } from '@/lib/rss'
+import { shortageToItem, rssEnvelope, RSS_HEADERS } from '@/lib/rss'
 
 export async function GET(
   _req: Request,

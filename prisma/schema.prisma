@@ -120,6 +120,7 @@ model ScrapeRun {
 
 // ODDB product enrichment — from download.hin.ch/download/oddb2xml (daily)
 // Contains: GTIN, Swissmedic-Nr, Wirkstoff, Zusammensetzung, ATC
+// Prices (ppub/pexf) are synced separately from oddb_article.xml (weekly)
 model OddbProduct {
   id              Int      @id @default(autoincrement())
   gtin            String   @unique
@@ -128,6 +129,9 @@ model OddbProduct {
   atcCode         String
   substanz        String?
   zusammensetzung String?
+  ppub            Float?   // Publikumspreis in CHF (public price incl. VAT)
+  pexf            Float?   // Fabrikabgabepreis in CHF (ex-factory price)
+  authStatus      String?  // Swissmedic authorization status: 'A'=active, 'E'=erloschen, 'S'=sistiert etc.
   fetchedAt       DateTime @updatedAt
 
   @@map("oddb_products")
