@@ -26,6 +26,8 @@ export function SiteFooter() {
           <span>·</span>
           <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Datenschutz</a>
           <span>·</span>
+          <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Nutzungsbedingungen</a>
+          <span>·</span>
           <a
             href="https://github.com/brainbytes-dev/engpassradar"
             target="_blank"
