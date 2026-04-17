@@ -9,6 +9,8 @@ interface PageProps {
   params: Promise<{ atc: string }>
 }
 
+export const revalidate = 3600
+
 export async function generateStaticParams() {
   const codes = await getAllAtcCodes()
   return codes.map(c => ({ atc: c.atc }))
@@ -47,14 +49,22 @@ export default async function WirkstoffPage({ params }: PageProps) {
 
   const count = shortages.length
 
+  const avgTage = Math.round(shortages.reduce((s, x) => s + (x.tageSeitMeldung ?? 0), 0) / count)
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'WebPage',
+        '@type': 'MedicalWebPage',
         '@id': `https://www.engpassradar.ch/wirkstoff/${atc}`,
         url: `https://www.engpassradar.ch/wirkstoff/${atc}`,
-        name: `${substanz ? `${substanz} (${atc})` : `ATC ${atc}`} — Engpässe | engpass.radar`,
+        name: `${substanz ? `${substanz} (${atc})` : `ATC ${atc}`} Lieferengpass Schweiz | engpass.radar`,
+        description: `${count} Präparat${count !== 1 ? 'e' : ''} mit dem Wirkstoff ${substanz ?? atc} ${count !== 1 ? 'sind' : 'ist'} aktuell nicht lieferbar in der Schweiz.`,
+        about: {
+          '@type': 'MedicalEntity',
+          name: substanz ?? atc,
+          code: { '@type': 'MedicalCode', code: atc, codingSystem: 'ATC' },
+        },
         isPartOf: { '@id': 'https://www.engpassradar.ch' },
       },
       {
@@ -66,6 +76,7 @@ export default async function WirkstoffPage({ params }: PageProps) {
       },
     ],
   }
+
 
   return (
     <main className="min-h-screen bg-background">
@@ -89,17 +100,21 @@ export default async function WirkstoffPage({ params }: PageProps) {
           {substanz && (
             <p className="text-sm text-muted-foreground font-mono">{atc}</p>
           )}
-          <p className="text-sm text-muted-foreground">
-            {count} aktive Engpässe
-          </p>
         </div>
+
+        <p className="text-sm leading-relaxed">
+          <strong>{count} Präparat{count !== 1 ? 'e' : ''}</strong> mit dem Wirkstoff{' '}
+          <strong>{substanz ?? atc}</strong>{' '}
+          {count !== 1 ? 'sind' : 'ist'} aktuell nicht lieferbar in der Schweiz.
+          {avgTage > 0 && ` Durchschnittliche Engpassdauer: ${avgTage} Tage.`}
+        </p>
 
         <section className="space-y-4">
           <ul className="divide-y text-sm">
             {shortages.map(s => (
               <li key={s.gtin} className="py-3 flex flex-col gap-1">
                 <Link
-                  href={`/medikament/${toSlug(s.bezeichnung)}`}
+                  href={`/medikament/${s.slug ?? toSlug(s.bezeichnung)}`}
                   className="font-medium hover:underline"
                 >
                   {s.bezeichnung}
@@ -107,7 +122,10 @@ export default async function WirkstoffPage({ params }: PageProps) {
                 <span className="text-muted-foreground">{s.firma}</span>
                 <div className="flex gap-4 text-xs text-muted-foreground">
                   <span>{s.statusText}</span>
-                  <span>{s.tageSeitMeldung} Tage</span>
+                  {s.datumLieferfahigkeit && s.datumLieferfahigkeit !== 'offen' && (
+                    <span>Lieferbar ab: {s.datumLieferfahigkeit}</span>
+                  )}
+                  <span>{s.tageSeitMeldung} Tage gemeldet</span>
                 </div>
               </li>
             ))}

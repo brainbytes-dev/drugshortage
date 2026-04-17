@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  // hreflang: add <link rel="alternate" hreflang="fr" href="https://www.engpassradar.ch/fr/..." /> in <head> once FR/IT content exists
   return (
-    {/* hreflang: add <link rel="alternate" hreflang="fr" href="https://www.engpassradar.ch/fr/..." /> here once FR/IT content exists */}
     <html lang="de" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
         <script
