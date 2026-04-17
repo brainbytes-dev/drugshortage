@@ -35,10 +35,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // Drug pages - single iteration, no intermediate arrays
-  for (const { slug } of drugSlugs) {
+  for (const { slug, lastSeenAt } of drugSlugs) {
     result[i++] = {
       url: `${baseUrl}/medikament/${slug}`,
-      lastModified: now,
+      lastModified: lastSeenAt ?? now,
       changeFrequency: 'daily' as const,
       priority: 0.8,
     }

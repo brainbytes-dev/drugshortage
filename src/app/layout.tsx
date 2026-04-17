@@ -9,8 +9,8 @@ import { SiteFooter } from '@/components/site-footer'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'engpass.radar — Swiss Drug Shortage Tracker',
-  description: 'Aktuelle Lieferengpässe bei Medikamenten in der Schweiz — täglich aktualisiert.',
+  title: 'Lieferengpass Medikamente Schweiz | engpass.radar',
+  description: 'Alle aktuellen Medikamenten-Lieferengpässe der Schweiz — täglich aus drugshortage.ch und BWL aktualisiert. Suche nach Wirkstoff, Firma oder ATC-Code. Kostenlos, kein Login.',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

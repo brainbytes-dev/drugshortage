@@ -17,13 +17,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
   if (!shortage) {
     return {
-      title: 'Medikament nicht gefunden | engpass.radar',
+      title: 'Kein Lieferengpass gefunden | engpass.radar',
     }
   }
 
+  const oddb = await getOddbByGtin(shortage.gtin).catch(() => null)
+  const substanz = oddb?.substanz ? ` — ${oddb.substanz}` : ''
+
   return {
-    title: `${shortage.bezeichnung} — Lieferengpass Schweiz | engpass.radar`,
-    description: `Lieferengpass für ${shortage.bezeichnung} von ${shortage.firma}. Status: ${shortage.statusText}. Täglich aktualisiert aus drugshortage.ch.`,
+    title: `${shortage.bezeichnung} Lieferengpass Schweiz${substanz} | engpass.radar`,
+    description: `${shortage.bezeichnung} Lieferengpass Schweiz${oddb?.substanz ? ` (${oddb.substanz})` : ''} von ${shortage.firma}. Aktueller Status, Alternativen und Verlauf auf engpassradar.ch.`,
   }
 }
 
@@ -78,7 +81,7 @@ export default async function MedikamentPage({ params }: PageProps) {
                 "name": `${shortage.bezeichnung} — Lieferengpass Schweiz`,
                 "description": `Lieferengpass für ${shortage.bezeichnung} von ${shortage.firma}. ATC: ${shortage.atcCode}.`,
                 "about": {
-                  "@type": "Drug",
+                  "@type": "MedicalEntity",
                   "name": shortage.bezeichnung,
                   "manufacturer": {
                     "@type": "Organization",
