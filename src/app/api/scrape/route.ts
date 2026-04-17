@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
-import { fetchAndParse, fetchAndParseCompleted } from '@/lib/scraper'
+import { fetchAndParse, fetchAndParseCompleted, fetchAndParseOffMarket } from '@/lib/scraper'
 import { upsertShortagesOptimizedSafe as upsertShortages } from '@/lib/db-optimized-upsert-safe'
-import { saveOverviewStats, saveScrapeRun, upsertCompletedShortages, upsertBwlShortages } from '@/lib/db'
+import { saveOverviewStats, saveScrapeRun, upsertCompletedShortages, upsertBwlShortages, upsertOffMarketDrugs } from '@/lib/db'
 import { invalidateStatsCache } from '@/lib/db-cached-example'
 import { fetchBwlData } from '@/lib/bwl-scraper'
 
@@ -49,6 +49,15 @@ export async function POST(request: Request) {
       console.error('[scrape] BWL fetch failed (non-fatal):', bwlErr)
     }
 
+    let offMarketUpserted = 0
+    try {
+      const offMarketEntries = await fetchAndParseOffMarket()
+      const result = await upsertOffMarketDrugs(offMarketEntries)
+      offMarketUpserted = result.upserted
+    } catch (offErr) {
+      console.error('[scrape] Off-market fetch failed (non-fatal):', offErr)
+    }
+
     return NextResponse.json({
       success: true,
       total: shortages.length,
@@ -56,6 +65,7 @@ export async function POST(request: Request) {
       removedEntries,
       historicalInserted,
       bwlUpserted,
+      offMarketUpserted,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'
