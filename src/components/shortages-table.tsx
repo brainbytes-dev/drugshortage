@@ -10,6 +10,7 @@ import { StatusBadge } from './status-badge'
 import { ShortageDrawer } from './shortage-drawer'
 import type { Shortage } from '@/lib/types'
 import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
+import { calculateScore, scoreLabel } from '@/lib/score'
 
 interface ShortagesTableProps {
   shortages: Shortage[]
@@ -76,12 +77,13 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
                   ) : col.label}
                 </TableHead>
               ))}
+              <TableHead className="px-4 py-3 text-right text-xs font-medium text-muted-foreground">Score</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {shortages.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={COLUMNS.length} className="text-center text-muted-foreground py-12">
+                <TableCell colSpan={COLUMNS.length + 1} className="text-center text-muted-foreground py-12">
                   Keine Engpässe gefunden
                 </TableCell>
               </TableRow>
@@ -116,6 +118,13 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
                   <TableCell className="text-sm">{s.datumLieferfahigkeit}</TableCell>
                   <TableCell className="text-sm text-right tabular-nums">{s.tageSeitMeldung}</TableCell>
                   <TableCell className="text-xs text-muted-foreground font-mono">{s.atcCode}</TableCell>
+                  <TableCell className="px-4 py-3 text-right">
+                    {(() => {
+                      const sc = calculateScore(s, bwlSet.has(s.gtin))
+                      const { color } = scoreLabel(sc.total)
+                      return <span className={`tabular-nums text-xs font-semibold ${color}`}>{sc.total}</span>
+                    })()}
+                  </TableCell>
                 </TableRow>
               ))
             )}

@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { getShortageBySlug, getOddbByGtin, getHistoricalByGengrp } from '@/lib/db'
+import { getShortageBySlug, getOddbByGtin, getHistoricalByGengrp, getBwlGtins } from '@/lib/db'
+import { calculateScore, scoreLabel } from '@/lib/score'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -26,6 +27,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
+function ScoreRow({
+  label, value, max, tooltip
+}: { label: string; value: number; max: number; tooltip: string }) {
+  return (
+    <div className="space-y-0.5" title={tooltip}>
+      <div className="flex justify-between text-xs text-muted-foreground">
+        <span>{label}</span>
+        <span className="tabular-nums font-medium text-foreground">{value} / {max}</span>
+      </div>
+      <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+        <div
+          className="h-full rounded-full bg-primary/70"
+          style={{ width: `${Math.round((value / max) * 100)}%` }}
+        />
+      </div>
+    </div>
+  )
+}
+
 export default async function MedikamentPage({ params }: PageProps) {
   const { slug } = await params
   const shortage = await getShortageBySlug(slug)
@@ -34,10 +54,14 @@ export default async function MedikamentPage({ params }: PageProps) {
     notFound()
   }
 
-  const [oddb, historical] = await Promise.all([
+  const [oddb, historical, bwlGtins] = await Promise.all([
     getOddbByGtin(shortage.gtin).catch(() => null),
     getHistoricalByGengrp(shortage.gengrp, shortage.gtin).catch(() => []),
+    getBwlGtins().catch(() => [] as string[]),
   ])
+  const isBwl = bwlGtins.includes(shortage.gtin)
+  const score = calculateScore(shortage, isBwl)
+  const { label: scoreText, color: scoreColor } = scoreLabel(score.total)
 
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -191,6 +215,35 @@ export default async function MedikamentPage({ params }: PageProps) {
             </p>
           </section>
         )}
+
+        {/* engpass.radar Score */}
+        <section className="space-y-3 rounded-lg border bg-muted/30 p-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-semibold text-base">engpass.radar Score</h2>
+            <span className={`text-2xl font-black tabular-nums ${scoreColor}`}>
+              {score.total}
+              <span className="text-sm font-normal text-muted-foreground ml-1">/ 100</span>
+            </span>
+          </div>
+          <p className={`text-sm font-medium ${scoreColor}`}>{scoreText}</p>
+
+          {/* Factor breakdown */}
+          <div className="space-y-2 text-sm">
+            <ScoreRow label="Transparenz (0–35)" value={score.transparency} max={35}
+              tooltip="Wie offen das Unternehmen kommuniziert. Status 1 (direktes Reporting) = 5 Punkte, Status 4 (keine Information) = 35 Punkte." />
+            <ScoreRow label="Dauer (0–30)" value={score.duration} max={30}
+              tooltip={`${shortage.tageSeitMeldung} Tage seit Meldung.`} />
+            <ScoreRow label="Keine Alternativen (0–20)" value={score.noAlternatives} max={20}
+              tooltip={score.noAlternatives > 0 ? 'Keine Alternativen auf drugshortage.ch gelistet.' : 'Alternativen verfügbar.'} />
+            <ScoreRow label="Pflichtlager/BWL (0–15)" value={score.critical} max={15}
+              tooltip={isBwl ? 'Produkt auf der BWL-Pflichtlagerliste.' : 'Nicht auf der Pflichtlagerliste.'} />
+          </div>
+
+          <p className="text-xs text-muted-foreground pt-1">
+            Proprietärer Index von engpass.radar. Höher = schwerwiegender Engpass.
+            Kombiniert Transparenz, Dauer, Alternativverfügbarkeit und strategische Relevanz.
+          </p>
+        </section>
 
         {historical.length > 0 && (
           <section className="space-y-3">
