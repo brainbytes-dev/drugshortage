@@ -12,6 +12,7 @@ import { NeueMeldungenButton } from '@/components/neue-meldungen-button'
 import { ExportCsvButton } from '@/components/export-csv-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
 import { TimelineChart } from '@/components/timeline-chart'
+import { AtcTreemap } from '@/components/atc-treemap'
 import type { ShortagesQuery } from '@/lib/types'
 
 interface PageProps {
@@ -147,6 +148,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         {/* Weekly Timeline Chart */}
         <TimelineChart data={weeklyTimeline} />
+
+        {/* ATC Treemap */}
+        {overview && overview.atcGruppen.length > 0 && (
+          <AtcTreemap data={overview.atcGruppen} />
+        )}
 
         {/* Overview Buttons + Stand */}
         <div className="flex flex-wrap items-center gap-2">
