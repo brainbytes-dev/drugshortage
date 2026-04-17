@@ -103,13 +103,24 @@ export default async function WirkstoffPage({ params }: PageProps) {
           )}
         </div>
 
-        <p className="text-sm leading-relaxed">
-          <strong>{count} Präparat{count !== 1 ? 'e' : ''}</strong> mit dem Wirkstoff{' '}
-          <strong>{substanz ?? atc}</strong>{' '}
-          {count !== 1 ? 'sind' : 'ist'} aktuell nicht lieferbar in der Schweiz.
-          {avgTage > 0 && ` Durchschnittliche Engpassdauer: ${avgTage} Tage.`}
-          {firmen && <> Betroffen: {firmen}{shortages.length > 5 ? ' u.a.' : ''}.</>}
-        </p>
+        <div className="rounded-lg border border-border/60 bg-muted/30 px-4 py-3 grid grid-cols-2 gap-x-6 gap-y-1 text-sm">
+          <div>
+            <span className="text-muted-foreground">Aktive Engpässe</span>
+            <p className="font-semibold tabular-nums">{count}</p>
+          </div>
+          {avgTage > 0 && (
+            <div>
+              <span className="text-muted-foreground">Ø Engpassdauer</span>
+              <p className="font-semibold tabular-nums">{avgTage} Tage</p>
+            </div>
+          )}
+          {firmen && (
+            <div className="col-span-2 mt-1">
+              <span className="text-muted-foreground">Betroffen: </span>
+              <span>{firmen}{shortages.length > 5 ? ' u.a.' : ''}</span>
+            </div>
+          )}
+        </div>
 
         <section className="space-y-4">
           <ul className="divide-y text-sm">
