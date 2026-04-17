@@ -276,6 +276,16 @@ export async function getKPIStats(): Promise<KPIStats> {
   }
 }
 
+/** Direct (uncached) last-scrape timestamp — always fresh, never LRU-cached */
+export async function getLastScrapedAt(): Promise<string | null> {
+  const row = await prisma.scrapeRun.findFirst({
+    where: { status: 'success' },
+    orderBy: { scrapedAt: 'desc' },
+    select: { scrapedAt: true },
+  })
+  return row?.scrapedAt.toISOString() ?? null
+}
+
 export async function getFirmaList(): Promise<string[]> {
   const rows = await prisma.shortage.findMany({
     where: { isActive: true, statusCode: { gte: 1, lte: 5 } },

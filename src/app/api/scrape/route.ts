@@ -29,7 +29,7 @@ export async function POST(request: Request) {
 
     // ✅ Invalidate in-memory LRU caches and ISR page cache
     invalidateStatsCache()
-    revalidatePath('/')
+    revalidatePath('/', 'layout') // bust entire layout tree, not just exact path
 
     let historicalInserted = 0
     try {
