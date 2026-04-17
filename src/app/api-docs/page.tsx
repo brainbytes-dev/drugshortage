@@ -129,6 +129,16 @@ export default function ApiDocsPage() {
         </ul>
       </section>
 
+      <section className="space-y-2">
+        <h2 className="text-lg font-semibold">Score-Methodik</h2>
+        <p className="text-muted-foreground text-sm leading-relaxed">
+          Jeder Engpass-Datensatz enthält einen <strong className="text-foreground">engpass.radar Severity Score</strong> (0–100).
+          Die genaue Berechnung ist auf der{' '}
+          <a href="/methodik" className="underline hover:text-foreground">Score-Methodik-Seite</a>{' '}
+          dokumentiert.
+        </p>
+      </section>
+
       <footer className="border-t pt-6 text-xs text-muted-foreground">
         Daten täglich aktualisiert aus drugshortage.ch, BWL und HIN/ODDB.
       </footer>
