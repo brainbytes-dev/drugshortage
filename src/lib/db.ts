@@ -403,6 +403,47 @@ export async function getAllDrugSlugs(): Promise<Array<{ slug: string; bezeichnu
   return result
 }
 
+// ── Firma Profile ─────────────────────────────────────────────────────────────
+
+export async function getFirmaBySlug(slug: string): Promise<string | null> {
+  const rows = await prisma.shortage.findMany({
+    where: { isActive: true, statusCode: { gte: 1, lte: 5 } },
+    select: { firma: true },
+    distinct: ['firma'],
+  })
+  const match = rows.find(r => toSlug(r.firma) === slug)
+  return match?.firma ?? null
+}
+
+export async function getFirmaActiveShortages(firma: string): Promise<Shortage[]> {
+  const rows = await prisma.shortage.findMany({
+    where: { isActive: true, statusCode: { gte: 1, lte: 5 }, firma },
+    orderBy: { tageSeitMeldung: 'desc' },
+  })
+  return rows.map(mapShortage)
+}
+
+export async function getFirmaHistoricalCount(firma: string): Promise<number> {
+  return prisma.shortage.count({ where: { isActive: false, firma } })
+}
+
+export async function getAllFirmaSlugs(): Promise<Array<{ slug: string; firma: string }>> {
+  const rows = await prisma.shortage.findMany({
+    where: { isActive: true, statusCode: { gte: 1, lte: 5 } },
+    select: { firma: true },
+    distinct: ['firma'],
+  })
+  const seen = new Set<string>()
+  const result: Array<{ slug: string; firma: string }> = []
+  for (const r of rows) {
+    const slug = toSlug(r.firma)
+    if (seen.has(slug)) continue
+    seen.add(slug)
+    result.push({ slug, firma: r.firma })
+  }
+  return result
+}
+
 // ── ODDB Integration ─────────────────────────────────────────────────────────
 
 export async function upsertOddbProducts(
