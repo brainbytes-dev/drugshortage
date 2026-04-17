@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useRef, useEffect, useTransition } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -38,6 +38,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
   const [selected, setSelected] = useState<Shortage | null>(null)
   const [pageInput, setPageInput] = useState(String(page))
   const pageInputRef = useRef<HTMLInputElement>(null)
+  const [, startTransition] = useTransition()
 
   // Keep input in sync when page changes externally (filter reset, sort, etc.)
   useEffect(() => { setPageInput(String(page)) }, [page])
@@ -55,7 +56,9 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
       if (v) p.set(k, v)
       else p.delete(k)
     }
-    router.replace(`${pathname}?${p.toString()}`, { scroll: false })
+    startTransition(() => {
+      router.replace(`${pathname}?${p.toString()}`, { scroll: false })
+    })
   }
 
   const handleSort = (key: string) => {
