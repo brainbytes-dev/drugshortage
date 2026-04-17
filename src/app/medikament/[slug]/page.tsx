@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { getShortageBySlug, getOddbByGtin } from '@/lib/db'
+import { getShortageBySlug, getOddbByGtin, getHistoricalByGengrp } from '@/lib/db'
 
 interface PageProps {
   params: Promise<{ slug: string }>
@@ -34,7 +34,10 @@ export default async function MedikamentPage({ params }: PageProps) {
     notFound()
   }
 
-  const oddb = await getOddbByGtin(shortage.gtin).catch(() => null)
+  const [oddb, historical] = await Promise.all([
+    getOddbByGtin(shortage.gtin).catch(() => null),
+    getHistoricalByGengrp(shortage.gengrp, shortage.gtin).catch(() => []),
+  ])
 
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -186,6 +189,30 @@ export default async function MedikamentPage({ params }: PageProps) {
             <p className="text-sm text-muted-foreground whitespace-pre-wrap">
               {shortage.bemerkungen}
             </p>
+          </section>
+        )}
+
+        {historical.length > 0 && (
+          <section className="space-y-3">
+            <h2 className="font-semibold text-base">Historischer Verlauf</h2>
+            <p className="text-sm text-muted-foreground">
+              Dieses Produkt (oder ein wirkstoffgleiches) war bereits{' '}
+              <span className="font-semibold text-foreground">{historical.length}×</span>{' '}
+              im Engpass.
+            </p>
+            <div className="divide-y text-sm">
+              {historical.slice(0, 10).map(h => (
+                <div key={h.gtin} className="py-2 flex items-start justify-between gap-4">
+                  <span className="text-muted-foreground truncate max-w-[60%]">{h.bezeichnung}</span>
+                  <span className="tabular-nums shrink-0 text-muted-foreground">{h.tageSeitMeldung} Tage</span>
+                </div>
+              ))}
+              {historical.length > 10 && (
+                <p className="py-2 text-xs text-muted-foreground">
+                  + {historical.length - 10} weitere historische Einträge
+                </p>
+              )}
+            </div>
           </section>
         )}
 
