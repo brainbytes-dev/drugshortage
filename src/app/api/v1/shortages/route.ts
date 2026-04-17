@@ -19,10 +19,21 @@ export async function GET(request: Request) {
       atc: searchParams.get('atc') ?? undefined,
       page: Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1),
       perPage: Math.min(200, Math.max(1, parseInt(searchParams.get('perPage') ?? '50', 10) || 50)),
-      sort: searchParams.get('sort') ?? 'tageSeitMeldung:desc',
     }
 
-    const response = await queryShortages(query)
+    const ALLOWED_SORT_FIELDS = new Set([
+      'tageSeitMeldung', 'bezeichnung', 'firma', 'atcCode', 'statusCode',
+    ])
+    const rawSort = searchParams.get('sort') ?? 'tageSeitMeldung:desc'
+    const [sortField] = rawSort.split(':')
+    const sort = ALLOWED_SORT_FIELDS.has(sortField) ? rawSort : 'tageSeitMeldung:desc'
+
+    const finalQuery: ShortagesQuery = {
+      ...query,
+      sort,
+    }
+
+    const response = await queryShortages(finalQuery)
 
     return NextResponse.json(
       {
