@@ -485,7 +485,8 @@ export async function getAllAtcCodes(): Promise<Array<{ atc: string; bezeichnung
 
 export async function getShortageBySlug(slug: string): Promise<Shortage | null> {
   const row = await prisma.shortage.findFirst({
-    where: { slug, isActive: true },
+    where: { slug },
+    orderBy: { isActive: 'desc' }, // active entries first if slug appears multiple times
   })
   return row ? mapShortage(row) : null
 }

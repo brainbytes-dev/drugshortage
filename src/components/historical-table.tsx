@@ -158,7 +158,7 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-1">
           <p className="text-sm text-muted-foreground tabular-nums">
-            {start}–{end} von {total.toLocaleString('de-CH')}
+            {start}–{end} von {total}
           </p>
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" className="h-8 w-8" disabled={page <= 1}

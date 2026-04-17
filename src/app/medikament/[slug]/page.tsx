@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { getShortageBySlug, getOddbByGtin, getHistoricalByGengrp, getBwlGtins } from '@/lib/db'
@@ -64,52 +63,8 @@ export default async function MedikamentPage({ params }: PageProps) {
   const score = calculateScore(shortage, isBwl)
   const { label: scoreText, color: scoreColor } = scoreLabel(score.total)
 
-  const jsonLd: Record<string, unknown> = {
-    '@context': 'https://schema.org',
-    '@type': 'Drug',
-    name: shortage.bezeichnung,
-    url: `https://engpassradar.ch/medikament/${slug}`,
-    manufacturer: { '@type': 'Organization', name: shortage.firma },
-    description: `Lieferengpass für ${shortage.bezeichnung} von ${shortage.firma} in der Schweiz. Status: ${shortage.statusText}. Seit ${shortage.tageSeitMeldung} Tagen gemeldet.`,
-    ...(oddb?.substanz && { activeIngredient: oddb.substanz }),
-    ...(oddb?.zusammensetzung && { nonProprietaryName: oddb.zusammensetzung }),
-    ...(oddb?.prodno && {
-      code: {
-        '@type': 'MedicalCode',
-        codeValue: oddb.prodno,
-        codingSystem: 'Swissmedic',
-      },
-    }),
-    ...(shortage.atcCode && {
-      code: [
-        ...(oddb?.prodno ? [{
-          '@type': 'MedicalCode',
-          codeValue: oddb.prodno,
-          codingSystem: 'Swissmedic',
-        }] : []),
-        {
-          '@type': 'MedicalCode',
-          codeValue: shortage.atcCode,
-          codingSystem: 'ATC',
-        },
-      ],
-    }),
-    ...(shortage.datumLieferfahigkeit && {
-      availabilityStarts: shortage.datumLieferfahigkeit,
-    }),
-    ...(shortage.ersteMeldung && {
-      availabilityEnds: shortage.ersteMeldung,
-    }),
-  }
-
   return (
     <main className="min-h-screen bg-background">
-      <Script
-        id="json-ld-shortage"
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
-        strategy="beforeInteractive"
-      />
 
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
         <Link
@@ -122,6 +77,12 @@ export default async function MedikamentPage({ params }: PageProps) {
 
         <div className="space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">{shortage.bezeichnung}</h1>
+          {!shortage.isActive && (
+            <div className="inline-flex items-center gap-1.5 rounded-md border border-primary/30 bg-primary/8 px-2.5 py-1 text-xs font-semibold text-primary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary" />
+              Engpass aufgelöst — historischer Eintrag
+            </div>
+          )}
           {oddb?.authStatus && oddb.authStatus !== 'A' && (
             <div className="inline-flex items-center gap-1.5 rounded-md bg-destructive/10 border border-destructive/30 px-2.5 py-1 text-xs font-medium text-destructive">
               Zulassung erloschen / nicht mehr zugelassen

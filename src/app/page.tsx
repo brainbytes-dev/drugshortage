@@ -187,28 +187,28 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           <AtcTreemap data={overview.atcGruppen} />
         )}
 
-        {/* Overview Buttons + Stand */}
-        <div className="flex flex-wrap items-center gap-2">
-          {overview && overview.firmenRanking.length > 0 && (
-            <FirmaRankingSheet firmenRanking={overview.firmenRanking} />
-          )}
-          {overview && overview.atcGruppen.length > 0 && (
-            <AtcGruppenSheet atcGruppen={overview.atcGruppen} />
-          )}
+        {/* View Switch + Overview Buttons in one row */}
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <Suspense fallback={null}>
+            <ViewSwitch
+              active={view}
+              counts={{
+                engpaesse: kpi.totalActive,
+                ausserHandel: offMarketStats.ausserHandel,
+                vertriebseingestellt: offMarketStats.vertriebseingestellt,
+                historisch: historicalTotal,
+              }}
+            />
+          </Suspense>
+          <div className="flex items-center gap-2">
+            {overview && overview.firmenRanking.length > 0 && (
+              <FirmaRankingSheet firmenRanking={overview.firmenRanking} />
+            )}
+            {overview && overview.atcGruppen.length > 0 && (
+              <AtcGruppenSheet atcGruppen={overview.atcGruppen} />
+            )}
+          </div>
         </div>
-
-        {/* View Switch */}
-        <Suspense fallback={null}>
-          <ViewSwitch
-            active={view}
-            counts={{
-              engpaesse: kpi.totalActive,
-              ausserHandel: offMarketStats.ausserHandel,
-              vertriebseingestellt: offMarketStats.vertriebseingestellt,
-              historisch: historicalTotal,
-            }}
-          />
-        </Suspense>
 
         {/* Search + Filters (Engpässe only) */}
         {!isOffMarket && !isHistorical && (
