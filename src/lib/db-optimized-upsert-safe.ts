@@ -17,8 +17,10 @@ export async function upsertShortagesOptimizedSafe(
   })
   const existingMap = new Map(existingRows.map(r => [r.gtin, r.firstSeenAt]))
 
-  const toCreate = incoming.filter(s => !existingMap.has(s.gtin))
-  const toUpdate = incoming.filter(s => existingMap.has(s.gtin))
+  // Deduplicate by GTIN (keep last occurrence) to prevent ON CONFLICT errors
+  const deduped = Array.from(new Map(incoming.map(s => [s.gtin, s])).values())
+  const toCreate = deduped.filter(s => !existingMap.has(s.gtin))
+  const toUpdate = deduped.filter(s => existingMap.has(s.gtin))
 
   // ✅ Batch create with createMany
   if (toCreate.length > 0) {
@@ -74,7 +76,7 @@ export async function upsertShortagesOptimizedSafe(
       })
 
       const query = Prisma.sql`
-        INSERT INTO "Shortage" (
+        INSERT INTO "shortages" (
           gtin, pharmacode, bezeichnung, firma, "atcCode", gengrp,
           "statusCode", "statusText", "datumLieferfahigkeit",
           "datumLetzteMutation", "tageSeitMeldung", "detailUrl",
