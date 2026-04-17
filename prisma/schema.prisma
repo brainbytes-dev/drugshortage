@@ -50,6 +50,7 @@ model Shortage {
   firstSeenAt           DateTime
   lastSeenAt            DateTime
   isActive              Boolean  @default(true)
+  occurrenceCount       Int      @default(1)
 
   // Hot path: main table query (WHERE isActive=true AND statusCode 1-5 ORDER BY tageSeitMeldung DESC)
   @@index([isActive, statusCode, tageSeitMeldung(sort: Desc)], map: "idx_shortages_active_status_days")
@@ -147,6 +148,25 @@ model BwlShortage {
   fetchedAt             DateTime @updatedAt
 
   @@map("bwl_shortages")
+}
+
+// Per-drug shortage episode log — one row per distinct shortage period
+// startedAt = first seen in scrape, endedAt = null (still active) or date removed from scrape
+// durationDays is denormalised and set when the episode is closed (fast aggregation queries)
+model ShortageEpisode {
+  id           Int       @id @default(autoincrement())
+  gtin         String
+  startedAt    DateTime
+  endedAt      DateTime?
+  durationDays Int?      // null while active; set on close
+
+  // Per-drug history (most recent first)
+  @@index([gtin, startedAt(sort: Desc)], map: "idx_episodes_gtin_start")
+  // "All currently active" / "All closed" queries
+  @@index([endedAt],                     map: "idx_episodes_ended_at")
+  // Global timeline
+  @@index([startedAt(sort: Desc)],       map: "idx_episodes_timeline")
+  @@map("shortage_episodes")
 }
 
 // Off-market drugs: permanently withdrawn (ausserHandel) or sales discontinued (Vertriebseinstellung)
