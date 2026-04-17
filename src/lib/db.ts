@@ -190,7 +190,8 @@ export async function queryShortages(query: ShortagesQuery): Promise<ShortagesRe
 
   // Build where clause
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const where: Record<string, any> = { isActive: true }
+  // statusCode 1–5 are the official drugshortage.ch codes; 0/8/9 are parse artifacts / "abgeschlossen"
+  const where: Record<string, any> = { isActive: true, statusCode: { gte: 1, lte: 5 } }
 
   if (query.search) {
     const term = query.search

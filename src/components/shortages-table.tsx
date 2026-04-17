@@ -47,7 +47,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
       if (v) p.set(k, v)
       else p.delete(k)
     }
-    router.replace(`${pathname}?${p.toString()}`)
+    router.replace(`${pathname}?${p.toString()}`, { scroll: false })
   }
 
   const handleSort = (key: string) => {
