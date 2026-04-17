@@ -41,8 +41,32 @@ export default async function WirkstoffPage({ params }: PageProps) {
 
   const count = shortages.length
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': `https://www.engpassradar.ch/wirkstoff/${atc}`,
+        url: `https://www.engpassradar.ch/wirkstoff/${atc}`,
+        name: `ATC ${atc} — Engpässe | engpass.radar`,
+        isPartOf: { '@id': 'https://www.engpassradar.ch' },
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.engpassradar.ch' },
+          { '@type': 'ListItem', position: 2, name: `ATC ${atc}`, item: `https://www.engpassradar.ch/wirkstoff/${atc}` },
+        ],
+      },
+    ],
+  }
+
   return (
     <main className="min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }}
+      />
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
         <Link
           href="/"

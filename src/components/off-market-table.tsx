@@ -79,7 +79,12 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
                   className="border-border/30 hover:bg-muted/30 transition-colors"
                 >
                   <TableCell className="pl-4 font-medium text-sm max-w-xs">
-                    <span className="line-clamp-2 leading-snug">{row.bezeichnung}</span>
+                    <Link
+                      href={`/gtin/${row.gtin}`}
+                      className="line-clamp-2 leading-snug hover:underline underline-offset-2"
+                    >
+                      {row.bezeichnung}
+                    </Link>
                   </TableCell>
                   <TableCell className="text-sm">
                     {row.firma ? (

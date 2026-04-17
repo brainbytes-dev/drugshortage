@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import { revalidatePath } from 'next/cache'
 import { fetchAndParse, fetchAndParseCompleted, fetchAndParseOffMarket } from '@/lib/scraper'
 import { upsertShortagesOptimizedSafe as upsertShortages } from '@/lib/db-optimized-upsert-safe'
-import { saveOverviewStats, saveScrapeRun, upsertCompletedShortages, upsertBwlShortages, upsertOffMarketDrugs } from '@/lib/db'
+import { saveOverviewStats, saveScrapeRun, upsertCompletedShortages, upsertBwlShortages, upsertOffMarketDrugs, syncErloschenFromOddb } from '@/lib/db'
 import { invalidateStatsCache } from '@/lib/db-cached-example'
 import { fetchBwlData } from '@/lib/bwl-scraper'
 
@@ -50,10 +50,18 @@ export async function POST(request: Request) {
     }
 
     let offMarketUpserted = 0
+    let erloschenUpserted = 0
     try {
-      const offMarketEntries = await fetchAndParseOffMarket()
+      const [offMarketEntries, erloschenResult] = await Promise.all([
+        fetchAndParseOffMarket(),
+        syncErloschenFromOddb().catch(erlErr => {
+          console.error('[scrape] Erlöschen sync failed (non-fatal):', erlErr)
+          return { upserted: 0 }
+        }),
+      ])
       const result = await upsertOffMarketDrugs(offMarketEntries)
       offMarketUpserted = result.upserted
+      erloschenUpserted = erloschenResult.upserted
     } catch (offErr) {
       console.error('[scrape] Off-market fetch failed (non-fatal):', offErr)
     }
@@ -66,6 +74,7 @@ export async function POST(request: Request) {
       historicalInserted,
       bwlUpserted,
       offMarketUpserted,
+      erloschenUpserted,
     })
   } catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error'

@@ -1,14 +1,25 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 
 export const metadata: Metadata = {
   title: 'Nutzungsbedingungen — engpass.radar',
   robots: { index: false, follow: false },
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Nutzungsbedingungen — engpass.radar',
+  url: 'https://www.engpassradar.ch/nutzungsbedingungen',
+  isPartOf: { '@id': 'https://www.engpassradar.ch' },
+}
+
 export default function NutzungsbedingungenPage() {
   return (
     <main className="bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }}
+      />
       <div className="max-w-2xl mx-auto px-6 py-16 space-y-10">
 
         <div className="space-y-1 border-b pb-8">
@@ -146,11 +157,6 @@ export default function NutzungsbedingungenPage() {
           </p>
         </section>
 
-        <div className="pt-4 border-t text-sm text-muted-foreground flex gap-4">
-          <Link href="/datenschutz" className="underline hover:text-foreground">Datenschutz</Link>
-          <Link href="/impressum" className="underline hover:text-foreground">Impressum</Link>
-          <Link href="/" className="underline hover:text-foreground">Zurück zur Übersicht</Link>
-        </div>
 
       </div>
     </main>

@@ -614,6 +614,7 @@ export async function upsertOddbPrices(
 
 export async function getOddbByGtin(gtin: string): Promise<{
   prodno: string
+  bezeichnungDe: string | null
   substanz: string | null
   zusammensetzung: string | null
   atcCode: string
@@ -623,7 +624,7 @@ export async function getOddbByGtin(gtin: string): Promise<{
 } | null> {
   const row = await prisma.oddbProduct.findUnique({
     where: { gtin },
-    select: { prodno: true, substanz: true, zusammensetzung: true, atcCode: true, ppub: true, pexf: true, authStatus: true },
+    select: { prodno: true, bezeichnungDe: true, substanz: true, zusammensetzung: true, atcCode: true, ppub: true, pexf: true, authStatus: true },
   })
   return row ?? null
 }
@@ -829,7 +830,7 @@ export async function upsertOffMarketDrugs(
 }
 
 export interface OffMarketQuery {
-  category: 'AUSSER_HANDEL' | 'VERTRIEBSEINSTELLUNG'
+  category: 'AUSSER_HANDEL' | 'VERTRIEBSEINSTELLUNG' | 'ERLOSCHEN'
   search?: string
   firma?: string
   page?: number
@@ -878,12 +879,57 @@ export async function getOffMarketGtins(): Promise<Set<string>> {
 export async function getOffMarketStats(): Promise<{
   ausserHandel: number
   vertriebseingestellt: number
+  erloschen: number
 }> {
-  const [ah, ve] = await Promise.all([
+  const [ah, ve, er] = await Promise.all([
     prisma.offMarketDrug.count({ where: { category: 'AUSSER_HANDEL' } }),
     prisma.offMarketDrug.count({ where: { category: 'VERTRIEBSEINSTELLUNG' } }),
+    prisma.offMarketDrug.count({ where: { category: 'ERLOSCHEN' } }),
   ])
-  return { ausserHandel: ah, vertriebseingestellt: ve }
+  return { ausserHandel: ah, vertriebseingestellt: ve, erloschen: er }
+}
+
+export async function getOffMarketByGtin(gtin: string): Promise<import('@prisma/client').OffMarketDrug[]> {
+  return prisma.offMarketDrug.findMany({
+    where: { gtin },
+    orderBy: { category: 'asc' },
+  })
+}
+
+export async function syncErloschenFromOddb(): Promise<{ upserted: number }> {
+  const CHUNK = 500
+  let upserted = 0
+
+  const rows = await prisma.oddbProduct.findMany({
+    where: { authStatus: { in: ['E', 'S'] } },
+    select: { gtin: true, bezeichnungDe: true, atcCode: true },
+  })
+
+  for (let i = 0; i < rows.length; i += CHUNK) {
+    const chunk = rows.slice(i, i + CHUNK)
+    await Promise.all(
+      chunk.map(p =>
+        prisma.offMarketDrug.upsert({
+          where: { gtin_category: { gtin: p.gtin, category: 'ERLOSCHEN' } },
+          create: {
+            gtin: p.gtin,
+            bezeichnung: p.bezeichnungDe,
+            firma: '',
+            atcCode: p.atcCode,
+            datum: null,
+            category: 'ERLOSCHEN',
+          },
+          update: {
+            bezeichnung: p.bezeichnungDe,
+            atcCode: p.atcCode,
+          },
+        })
+      )
+    )
+    upserted += chunk.length
+  }
+
+  return { upserted }
 }
 
 // ── Episode queries ───────────────────────────────────────────────────────────

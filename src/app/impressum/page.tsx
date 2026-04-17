@@ -6,9 +6,38 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'ContactPage',
+      name: 'Impressum — engpass.radar',
+      url: 'https://www.engpassradar.ch/impressum',
+    },
+    {
+      '@type': 'Organization',
+      name: 'engpass.radar',
+      url: 'https://www.engpassradar.ch',
+      founder: { '@type': 'Person', name: 'Henrik Rühe' },
+      address: {
+        '@type': 'PostalAddress',
+        streetAddress: 'Buchenweg 18',
+        postalCode: '5036',
+        addressLocality: 'Oberentfelden',
+        addressCountry: 'CH',
+      },
+      email: 'info@engpassradar.ch',
+    },
+  ],
+}
+
 export default function ImpressumPage() {
   return (
     <main className="bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }}
+      />
       <div className="max-w-2xl mx-auto px-6 py-16 space-y-10">
         <div className="space-y-1 border-b pb-8">
           <h1 className="text-3xl font-bold tracking-tight">Impressum</h1>

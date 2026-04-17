@@ -341,9 +341,21 @@ const content = `
 <p class="seal"><a href="https://datenschutz-generator.de/" title="Rechtstext von Dr. Schwenke - für weitere Informationen bitte anklicken." target="_blank" rel="noopener noreferrer nofollow">Erstellt mit kostenlosem Datenschutz-Generator.de von Dr. Thomas Schwenke</a></p>
 `
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Datenschutzerklärung — engpass.radar',
+  url: 'https://www.engpassradar.ch/datenschutz',
+  isPartOf: { '@id': 'https://www.engpassradar.ch' },
+}
+
 export default function DatenschutzPage() {
   return (
     <main className="bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }}
+      />
       <div className="max-w-3xl mx-auto px-6 py-16">
         <article
           className="

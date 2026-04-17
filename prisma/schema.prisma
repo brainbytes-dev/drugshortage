@@ -17,6 +17,7 @@ datasource db {
 enum OffMarketCategory {
   AUSSER_HANDEL
   VERTRIEBSEINSTELLUNG
+  ERLOSCHEN
 }
 
 // ── Models ────────────────────────────────────────────────────────────────────
@@ -173,11 +174,12 @@ model ShortageEpisode {
   @@map("shortage_episodes")
 }
 
-// Off-market drugs: permanently withdrawn (ausserHandel) or sales discontinued (Vertriebseinstellung)
-// Source: drugshortage.ch/ausserHandel.aspx + drugshortage.ch/Vertriebseinstellung.aspx
+// Off-market drugs: permanently withdrawn (ausserHandel), sales discontinued (Vertriebseinstellung), or authorization expired (Erlöschen)
+// Source: drugshortage.ch/ausserHandel.aspx + drugshortage.ch/Vertriebseinstellung.aspx + oddb_products (authStatus E/S)
 // Note: "datum" meaning differs by category:
 //   AUSSER_HANDEL        → date the drug went off market
 //   VERTRIEBSEINSTELLUNG → date of last mutation / sales cessation
+//   ERLOSCHEN            → null (ODDB does not provide expiry date)
 model OffMarketDrug {
   id          Int               @id @default(autoincrement())
   gtin        String
