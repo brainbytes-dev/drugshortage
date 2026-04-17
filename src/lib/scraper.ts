@@ -281,3 +281,90 @@ export async function fetchAndParse(): Promise<{ shortages: Shortage[]; overview
 
   return { shortages, overview }
 }
+
+const AUSSER_HANDEL_URL = 'https://www.drugshortage.ch/ausserHandel.aspx'
+const VERTRIEBSEINSTELLUNG_URL = 'https://www.drugshortage.ch/Vertriebseinstellung.aspx'
+
+export interface OffMarketEntry {
+  gtin: string
+  bezeichnung: string
+  firma: string
+  atcCode: string | null
+  datum: string | null
+  category: 'AUSSER_HANDEL' | 'VERTRIEBSEINSTELLUNG'
+}
+
+export function parseAusserHandelFromHtml(html: string): OffMarketEntry[] {
+  const $ = cheerio.load(html)
+  const rows = $('#GridView1 tr').toArray()
+  const entries: OffMarketEntry[] = []
+
+  for (const row of rows.slice(1)) {
+    const cells = $(row).find('td')
+    if (cells.length < 4) continue
+    const getText = (i: number) => $(cells[i]).text().trim()
+    const gtin = getText(0)
+    if (!gtin) continue
+    entries.push({
+      gtin,
+      bezeichnung: getText(1),
+      firma: getText(2),
+      atcCode: getText(3) || null,
+      datum: getText(4) || null,
+      category: 'AUSSER_HANDEL',
+    })
+  }
+  return entries
+}
+
+export function parseVertriebseinstellungFromHtml(html: string): OffMarketEntry[] {
+  const $ = cheerio.load(html)
+  const rows = $('#GridView1 tr').toArray()
+  const entries: OffMarketEntry[] = []
+
+  for (const row of rows.slice(1)) {
+    const cells = $(row).find('td')
+    if (cells.length < 3) continue
+    const getText = (i: number) => $(cells[i]).text().trim()
+    const gtin = getText(1)
+    if (!gtin) continue
+    entries.push({
+      gtin,
+      bezeichnung: getText(0),
+      firma: getText(2),
+      atcCode: null,
+      datum: getText(3) || null,
+      category: 'VERTRIEBSEINSTELLUNG',
+    })
+  }
+  return entries
+}
+
+export async function fetchAndParseOffMarket(): Promise<OffMarketEntry[]> {
+  const [ahRes, veRes] = await Promise.all([
+    fetch(AUSSER_HANDEL_URL, { headers: FETCH_HEADERS }),
+    fetch(VERTRIEBSEINSTELLUNG_URL, { headers: FETCH_HEADERS }),
+  ])
+
+  const results: OffMarketEntry[] = []
+
+  if (ahRes.ok) {
+    const html = await ahRes.text()
+    const entries = parseAusserHandelFromHtml(html)
+    console.log(`[scraper] Fetched ${entries.length} ausser-Handel entries`)
+    results.push(...entries)
+  } else {
+    console.warn(`[scraper] ausserHandel.aspx returned ${ahRes.status}`)
+  }
+
+  if (veRes.ok) {
+    const html = await veRes.text()
+    const entries = parseVertriebseinstellungFromHtml(html)
+    console.log(`[scraper] Fetched ${entries.length} Vertriebseinstellung entries`)
+    results.push(...entries)
+  } else {
+    console.warn(`[scraper] Vertriebseinstellung.aspx returned ${veRes.status}`)
+  }
+
+  return results
+}
