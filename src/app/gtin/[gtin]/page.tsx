@@ -19,7 +19,7 @@ const AUTH_STATUS_LABELS: Record<string, { label: string; color: string }> = {
 const CATEGORY_LABELS: Record<string, { label: string; color: string }> = {
   AUSSER_HANDEL: { label: 'Ausser Handel', color: 'text-destructive bg-destructive/10 border-destructive/30' },
   VERTRIEBSEINSTELLUNG: { label: 'Vertriebseinstellung', color: 'text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-950/40 dark:border-amber-800' },
-  ERLOSCHEN: { label: 'Zulassung erloschen', color: 'text-destructive bg-destructive/10 border-destructive/30' },
+  ERLOSCHEN: { label: 'Nicht mehr erhältlich', color: 'text-destructive bg-destructive/10 border-destructive/30' },
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
