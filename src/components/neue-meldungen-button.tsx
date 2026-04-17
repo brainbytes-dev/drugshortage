@@ -18,7 +18,7 @@ export function NeueMeldungenButton() {
       p.set('neu', '1')
       p.delete('page') // reset pagination
     }
-    router.replace(`${pathname}?${p.toString()}`)
+    router.replace(`${pathname}?${p.toString()}`, { scroll: false })
   }
 
   return (
