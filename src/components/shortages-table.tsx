@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef, useEffect } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import {
@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { StatusBadge } from './status-badge'
 import { ShortageDrawer } from './shortage-drawer'
 import type { Shortage } from '@/lib/types'
-import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
+import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, ArrowUpDown } from 'lucide-react'
 import { calculateScore, scoreLabel } from '@/lib/score'
 import { toSlug } from '@/lib/slug'
 
@@ -36,6 +36,11 @@ const NEU_THRESHOLD_DAYS = 7
 
 export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: ShortagesTableProps) {
   const [selected, setSelected] = useState<Shortage | null>(null)
+  const [pageInput, setPageInput] = useState(String(page))
+  const pageInputRef = useRef<HTMLInputElement>(null)
+
+  // Keep input in sync when page changes externally (filter reset, sort, etc.)
+  useEffect(() => { setPageInput(String(page)) }, [page])
   // ✅ Only recreate Set when bwlGtins changes (prevents unnecessary re-renders)
   const bwlSet = useMemo(() => new Set(bwlGtins ?? []), [bwlGtins])
   const router = useRouter()
@@ -141,26 +146,72 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-3">
+        <div className="flex items-center justify-between mt-3 gap-2 flex-wrap">
           <p className="text-sm text-muted-foreground">
             {total} Einträge · Seite {page} / {totalPages}
           </p>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-1">
+            {/* First page */}
             <Button
               variant="outline"
               size="sm"
               disabled={page <= 1}
-              onClick={() => navigate({ page: String(page - 1) })}
+              onClick={() => { setPageInput('1'); navigate({ page: '1' }) }}
+              title="Erste Seite"
+            >
+              <ChevronsLeft className="h-4 w-4" />
+            </Button>
+            {/* Prev page */}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page <= 1}
+              onClick={() => { const p = String(page - 1); setPageInput(p); navigate({ page: p }) }}
+              title="Vorherige Seite"
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
+            {/* Manual page input */}
+            <input
+              ref={pageInputRef}
+              type="number"
+              min={1}
+              max={totalPages}
+              value={pageInput}
+              onChange={e => setPageInput(e.target.value)}
+              onBlur={() => {
+                const n = parseInt(pageInput, 10)
+                if (!isNaN(n) && n >= 1 && n <= totalPages && n !== page) {
+                  navigate({ page: String(n) })
+                } else {
+                  setPageInput(String(page))
+                }
+              }}
+              onKeyDown={e => {
+                if (e.key === 'Enter') pageInputRef.current?.blur()
+              }}
+              className="w-12 h-8 rounded-md border border-input bg-background text-center text-sm tabular-nums focus:outline-none focus:ring-1 focus:ring-ring"
+            />
+            <span className="text-sm text-muted-foreground tabular-nums">/ {totalPages}</span>
+            {/* Next page */}
             <Button
               variant="outline"
               size="sm"
               disabled={page >= totalPages}
-              onClick={() => navigate({ page: String(page + 1) })}
+              onClick={() => { const p = String(page + 1); setPageInput(p); navigate({ page: p }) }}
+              title="Nächste Seite"
             >
               <ChevronRight className="h-4 w-4" />
+            </Button>
+            {/* Last page */}
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page >= totalPages}
+              onClick={() => { const p = String(totalPages); setPageInput(p); navigate({ page: p }) }}
+              title="Letzte Seite"
+            >
+              <ChevronsRight className="h-4 w-4" />
             </Button>
           </div>
         </div>
