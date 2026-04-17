@@ -17,6 +17,7 @@ export async function GET(request: Request) {
       status: searchParams.get('status') ?? undefined,
       firma: searchParams.get('firma') ?? undefined,
       atc: searchParams.get('atc') ?? undefined,
+      neu: searchParams.get('neu') === '1',
       page: Math.max(1, parseInt(searchParams.get('page') ?? '1', 10) || 1),
       perPage: Math.min(200, Math.max(1, parseInt(searchParams.get('perPage') ?? '50', 10) || 50)),
     }
