@@ -10,6 +10,7 @@ const params = [
   { name: 'status', type: 'string', desc: 'Statuscode(s) 1–5, kommagetrennt', example: '1,4' },
   { name: 'firma', type: 'string', desc: 'Exakter Firmenname', example: 'Sandoz' },
   { name: 'atc', type: 'string', desc: 'ATC-Code-Präfix', example: 'C09' },
+  { name: 'neu', type: 'string', desc: 'Nur neue Engpässe (≤7 Tage). Wert: 1', example: 'neu=1' },
   { name: 'page', type: 'integer', desc: 'Seitennummer (Standard: 1)', example: '2' },
   { name: 'perPage', type: 'integer', desc: 'Einträge pro Seite (Standard: 50, max: 200)', example: '100' },
   { name: 'sort', type: 'string', desc: 'Sortierung: feld:asc oder feld:desc', example: 'tageSeitMeldung:desc' },
