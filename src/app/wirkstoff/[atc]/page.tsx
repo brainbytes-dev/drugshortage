@@ -50,6 +50,7 @@ export default async function WirkstoffPage({ params }: PageProps) {
   const count = shortages.length
 
   const avgTage = Math.round(shortages.reduce((s, x) => s + (x.tageSeitMeldung ?? 0), 0) / count)
+  const firmen = [...new Set(shortages.map(s => s.firma).filter(Boolean))].slice(0, 5).join(', ')
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -107,6 +108,7 @@ export default async function WirkstoffPage({ params }: PageProps) {
           <strong>{substanz ?? atc}</strong>{' '}
           {count !== 1 ? 'sind' : 'ist'} aktuell nicht lieferbar in der Schweiz.
           {avgTage > 0 && ` Durchschnittliche Engpassdauer: ${avgTage} Tage.`}
+          {firmen && <> Betroffen: {firmen}{shortages.length > 5 ? ' u.a.' : ''}.</>}
         </p>
 
         <section className="space-y-4">
