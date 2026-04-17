@@ -7,6 +7,20 @@ interface TimelineChartProps {
   data: WeeklyDataPoint[]
 }
 
+function CustomTooltip({ active, payload, label }: {
+  active?: boolean
+  payload?: { value: number }[]
+  label?: string
+}) {
+  if (!active || !payload?.length) return null
+  return (
+    <div className="rounded-md border bg-card px-3 py-2 text-sm shadow-md">
+      <p className="text-muted-foreground mb-0.5">{label}</p>
+      <p className="font-semibold text-foreground">{payload[0].value} neue Meldungen</p>
+    </div>
+  )
+}
+
 // "2025-W04" → "Jan '25"
 function formatWeekLabel(week: string): string {
   const [yearStr, weekStr] = week.split('-W')
@@ -48,7 +62,7 @@ export function TimelineChart({ data }: TimelineChartProps) {
             allowDecimals={false}
             width={32}
           />
-          <Tooltip />
+          <Tooltip content={<CustomTooltip />} />
           <Line
             type="monotone"
             dataKey="count"
