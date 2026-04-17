@@ -16,7 +16,7 @@ export function ResetFiltersButton() {
   return (
     <button
       onClick={() => router.replace(pathname, { scroll: false })}
-      className="flex items-center gap-1.5 rounded-md border px-3 py-2 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
+      className="flex h-8 items-center gap-1.5 rounded-md border px-3 text-sm text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
     >
       <X className="h-3.5 w-3.5" />
       Filter zurücksetzen
