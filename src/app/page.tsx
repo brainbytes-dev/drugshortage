@@ -1,10 +1,12 @@
 import { Suspense } from 'react'
-import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimeline } from '@/lib/db'
+import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimeline, queryOffMarketDrugs, getOffMarketStats } from '@/lib/db'
 import { getKPIStatsCached as getKPIStats, getFirmaListCached as getFirmaList } from '@/lib/db-cached-example'
 import { KPICards } from '@/components/kpi-cards'
 import { SearchBar } from '@/components/search-bar-optimized'
 import { FilterBar } from '@/components/filter-bar'
 import { ShortagesTable } from '@/components/shortages-table'
+import { OffMarketTable } from '@/components/off-market-table'
+import { ViewSwitch } from '@/components/view-switch'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import { ResetFiltersButton } from '@/components/reset-filters-button'
@@ -15,6 +17,8 @@ import { TimelineChart } from '@/components/timeline-chart'
 import { AtcTreemap } from '@/components/atc-treemap'
 import type { ShortagesQuery } from '@/lib/types'
 
+type ViewMode = 'engpaesse' | 'ausser-handel' | 'vertriebseinstellung'
+
 interface PageProps {
   searchParams: Promise<Record<string, string>>
 }
@@ -23,24 +27,38 @@ export const revalidate = 3600 // ISR: revalidate every hour
 
 export default async function DashboardPage({ searchParams }: PageProps) {
   const params = await searchParams
+  const view = (params.view ?? 'engpaesse') as ViewMode
+  const page = params.page ? parseInt(params.page, 10) : 1
+
+  const isOffMarket = view === 'ausser-handel' || view === 'vertriebseinstellung'
+
   const query: ShortagesQuery = {
     search: params.search,
     status: params.status,
     firma: params.firma,
     atc: params.atc,
     neu: params.neu === '1',
-    page: params.page ? parseInt(params.page, 10) : 1,
+    page,
     sort: params.sort ?? 'tageSeitMeldung:desc',
     perPage: 50,
   }
 
-  const [response, kpi, firmaList, overview, bwlGtins, weeklyTimeline] = await Promise.all([
-    queryShortages(query),
+  const [response, kpi, firmaList, overview, bwlGtins, weeklyTimeline, offMarketResponse, offMarketStats] = await Promise.all([
+    isOffMarket ? Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }) : queryShortages(query),
     getKPIStats(),
-    getFirmaList(),
+    isOffMarket ? Promise.resolve([] as string[]) : getFirmaList(),
     getOverviewStats(),
-    getBwlGtins().catch(() => [] as string[]),
+    isOffMarket ? Promise.resolve([] as string[]) : getBwlGtins().catch(() => [] as string[]),
     getWeeklyTimeline().catch(() => []),
+    isOffMarket
+      ? queryOffMarketDrugs({
+          category: view === 'ausser-handel' ? 'AUSSER_HANDEL' : 'VERTRIEBSEINSTELLUNG',
+          search: params.search,
+          page,
+          perPage: 50,
+        })
+      : Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }),
+    getOffMarketStats().catch(() => ({ ausserHandel: 0, vertriebseingestellt: 0 })),
   ])
 
   const lastUpdated = kpi.lastScrapedAt
@@ -164,26 +182,59 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           )}
         </div>
 
-        {/* Search + Filters */}
+        {/* View Switch */}
         <Suspense fallback={null}>
-          <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
-            <SearchBar />
-            <FilterBar firmaList={firmaList} />
-            <ResetFiltersButton />
-            <NeueMeldungenButton />
-            <ExportCsvButton />
-          </div>
+          <ViewSwitch
+            active={view}
+            counts={{
+              engpaesse: kpi.totalActive,
+              ausserHandel: offMarketStats.ausserHandel,
+              vertriebseingestellt: offMarketStats.vertriebseingestellt,
+            }}
+          />
         </Suspense>
+
+        {/* Search + Filters (Engpässe only) */}
+        {!isOffMarket && (
+          <Suspense fallback={null}>
+            <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
+              <SearchBar />
+              <FilterBar firmaList={firmaList} />
+              <ResetFiltersButton />
+              <NeueMeldungenButton />
+              <ExportCsvButton />
+            </div>
+          </Suspense>
+        )}
+
+        {/* Off-market search only */}
+        {isOffMarket && (
+          <Suspense fallback={null}>
+            <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
+              <SearchBar />
+              <ResetFiltersButton />
+            </div>
+          </Suspense>
+        )}
 
         {/* Table */}
         <Suspense fallback={null}>
-          <ShortagesTable
-            shortages={response.data}
-            total={response.total}
-            page={response.page}
-            perPage={response.perPage}
-            bwlGtins={bwlGtins}
-          />
+          {isOffMarket ? (
+            <OffMarketTable
+              data={offMarketResponse.data}
+              total={offMarketResponse.total}
+              page={offMarketResponse.page}
+              perPage={offMarketResponse.perPage}
+            />
+          ) : (
+            <ShortagesTable
+              shortages={response.data}
+              total={response.total}
+              page={response.page}
+              perPage={response.perPage}
+              bwlGtins={bwlGtins}
+            />
+          )}
         </Suspense>
 
       </div>
