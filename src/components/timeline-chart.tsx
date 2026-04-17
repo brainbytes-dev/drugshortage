@@ -23,7 +23,7 @@ function CustomTooltip({ active, payload, label }: {
 
 // "2025-W04" → "Jan '25"
 function formatWeekLabel(week: string): string {
-  const [yearStr, weekStr] = week.split('-W')
+  const [yearStr, weekStr] = week.split('-KW')
   const year = parseInt(yearStr)
   const weekNum = parseInt(weekStr)
   // ISO week 1 starts near Jan 4

@@ -514,7 +514,7 @@ export async function getWeeklyTimeline(weeks = 52): Promise<WeeklyDataPoint[]> 
           DATE_TRUNC('week', NOW()),
           '1 week'::interval
         ),
-        'IYYY-"W"IW'
+        'IYYY-"KW"IW'
       ) AS week
     ),
     counts AS (
@@ -525,7 +525,7 @@ export async function getWeeklyTimeline(weeks = 52): Promise<WeeklyDataPoint[]> 
               THEN TO_DATE("ersteMeldung", 'DD.MM.YYYY')
             ELSE (NOW() - ("tageSeitMeldung" * INTERVAL '1 day'))::date
           END
-        ), 'IYYY-"W"IW') AS week,
+        ), 'IYYY-"KW"IW') AS week,
         COUNT(*)::int AS count
       FROM "shortages"
       WHERE "isActive" = true
