@@ -31,15 +31,6 @@ const COLUMNS: { key: keyof Shortage; label: string; sortable?: boolean }[] = [
 
 const NEU_THRESHOLD_DAYS = 7
 
-function isNew(s: Shortage): boolean {
-  if (s.ersteMeldung) {
-    const [d, m, y] = s.ersteMeldung.split('.')
-    const reportedMs = new Date(`${y}-${m}-${d}`).getTime()
-    return (Date.now() - reportedMs) / 86_400_000 <= NEU_THRESHOLD_DAYS
-  }
-  return s.tageSeitMeldung <= NEU_THRESHOLD_DAYS
-}
-
 export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: ShortagesTableProps) {
   const [selected, setSelected] = useState<Shortage | null>(null)
   // ✅ Only recreate Set when bwlGtins changes (prevents unnecessary re-renders)
@@ -104,7 +95,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
                   <TableCell className="font-medium max-w-[280px]" title={s.bezeichnung}>
                     <span className="flex items-center gap-1.5 min-w-0">
                       <span className="truncate">{s.bezeichnung}</span>
-                      {isNew(s) && (
+                      {s.tageSeitMeldung <= NEU_THRESHOLD_DAYS && (
                         <span className="shrink-0 text-[10px] font-bold tracking-wide text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-1 py-0.5 rounded">
                           NEU
                         </span>
