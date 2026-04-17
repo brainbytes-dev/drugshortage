@@ -13,11 +13,12 @@ import { Badge } from '@/components/ui/badge'
 import { Building2 } from 'lucide-react'
 import type { FirmaRanking } from '@/lib/types'
 
-const BEWERTUNG_LABEL: Record<number, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  1: { label: 'Gut', variant: 'default' },
-  2: { label: 'Mittel', variant: 'secondary' },
-  3: { label: 'Schlecht', variant: 'outline' },
-  4: { label: 'Kritisch', variant: 'destructive' },
+const BEWERTUNG_LABEL: Record<number, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; description: string }> = {
+  1: { label: 'Exklusiv',      variant: 'default',     description: 'Gibt Daten selbst ein, exklusiver Zugang, verpflichtet à jour zu halten' },
+  2: { label: 'Aktiv',         variant: 'secondary',   description: 'Gibt Daten selbst ein, kein exklusiver Zugang' },
+  3: { label: 'Vereinzelt',    variant: 'outline',     description: 'Meldet vereinzelt Lieferengpässe an Kunden' },
+  4: { label: 'Passiv',        variant: 'destructive', description: 'Informiert Kunden nicht direkt; Meldungen durch drugshortage.ch-Netzwerk' },
+  5: { label: 'Verhandlung',   variant: 'outline',     description: 'Verhandlungen mit drugshortage.ch laufen' },
 }
 
 interface FirmaRankingSheetProps {
@@ -67,24 +68,14 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
 
         {/* Bewertungs-Legende */}
         <div className="mb-4 rounded-md border bg-muted/40 px-3 py-2.5">
-          <p className="text-xs font-medium mb-2">Bewertung (Quelle: drugshortage.ch)</p>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Badge variant="default" className="text-[10px] px-1.5 py-0">Gut</Badge>
-              <span>&lt; 5 % Produkte betroffen</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Mittel</Badge>
-              <span>5–15 % Produkte betroffen</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">Schlecht</Badge>
-              <span>15–30 % Produkte betroffen</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Kritisch</Badge>
-              <span>&gt; 30 % Produkte betroffen</span>
-            </div>
+          <p className="text-xs font-medium mb-2">Bewertung = Melde-Transparenz (Quelle: drugshortage.ch)</p>
+          <div className="flex flex-col gap-1.5">
+            {Object.entries(BEWERTUNG_LABEL).map(([key, { label, variant, description }]) => (
+              <div key={key} className="flex items-start gap-2 text-xs text-muted-foreground">
+                <Badge variant={variant} className="text-[10px] px-1.5 py-0 shrink-0 mt-px">{label}</Badge>
+                <span>{description}</span>
+              </div>
+            ))}
           </div>
         </div>
 

@@ -1,4 +1,5 @@
 import { prisma } from './prisma-optimized'
+import { Prisma } from '@prisma/client'
 import type { Shortage, ShortagesQuery, ShortagesResponse, KPIStats, OverviewStats } from './types'
 import { toSlug } from './slug'
 
@@ -211,6 +212,10 @@ export async function queryShortages(query: ShortagesQuery): Promise<ShortagesRe
 
   if (query.atc) {
     where['atcCode'] = { startsWith: query.atc }
+  }
+
+  if (query.neu) {
+    where['tageSeitMeldung'] = { lte: 7 }
   }
 
   // Build orderBy
@@ -491,6 +496,47 @@ export async function upsertBwlShortages(
 export async function getBwlGtins(): Promise<string[]> {
   const rows = await prisma.bwlShortage.findMany({ select: { gtin: true } })
   return rows.map(r => r.gtin)
+}
+
+// ── Weekly Timeline ───────────────────────────────────────────────────────────
+
+export interface WeeklyDataPoint {
+  week: string   // ISO week label e.g. "2026-W04"
+  count: number  // new shortages first seen that week
+}
+
+export async function getWeeklyTimeline(weeks = 104): Promise<WeeklyDataPoint[]> {
+  const rows = await prisma.$queryRaw<WeeklyDataPoint[]>(Prisma.sql`
+    WITH week_series AS (
+      SELECT TO_CHAR(
+        generate_series(
+          DATE_TRUNC('week', NOW() - (${weeks} * INTERVAL '1 week')),
+          DATE_TRUNC('week', NOW()),
+          '1 week'::interval
+        ),
+        'IYYY-"W"IW'
+      ) AS week
+    ),
+    counts AS (
+      SELECT
+        TO_CHAR(DATE_TRUNC('week',
+          CASE
+            WHEN "ersteMeldung" ~ '^\d{2}\.\d{2}\.\d{4}$'
+              THEN TO_DATE("ersteMeldung", 'DD.MM.YYYY')
+            ELSE (NOW() - ("tageSeitMeldung" * INTERVAL '1 day'))::date
+          END
+        ), 'IYYY-"W"IW') AS week,
+        COUNT(*)::int AS count
+      FROM "shortages"
+      WHERE "isActive" = true
+      GROUP BY 1
+    )
+    SELECT w.week, COALESCE(c.count, 0) AS count
+    FROM week_series w
+    LEFT JOIN counts c ON w.week = c.week
+    ORDER BY w.week ASC
+  `)
+  return rows
 }
 
 export async function getOverviewStats(): Promise<OverviewStats | null> {
