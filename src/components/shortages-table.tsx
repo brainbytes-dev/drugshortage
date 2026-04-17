@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import Link from 'next/link'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table'
@@ -11,6 +12,7 @@ import { ShortageDrawer } from './shortage-drawer'
 import type { Shortage } from '@/lib/types'
 import { ChevronLeft, ChevronRight, ArrowUpDown } from 'lucide-react'
 import { calculateScore, scoreLabel } from '@/lib/score'
+import { toSlug } from '@/lib/slug'
 
 interface ShortagesTableProps {
   shortages: Shortage[]
@@ -110,7 +112,13 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
                     </span>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
-                    {s.firma}
+                    <Link
+                      href={`/firma/${toSlug(s.firma)}`}
+                      onClick={e => e.stopPropagation()}
+                      className="hover:underline hover:text-foreground"
+                    >
+                      {s.firma}
+                    </Link>
                   </TableCell>
                   <TableCell>
                     <StatusBadge code={s.statusCode} />
