@@ -603,7 +603,12 @@ export async function upsertOddbPrices(
       chunk.map(p =>
         prisma.oddbProduct.updateMany({
           where: { gtin: p.gtin },
-          data: { ppub: p.ppub, pexf: p.pexf },
+          data: {
+            ppub: p.ppub,
+            pexf: p.pexf,
+            // SALECD: 'A'=active → null, 'I'=inactive → 'E' (erloschen)
+            ...(p.salecd != null ? { authStatus: p.salecd === 'I' ? 'E' : 'A' } : {}),
+          },
         })
       )
     )
@@ -908,13 +913,23 @@ export async function syncErloschenFromOddb(): Promise<{ upserted: number }> {
   const CHUNK = 500
   let upserted = 0
 
+  // GTINs already tracked via drugshortage.ch (AUSSER_HANDEL / VERTRIEBSEINSTELLUNG)
+  const existing = await prisma.offMarketDrug.findMany({
+    where: { category: { in: ['AUSSER_HANDEL', 'VERTRIEBSEINSTELLUNG'] } },
+    select: { gtin: true },
+  })
+  const existingGtins = new Set(existing.map(r => r.gtin))
+
   const rows = await prisma.oddbProduct.findMany({
-    where: { authStatus: { in: ['E', 'S'] } },
+    where: { authStatus: 'E' },
     select: { gtin: true, bezeichnungDe: true, atcCode: true },
   })
 
-  for (let i = 0; i < rows.length; i += CHUNK) {
-    const chunk = rows.slice(i, i + CHUNK)
+  // Only process rows not already tracked via drugshortage.ch
+  const newRows = rows.filter(r => !existingGtins.has(r.gtin))
+
+  for (let i = 0; i < newRows.length; i += CHUNK) {
+    const chunk = newRows.slice(i, i + CHUNK)
     await Promise.all(
       chunk.map(p =>
         prisma.offMarketDrug.upsert({
@@ -937,7 +952,7 @@ export async function syncErloschenFromOddb(): Promise<{ upserted: number }> {
     upserted += chunk.length
   }
 
-  return { upserted }
+  return { upserted: newRows.length }
 }
 
 // ── Episode queries ───────────────────────────────────────────────────────────

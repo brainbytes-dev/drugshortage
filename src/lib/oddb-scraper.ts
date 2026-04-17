@@ -17,6 +17,7 @@ export interface OddbPriceData {
   gtin: string
   ppub: number | null // Publikumspreis in CHF
   pexf: number | null // Fabrikabgabepreis in CHF
+  salecd: string | null // SALECD: 'A'=active, 'I'=inactive (erloschen/ausser handel)
 }
 
 /** Fetch and parse article-level prices (PPUB / PEXF) from oddb_article.xml (~80 MB).
@@ -61,6 +62,8 @@ export async function fetchOddbArticlePrices(): Promise<OddbPriceData[]> {
     }
     if (!gtin) continue
 
+    const salecd = art.SALECD ? String(art.SALECD).trim() : null
+
     // Collect prices from ARTPRI entries
     const artpris = (Array.isArray(art.ARTPRI) ? art.ARTPRI : art.ARTPRI ? [art.ARTPRI] : []) as Record<string, unknown>[]
     let ppub: number | null = null
@@ -74,9 +77,7 @@ export async function fetchOddbArticlePrices(): Promise<OddbPriceData[]> {
       }
     }
 
-    if (ppub !== null || pexf !== null) {
-      results.push({ gtin, ppub, pexf })
-    }
+    results.push({ gtin, ppub, pexf, salecd })
   }
   return results
 }

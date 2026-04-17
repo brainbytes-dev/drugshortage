@@ -7,7 +7,7 @@ const VIEWS = [
   { key: 'engpaesse', label: 'Engpässe' },
   { key: 'ausser-handel', label: 'Ausser Handel' },
   { key: 'vertriebseinstellung', label: 'Vertriebseinstellung' },
-  { key: 'erloschen', label: 'Erlöschungen' },
+  { key: 'erloschen', label: 'Nicht mehr erhältlich' },
   { key: 'historisch', label: 'Historisch' },
 ] as const
 
