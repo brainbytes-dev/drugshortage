@@ -738,3 +738,37 @@ export async function getOffMarketStats(): Promise<{
   ])
   return { ausserHandel: ah, vertriebseingestellt: ve }
 }
+
+// ── Episode queries ───────────────────────────────────────────────────────────
+
+/** All episodes for a single drug, newest first */
+export async function getEpisodesForGtin(gtin: string) {
+  return prisma.shortageEpisode.findMany({
+    where: { gtin },
+    orderBy: { startedAt: 'desc' },
+  })
+}
+
+/** Summary stats for a drug: total episodes, avg duration, longest episode */
+export async function getEpisodeStats(gtin: string) {
+  const episodes = await prisma.shortageEpisode.findMany({
+    where: { gtin, endedAt: { not: null } },
+    select: { durationDays: true },
+  })
+  const durations = episodes.map(e => e.durationDays ?? 0)
+  return {
+    totalEpisodes: durations.length,
+    avgDurationDays: durations.length ? Math.round(durations.reduce((a, b) => a + b, 0) / durations.length) : null,
+    maxDurationDays: durations.length ? Math.max(...durations) : null,
+  }
+}
+
+/** Drugs with the most recurring shortage episodes (for analytics) */
+export async function getTopRecurringDrugs(limit = 20) {
+  return prisma.shortageEpisode.groupBy({
+    by: ['gtin'],
+    _count: { gtin: true },
+    orderBy: { _count: { gtin: 'desc' } },
+    take: limit,
+  })
+}
