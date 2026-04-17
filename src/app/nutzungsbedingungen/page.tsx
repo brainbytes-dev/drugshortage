@@ -148,7 +148,34 @@ export default function NutzungsbedingungenPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="text-lg font-semibold">10. Kontakt</h2>
+          <h2 className="text-lg font-semibold">10. API-Nutzung</h2>
+          <p className="text-[15px] text-muted-foreground leading-relaxed">
+            engpass.radar stellt eine öffentliche REST API unter{' '}
+            <a href="/api-docs" className="underline hover:text-foreground">engpassradar.ch/api-docs</a>{' '}
+            bereit. Die API ist kostenlos und ohne Registrierung nutzbar.
+          </p>
+          <ul className="text-[15px] text-muted-foreground list-disc list-outside ml-5 space-y-2 leading-relaxed">
+            <li>
+              <strong>Fair Use:</strong> Es wird empfohlen, maximal 100 Requests pro Tag durchzuführen.
+              Bei höherem Volumen ist eine vorgängige Kontaktaufnahme erforderlich.
+            </li>
+            <li>
+              <strong>Attribution:</strong> Bei Weiterverwendung von API-Daten in eigenen Produkten
+              oder Publikationen ist die Quellenangabe «engpassradar.ch» erforderlich.
+            </li>
+            <li>
+              <strong>Kommerzielle Nutzung:</strong> Die Verwendung der API als Datenbasis für
+              kommerzielle Produkte oder Dienste bedarf der schriftlichen Zustimmung des Betreibers.
+            </li>
+            <li>
+              <strong>Keine SLA:</strong> Die Verfügbarkeit der API wird nicht garantiert. Änderungen
+              an Endpoints oder Datenformaten bleiben vorbehalten.
+            </li>
+          </ul>
+        </section>
+
+        <section className="space-y-3">
+          <h2 className="text-lg font-semibold">11. Kontakt</h2>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
             Bei Fragen zu diesen Nutzungsbedingungen:{' '}
             <a href="mailto:info@engpassradar.ch" className="underline hover:text-foreground">
