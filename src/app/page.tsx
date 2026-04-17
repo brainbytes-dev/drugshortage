@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { queryShortages, getOverviewStats, getBwlGtins } from '@/lib/db'
+import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimeline } from '@/lib/db'
 import { getKPIStatsCached as getKPIStats, getFirmaListCached as getFirmaList } from '@/lib/db-cached-example'
 import { KPICards } from '@/components/kpi-cards'
 import { SearchBar } from '@/components/search-bar-optimized'
@@ -8,7 +8,10 @@ import { ShortagesTable } from '@/components/shortages-table'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import { ResetFiltersButton } from '@/components/reset-filters-button'
+import { NeueMeldungenButton } from '@/components/neue-meldungen-button'
+import { ExportCsvButton } from '@/components/export-csv-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
+import { TimelineChart } from '@/components/timeline-chart'
 import type { ShortagesQuery } from '@/lib/types'
 
 interface PageProps {
@@ -24,17 +27,19 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     status: params.status,
     firma: params.firma,
     atc: params.atc,
+    neu: params.neu === '1',
     page: params.page ? parseInt(params.page, 10) : 1,
     sort: params.sort ?? 'tageSeitMeldung:desc',
     perPage: 50,
   }
 
-  const [response, kpi, firmaList, overview, bwlGtins] = await Promise.all([
+  const [response, kpi, firmaList, overview, bwlGtins, weeklyTimeline] = await Promise.all([
     queryShortages(query),
     getKPIStats(),
     getFirmaList(),
     getOverviewStats(),
     getBwlGtins().catch(() => [] as string[]),
+    getWeeklyTimeline().catch(() => []),
   ])
 
   const lastUpdated = kpi.lastScrapedAt
@@ -140,6 +145,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         {/* KPI Cards */}
         <KPICards stats={kpi} />
 
+        {/* Weekly Timeline Chart */}
+        <TimelineChart data={weeklyTimeline} />
+
         {/* Overview Buttons + Stand */}
         <div className="flex flex-wrap items-center gap-2">
           {overview && overview.firmenRanking.length > 0 && (
@@ -153,9 +161,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         {/* Search + Filters */}
         <Suspense fallback={null}>
           <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
+            <NeueMeldungenButton />
             <SearchBar />
             <FilterBar firmaList={firmaList} />
             <ResetFiltersButton />
+            <ExportCsvButton />
           </div>
         </Suspense>
 

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { fetchAndParse, fetchAndParseCompleted } from '@/lib/scraper'
 import { upsertShortagesOptimizedSafe as upsertShortages } from '@/lib/db-optimized-upsert-safe'
 import { saveOverviewStats, saveScrapeRun, upsertCompletedShortages, upsertBwlShortages } from '@/lib/db'
@@ -26,8 +27,9 @@ export async function POST(request: Request) {
       status: 'success',
     })
 
-    // ✅ Invalidate caches after data update
+    // ✅ Invalidate in-memory LRU caches and ISR page cache
     invalidateStatsCache()
+    revalidatePath('/')
 
     let historicalInserted = 0
     try {
