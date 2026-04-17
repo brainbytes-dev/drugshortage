@@ -241,7 +241,8 @@ export default async function MedikamentPage({ params }: PageProps) {
 
           <p className="text-xs text-muted-foreground pt-1">
             Proprietärer Index von engpass.radar. Höher = schwerwiegender Engpass.
-            Kombiniert Transparenz, Dauer, Alternativverfügbarkeit und strategische Relevanz.
+            Kombiniert Transparenz, Dauer, Alternativverfügbarkeit und strategische Relevanz.{' '}
+            <a href="/methodik" className="underline hover:text-foreground">Score-Methodik →</a>
           </p>
         </section>
 

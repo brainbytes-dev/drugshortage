@@ -241,7 +241,7 @@ export async function queryShortages(query: ShortagesQuery): Promise<ShortagesRe
 
 export async function getKPIStats(): Promise<KPIStats> {
   const active = await prisma.shortage.findMany({
-    where: { isActive: true },
+    where: { isActive: true, statusCode: { gte: 1, lte: 5 } },
     select: { firma: true, atcCode: true, tageSeitMeldung: true },
   })
 
@@ -276,7 +276,7 @@ export async function getKPIStats(): Promise<KPIStats> {
 
 export async function getFirmaList(): Promise<string[]> {
   const rows = await prisma.shortage.findMany({
-    where: { isActive: true },
+    where: { isActive: true, statusCode: { gte: 1, lte: 5 } },
     select: { firma: true },
     distinct: ['firma'],
     orderBy: { firma: 'asc' },
@@ -286,7 +286,7 @@ export async function getFirmaList(): Promise<string[]> {
 
 export async function getAtcList(): Promise<string[]> {
   const rows = await prisma.shortage.findMany({
-    where: { isActive: true },
+    where: { isActive: true, statusCode: { gte: 1, lte: 5 } },
     select: { atcCode: true },
     distinct: ['atcCode'],
     orderBy: { atcCode: 'asc' },
