@@ -1,11 +1,19 @@
 'use client'
 
+import { useMemo } from 'react'
 import { Treemap, ResponsiveContainer } from 'recharts'
 import { useRouter } from 'next/navigation'
 import type { AtcGruppeStats } from '@/lib/types'
 
 interface AtcTreemapProps {
   data: AtcGruppeStats[]
+}
+
+// Note: oklch() in SVG fill attributes requires Chrome 111+, Firefox 113+, Safari 15.4+
+function getColor(value: number, max: number): { fill: string; textColor: string } {
+  if (value > max * 0.5) return { fill: 'oklch(0.52 0.15 25)', textColor: '#fff' }
+  if (value > max * 0.2) return { fill: 'oklch(0.72 0.12 55)', textColor: '#1a1a1a' }
+  return { fill: 'oklch(0.52 0.09 200)', textColor: '#fff' }
 }
 
 // recharts custom content props are not strongly typed
@@ -18,14 +26,7 @@ function makeCustomCell(router: ReturnType<typeof useRouter>) {
       ? Math.max(...root.children.map((c: any) => c.value ?? 0))
       : value
 
-    let fill: string
-    if (value > maxVal * 0.5) {
-      fill = 'oklch(0.52 0.15 25)'
-    } else if (value > maxVal * 0.2) {
-      fill = 'oklch(0.72 0.12 55)'
-    } else {
-      fill = 'oklch(0.52 0.09 200)'
-    }
+    const { fill, textColor } = getColor(value, maxVal)
 
     const showCode = width > 40 && height > 30
     const showCount = height > 50
@@ -54,7 +55,7 @@ function makeCustomCell(router: ReturnType<typeof useRouter>) {
             y={y + height / 2 - (showCount ? 8 : 0)}
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="#fff"
+            fill={textColor}
             fontSize={11}
             fontWeight="bold"
           >
@@ -67,7 +68,7 @@ function makeCustomCell(router: ReturnType<typeof useRouter>) {
             y={y + height / 2 + 10}
             textAnchor="middle"
             dominantBaseline="middle"
-            fill="#fff"
+            fill={textColor}
             fontSize={10}
             opacity={0.85}
           >
@@ -81,7 +82,12 @@ function makeCustomCell(router: ReturnType<typeof useRouter>) {
 
 export function AtcTreemap({ data }: AtcTreemapProps) {
   const router = useRouter()
-  const CustomCell = makeCustomCell(router)
+  const CustomCell = useMemo(() => makeCustomCell(router), [router])
+
+  const treemapData = useMemo(
+    () => data.map(d => ({ name: d.atcCode, value: d.anzahl, bezeichnung: d.bezeichnung })),
+    [data]
+  )
 
   if (data.length === 0) {
     return (
@@ -93,12 +99,6 @@ export function AtcTreemap({ data }: AtcTreemapProps) {
       </div>
     )
   }
-
-  const treemapData = data.map((d) => ({
-    name: d.atcCode,
-    value: d.anzahl,
-    bezeichnung: d.bezeichnung,
-  }))
 
   return (
     <div className="rounded-lg border bg-card p-4">
