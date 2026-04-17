@@ -62,7 +62,7 @@ export default async function GtinPage({ params }: PageProps) {
         url: `https://www.engpassradar.ch/gtin/${gtin}`,
         name: `${bezeichnung} — engpass.radar`,
         about: {
-          '@type': 'Drug',
+          '@type': 'MedicalEntity',
           name: bezeichnung,
           ...(atcCode ? { code: { '@type': 'MedicalCode', code: atcCode, codingSystem: 'ATC' } } : {}),
         },

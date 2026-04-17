@@ -1,3 +1,4 @@
+import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimelineWithActive, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt, queryHistoricalShortages, getHistoricalCount } from '@/lib/db'
 import { getKPIStatsCached as getKPIStats, getFirmaListCached as getFirmaList } from '@/lib/db-cached-example'
@@ -25,6 +26,11 @@ interface PageProps {
 }
 
 export const revalidate = 3600 // ISR: revalidate every hour
+
+export const metadata: Metadata = {
+  title: 'Lieferengpass Medikamente Schweiz | engpass.radar',
+  description: 'Alle aktuellen Medikamenten-Lieferengpässe der Schweiz — täglich aus drugshortage.ch und BWL aktualisiert. Suche nach Wirkstoff, Firma oder ATC-Code. Kostenlos, kein Login.',
+}
 
 export default async function DashboardPage({ searchParams }: PageProps) {
   const params = await searchParams
@@ -84,6 +90,19 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "engpass.radar",
+            "url": "https://engpassradar.ch",
+            "description": "Schweizer Medikamenten-Lieferengpass Dashboard",
+            "sameAs": ["https://github.com/brainbytes-dev/engpassradar"]
+          }).replace(/</g, '\u003c')
+        }}
+      />
       <HeroAutoSkip />
       {/* Hero — full viewport */}
       <section className="relative flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] text-center px-4 overflow-hidden">
@@ -312,6 +331,22 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────── */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              { "@type": "Question", "name": "Woher stammen die Daten?", "acceptedAnswer": { "@type": "Answer", "text": "Engpass-Meldungen kommen direkt von drugshortage.ch und dem Bundesamt für wirtschaftliche Landesversorgung (BWL). Wirkstoff- und ATC-Daten werden automatisch aus öffentlichen Referenzdatenbanken ergänzt." } },
+              { "@type": "Question", "name": "Wie aktuell sind die Daten?", "acceptedAnswer": { "@type": "Answer", "text": "Die Daten werden jede Nacht automatisch abgeglichen." } },
+              { "@type": "Question", "name": "Kostet das etwas?", "acceptedAnswer": { "@type": "Answer", "text": "Ja, wirklich kostenlos. Das Projekt wird in der Freizeit betrieben." } },
+              { "@type": "Question", "name": "Kann ich die Daten herunterladen oder per API abrufen?", "acceptedAnswer": { "@type": "Answer", "text": "API und CSV-Export sind verfügbar. Siehe /api-docs für Details." } },
+              { "@type": "Question", "name": "Haftung und Gewähr", "acceptedAnswer": { "@type": "Answer", "text": "engpass.radar ist ein Informationswerkzeug, kein Ersatz für die offiziellen Quellen. Für klinische oder pharmazeutische Entscheide gelten immer die Primärquellen." } }
+            ]
+          }).replace(/</g, '\u003c')
+        }}
+      />
       <section className="border-t border-border/40 bg-muted/[0.15]">
         <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">

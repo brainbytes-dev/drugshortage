@@ -81,7 +81,7 @@ export async function upsertShortagesOptimizedSafe(
       const values = chunk.map(s => {
         const firstSeenAt = existingMap.get(s.gtin)!.firstSeenAt
         return Prisma.sql`(
-          ${s.gtin}, ${toSlug(s.bezeichnung) || null}, ${s.pharmacode}, ${s.bezeichnung}, ${s.firma},
+          ${s.gtin}, ${s.pharmacode}, ${s.bezeichnung}, ${s.firma},
           ${s.atcCode}, ${s.gengrp}, ${s.statusCode}, ${s.statusText},
           ${s.datumLieferfahigkeit ?? ''}, ${s.datumLetzteMutation ?? ''},
           ${s.tageSeitMeldung ?? 0}, ${s.detailUrl ?? ''},
@@ -94,7 +94,7 @@ export async function upsertShortagesOptimizedSafe(
 
       const query = Prisma.sql`
         INSERT INTO "shortages" (
-          gtin, slug, pharmacode, bezeichnung, firma, "atcCode", gengrp,
+          gtin, pharmacode, bezeichnung, firma, "atcCode", gengrp,
           "statusCode", "statusText", "datumLieferfahigkeit",
           "datumLetzteMutation", "tageSeitMeldung", "detailUrl",
           "alternativenUrl", "ersteMeldung", "ersteMeldungDurch",
@@ -104,7 +104,6 @@ export async function upsertShortagesOptimizedSafe(
         )
         VALUES ${Prisma.join(values)}
         ON CONFLICT (gtin) DO UPDATE SET
-          slug = COALESCE(EXCLUDED.slug, "shortages".slug),
           pharmacode = EXCLUDED.pharmacode,
           bezeichnung = EXCLUDED.bezeichnung,
           firma = EXCLUDED.firma,

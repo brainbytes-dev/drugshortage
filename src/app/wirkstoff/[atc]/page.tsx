@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { getAllAtcCodes, getShortagesByAtc } from '@/lib/db'
+import { getAllAtcCodes, getShortagesByAtc, getSubstanzByAtc } from '@/lib/db'
 import { toSlug } from '@/lib/slug'
 
 interface PageProps {
@@ -16,24 +16,30 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { atc } = await params
-  const shortages = await getShortagesByAtc(atc)
+  const [shortages, substanz] = await Promise.all([
+    getShortagesByAtc(atc),
+    getSubstanzByAtc(atc).catch(() => null),
+  ])
   const count = shortages.length
 
   if (count === 0) {
     return {
-      title: `ATC ${atc} — Lieferengpässe Schweiz | engpass.radar`,
+      title: `${substanz ? `${substanz} (${atc})` : `ATC ${atc}`} — Lieferengpässe Schweiz | engpass.radar`,
     }
   }
 
   return {
-    title: `ATC ${atc} — Lieferengpässe Schweiz | engpass.radar`,
-    description: `${count} aktive Lieferengpässe für ATC ${atc} in der Schweiz. Täglich aktualisiert aus drugshortage.ch.`,
+    title: `${substanz ? `${substanz} (${atc})` : `ATC ${atc}`} — Lieferengpässe Schweiz | engpass.radar`,
+    description: `Alle Lieferengpässe für ${substanz ?? atc} in der Schweiz. ATC-Code ${atc}. Täglich aktualisiert.`,
   }
 }
 
 export default async function WirkstoffPage({ params }: PageProps) {
   const { atc } = await params
-  const shortages = await getShortagesByAtc(atc)
+  const [shortages, substanz] = await Promise.all([
+    getShortagesByAtc(atc),
+    getSubstanzByAtc(atc).catch(() => null),
+  ])
 
   if (shortages.length === 0) {
     notFound()
@@ -48,14 +54,14 @@ export default async function WirkstoffPage({ params }: PageProps) {
         '@type': 'WebPage',
         '@id': `https://www.engpassradar.ch/wirkstoff/${atc}`,
         url: `https://www.engpassradar.ch/wirkstoff/${atc}`,
-        name: `ATC ${atc} — Engpässe | engpass.radar`,
+        name: `${substanz ? `${substanz} (${atc})` : `ATC ${atc}`} — Engpässe | engpass.radar`,
         isPartOf: { '@id': 'https://www.engpassradar.ch' },
       },
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.engpassradar.ch' },
-          { '@type': 'ListItem', position: 2, name: `ATC ${atc}`, item: `https://www.engpassradar.ch/wirkstoff/${atc}` },
+          { '@type': 'ListItem', position: 2, name: substanz ?? `ATC ${atc}`, item: `https://www.engpassradar.ch/wirkstoff/${atc}` },
         ],
       },
     ],
@@ -69,17 +75,22 @@ export default async function WirkstoffPage({ params }: PageProps) {
       />
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
         <Link
-          href="/"
+          href={`/?atc=${atc}`}
           className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
           <ArrowLeft className="h-4 w-4" />
-          Zur Übersicht
+          Alle {atc}-Engpässe
         </Link>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">ATC {atc}</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {substanz ?? `ATC ${atc}`}
+          </h1>
+          {substanz && (
+            <p className="text-sm text-muted-foreground font-mono">{atc}</p>
+          )}
           <p className="text-sm text-muted-foreground">
-            ATC {atc} · {count} aktive Engpässe
+            {count} aktive Engpässe
           </p>
         </div>
 

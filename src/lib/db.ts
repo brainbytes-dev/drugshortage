@@ -491,13 +491,13 @@ export async function getShortageBySlug(slug: string): Promise<Shortage | null> 
   return row ? mapShortage(row) : null
 }
 
-export async function getAllDrugSlugs(): Promise<Array<{ slug: string; bezeichnung: string; pharmacode: string }>> {
+export async function getAllDrugSlugs(): Promise<Array<{ slug: string; bezeichnung: string; pharmacode: string; lastSeenAt: Date }>> {
   const rows = await prisma.shortage.findMany({
     where: { isActive: true },
-    select: { bezeichnung: true, pharmacode: true },
+    select: { bezeichnung: true, pharmacode: true, lastSeenAt: true },
   })
   const seen = new Set<string>()
-  const result: Array<{ slug: string; bezeichnung: string; pharmacode: string }> = []
+  const result: Array<{ slug: string; bezeichnung: string; pharmacode: string; lastSeenAt: Date }> = []
   for (const r of rows) {
     const slug = toSlug(r.bezeichnung)
     if (seen.has(slug)) {
@@ -505,7 +505,7 @@ export async function getAllDrugSlugs(): Promise<Array<{ slug: string; bezeichnu
       continue
     }
     seen.add(slug)
-    result.push({ slug, bezeichnung: r.bezeichnung, pharmacode: r.pharmacode })
+    result.push({ slug, bezeichnung: r.bezeichnung, pharmacode: r.pharmacode, lastSeenAt: r.lastSeenAt })
   }
   return result
 }
@@ -627,6 +627,14 @@ export async function getOddbByGtin(gtin: string): Promise<{
     select: { prodno: true, bezeichnungDe: true, substanz: true, zusammensetzung: true, atcCode: true, ppub: true, pexf: true, authStatus: true },
   })
   return row ?? null
+}
+
+export async function getSubstanzByAtc(atcCode: string): Promise<string | null> {
+  const row = await prisma.oddbProduct.findFirst({
+    where: { atcCode, substanz: { not: null } },
+    select: { substanz: true },
+  })
+  return row?.substanz ?? null
 }
 
 // ── BWL Integration ───────────────────────────────────────────────────────────
