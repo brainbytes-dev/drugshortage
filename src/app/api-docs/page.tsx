@@ -40,9 +40,25 @@ const responseExample = `{
   }
 }`
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: 'API Dokumentation — engpass.radar',
+  url: 'https://www.engpassradar.ch/api-docs',
+  publisher: {
+    '@type': 'Organization',
+    name: 'engpass.radar',
+    url: 'https://www.engpassradar.ch',
+  },
+}
+
 export default function ApiDocsPage() {
   return (
     <main className="max-w-3xl mx-auto px-4 py-12 space-y-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }}
+      />
       <header className="space-y-3">
         <h1 className="text-3xl font-bold tracking-tight">Öffentliche API — engpass.radar</h1>
         <p className="text-muted-foreground leading-relaxed">

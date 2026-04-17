@@ -99,6 +99,31 @@ export default async function FirmaPage({
 
   return (
     <main className="min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "WebPage",
+                "@id": `https://www.engpassradar.ch/firma/${slug}`,
+                "url": `https://www.engpassradar.ch/firma/${slug}`,
+                "name": `${firma} | engpass.radar`,
+                "description": `Lieferengpass-Profil von ${firma}: aktuelle Engpässe und Severity Score.`,
+                "isPartOf": { "@id": "https://www.engpassradar.ch" }
+              },
+              {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.engpassradar.ch" },
+                  { "@type": "ListItem", "position": 2, "name": firma, "item": `https://www.engpassradar.ch/firma/${slug}` }
+                ]
+              }
+            ]
+          }).replace(/</g, '\u003c')
+        }}
+      />
       <div className="max-w-4xl mx-auto px-4 py-12 space-y-8">
         <Link
           href={`/?firma=${encodeURIComponent(firma)}`}

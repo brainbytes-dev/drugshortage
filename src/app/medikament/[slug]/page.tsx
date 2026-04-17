@@ -65,6 +65,40 @@ export default async function MedikamentPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                "@type": "MedicalWebPage",
+                "@id": `https://www.engpassradar.ch/medikament/${slug}`,
+                "url": `https://www.engpassradar.ch/medikament/${slug}`,
+                "name": `${shortage.bezeichnung} — Lieferengpass Schweiz`,
+                "description": `Lieferengpass für ${shortage.bezeichnung} von ${shortage.firma}. ATC: ${shortage.atcCode}.`,
+                "about": {
+                  "@type": "Drug",
+                  "name": shortage.bezeichnung,
+                  "manufacturer": {
+                    "@type": "Organization",
+                    "name": shortage.firma
+                  },
+                  ...(shortage.atcCode ? { "code": { "@type": "MedicalCode", "code": shortage.atcCode, "codingSystem": "ATC" } } : {})
+                },
+                "isPartOf": { "@id": "https://www.engpassradar.ch" }
+              },
+              {
+                "@type": "BreadcrumbList",
+                "itemListElement": [
+                  { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.engpassradar.ch" },
+                  { "@type": "ListItem", "position": 2, "name": shortage.bezeichnung, "item": `https://www.engpassradar.ch/medikament/${slug}` }
+                ]
+              }
+            ]
+          }).replace(/</g, '\u003c')
+        }}
+      />
 
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
         <Link

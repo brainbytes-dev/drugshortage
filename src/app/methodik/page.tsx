@@ -8,9 +8,25 @@ export const metadata: Metadata = {
     'Erklärung des engpass.radar Severity Score — proprietärer Index zur Bewertung des Schweregrads von Arzneimittel-Lieferengpässen in der Schweiz.',
 }
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Methodik & Datenquellen — engpass.radar',
+  url: 'https://www.engpassradar.ch/methodik',
+  publisher: {
+    '@type': 'Organization',
+    name: 'engpass.radar',
+    url: 'https://www.engpassradar.ch',
+  },
+}
+
 export default function MetodikPage() {
   return (
     <main className="min-h-screen bg-background">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }}
+      />
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-10">
 
         <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">

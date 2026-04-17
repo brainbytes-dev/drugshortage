@@ -18,7 +18,7 @@ import { TimelineChart } from '@/components/timeline-chart'
 import { AtcTreemap } from '@/components/atc-treemap'
 import type { ShortagesQuery } from '@/lib/types'
 
-type ViewMode = 'engpaesse' | 'ausser-handel' | 'vertriebseinstellung' | 'historisch'
+type ViewMode = 'engpaesse' | 'ausser-handel' | 'vertriebseinstellung' | 'erloschen' | 'historisch'
 
 interface PageProps {
   searchParams: Promise<Record<string, string>>
@@ -31,7 +31,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const view = (params.view ?? 'engpaesse') as ViewMode
   const page = params.page ? parseInt(params.page, 10) : 1
 
-  const isOffMarket = view === 'ausser-handel' || view === 'vertriebseinstellung'
+  const isOffMarket = view === 'ausser-handel' || view === 'vertriebseinstellung' || view === 'erloschen'
   const isHistorical = view === 'historisch'
 
   const query: ShortagesQuery = {
@@ -62,13 +62,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     getWeeklyTimelineWithActive().catch(() => []),
     isOffMarket
       ? queryOffMarketDrugs({
-          category: view === 'ausser-handel' ? 'AUSSER_HANDEL' : 'VERTRIEBSEINSTELLUNG',
+          category: view === 'ausser-handel' ? 'AUSSER_HANDEL' : view === 'erloschen' ? 'ERLOSCHEN' : 'VERTRIEBSEINSTELLUNG',
           search: params.search,
           page,
           perPage: 50,
         })
       : Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }),
-    getOffMarketStats().catch(() => ({ ausserHandel: 0, vertriebseingestellt: 0 })),
+    getOffMarketStats().catch(() => ({ ausserHandel: 0, vertriebseingestellt: 0, erloschen: 0 })),
     getLastScrapedAt().catch(() => null),
     isHistorical ? queryHistoricalShortages(historicalQuery) : Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }),
     getHistoricalCount().catch(() => 0),
@@ -196,6 +196,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 engpaesse: kpi.totalActive,
                 ausserHandel: offMarketStats.ausserHandel,
                 vertriebseingestellt: offMarketStats.vertriebseingestellt,
+                erloschen: offMarketStats.erloschen,
                 historisch: historicalTotal,
               }}
             />

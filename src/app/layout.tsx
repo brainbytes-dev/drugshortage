@@ -17,6 +17,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de" suppressHydrationWarning>
       <body className={`${inter.className} antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "engpass.radar",
+              "url": "https://www.engpassradar.ch",
+              "description": "Aktuelle Lieferengpässe bei Medikamenten in der Schweiz — täglich aktualisiert.",
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": {
+                  "@type": "EntryPoint",
+                  "urlTemplate": "https://www.engpassradar.ch/?search={search_term_string}"
+                },
+                "query-input": "required name=search_term_string"
+              }
+            }).replace(/</g, '\u003c')
+          }}
+        />
         <ThemeProvider>
           <div className="min-h-screen flex flex-col">
             <SiteHeader />
