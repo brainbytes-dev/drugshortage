@@ -43,7 +43,7 @@ export function SearchBar() {
       }
       params.delete('page')
       startTransition(() => {
-        router.replace(`${pathname}?${params.toString()}`)
+        router.replace(`${pathname}?${params.toString()}`, { scroll: false })
       })
     },
     [router, pathname, searchParams]
