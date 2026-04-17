@@ -37,7 +37,7 @@ export function FilterBar({ firmaList }: FilterBarProps) {
         params.delete(key)
       }
       params.delete('page')
-      router.replace(`${pathname}?${params.toString()}`)
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
     },
     [router, pathname, searchParams]
   )

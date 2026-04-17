@@ -131,7 +131,7 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
 
   function handleAlternativeSelect(bezeichnung: string) {
     onClose()
-    router.push(`/?search=${encodeURIComponent(bezeichnung)}`)
+    router.push(`/?search=${encodeURIComponent(bezeichnung)}`, { scroll: false })
   }
 
   return (

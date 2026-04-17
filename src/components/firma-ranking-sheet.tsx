@@ -35,7 +35,7 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
 
   function handleFirmaClick(firma: string) {
     setOpen(false)
-    router.push(`/?firma=${encodeURIComponent(firma)}`)
+    router.push(`/?firma=${encodeURIComponent(firma)}`, { scroll: false })
   }
 
   return (

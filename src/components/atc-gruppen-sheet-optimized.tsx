@@ -43,7 +43,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
 
   function handleAtcClick(atcCode: string) {
     setOpen(false)
-    router.push(`/?atc=${encodeURIComponent(atcCode)}`)
+    router.push(`/?atc=${encodeURIComponent(atcCode)}`, { scroll: false })
   }
 
   return (

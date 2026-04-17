@@ -60,7 +60,7 @@ export function SearchBar() {
         }
         params.delete('page')
         startTransition(() => {
-          router.replace(`${pathname}?${params.toString()}`)
+          router.replace(`${pathname}?${params.toString()}`, { scroll: false })
         })
       }, 300) // ✅ Only navigate after 300ms of no typing
     },
