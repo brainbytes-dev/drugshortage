@@ -41,26 +41,8 @@ export default async function WirkstoffPage({ params }: PageProps) {
 
   const count = shortages.length
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: `ATC ${atc} Lieferengpässe Schweiz`,
-    numberOfItems: count,
-    itemListElement: shortages.map((s, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: s.bezeichnung,
-      url: `https://engpassradar.ch/medikament/${toSlug(s.bezeichnung)}`,
-    })),
-  }
-
   return (
     <main className="min-h-screen bg-background">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
         <Link
           href="/"
