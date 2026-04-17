@@ -70,7 +70,7 @@ export function ViewSwitch({ active, counts }: ViewSwitchProps) {
                     : 'bg-muted text-muted-foreground',
                 ].join(' ')}
               >
-                {count.toLocaleString('de-CH')}
+                {count}
               </span>
             )}
           </button>
