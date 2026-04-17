@@ -33,7 +33,7 @@ function makeCustomCell(router: ReturnType<typeof useRouter>) {
 
     return (
       <g
-        onClick={() => router.push(`/?atc=${encodeURIComponent(name)}`)}
+        onClick={() => router.push(`/?atc=${encodeURIComponent(name)}`, { scroll: false })}
         className="cursor-pointer"
         role="button"
         aria-label={`${name}: ${bezeichnung} — ${value} Engpässe`}
