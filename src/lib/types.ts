@@ -1,6 +1,7 @@
 export interface Shortage {
   id?: number
   gtin: string
+  slug?: string | null
   pharmacode: string
   bezeichnung: string
   firma: string

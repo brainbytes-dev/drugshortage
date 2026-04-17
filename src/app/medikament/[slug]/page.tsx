@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { getShortageBySlug, getOddbByGtin, getHistoricalByGengrp, getBwlGtins } from '@/lib/db'
@@ -103,9 +104,11 @@ export default async function MedikamentPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="json-ld-shortage"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+        strategy="beforeInteractive"
       />
 
       <div className="max-w-2xl mx-auto px-4 py-12 space-y-8">
@@ -119,6 +122,11 @@ export default async function MedikamentPage({ params }: PageProps) {
 
         <div className="space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">{shortage.bezeichnung}</h1>
+          {oddb?.authStatus && oddb.authStatus !== 'A' && (
+            <div className="inline-flex items-center gap-1.5 rounded-md bg-destructive/10 border border-destructive/30 px-2.5 py-1 text-xs font-medium text-destructive">
+              Zulassung erloschen / nicht mehr zugelassen
+            </div>
+          )}
         </div>
 
         <section className="space-y-4">
@@ -193,6 +201,45 @@ export default async function MedikamentPage({ params }: PageProps) {
               <div className="flex flex-col gap-0.5">
                 <dt className="text-muted-foreground">Swissmedic-Nr</dt>
                 <dd className="font-mono text-xs">{oddb.prodno}</dd>
+              </div>
+            )}
+
+            {shortage.gtin.startsWith('7680') && (
+              <div className="flex flex-col gap-0.5">
+                <dt className="text-muted-foreground">Fachinformation (AIPS)</dt>
+                <dd>
+                  <a
+                    href={`https://swissmedicinfo-pro.ch/showText.aspx?textType=FI&lang=DE&authNr=${parseInt(shortage.gtin.substring(4, 9), 10)}&supportMultipleResults=1`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-sm underline hover:text-muted-foreground"
+                  >
+                    swissmedicinfo.ch →
+                  </a>
+                </dd>
+              </div>
+            )}
+
+            {oddb?.authStatus && oddb.authStatus !== 'A' && (
+              <div className="flex flex-col gap-0.5">
+                <dt className="text-muted-foreground">Zulassungsstatus</dt>
+                <dd className="text-destructive text-sm font-medium">
+                  Erloschen / nicht mehr zugelassen ({oddb.authStatus})
+                </dd>
+              </div>
+            )}
+
+            {oddb?.ppub != null && (
+              <div className="flex flex-col gap-0.5">
+                <dt className="text-muted-foreground">Publikumspreis (PPUB)</dt>
+                <dd className="font-mono text-sm">CHF {oddb.ppub.toFixed(2)}</dd>
+              </div>
+            )}
+
+            {oddb?.pexf != null && (
+              <div className="flex flex-col gap-0.5">
+                <dt className="text-muted-foreground">Fabrikabgabepreis (PEXF)</dt>
+                <dd className="font-mono text-sm">CHF {oddb.pexf.toFixed(2)}</dd>
               </div>
             )}
           </dl>

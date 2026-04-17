@@ -1,11 +1,12 @@
 import { Suspense } from 'react'
-import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimeline, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt } from '@/lib/db'
+import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimelineWithActive, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt, queryHistoricalShortages, getHistoricalCount } from '@/lib/db'
 import { getKPIStatsCached as getKPIStats, getFirmaListCached as getFirmaList } from '@/lib/db-cached-example'
 import { KPICards } from '@/components/kpi-cards'
 import { SearchBar } from '@/components/search-bar-optimized'
 import { FilterBar } from '@/components/filter-bar'
 import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
+import { HistoricalTable } from '@/components/historical-table'
 import { ViewSwitch } from '@/components/view-switch'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
@@ -17,7 +18,7 @@ import { TimelineChart } from '@/components/timeline-chart'
 import { AtcTreemap } from '@/components/atc-treemap'
 import type { ShortagesQuery } from '@/lib/types'
 
-type ViewMode = 'engpaesse' | 'ausser-handel' | 'vertriebseinstellung'
+type ViewMode = 'engpaesse' | 'ausser-handel' | 'vertriebseinstellung' | 'historisch'
 
 interface PageProps {
   searchParams: Promise<Record<string, string>>
@@ -31,6 +32,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const page = params.page ? parseInt(params.page, 10) : 1
 
   const isOffMarket = view === 'ausser-handel' || view === 'vertriebseinstellung'
+  const isHistorical = view === 'historisch'
 
   const query: ShortagesQuery = {
     search: params.search,
@@ -43,13 +45,21 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     perPage: 50,
   }
 
-  const [response, kpi, firmaList, overview, bwlGtins, weeklyTimeline, offMarketResponse, offMarketStats, lastScrapedAt] = await Promise.all([
-    isOffMarket ? Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }) : queryShortages(query),
+  const historicalQuery = {
+    search: params.search,
+    firma: params.firma,
+    page,
+    perPage: 50,
+    sort: params.sort,
+  }
+
+  const [response, kpi, firmaList, overview, bwlGtins, weeklyTimeline, offMarketResponse, offMarketStats, lastScrapedAt, historicalResponse, historicalCount] = await Promise.all([
+    isOffMarket || isHistorical ? Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }) : queryShortages(query),
     getKPIStats(),
-    isOffMarket ? Promise.resolve([] as string[]) : getFirmaList(),
+    isOffMarket || isHistorical ? Promise.resolve([] as string[]) : getFirmaList(),
     getOverviewStats(),
-    isOffMarket ? Promise.resolve([] as string[]) : getBwlGtins().catch(() => [] as string[]),
-    getWeeklyTimeline().catch(() => []),
+    isOffMarket || isHistorical ? Promise.resolve([] as string[]) : getBwlGtins().catch(() => [] as string[]),
+    getWeeklyTimelineWithActive().catch(() => []),
     isOffMarket
       ? queryOffMarketDrugs({
           category: view === 'ausser-handel' ? 'AUSSER_HANDEL' : 'VERTRIEBSEINSTELLUNG',
@@ -60,7 +70,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       : Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }),
     getOffMarketStats().catch(() => ({ ausserHandel: 0, vertriebseingestellt: 0 })),
     getLastScrapedAt().catch(() => null),
+    isHistorical ? queryHistoricalShortages(historicalQuery) : Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }),
+    getHistoricalCount().catch(() => 0),
   ])
+
+  const historicalTotal = isHistorical ? historicalResponse.total : historicalCount
 
   const lastUpdated = lastScrapedAt
     ? new Date(lastScrapedAt).toLocaleString('de-CH', {
@@ -166,7 +180,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         <KPICards stats={kpi} />
 
         {/* Weekly Timeline Chart */}
-        <TimelineChart data={weeklyTimeline} />
+        <TimelineChart initialData={weeklyTimeline} />
 
         {/* ATC Treemap */}
         {overview && overview.atcGruppen.length > 0 && (
@@ -191,12 +205,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               engpaesse: kpi.totalActive,
               ausserHandel: offMarketStats.ausserHandel,
               vertriebseingestellt: offMarketStats.vertriebseingestellt,
+              historisch: historicalTotal,
             }}
           />
         </Suspense>
 
         {/* Search + Filters (Engpässe only) */}
-        {!isOffMarket && (
+        {!isOffMarket && !isHistorical && (
           <Suspense fallback={null}>
             <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
               <SearchBar />
@@ -208,8 +223,8 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           </Suspense>
         )}
 
-        {/* Off-market search only */}
-        {isOffMarket && (
+        {/* Off-market / historical search only */}
+        {(isOffMarket || isHistorical) && (
           <Suspense fallback={null}>
             <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
               <SearchBar />
@@ -220,7 +235,14 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
         {/* Table */}
         <Suspense fallback={null}>
-          {isOffMarket ? (
+          {isHistorical ? (
+            <HistoricalTable
+              data={historicalResponse.data}
+              total={historicalResponse.total}
+              page={historicalResponse.page}
+              perPage={historicalResponse.perPage}
+            />
+          ) : isOffMarket ? (
             <OffMarketTable
               data={offMarketResponse.data}
               total={offMarketResponse.total}

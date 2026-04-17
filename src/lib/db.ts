@@ -8,6 +8,7 @@ import { toSlug } from './slug'
 function mapShortage(s: {
   id: number
   gtin: string
+  slug?: string | null
   pharmacode: string
   bezeichnung: string
   firma: string
@@ -33,6 +34,7 @@ function mapShortage(s: {
   return {
     id: s.id,
     gtin: s.gtin,
+    slug: s.slug ?? undefined,
     pharmacode: s.pharmacode,
     bezeichnung: s.bezeichnung,
     firma: s.firma,
@@ -191,9 +193,8 @@ export async function queryShortages(query: ShortagesQuery): Promise<ShortagesRe
   const page = query.page ?? 1
 
   // Build where clause
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   // statusCode 1–5 are the official drugshortage.ch codes; 0/8/9 are parse artifacts / "abgeschlossen"
-  const where: Record<string, any> = { isActive: true, statusCode: { gte: 1, lte: 5 } }
+  const where: Record<string, unknown> = { isActive: true, statusCode: { gte: 1, lte: 5 } }
 
   if (query.search) {
     const term = query.search
@@ -276,7 +277,103 @@ export async function getKPIStats(): Promise<KPIStats> {
   }
 }
 
+// ── Historical shortages ──────────────────────────────────────────────────────
+
+export interface HistoricalQuery {
+  search?: string
+  firma?: string
+  page?: number
+  perPage?: number
+  sort?: string
+}
+
+export interface HistoricalShortage {
+  id: number
+  gtin: string
+  bezeichnung: string
+  slug: string | null
+  firma: string
+  atcCode: string
+  statusCode: number
+  firstSeenAt: string
+  lastSeenAt: string
+  occurrenceCount: number
+  durationDays: number | null // from latest closed episode
+}
+
+export async function queryHistoricalShortages(query: HistoricalQuery): Promise<{
+  data: HistoricalShortage[]
+  total: number
+  page: number
+  perPage: number
+}> {
+  const page = query.page ?? 1
+  const perPage = query.perPage ?? 50
+
+  const where: Record<string, unknown> = { isActive: false }
+  if (query.search) {
+    where['OR'] = [
+      { bezeichnung: { contains: query.search, mode: 'insensitive' } },
+      { firma: { contains: query.search, mode: 'insensitive' } },
+    ]
+  }
+  if (query.firma) where['firma'] = query.firma
+
+  let orderBy: Record<string, string> = { lastSeenAt: 'desc' }
+  if (query.sort) {
+    const [field, dir] = query.sort.split(':')
+    if (['bezeichnung', 'firma', 'lastSeenAt', 'firstSeenAt', 'occurrenceCount'].includes(field)) {
+      orderBy = { [field]: dir === 'desc' ? 'desc' : 'asc' }
+    }
+  }
+
+  const [total, rows] = await Promise.all([
+    prisma.shortage.count({ where }),
+    prisma.shortage.findMany({
+      where,
+      orderBy,
+      skip: (page - 1) * perPage,
+      take: perPage,
+      select: {
+        id: true, gtin: true, bezeichnung: true, slug: true, firma: true,
+        atcCode: true, statusCode: true, firstSeenAt: true, lastSeenAt: true,
+        occurrenceCount: true,
+      },
+    }),
+  ])
+
+  // Enrich with latest episode duration
+  const gtins = rows.map(r => r.gtin)
+  const episodes = gtins.length > 0
+    ? await prisma.shortageEpisode.findMany({
+        where: { gtin: { in: gtins }, endedAt: { not: null } },
+        orderBy: { endedAt: 'desc' },
+        select: { gtin: true, durationDays: true },
+      })
+    : []
+  const durationMap = new Map<string, number | null>()
+  for (const ep of episodes) {
+    if (!durationMap.has(ep.gtin)) durationMap.set(ep.gtin, ep.durationDays)
+  }
+
+  return {
+    data: rows.map(r => ({
+      ...r,
+      firstSeenAt: r.firstSeenAt.toISOString(),
+      lastSeenAt: r.lastSeenAt.toISOString(),
+      durationDays: durationMap.get(r.gtin) ?? null,
+    })),
+    total,
+    page,
+    perPage,
+  }
+}
+
 /** Direct (uncached) last-scrape timestamp — always fresh, never LRU-cached */
+export async function getHistoricalCount(): Promise<number> {
+  return prisma.shortage.count({ where: { isActive: false } })
+}
+
 export async function getLastScrapedAt(): Promise<string | null> {
   const row = await prisma.scrapeRun.findFirst({
     where: { status: 'success' },
@@ -474,6 +571,7 @@ export async function upsertOddbProducts(
             atcCode: p.atcCode,
             substanz: p.substanz,
             zusammensetzung: p.zusammensetzung,
+            authStatus: p.authStatus,
           },
           update: {
             prodno: p.prodno,
@@ -481,6 +579,7 @@ export async function upsertOddbProducts(
             atcCode: p.atcCode,
             substanz: p.substanz,
             zusammensetzung: p.zusammensetzung,
+            authStatus: p.authStatus,
           },
         })
       )
@@ -491,15 +590,39 @@ export async function upsertOddbProducts(
   return { upserted }
 }
 
+export async function upsertOddbPrices(
+  prices: import('./oddb-scraper').OddbPriceData[]
+): Promise<{ upserted: number }> {
+  if (prices.length === 0) return { upserted: 0 }
+  const CHUNK = 500
+  let upserted = 0
+  for (let i = 0; i < prices.length; i += CHUNK) {
+    const chunk = prices.slice(i, i + CHUNK)
+    const results = await Promise.allSettled(
+      chunk.map(p =>
+        prisma.oddbProduct.updateMany({
+          where: { gtin: p.gtin },
+          data: { ppub: p.ppub, pexf: p.pexf },
+        })
+      )
+    )
+    upserted += results.filter(r => r.status === 'fulfilled' && r.value.count > 0).length
+  }
+  return { upserted }
+}
+
 export async function getOddbByGtin(gtin: string): Promise<{
   prodno: string
   substanz: string | null
   zusammensetzung: string | null
   atcCode: string
+  ppub: number | null
+  pexf: number | null
+  authStatus: string | null
 } | null> {
   const row = await prisma.oddbProduct.findUnique({
     where: { gtin },
-    select: { prodno: true, substanz: true, zusammensetzung: true, atcCode: true },
+    select: { prodno: true, substanz: true, zusammensetzung: true, atcCode: true, ppub: true, pexf: true, authStatus: true },
   })
   return row ?? null
 }
@@ -552,8 +675,9 @@ export async function getBwlGtins(): Promise<string[]> {
 // ── Weekly Timeline ───────────────────────────────────────────────────────────
 
 export interface WeeklyDataPoint {
-  week: string   // ISO week label e.g. "2026-W04"
-  count: number  // new shortages first seen that week
+  week: string    // ISO week label e.g. "2026-KW04"
+  count: number   // new shortages first seen that week
+  active?: number // concurrently active shortages that week (from episodes)
 }
 
 export async function getWeeklyTimeline(weeks = 52): Promise<WeeklyDataPoint[]> {
@@ -571,15 +695,11 @@ export async function getWeeklyTimeline(weeks = 52): Promise<WeeklyDataPoint[]> 
     counts AS (
       SELECT
         TO_CHAR(DATE_TRUNC('week',
-          CASE
-            WHEN "ersteMeldung" ~ '^\d{2}\.\d{2}\.\d{4}$'
-              THEN TO_DATE("ersteMeldung", 'DD.MM.YYYY')
-            ELSE (NOW() - ("tageSeitMeldung" * INTERVAL '1 day'))::date
-          END
+          TO_DATE("ersteMeldung", 'DD.MM.YYYY')
         ), 'IYYY-"KW"IW') AS week,
         COUNT(*)::int AS count
       FROM "shortages"
-      WHERE "isActive" = true
+      WHERE "ersteMeldung" ~ '^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$'
       GROUP BY 1
     )
     SELECT w.week, COALESCE(c.count, 0) AS count
@@ -588,6 +708,32 @@ export async function getWeeklyTimeline(weeks = 52): Promise<WeeklyDataPoint[]> 
     ORDER BY w.week ASC
   `)
   return rows
+}
+
+/** Weekly timeline: new shortages per week (all, active + historical) via ersteMeldung */
+export async function getWeeklyTimelineWithActive(weeks = 52): Promise<WeeklyDataPoint[]> {
+  return prisma.$queryRaw<WeeklyDataPoint[]>(Prisma.sql`
+    WITH week_series AS (
+      SELECT TO_CHAR(
+        generate_series(
+          DATE_TRUNC('week', NOW() - (${weeks} * INTERVAL '1 week')),
+          DATE_TRUNC('week', NOW()),
+          '1 week'::interval
+        ), 'IYYY-"KW"IW') AS week
+    ),
+    counts AS (
+      SELECT TO_CHAR(DATE_TRUNC('week',
+        TO_DATE("ersteMeldung", 'DD.MM.YYYY')
+        ), 'IYYY-"KW"IW') AS week,
+        COUNT(*)::int AS count
+      FROM "shortages"
+      WHERE "ersteMeldung" ~ '^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$'
+      GROUP BY 1
+    )
+    SELECT ws.week, COALESCE(c.count, 0) AS count
+    FROM week_series ws LEFT JOIN counts c ON ws.week = c.week
+    ORDER BY ws.week ASC
+  `)
 }
 
 export async function getHistoricalByGengrp(
