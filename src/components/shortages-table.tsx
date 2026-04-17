@@ -38,16 +38,21 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
   const [selected, setSelected] = useState<Shortage | null>(null)
   const [pageInput, setPageInput] = useState(String(page))
   const pageInputRef = useRef<HTMLInputElement>(null)
+  const tableRef = useRef<HTMLDivElement>(null)
   const [, startTransition] = useTransition()
-  const savedScrollY = useRef<number | null>(null)
+  const scrollToTable = useRef(false)
 
-  // Keep input in sync when page changes externally (filter reset, sort, etc.)
-  // Also restore scroll position after server re-render completes
+  // Keep input in sync when page changes externally.
+  // On explicit page navigation, scroll to the table top (not page top).
   useEffect(() => {
     setPageInput(String(page))
-    if (savedScrollY.current !== null) {
-      window.scrollTo({ top: savedScrollY.current, behavior: 'instant' })
-      savedScrollY.current = null
+    if (scrollToTable.current) {
+      scrollToTable.current = false
+      const el = tableRef.current
+      if (el) {
+        const top = el.getBoundingClientRect().top + window.scrollY - 16
+        window.scrollTo({ top: Math.max(0, top), behavior: 'instant' })
+      }
     }
   }, [page, shortages])
 
@@ -59,8 +64,8 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
 
   const totalPages = Math.ceil(total / perPage)
 
-  const navigate = (params: Record<string, string>) => {
-    savedScrollY.current = window.scrollY
+  const navigate = (params: Record<string, string>, scrollBehavior: 'table' | 'keep' = 'keep') => {
+    if (scrollBehavior === 'table') scrollToTable.current = true
     const p = new URLSearchParams(searchParams.toString())
     for (const [k, v] of Object.entries(params)) {
       if (v) p.set(k, v)
@@ -80,7 +85,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
 
   return (
     <>
-      <div className="rounded-lg border overflow-hidden">
+      <div ref={tableRef} className="rounded-lg border overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
@@ -169,7 +174,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               variant="outline"
               size="sm"
               disabled={page <= 1}
-              onClick={() => { setPageInput('1'); navigate({ page: '1' }) }}
+              onClick={() => { setPageInput('1'); navigate({ page: '1' }, 'table') }}
               title="Erste Seite"
             >
               <ChevronsLeft className="h-4 w-4" />
@@ -179,7 +184,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               variant="outline"
               size="sm"
               disabled={page <= 1}
-              onClick={() => { const p = String(page - 1); setPageInput(p); navigate({ page: p }) }}
+              onClick={() => { const p = String(page - 1); setPageInput(p); navigate({ page: p }, 'table') }}
               title="Vorherige Seite"
             >
               <ChevronLeft className="h-4 w-4" />
@@ -195,7 +200,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               onBlur={() => {
                 const n = parseInt(pageInput, 10)
                 if (!isNaN(n) && n >= 1 && n <= totalPages && n !== page) {
-                  navigate({ page: String(n) })
+                  navigate({ page: String(n) }, 'table')
                 } else {
                   setPageInput(String(page))
                 }
@@ -211,7 +216,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               variant="outline"
               size="sm"
               disabled={page >= totalPages}
-              onClick={() => { const p = String(page + 1); setPageInput(p); navigate({ page: p }) }}
+              onClick={() => { const p = String(page + 1); setPageInput(p); navigate({ page: p }, 'table') }}
               title="Nächste Seite"
             >
               <ChevronRight className="h-4 w-4" />
@@ -221,7 +226,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               variant="outline"
               size="sm"
               disabled={page >= totalPages}
-              onClick={() => { const p = String(totalPages); setPageInput(p); navigate({ page: p }) }}
+              onClick={() => { const p = String(totalPages); setPageInput(p); navigate({ page: p }, 'table') }}
               title="Letzte Seite"
             >
               <ChevronsRight className="h-4 w-4" />
