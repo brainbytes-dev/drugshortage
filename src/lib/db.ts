@@ -14,7 +14,7 @@ function mapShortage(s: {
   atcCode: string
   gengrp: string
   statusCode: number
-  statusText: string
+  statusText: string | null
   datumLieferfahigkeit: string
   datumLetzteMutation: string
   tageSeitMeldung: number
@@ -39,7 +39,7 @@ function mapShortage(s: {
     atcCode: s.atcCode,
     gengrp: s.gengrp,
     statusCode: s.statusCode,
-    statusText: s.statusText,
+    statusText: s.statusText ?? '',
     datumLieferfahigkeit: s.datumLieferfahigkeit,
     datumLetzteMutation: s.datumLetzteMutation,
     tageSeitMeldung: s.tageSeitMeldung,
@@ -90,6 +90,7 @@ export async function upsertShortages(
     artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
     voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
     bemerkungen: s.bemerkungen ?? null,
+    slug: toSlug(s.bezeichnung),
     firstSeenAt,
     lastSeenAt: now,
     isActive: true,
@@ -171,6 +172,7 @@ export async function upsertCompletedShortages(incoming: Shortage[]): Promise<{ 
         artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
         voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
         bemerkungen: s.bemerkungen ?? null,
+        slug: toSlug(s.bezeichnung),
         firstSeenAt: now,
         lastSeenAt: now,
         isActive: false, // Historical data
@@ -374,14 +376,11 @@ export async function getAllAtcCodes(): Promise<Array<{ atc: string; bezeichnung
   return rows.map(r => ({ atc: r.atcCode, bezeichnung: r.bezeichnung }))
 }
 
-// NOTE: Full table scan — intentional for now (~700 rows). Revisit with an indexed
-// computed column or a separate slug lookup table if the table grows significantly.
 export async function getShortageBySlug(slug: string): Promise<Shortage | null> {
-  const rows = await prisma.shortage.findMany({
-    where: { isActive: true },
+  const row = await prisma.shortage.findFirst({
+    where: { slug, isActive: true },
   })
-  const match = rows.find(r => toSlug(r.bezeichnung) === slug)
-  return match ? mapShortage(match) : null
+  return row ? mapShortage(row) : null
 }
 
 export async function getAllDrugSlugs(): Promise<Array<{ slug: string; bezeichnung: string; pharmacode: string }>> {
@@ -634,4 +633,98 @@ export async function getOverviewStats(): Promise<OverviewStats | null> {
     firmenRanking: row.firmenRanking as unknown as OverviewStats['firmenRanking'],
     atcGruppen: row.atcGruppen as unknown as OverviewStats['atcGruppen'],
   }
+}
+
+// ── Off-Market Drugs ──────────────────────────────────────────────────────────
+
+export async function upsertOffMarketDrugs(
+  entries: import('./scraper').OffMarketEntry[]
+): Promise<{ upserted: number }> {
+  const CHUNK = 500
+  let upserted = 0
+
+  for (let i = 0; i < entries.length; i += CHUNK) {
+    const chunk = entries.slice(i, i + CHUNK)
+    await Promise.all(
+      chunk.map(e =>
+        prisma.offMarketDrug.upsert({
+          where: { gtin_category: { gtin: e.gtin, category: e.category } },
+          create: {
+            gtin: e.gtin,
+            bezeichnung: e.bezeichnung,
+            firma: e.firma,
+            atcCode: e.atcCode,
+            datum: e.datum,
+            category: e.category,
+          },
+          update: {
+            bezeichnung: e.bezeichnung,
+            firma: e.firma,
+            atcCode: e.atcCode,
+            datum: e.datum,
+          },
+        })
+      )
+    )
+    upserted += chunk.length
+  }
+  return { upserted }
+}
+
+export interface OffMarketQuery {
+  category: 'AUSSER_HANDEL' | 'VERTRIEBSEINSTELLUNG'
+  search?: string
+  firma?: string
+  page?: number
+  perPage?: number
+}
+
+export async function queryOffMarketDrugs(query: OffMarketQuery): Promise<{
+  data: import('@prisma/client').OffMarketDrug[]
+  total: number
+  page: number
+  perPage: number
+}> {
+  const page = query.page ?? 1
+  const perPage = query.perPage ?? 50
+
+  const where: Record<string, unknown> = { category: query.category }
+  if (query.firma) where['firma'] = query.firma
+  if (query.search) {
+    where['OR'] = [
+      { bezeichnung: { contains: query.search, mode: 'insensitive' } },
+      { firma: { contains: query.search, mode: 'insensitive' } },
+    ]
+  }
+
+  const [data, total] = await Promise.all([
+    prisma.offMarketDrug.findMany({
+      where,
+      orderBy: { bezeichnung: 'asc' },
+      skip: (page - 1) * perPage,
+      take: perPage,
+    }),
+    prisma.offMarketDrug.count({ where }),
+  ])
+
+  return { data, total, page, perPage }
+}
+
+export async function getOffMarketGtins(): Promise<Set<string>> {
+  const rows = await prisma.offMarketDrug.findMany({
+    select: { gtin: true },
+    where: { category: 'AUSSER_HANDEL' },
+  })
+  return new Set(rows.map(r => r.gtin))
+}
+
+export async function getOffMarketStats(): Promise<{
+  ausserHandel: number
+  vertriebseingestellt: number
+}> {
+  const [ah, ve] = await Promise.all([
+    prisma.offMarketDrug.count({ where: { category: 'AUSSER_HANDEL' } }),
+    prisma.offMarketDrug.count({ where: { category: 'VERTRIEBSEINSTELLUNG' } }),
+  ])
+  return { ausserHandel: ah, vertriebseingestellt: ve }
 }

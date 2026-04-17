@@ -27,8 +27,9 @@ A modern dashboard that tracks current drug shortages in Switzerland. Data is sc
 | Framework | Next.js 14 (App Router, Server Components) |
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS + shadcn/ui |
-| Scraping | cheerio |
-| Data | File-based JSON (swappable to Supabase) |
+| Scraping | cheerio (HTML), SheetJS (XLSX), fast-xml-parser (XML) |
+| ORM | Prisma 7 with PrismaPg Driver Adapter |
+| Database | Supabase PostgreSQL |
 | Testing | Jest + ts-jest |
 | Deployment | Vercel |
 
@@ -51,9 +52,11 @@ npm install
 
 ### Environment Variables
 
-Create a `.env.local` file in the project root:
+Create a `.env.local` file in the project root (see `.env.example`):
 
 ```env
+DATABASE_URL=postgresql://...          # Pooled connection (Supavisor port 6543)
+DIRECT_URL=postgresql://...            # Direct connection (port 5432) for migrations
 CRON_SECRET=your-secret-here
 ```
 
@@ -92,25 +95,29 @@ Open [http://localhost:3000](http://localhost:3000).
 src/
 ├── app/
 │   ├── api/
-│   │   ├── scrape/route.ts      # POST — cron trigger (Bearer auth)
-│   │   └── shortages/route.ts   # GET  — search, filter, paginate
+│   │   ├── scrape/route.ts           # POST — cron trigger (Bearer auth)
+│   │   └── shortages/route.ts        # GET  — search, filter, paginate
+│   ├── firma/[slug]/page.tsx         # Firma-Profil (ISR)
+│   ├── medikament/[slug]/page.tsx    # Medikament-Detail (ISR)
+│   ├── methodik/page.tsx             # Methodik & Datenquellen
 │   ├── layout.tsx
-│   └── page.tsx                 # Dashboard (Server Component)
+│   └── page.tsx                      # Dashboard (Server Component)
 ├── components/
-│   ├── filter-bar.tsx           # Status + company dropdowns
-│   ├── kpi-cards.tsx            # 4-card KPI grid
-│   ├── search-bar.tsx           # Full-text search input
-│   ├── shortage-drawer.tsx      # Detail slide-out
-│   ├── shortages-table.tsx      # Sortable, paginated table
-│   └── status-badge.tsx         # Color-coded status badge
+│   ├── filter-bar.tsx                # Status + company dropdowns
+│   ├── kpi-cards.tsx                 # 4-card KPI grid
+│   ├── search-bar.tsx                # Full-text search input
+│   ├── shortage-drawer.tsx           # Detail slide-out
+│   ├── shortages-table.tsx           # Sortable, paginated table
+│   └── status-badge.tsx              # Color-coded status badge
 ├── lib/
-│   ├── db.ts                    # JSON data layer
-│   ├── scraper.ts               # cheerio HTML parser
-│   └── types.ts                 # TypeScript interfaces
+│   ├── db.ts                         # Prisma data layer
+│   ├── scraper.ts                    # cheerio HTML parser + off-market parsers
+│   ├── slug.ts                       # URL slug helper
+│   └── types.ts                      # TypeScript interfaces
 └── scripts/
-    └── scrape.ts                # CLI scrape script
-data/
-└── shortages.json               # Local DB (gitignored)
+    └── scrape.ts                     # CLI scrape script
+prisma/
+└── schema.prisma                     # DB schema (7 models, all indexes)
 tests/
 ├── api/shortages.test.ts
 └── lib/
@@ -120,16 +127,33 @@ tests/
 
 ---
 
+## Database Schema
+
+Data is persisted in Supabase PostgreSQL via Prisma ORM (`prisma/schema.prisma`).
+
+| Table | Content |
+|---|---|
+| `shortages` | Active & historical shortages (`isActive` flag), with `slug` for URL routing |
+| `overview_stats` | Aggregated stats per scrape run |
+| `scrape_runs` | Scrape execution log |
+| `alternatives_cache` | Cached alternatives from drugshortage.ch (GTIN key) |
+| `bwl_shortages` | Federal supply disruptions from bwl.admin.ch (GTIN join) |
+| `oddb_products` | 128k CH medications: ingredient, Swissmedic-Nr, composition |
+| `off_market_drugs` | Off-market drugs: `AUSSER_HANDEL` (permanently withdrawn) and `VERTRIEBSEINSTELLUNG` (sales discontinued) |
+
+All indexes are defined in `prisma/schema.prisma` — never in loose SQL files.
+
 ## Data Layer
 
-All shortage data is stored in `data/shortages.json` (gitignored). The file is managed exclusively through `src/lib/db.ts`:
+`src/lib/db.ts` is the single data access layer:
 
-- **`upsertShortages(incoming)`** — inserts new records, updates existing ones by GTIN, soft-deletes missing entries (`isActive: false`)
-- **`queryShortages(query)`** — filters, sorts, and paginates active records
+- **`upsertShortages(incoming)`** — batch upsert with slug generation, soft-deletes missing entries (`isActive: false`)
+- **`queryShortages(query)`** — filters, sorts, and paginates active records (status 1–5)
 - **`getKPIStats()`** — aggregates KPI metrics
 - **`getFirmaList()`** — unique sorted manufacturer list for the filter dropdown
-
-The data layer is designed to be swapped for Supabase with minimal changes to the API routes.
+- **`upsertOffMarketDrugs(entries)`** — upserts `off_market_drugs` rows by `(gtin, category)`
+- **`queryOffMarketDrugs(query)`** — paginated query with category filter
+- **`getOffMarketStats()`** — counts by category
 
 ---
 

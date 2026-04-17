@@ -9,16 +9,31 @@ datasource db {
   provider = "postgresql"
 }
 
+// ── Enums ─────────────────────────────────────────────────────────────────────
+
+// ScrapeStatus kept as String (enum migration requires manual SQL cast with existing data)
+// Values: 'success' | 'error'
+
+enum OffMarketCategory {
+  AUSSER_HANDEL
+  VERTRIEBSEINSTELLUNG
+}
+
+// ── Models ────────────────────────────────────────────────────────────────────
+
 model Shortage {
   id                    Int      @id @default(autoincrement())
   gtin                  String   @unique
   pharmacode            String
   bezeichnung           String
+  // slug: URL-friendly version of bezeichnung — avoids full table scan in getShortageBySlug
+  slug                  String?  @unique
   firma                 String
   atcCode               String
   gengrp                String
   statusCode            Int
-  statusText            String
+  // statusText is derivable from statusCode — nullable for deprecation, will be dropped later
+  statusText            String?
   datumLieferfahigkeit  String
   datumLetzteMutation   String
   tageSeitMeldung       Int
@@ -36,6 +51,14 @@ model Shortage {
   lastSeenAt            DateTime
   isActive              Boolean  @default(true)
 
+  // Hot path: main table query (WHERE isActive=true AND statusCode 1-5 ORDER BY tageSeitMeldung DESC)
+  @@index([isActive, statusCode, tageSeitMeldung(sort: Desc)], map: "idx_shortages_active_status_days")
+  // Filter queries
+  @@index([firma],                 map: "idx_shortages_firma")
+  @@index([atcCode],               map: "idx_shortages_atc")
+  // Historical queries (inactive entries by firma/gengrp)
+  @@index([isActive, firma],       map: "idx_shortages_inactive_firma")
+  @@index([isActive, gengrp],      map: "idx_shortages_inactive_gengrp")
   @@map("shortages")
 }
 
@@ -69,6 +92,7 @@ model OverviewStats {
   firmenRanking                 Json
   atcGruppen                    Json
 
+  @@index([scrapedAt(sort: Desc)], map: "idx_overview_stats_scrapedat")
   @@map("overview_stats")
 }
 
@@ -81,7 +105,7 @@ model AlternativesCache {
 }
 
 model ScrapeRun {
-  id             Int      @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   scrapedAt      DateTime
   totalCount     Int
   newEntries     Int
@@ -89,6 +113,7 @@ model ScrapeRun {
   status         String   // 'success' | 'error'
   errorMessage   String?
 
+  @@index([status, scrapedAt(sort: Desc)], map: "idx_scrape_runs_status_date")
   @@map("scrape_runs")
 }
 
@@ -122,4 +147,26 @@ model BwlShortage {
   fetchedAt             DateTime @updatedAt
 
   @@map("bwl_shortages")
+}
+
+// Off-market drugs: permanently withdrawn (ausserHandel) or sales discontinued (Vertriebseinstellung)
+// Source: drugshortage.ch/ausserHandel.aspx + drugshortage.ch/Vertriebseinstellung.aspx
+// Note: "datum" meaning differs by category:
+//   AUSSER_HANDEL        → date the drug went off market
+//   VERTRIEBSEINSTELLUNG → date of last mutation / sales cessation
+model OffMarketDrug {
+  id          Int               @id @default(autoincrement())
+  gtin        String
+  bezeichnung String
+  firma       String
+  atcCode     String?
+  datum       String?
+  category    OffMarketCategory
+  fetchedAt   DateTime          @updatedAt
+
+  // A GTIN can exist in both categories (off-market AND sales-discontinued)
+  @@unique([gtin, category], map: "uq_offmarket_gtin_category")
+  @@index([category, firma],   map: "idx_offmarket_category_firma")
+  @@index([category, atcCode], map: "idx_offmarket_category_atc")
+  @@map("off_market_drugs")
 }
