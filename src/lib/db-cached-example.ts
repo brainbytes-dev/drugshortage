@@ -26,7 +26,7 @@ export async function getFirmaListCached(): Promise<string[]> {
       // ✅ Use groupBy instead of distinct for better performance (2-3x faster)
       const result = await prisma.shortage.groupBy({
         by: ['firma'],
-        where: { isActive: true },
+        where: { isActive: true, statusCode: { gte: 1, lte: 5 } },
         orderBy: { firma: 'asc' },
       })
       return result.map(r => r.firma)

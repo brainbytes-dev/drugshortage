@@ -1,6 +1,9 @@
 import { prisma } from './prisma-optimized'
 import type { KPIStats } from './types'
 
+// statusCode 1–5 are the official drugshortage.ch codes; 0/8/9 are parse artifacts / "abgeschlossen"
+const ACTIVE_WHERE = { isActive: true, statusCode: { gte: 1, lte: 5 } } as const
+
 /**
  * Optimized KPI calculation using SQL aggregations instead of loading all records
  */
@@ -13,13 +16,13 @@ export async function getKPIStatsOptimized(): Promise<KPIStats> {
     avgDaysData,
     lastRun,
   ] = await Promise.all([
-    // Total active count
-    prisma.shortage.count({ where: { isActive: true } }),
+    // Total active count (statusCode 1–5 only, matching queryShortages)
+    prisma.shortage.count({ where: ACTIVE_WHERE }),
 
     // Top firma via groupBy
     prisma.shortage.groupBy({
       by: ['firma'],
-      where: { isActive: true },
+      where: ACTIVE_WHERE,
       _count: { firma: true },
       orderBy: { _count: { firma: 'desc' } },
       take: 1,
@@ -27,14 +30,14 @@ export async function getKPIStatsOptimized(): Promise<KPIStats> {
 
     // Unique ATC groups count
     prisma.shortage.findMany({
-      where: { isActive: true },
+      where: ACTIVE_WHERE,
       select: { atcCode: true },
       distinct: ['atcCode'],
     }).then(rows => rows.length),
 
     // Average days via native SQL aggregation (100x faster, O(1) memory)
     prisma.shortage.aggregate({
-      where: { isActive: true },
+      where: ACTIVE_WHERE,
       _avg: { tageSeitMeldung: true },
     }).then(result => ({ avg: result._avg.tageSeitMeldung ?? 0 })),
 
