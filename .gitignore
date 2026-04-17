@@ -27,6 +27,9 @@
 # claude / ai tooling
 .claude
 .claude-flow
+.swarm
+.mcp.json
+.observer.lock
 SECURITY_REPORT.json
 SECURITY_VULNERABILITY_REPORT.json
 
