@@ -7,6 +7,19 @@ interface TimelineChartProps {
   data: WeeklyDataPoint[]
 }
 
+// "2025-W04" → "Jan '25"
+function formatWeekLabel(week: string): string {
+  const [yearStr, weekStr] = week.split('-W')
+  const year = parseInt(yearStr)
+  const weekNum = parseInt(weekStr)
+  // ISO week 1 starts near Jan 4
+  const jan4 = new Date(year, 0, 4)
+  const dayOfWeek = jan4.getDay() || 7
+  const weekStart = new Date(jan4)
+  weekStart.setDate(jan4.getDate() - (dayOfWeek - 1) + (weekNum - 1) * 7)
+  return weekStart.toLocaleDateString('de-CH', { month: 'short', year: '2-digit' })
+}
+
 export function TimelineChart({ data }: TimelineChartProps) {
   if (data.length === 0) {
     return (
@@ -22,16 +35,18 @@ export function TimelineChart({ data }: TimelineChartProps) {
     <div className="rounded-lg border bg-card p-4" role="img" aria-label="Neue Engpässe pro Woche">
       <p className="text-sm font-medium mb-3">Neue Engpässe pro Woche</p>
       <ResponsiveContainer width="100%" height={200}>
-        <LineChart data={data} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
+        <LineChart data={data} margin={{ top: 4, right: 8, left: 8, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
             dataKey="week"
+            tickFormatter={formatWeekLabel}
             tick={{ fontSize: 10 }}
             interval={3}
           />
           <YAxis
             tick={{ fontSize: 10 }}
             allowDecimals={false}
+            width={32}
           />
           <Tooltip />
           <Line

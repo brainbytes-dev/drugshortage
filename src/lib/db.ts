@@ -505,7 +505,7 @@ export interface WeeklyDataPoint {
   count: number  // new shortages first seen that week
 }
 
-export async function getWeeklyTimeline(weeks = 104): Promise<WeeklyDataPoint[]> {
+export async function getWeeklyTimeline(weeks = 52): Promise<WeeklyDataPoint[]> {
   const rows = await prisma.$queryRaw<WeeklyDataPoint[]>(Prisma.sql`
     WITH week_series AS (
       SELECT TO_CHAR(
