@@ -50,7 +50,8 @@ export function NewsletterSignup() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
           </svg>
           <p className="text-sm text-muted-foreground">
-            Bitte prüfen Sie Ihr Postfach und bestätigen Sie Ihre Anmeldung.
+            Bitte prüfen Sie Ihr Postfach und bestätigen Sie Ihre Anmeldung.{' '}
+            Falls Sie keine E-Mail erhalten, prüfen Sie bitte Ihren Spam-Ordner.
           </p>
         </div>
       </div>
