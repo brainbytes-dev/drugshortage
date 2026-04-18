@@ -150,13 +150,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
           {/* Subtitle */}
           <p className="hero-animate hero-animate-3 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Strukturierte Engpassdaten für die Schweizer Arzneimittelversorgung —
-            täglich aktualisiert, kostenlos, kein Login.
+            Über <strong className="text-foreground">{kpi.totalActive}</strong> aktive Engpässe aus 3 offiziellen Quellen.
+            Täglich aktualisiert. Kostenlos, ohne Login.
           </p>
 
           {/* Use-case pills */}
           <div className="hero-animate hero-animate-4 flex flex-wrap justify-center gap-2 text-sm">
-            {['Spitalapotheke', 'Apotheke & Drogerie', 'Forschung & Medien', 'Beschaffung'].map(label => (
+            {['Spitalapotheke', 'Apotheke & Drogerie', 'Forschung & Medien'].map(label => (
               <span
                 key={label}
                 className="rounded-full border border-border/70 bg-muted/30 px-3.5 py-1 text-muted-foreground backdrop-blur-sm"
@@ -172,7 +172,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               href="#dashboard"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-md hover:shadow-[0_0_0_4px_oklch(0.52_0.09_200/0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out"
             >
-              Engpässe prüfen
+              {kpi.totalActive} Engpässe durchsuchen
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
               </svg>
@@ -186,7 +186,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             {', '}
             <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">BWL</a>
             {' und '}
-            <a href="https://download.hin.ch/download/oddb2xml/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">HIN/ODDB</a>
+            <a href="https://ch.oddb.org/de/gcc/home/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">HIN/ODDB</a>
           </p>
         </div>
       </section>
@@ -196,7 +196,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
 
         {/* KPI Cards */}
-        <KPICards stats={kpi} />
+        <KPICards stats={kpi} historicalCount={historicalTotal} />
 
         {/* Weekly Timeline Chart */}
         <TimelineChart initialData={weeklyTimeline} />
@@ -293,17 +293,17 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             {[
               {
                 step: '01',
-                title: 'Täglich gescraped',
+                title: 'Alle Quellen, ein Dashboard',
                 body: 'Jeden Morgen liegen die neuesten Engpass-Meldungen aus allen offiziellen Schweizer Quellen bereit — ohne dass Sie selbst drei Portale prüfen müssen.',
               },
               {
                 step: '02',
-                title: 'Aufbereitet & angereichert',
-                body: "Wirkstoff, ATC-Code und Hersteller sind sofort zugeordnet. Über 8'600 Fälle, sauber verknüpft und lückenlos nachvollziehbar.",
+                title: 'Sofort zugeordnet',
+                body: "Wirkstoff, ATC-Code und Hersteller sind automatisch ergänzt. Kein manuelles Nachschlagen, kein Copy-Paste zwischen Systemen.",
               },
               {
                 step: '03',
-                title: 'Sofort abrufbar',
+                title: 'Finden statt suchen',
                 body: 'Volltextsuche, Filter nach Firma oder ATC-Gruppe, Detailseite pro Präparat. Kein Login, kein Abo, kostenlos.',
               },
             ].map(({ step, title, body }) => (
@@ -330,6 +330,42 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </div>
       </section>
 
+      {/* ── Was Sie hier finden ─────────────────────────────────── */}
+      <section className="border-t border-border/40 bg-muted/[0.08]">
+        <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+            Was Sie hier finden
+          </p>
+          <div className="overflow-hidden rounded-xl border border-border/60 bg-card">
+            {[
+              'Alle Quellen in einem Dashboard (drugshortage.ch + BWL + ODDB)',
+              'Täglich automatisch aktualisiert',
+              'Volltextsuche nach Wirkstoff, Produkt, Firma',
+              'Filter nach ATC-Gruppe, Status, Firma',
+              'Severity Score pro Engpass',
+              'Alternativen-Vorschläge (wirkstoffgleich)',
+              'Verlaufs-Timeline (Wochen-Ansicht)',
+              'CSV-Export',
+              'REST API für Eigenintegration',
+              'Kostenlos, kein Login, kein Abo',
+            ].map((feature, i, arr) => (
+              <div
+                key={feature}
+                className={`flex items-center justify-between gap-4 px-6 py-4 text-sm${i < arr.length - 1 ? ' border-b border-border/40' : ''}`}
+              >
+                <span className="text-foreground/80">{feature}</span>
+                <svg className="h-4 w-4 shrink-0 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-xs text-muted-foreground leading-relaxed">
+            Entwickelt, weil die Schweiz ein schnelleres Werkzeug für Engpass-Monitoring verdient.
+          </p>
+        </div>
+      </section>
+
       {/* ── FAQ ─────────────────────────────────────────────────── */}
       <script
         type="application/ld+json"
@@ -340,14 +376,14 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             "mainEntity": [
               { "@type": "Question", "name": "Woher stammen die Daten?", "acceptedAnswer": { "@type": "Answer", "text": "Engpass-Meldungen kommen direkt von drugshortage.ch und dem Bundesamt für wirtschaftliche Landesversorgung (BWL). Wirkstoff- und ATC-Daten werden automatisch aus öffentlichen Referenzdatenbanken ergänzt." } },
               { "@type": "Question", "name": "Wie aktuell sind die Daten?", "acceptedAnswer": { "@type": "Answer", "text": "Die Daten werden jede Nacht automatisch abgeglichen." } },
-              { "@type": "Question", "name": "Kostet das etwas?", "acceptedAnswer": { "@type": "Answer", "text": "Ja, wirklich kostenlos. Das Projekt wird in der Freizeit betrieben." } },
-              { "@type": "Question", "name": "Kann ich die Daten herunterladen oder per API abrufen?", "acceptedAnswer": { "@type": "Answer", "text": "API und CSV-Export sind verfügbar. Siehe /api-docs für Details." } },
+              { "@type": "Question", "name": "Kostet das etwas?", "acceptedAnswer": { "@type": "Answer", "text": "Nein — komplett kostenlos. Das Projekt wird in der Freizeit betrieben und bewusst werbefrei gehalten." } },
+              { "@type": "Question", "name": "Kann ich die Daten herunterladen oder per API abrufen?", "acceptedAnswer": { "@type": "Answer", "text": "CSV-Export ist verfügbar. Eine öffentliche REST API steht unter engpassradar.ch/api-docs bereit — kostenlos, ohne Registrierung." } },
               { "@type": "Question", "name": "Haftung und Gewähr", "acceptedAnswer": { "@type": "Answer", "text": "engpass.radar ist ein Informationswerkzeug, kein Ersatz für die offiziellen Quellen. Für klinische oder pharmazeutische Entscheide gelten immer die Primärquellen." } }
             ]
           }).replace(/</g, '\u003c')
         }}
       />
-      <section className="border-t border-border/40 bg-muted/[0.15]">
+      <section id="faq" className="border-t border-border/40 bg-muted/[0.15]">
         <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
             Häufige Fragen
@@ -364,11 +400,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               },
               {
                 q: 'Kostet das etwas?',
-                a: 'Ja, wirklich kostenlos. Das Projekt wird in der Freizeit betrieben.',
+                a: 'Nein — komplett kostenlos. Das Projekt wird in der Freizeit betrieben und bewusst werbefrei gehalten.',
               },
               {
                 q: 'Kann ich die Daten herunterladen oder per API abrufen?',
-                a: 'API und CSV-Export sind in Arbeit. Wer die Daten für Forschung oder eigene Systeme braucht, meldet sich am besten via GitHub-Issue — wir priorisieren nach Bedarf.',
+                a: 'CSV-Export ist verfügbar. Eine öffentliche REST API steht unter /api-docs bereit — kostenlos, ohne Registrierung.',
               },
               {
                 q: 'Haftung und Gewähr',
