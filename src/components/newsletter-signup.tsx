@@ -61,10 +61,11 @@ export function NewsletterSignup() {
     <div className="flex flex-col items-center gap-5">
       <div className="space-y-2">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-          Newsletter
+          Engpass-Signal
         </p>
-        <p className="text-sm text-muted-foreground">
-          Neue Engpässe, Monatsreport. Unter 300 Wörter. Einmal pro Woche.
+        <p className="text-lg font-bold tracking-tight">Immer informiert. Nie überrascht.</p>
+        <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+          Neue kritische Engpässe und der monatliche Shortage Report — direkt ins Postfach.
         </p>
       </div>
 
@@ -98,7 +99,7 @@ export function NewsletterSignup() {
                 Wird angemeldet…
               </>
             ) : (
-              'Anmelden'
+              'Kostenlos abonnieren'
             )}
           </button>
         </div>
