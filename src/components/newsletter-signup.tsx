@@ -65,7 +65,7 @@ export function NewsletterSignup() {
         </p>
         <p className="text-lg font-bold tracking-tight">Immer informiert. Nie überrascht.</p>
         <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-          Neue kritische Engpässe und der monatliche Shortage Report — direkt ins Postfach.
+          Neue kritische Engpässe und der monatliche Shortage Report — direkt in Ihr Postfach.
         </p>
       </div>
 
