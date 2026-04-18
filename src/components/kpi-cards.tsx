@@ -3,9 +3,10 @@ import type { KPIStats } from '@/lib/types'
 
 interface KPICardsProps {
   stats: KPIStats
+  historicalCount: number
 }
 
-export function KPICards({ stats }: KPICardsProps) {
+export function KPICards({ stats, historicalCount }: KPICardsProps) {
   const cards = [
     {
       title: 'Aktive Engpässe',
@@ -13,9 +14,9 @@ export function KPICards({ stats }: KPICardsProps) {
       sub: 'aktuell gemeldet',
     },
     {
-      title: 'Top Firma',
-      value: stats.topFirma,
-      sub: `${stats.topFirmaCount} Engpässe`,
+      title: 'Historische Engpässe',
+      value: historicalCount.toLocaleString('de-CH'),
+      sub: 'abgeschlossen / gelöst',
     },
     {
       title: 'Betroffene Wirkstoffe',

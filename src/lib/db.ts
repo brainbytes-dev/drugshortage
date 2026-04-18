@@ -248,12 +248,6 @@ export async function getKPIStats(): Promise<KPIStats> {
     select: { firma: true, atcCode: true, tageSeitMeldung: true },
   })
 
-  const firmaCounts = active.reduce<Record<string, number>>((acc, s) => {
-    acc[s.firma] = (acc[s.firma] ?? 0) + 1
-    return acc
-  }, {})
-
-  const topFirma = Object.entries(firmaCounts).sort((a, b) => b[1] - a[1])[0]
   const uniqueAtcGroups = new Set(active.map(s => s.atcCode)).size
   const avgDays =
     active.length > 0
@@ -269,8 +263,6 @@ export async function getKPIStats(): Promise<KPIStats> {
 
   return {
     totalActive: active.length,
-    topFirma: topFirma?.[0] ?? '-',
-    topFirmaCount: topFirma?.[1] ?? 0,
     uniqueAtcGroups,
     avgDaysSinceMeldung: avgDays,
     lastScrapedAt: lastRun?.scrapedAt.toISOString() ?? null,

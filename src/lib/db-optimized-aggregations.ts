@@ -11,22 +11,12 @@ export async function getKPIStatsOptimized(): Promise<KPIStats> {
   // ✅ Use parallel queries with SQL aggregations
   const [
     totalActive,
-    topFirmaData,
     uniqueAtcGroups,
     avgDaysData,
     lastRun,
   ] = await Promise.all([
     // Total active count (statusCode 1–5 only, matching queryShortages)
     prisma.shortage.count({ where: ACTIVE_WHERE }),
-
-    // Top firma via groupBy
-    prisma.shortage.groupBy({
-      by: ['firma'],
-      where: ACTIVE_WHERE,
-      _count: { firma: true },
-      orderBy: { _count: { firma: 'desc' } },
-      take: 1,
-    }),
 
     // Unique ATC groups count
     prisma.shortage.findMany({
@@ -49,13 +39,10 @@ export async function getKPIStatsOptimized(): Promise<KPIStats> {
     }),
   ])
 
-  const topFirmaEntry = topFirmaData[0]
   const avgDays = Math.round(avgDaysData.avg)
 
   return {
     totalActive,
-    topFirma: topFirmaEntry?.firma ?? '-',
-    topFirmaCount: topFirmaEntry?._count.firma ?? 0,
     uniqueAtcGroups,
     avgDaysSinceMeldung: avgDays,
     lastScrapedAt: lastRun?.scrapedAt.toISOString() ?? null,

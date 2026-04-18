@@ -56,8 +56,6 @@ export interface ShortagesQuery {
 
 export interface KPIStats {
   totalActive: number
-  topFirma: string
-  topFirmaCount: number
   uniqueAtcGroups: number
   avgDaysSinceMeldung: number
   lastScrapedAt: string | null
