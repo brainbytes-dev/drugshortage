@@ -416,17 +416,6 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
           </div>
         </section>
 
-        {/* Score */}
-        <section className="space-y-2">
-          <h2 className="font-semibold text-base">Severity Score</h2>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Jeder Engpass-Datensatz enthält einen <strong className="text-foreground">engpassradar Severity Score</strong> (0–100).
-            Die genaue Berechnung ist auf der{' '}
-            <Link href="/methodik" className="underline hover:text-foreground">Methodik-Seite</Link>{' '}
-            dokumentiert.
-          </p>
-        </section>
-
         {/* RSS */}
         <section className="space-y-3">
           <h2 className="font-semibold text-base">RSS-Feeds</h2>
@@ -443,10 +432,6 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
           </div>
         </section>
 
-        <footer className="border-t pt-6 text-xs text-muted-foreground">
-          Daten täglich aktualisiert aus drugshortage.ch, BWL und ODDB.
-          Feedback & Fragen: <a href="mailto:info@engpassradar.ch" className="underline hover:text-foreground">info@engpassradar.ch</a>
-        </footer>
       </div>
     </main>
   )
