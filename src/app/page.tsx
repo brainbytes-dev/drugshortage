@@ -17,6 +17,7 @@ import { ExportCsvButton } from '@/components/export-csv-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
 import { TimelineChart } from '@/components/timeline-chart'
 import { AtcTreemap } from '@/components/atc-treemap'
+import { NewsletterSignup } from '@/components/newsletter-signup'
 import type { ShortagesQuery } from '@/lib/types'
 
 type ViewMode = 'engpaesse' | 'ausser-handel' | 'vertriebseinstellung' | 'erloschen' | 'historisch'
@@ -423,7 +424,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </div>
       </section>
 
-      {/* Newsletter hidden — pending Buttondown account setup */}
+      {/* ── Newsletter ──────────────────────────────────────── */}
+      <section className="border-t border-border/40">
+        <div className="max-w-xl mx-auto px-4 py-20 sm:py-28 text-center">
+          <NewsletterSignup />
+        </div>
+      </section>
     </>
   )
 }
