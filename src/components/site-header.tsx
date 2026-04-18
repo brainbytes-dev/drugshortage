@@ -13,6 +13,7 @@ export function SiteHeader() {
 
         <nav className="hidden sm:flex items-center gap-6 text-sm text-muted-foreground">
           <Link href="/" className="hover:text-foreground transition-colors">Home</Link>
+          <Link href="/blog" className="hover:text-foreground transition-colors">Blog</Link>
           <Link href="/methodik" className="hover:text-foreground transition-colors">Methodik</Link>
           <Link href="/api-docs" className="hover:text-foreground transition-colors">API</Link>
           <a href="#faq" className="hover:text-foreground transition-colors">FAQ</a>
