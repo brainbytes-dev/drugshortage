@@ -7,8 +7,16 @@ export interface BlogPost {
   title: string;
   description: string;
   date: string;
+  updatedAt?: string;
   category: string;
   readingTime: string;
+  author?: string;
+  canonical?: string;
+  coverImage?: string;
+  coverImageAlt?: string;
+  ogImage?: string;
+  dataAsOf?: string;
+  keywords?: string[];
 }
 
 const BLOG_DIR = path.join(process.cwd(), "src/content/blog");
@@ -22,7 +30,7 @@ export function getAllPosts(): BlogPost[] {
 
   const files = fs
     .readdirSync(BLOG_DIR)
-    .filter((f) => f.endsWith(".mdx") || f.endsWith(".md"));
+    .filter((f) => (f.endsWith(".mdx") || f.endsWith(".md")) && !f.startsWith("_"));
 
   const posts = files.map((filename) => {
     const slug = filename.replace(/\.(mdx|md)$/, "");
@@ -34,8 +42,16 @@ export function getAllPosts(): BlogPost[] {
       title: data.title ?? slug,
       description: data.description ?? "",
       date: data.date ?? "",
+      updatedAt: data.updatedAt,
       category: data.category ?? "",
       readingTime: data.readingTime ?? "",
+      author: data.author,
+      canonical: data.canonical,
+      coverImage: data.coverImage,
+      coverImageAlt: data.coverImageAlt,
+      ogImage: data.ogImage,
+      dataAsOf: data.dataAsOf,
+      keywords: data.keywords,
     } satisfies BlogPost;
   });
 
@@ -57,8 +73,16 @@ export function getPostBySlug(slug: string): BlogPost & { content: string } {
     title: data.title ?? slug,
     description: data.description ?? "",
     date: data.date ?? "",
+    updatedAt: data.updatedAt,
     category: data.category ?? "",
     readingTime: data.readingTime ?? "",
+    author: data.author,
+    canonical: data.canonical,
+    coverImage: data.coverImage,
+    coverImageAlt: data.coverImageAlt,
+    ogImage: data.ogImage,
+    dataAsOf: data.dataAsOf,
+    keywords: data.keywords,
     content,
   };
 }

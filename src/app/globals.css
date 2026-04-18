@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -167,6 +168,51 @@
   background: linear-gradient(135deg, oklch(0.68 0.11 200), oklch(0.78 0.15 230));
   -webkit-background-clip: text;
   background-clip: text;
+}
+
+/* ─── Blog content ──────────────────────────────────────────── */
+
+.blog-content {
+  /* Headings */
+  h2 { @apply text-xl font-bold mt-10 mb-4 tracking-tight; }
+  h3 { @apply text-lg font-semibold mt-8 mb-3 tracking-tight; }
+
+  /* Paragraphs */
+  p { @apply text-sm leading-relaxed; }
+
+  /* Links */
+  a { @apply text-primary no-underline hover:underline; }
+
+  /* Blockquotes — "Das Wichtigste in Kürze" box */
+  blockquote {
+    @apply not-italic border-l-4 border-primary/50 bg-muted/50 rounded-r-lg px-5 py-4 my-6;
+    p { @apply text-sm text-foreground/85 m-0 leading-relaxed; }
+    p + p { @apply mt-2; }
+  }
+
+  /* Tables — scrollable on mobile */
+  table {
+    @apply w-full text-sm border-collapse;
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  thead { @apply bg-muted/70; }
+  th { @apply px-3 py-2 text-left font-semibold text-xs uppercase tracking-wide border border-border/50; }
+  td { @apply px-3 py-2 border border-border/40; }
+  tbody tr:nth-child(even) { @apply bg-muted/25; }
+
+  /* Images */
+  img { @apply rounded-lg w-full my-6; }
+
+  /* Horizontal rule */
+  hr { @apply border-border/40 my-8; }
+
+  /* Inline code */
+  code { @apply text-xs bg-muted px-1.5 py-0.5 rounded font-mono; }
+
+  /* Bold inside blockquote (for "**Unser Befund:**" pattern) */
+  blockquote strong { @apply font-semibold text-foreground; }
 }
 
 /* respect reduced motion */
