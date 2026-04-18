@@ -42,7 +42,7 @@ export default function NutzungsbedingungenPage() {
             engpass.radar ist ein kostenloses Informationsangebot, das öffentlich verfügbare Daten
             zu Medikamenten-Lieferengpässen in der Schweiz aggregiert und aufbereitet. Die Daten
             stammen aus offiziellen Quellen (drugshortage.ch, Bundesamt für wirtschaftliche
-            Landesversorgung BWL, HIN/ODDB) und werden täglich automatisch aktualisiert.
+            Landesversorgung BWL, ODDB) und werden täglich automatisch aktualisiert.
           </p>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
             Der Dienst richtet sich an Fachpersonen im Gesundheitswesen (Apotheker, Ärzte,
@@ -65,7 +65,7 @@ export default function NutzungsbedingungenPage() {
           <h2 className="text-lg font-semibold">4. Haftungsausschluss</h2>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
             Der Betreiber übernimmt keine Gewähr für die Richtigkeit, Vollständigkeit oder
-            Aktualität der angezeigten Daten. Die Primärquellen (drugshortage.ch, BWL, HIN/ODDB)
+            Aktualität der angezeigten Daten. Die Primärquellen (drugshortage.ch, BWL, ODDB)
             sind massgebend. Der Betreiber haftet nicht für Schäden, die aus der Nutzung oder
             Nichtnutzung der bereitgestellten Informationen entstehen.
           </p>
