@@ -2,28 +2,26 @@ export function SiteFooter() {
   const year = new Date().getFullYear()
   return (
     <footer className="border-t mt-auto">
-      <div className="max-w-7xl mx-auto px-4 py-5 text-xs text-muted-foreground flex items-center justify-between gap-4">
-        {/* Left: copyright */}
-        <p className="shrink-0">© {year} engpass.radar</p>
+      <div className="max-w-7xl mx-auto px-4 py-5 text-xs text-muted-foreground flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
 
-        {/* Center: data info */}
-        <p className="text-center">
+        {/* Infotext — oben auf Mobile, links auf Desktop */}
+        <p className="text-center sm:text-left order-1">
           Daten von{' '}
           <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">drugshortage.ch</a>
           {', '}
           <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">BWL</a>
           {' & '}
           <a href="https://ch.oddb.org/de/gcc/home/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">ODDB</a>
-          {' '}· täglich aktualisiert · keine Gewähr auf Vollständigkeit
+          {' '}· täglich aktualisiert
         </p>
 
-        {/* Right: legal + GitHub */}
-        <div className="flex items-center gap-3 shrink-0">
+        {/* Links — Mitte auf Mobile, rechts auf Desktop */}
+        <div className="flex items-center justify-center flex-wrap gap-x-3 gap-y-1 order-2 sm:order-3 shrink-0">
           <a href="/impressum" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Impressum</a>
           <span>·</span>
           <a href="/datenschutz" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Datenschutz</a>
           <span>·</span>
-          <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">Nutzungsbedingungen</a>
+          <a href="/nutzungsbedingungen" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">AGB</a>
           <span>·</span>
           <a
             href="https://github.com/brainbytes-dev/engpassradar"
@@ -37,6 +35,11 @@ export function SiteFooter() {
             </svg>
           </a>
         </div>
+
+        {/* Copyright — unten auf Mobile, ausgeblendet auf Desktop (steht links) */}
+        <p className="text-center order-3 sm:hidden">© {year} engpass.radar</p>
+        <p className="hidden sm:block order-2 shrink-0">© {year} engpass.radar</p>
+
       </div>
     </footer>
   )

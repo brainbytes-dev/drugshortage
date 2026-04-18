@@ -161,8 +161,8 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-3 gap-2 flex-wrap">
-          <p className="text-sm text-muted-foreground">
+        <div className="flex flex-col sm:flex-row items-center justify-between mt-3 gap-2">
+          <p className="text-sm text-muted-foreground text-center sm:text-left">
             {total} Einträge · Seite {page} / {totalPages}
           </p>
           <div className="flex items-center gap-1">
