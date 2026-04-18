@@ -14,24 +14,24 @@ const NAV_LINKS = [
 
 export function SiteHeader() {
   const pathname = usePathname()
+  void pathname // used for FAQ scroll detection only
   const [open, setOpen] = useState(false)
-  const [visible, setVisible] = useState(false)
 
-  useEffect(() => { setOpen(false) }, [pathname])
+  function closeMenu() {
+    setOpen(false)
+    document.body.style.overflow = ''
+  }
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden'
-      requestAnimationFrame(() => setVisible(true))
-    } else {
-      setVisible(false)
-      const t = setTimeout(() => { document.body.style.overflow = '' }, 350)
-      return () => clearTimeout(t)
-    }
-  }, [open])
+  function openMenu() {
+    setOpen(true)
+    document.body.style.overflow = 'hidden'
+  }
+
+  // Cleanup body overflow on unmount
+  useEffect(() => () => { document.body.style.overflow = '' }, [])
 
   function handleFaq(e: React.MouseEvent<HTMLAnchorElement>) {
-    setOpen(false)
+    closeMenu()
     if (pathname === '/') {
       e.preventDefault()
       setTimeout(() => {
@@ -75,7 +75,7 @@ export function SiteHeader() {
             {/* Burger — mobile only */}
             <button
               className="sm:hidden relative z-50 flex flex-col justify-center items-center h-9 w-9 gap-[5px] group"
-              onClick={() => setOpen(o => !o)}
+              onClick={() => open ? closeMenu() : openMenu()}
               aria-label={open ? 'Menü schliessen' : 'Menü öffnen'}
             >
               <span className={`block h-px w-5 bg-foreground origin-center transition-all duration-300 ${open ? 'translate-y-[6px] rotate-45' : ''}`} />
@@ -92,11 +92,11 @@ export function SiteHeader() {
         style={{
           pointerEvents: open ? 'auto' : 'none',
           transition: 'opacity 350ms cubic-bezier(0.16,1,0.3,1)',
-          opacity: visible ? 1 : 0,
+          opacity: open ? 1 : 0,
         }}
       >
         {/* Background */}
-        <div className="absolute inset-0 bg-background/97 backdrop-blur-xl" onClick={() => setOpen(false)} />
+        <div className="absolute inset-0 bg-background/97 backdrop-blur-xl" onClick={() => closeMenu()} />
 
         {/* Content */}
         <div className="relative h-full flex flex-col px-8 pt-24 pb-10">
@@ -109,8 +109,8 @@ export function SiteHeader() {
                 className="border-b border-border/20 overflow-hidden"
                 style={{
                   transition: `transform 420ms cubic-bezier(0.16,1,0.3,1) ${i * 60}ms, opacity 420ms ease ${i * 60}ms`,
-                  transform: visible ? 'translateY(0)' : 'translateY(32px)',
-                  opacity: visible ? 1 : 0,
+                  transform: open ? 'translateY(0)' : 'translateY(32px)',
+                  opacity: open ? 1 : 0,
                 }}
               >
                 {link.isFaq ? (
@@ -129,7 +129,7 @@ export function SiteHeader() {
                 ) : (
                   <Link
                     href={link.href}
-                    onClick={() => setOpen(false)}
+                    onClick={() => closeMenu()}
                     className="group flex items-baseline justify-between py-5"
                   >
                     <span className="text-4xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
@@ -149,7 +149,7 @@ export function SiteHeader() {
             className="flex items-center justify-between text-xs text-muted-foreground/50"
             style={{
               transition: `opacity 420ms ease ${NAV_LINKS.length * 60 + 80}ms`,
-              opacity: visible ? 1 : 0,
+              opacity: open ? 1 : 0,
             }}
           >
             <span className="font-mono">engpass.radar</span>

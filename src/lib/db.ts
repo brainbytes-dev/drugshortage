@@ -903,7 +903,6 @@ export async function getOffMarketByGtin(gtin: string): Promise<import('@prisma/
 
 export async function syncErloschenFromOddb(): Promise<{ upserted: number }> {
   const CHUNK = 500
-  let upserted = 0
 
   // GTINs already tracked via drugshortage.ch (AUSSER_HANDEL / VERTRIEBSEINSTELLUNG)
   const existing = await prisma.offMarketDrug.findMany({
@@ -941,7 +940,6 @@ export async function syncErloschenFromOddb(): Promise<{ upserted: number }> {
         })
       )
     )
-    upserted += chunk.length
   }
 
   return { upserted: newRows.length }
