@@ -50,7 +50,7 @@ export function NewsletterSignup() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
           </svg>
           <p className="text-sm text-muted-foreground">
-            Angemeldet! Nächste Ausgabe kommt bald.
+            Bitte prüfen Sie Ihr Postfach und bestätigen Sie Ihre Anmeldung.
           </p>
         </div>
       </div>
