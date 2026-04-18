@@ -1,163 +1,453 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
+import { ArrowLeft } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'API Dokumentation | engpass.radar',
-  description: 'Öffentliche REST API für Schweizer Arzneimittel-Engpässe.',
+  title: 'API Dokumentation | engpassradar.ch',
+  description: 'Öffentliche REST API für Schweizer Arzneimittel-Lieferengpässe. Kein API-Key. JSON, CSV und Timeline-Daten frei verfügbar.',
 }
-
-const params = [
-  { name: 'search', type: 'string', desc: 'Volltextsuche auf Bezeichnung, Firma und ATC-Code', example: 'amoxicillin' },
-  { name: 'status', type: 'string', desc: 'Statuscode(s) 1–5, kommagetrennt', example: '1,4' },
-  { name: 'firma', type: 'string', desc: 'Exakter Firmenname', example: 'Sandoz' },
-  { name: 'atc', type: 'string', desc: 'ATC-Code-Präfix', example: 'C09' },
-  { name: 'neu', type: 'string', desc: 'Nur neue Engpässe (≤7 Tage). Wert: 1', example: 'neu=1' },
-  { name: 'page', type: 'integer', desc: 'Seitennummer (Standard: 1)', example: '2' },
-  { name: 'perPage', type: 'integer', desc: 'Einträge pro Seite (Standard: 50, max: 200)', example: '100' },
-  { name: 'sort', type: 'string', desc: 'Sortierung: feld:asc oder feld:desc', example: 'tageSeitMeldung:desc' },
-]
-
-const responseExample = `{
-  "data": [
-    {
-      "id": 1,
-      "gtin": "7680123456789",
-      "bezeichnung": "Amoxicillin Sandoz 500 mg",
-      "firma": "Sandoz",
-      "atcCode": "J01CA04",
-      "statusCode": 1,
-      "statusText": "Engpass gemeldet",
-      "tageSeitMeldung": 42,
-      "isActive": true
-    }
-  ],
-  "total": 712,
-  "page": 1,
-  "perPage": 50,
-  "meta": {
-    "generatedAt": "2026-04-17T10:00:00.000Z",
-    "source": "engpassradar.ch",
-    "docsUrl": "https://engpassradar.ch/api-docs"
-  }
-}`
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
-  headline: 'API Dokumentation — engpass.radar',
+  headline: 'API Dokumentation — engpassradar.ch',
   url: 'https://www.engpassradar.ch/api-docs',
-  publisher: {
-    '@type': 'Organization',
-    name: 'engpass.radar',
-    url: 'https://www.engpassradar.ch',
-  },
+  publisher: { '@type': 'Organization', name: 'engpassradar.ch', url: 'https://www.engpassradar.ch' },
+}
+
+function MethodBadge({ method }: { method: 'GET' | 'POST' }) {
+  const colors = {
+    GET: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
+    POST: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20',
+  }
+  return (
+    <span className={`inline-block rounded px-2 py-0.5 text-xs font-mono font-bold ${colors[method]}`}>
+      {method}
+    </span>
+  )
+}
+
+function Code({ children }: { children: string }) {
+  return (
+    <pre className="rounded-lg bg-muted border px-4 py-3 text-xs font-mono overflow-x-auto leading-relaxed whitespace-pre">
+      {children}
+    </pre>
+  )
+}
+
+type ParamRow = { name: string; type: string; required?: boolean; desc: string; example?: string }
+
+function ParamTable({ rows }: { rows: ParamRow[] }) {
+  return (
+    <div className="overflow-x-auto rounded-lg border">
+      <table className="w-full text-xs border-collapse">
+        <thead>
+          <tr className="border-b bg-muted/50">
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Parameter</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Typ</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Pflicht</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Beschreibung</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Beispiel</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y">
+          {rows.map(r => (
+            <tr key={r.name}>
+              <td className="py-2 px-3 font-mono text-foreground">{r.name}</td>
+              <td className="py-2 px-3 text-muted-foreground">{r.type}</td>
+              <td className="py-2 px-3">
+                {r.required
+                  ? <span className="text-red-500 font-medium">ja</span>
+                  : <span className="text-muted-foreground">–</span>
+                }
+              </td>
+              <td className="py-2 px-3 text-muted-foreground">{r.desc}</td>
+              <td className="py-2 px-3 font-mono text-muted-foreground">{r.example ?? ''}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
 }
 
 export default function ApiDocsPage() {
   return (
-    <main className="max-w-3xl mx-auto px-4 py-12 space-y-10">
+    <main className="min-h-screen bg-background">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }}
       />
-      <header className="space-y-3">
-        <h1 className="text-3xl font-bold tracking-tight">Öffentliche API — engpass.radar</h1>
-        <p className="text-muted-foreground leading-relaxed">
-          Freier Zugang zu allen Schweizer Arzneimittel-Engpässen. Kein API-Key erforderlich, kein Login.
-          Bitte fair nutzen — max. ~100 Requests/Tag empfohlen.
-        </p>
-      </header>
+      <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
 
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold">Base URL</h2>
-        <pre className="bg-muted border rounded-md px-4 py-3 text-sm font-mono overflow-x-auto">
-          https://engpassradar.ch/api/v1
-        </pre>
-      </section>
+        <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+          <ArrowLeft className="h-4 w-4" />
+          Zur Übersicht
+        </Link>
 
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">
-          <span className="inline-block bg-muted border rounded px-2 py-0.5 text-sm font-mono mr-2">GET</span>
-          /shortages
-        </h2>
-        <p className="text-muted-foreground text-sm">Gibt eine paginierte Liste aller gemeldeten Engpässe zurück.</p>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm border-collapse">
-            <thead>
-              <tr className="border-b text-left">
-                <th className="pb-2 pr-4 font-semibold">Parameter</th>
-                <th className="pb-2 pr-4 font-semibold">Typ</th>
-                <th className="pb-2 pr-4 font-semibold">Beschreibung</th>
-                <th className="pb-2 font-semibold">Beispiel</th>
-              </tr>
-            </thead>
-            <tbody className="text-muted-foreground">
-              {params.map((p) => (
-                <tr key={p.name} className="border-b last:border-0">
-                  <td className="py-2 pr-4 font-mono text-foreground">{p.name}</td>
-                  <td className="py-2 pr-4">{p.type}</td>
-                  <td className="py-2 pr-4">{p.desc}</td>
-                  <td className="py-2 font-mono">{p.example}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold">Response-Schema</h2>
-        <pre className="bg-muted border rounded-md px-4 py-3 text-sm font-mono overflow-x-auto leading-relaxed">
-          {responseExample}
-        </pre>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-lg font-semibold">Beispiele</h2>
-        <div className="space-y-3">
-          <div>
-            <p className="text-sm text-muted-foreground mb-1">Alle aktiven Engpässe:</p>
-            <pre className="bg-muted border rounded-md px-4 py-3 text-sm font-mono overflow-x-auto">
-              curl https://engpassradar.ch/api/v1/shortages
-            </pre>
+        {/* Header */}
+        <header className="space-y-3">
+          <div className="flex items-center gap-3 flex-wrap">
+            <h1 className="text-2xl font-bold tracking-tight">API Dokumentation</h1>
+            <span className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium">
+              v1 — öffentlich
+            </span>
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground mb-1">Gefiltert nach ATC-Gruppe und Status:</p>
-            <pre className="bg-muted border rounded-md px-4 py-3 text-sm font-mono overflow-x-auto">
-              {`curl "https://engpassradar.ch/api/v1/shortages?atc=C09&status=1,4"`}
-            </pre>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            Freier Zugang zu allen Schweizer Arzneimittel-Lieferengpässen. Kein API-Key, kein Login erforderlich.
+            Bitte fair nutzen — max. ~300 Requests/Tag empfohlen.
+          </p>
+        </header>
+
+        {/* Base URL */}
+        <section className="space-y-2">
+          <h2 className="font-semibold text-base">Base URL</h2>
+          <Code>https://engpassradar.ch/api/v1</Code>
+          <p className="text-xs text-muted-foreground">
+            Alle Antworten sind UTF-8 JSON. CORS ist aktiviert (<code className="font-mono bg-muted px-1 rounded">Access-Control-Allow-Origin: *</code>).
+          </p>
+        </section>
+
+        {/* Endpoints overview */}
+        <section className="space-y-3">
+          <h2 className="font-semibold text-base">Endpunkte</h2>
+          <div className="rounded-lg border overflow-hidden divide-y text-sm">
+            {[
+              { method: 'GET' as const, path: '/api/v1/shortages', desc: 'Paginierte Liste aller Engpässe' },
+              { method: 'GET' as const, path: '/api/v1/shortages/:gtin', desc: 'Einzelprodukt mit Score-Breakdown' },
+              { method: 'GET' as const, path: '/api/v1/stats', desc: 'Aggregierte Kennzahlen' },
+              { method: 'GET' as const, path: '/api/v1/timeline', desc: 'Wöchentliche Zeitreihe' },
+              { method: 'GET' as const, path: '/api/alternatives', desc: 'Alternativen für ein Produkt (GTIN)' },
+              { method: 'POST' as const, path: '/api/alternatives/batch', desc: 'Batch-Alternativen für bis zu 50 GTINs' },
+              { method: 'GET' as const, path: '/api/export/csv', desc: 'Gefilterte CSV-Export' },
+              { method: 'GET' as const, path: '/api/health', desc: 'System-Health-Check' },
+            ].map(e => (
+              <div key={e.path} className="flex items-center gap-3 px-4 py-3 bg-card">
+                <MethodBadge method={e.method} />
+                <code className="font-mono text-xs text-foreground flex-1">{e.path}</code>
+                <span className="text-xs text-muted-foreground hidden sm:block">{e.desc}</span>
+              </div>
+            ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold">RSS-Feeds</h2>
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          Neben der REST API stehen auch RSS-Feeds zur Verfügung:
-        </p>
-        <ul className="text-sm space-y-1 text-muted-foreground list-disc list-inside">
-          <li>
-            <span className="font-mono text-foreground">/rss.xml</span> — Alle aktuellen Engpässe
-          </li>
-          <li>
-            <span className="font-mono text-foreground">/wirkstoff/{'{atc}'}/feed.xml</span> — Engpässe nach ATC-Gruppe (z. B. <span className="font-mono">/wirkstoff/C09/feed.xml</span>)
-          </li>
-        </ul>
-      </section>
+        {/* ── GET /shortages ── */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MethodBadge method="GET" />
+            <h2 className="font-semibold text-base font-mono">/api/v1/shortages</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">Gibt eine paginierte, filterbare Liste aller gemeldeten Engpässe zurück.</p>
+          <ParamTable rows={[
+            { name: 'search', type: 'string', desc: 'Volltextsuche auf Bezeichnung, Firma, ATC-Code', example: 'pregabalin' },
+            { name: 'status', type: 'string', desc: 'Status-Code(s) 1–5, kommagetrennt', example: '1,4' },
+            { name: 'firma', type: 'string', desc: 'Exakter Firmenname', example: 'Sandoz' },
+            { name: 'atc', type: 'string', desc: 'ATC-Code-Präfix', example: 'C09' },
+            { name: 'neu', type: 'integer', desc: 'Nur Engpässe ≤ 7 Tage alt', example: '1' },
+            { name: 'page', type: 'integer', desc: 'Seitennummer (Standard: 1)', example: '2' },
+            { name: 'perPage', type: 'integer', desc: 'Einträge pro Seite (max: 200)', example: '100' },
+            { name: 'sort', type: 'string', desc: 'feld:asc oder feld:desc', example: 'tageSeitMeldung:desc' },
+          ]} />
+          <Code>{`curl "https://engpassradar.ch/api/v1/shortages?atc=C09&status=1,4&perPage=20"
 
-      <section className="space-y-2">
-        <h2 className="text-lg font-semibold">Score-Methodik</h2>
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          Jeder Engpass-Datensatz enthält einen <strong className="text-foreground">engpass.radar Severity Score</strong> (0–100).
-          Die genaue Berechnung ist auf der{' '}
-          <a href="/methodik" className="underline hover:text-foreground">Score-Methodik-Seite</a>{' '}
-          dokumentiert.
-        </p>
-      </section>
+{
+  "data": [
+    {
+      "id": 4821,
+      "gtin": "7680654320016",
+      "bezeichnung": "Olmesartan Mepha Lactab 20 mg",
+      "firma": "Mepha Pharma AG",
+      "atcCode": "C09CA08",
+      "statusCode": 1,
+      "statusText": "Direkt gemeldet",
+      "tageSeitMeldung": 183,
+      "isActive": true,
+      "datumLieferfahigkeit": "31.12.2026",
+      ...
+    }
+  ],
+  "total": 68,
+  "page": 1,
+  "perPage": 20,
+  "meta": { "generatedAt": "2026-04-19T10:00:00Z", "source": "engpassradar.ch" }
+}`}
+          </Code>
+        </section>
 
-      <footer className="border-t pt-6 text-xs text-muted-foreground">
-        Daten täglich aktualisiert aus drugshortage.ch, BWL und ODDB.
-      </footer>
+        {/* ── GET /shortages/:gtin ── */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MethodBadge method="GET" />
+            <h2 className="font-semibold text-base font-mono">/api/v1/shortages/<span className="text-muted-foreground">:gtin</span></h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Vollständige Details zu einem einzelnen Produkt inklusive <strong className="text-foreground">Severity Score Breakdown</strong>.
+          </p>
+          <ParamTable rows={[
+            { name: 'gtin', type: 'string', required: true, desc: 'GTIN des Produkts (7–14 Ziffern), im URL-Pfad', example: '7680654320016' },
+          ]} />
+          <Code>{`curl "https://engpassradar.ch/api/v1/shortages/7680654320016"
+
+{
+  "data": {
+    "gtin": "7680654320016",
+    "bezeichnung": "Olmesartan Mepha Lactab 20 mg",
+    "firma": "Mepha Pharma AG",
+    "atcCode": "C09CA08",
+    "statusCode": 1,
+    "tageSeitMeldung": 183,
+    "isActive": true,
+    "isBwl": true,
+    "score": {
+      "total": 57,
+      "label": "Mittel",
+      "breakdown": {
+        "transparency": 5,
+        "duration": 22,
+        "noAlternatives": 15,
+        "critical": 15
+      }
+    },
+    "bemerkungen": "Engpass aufgrund erhöhter Nachfrage...",
+    "voraussichtlicheDauer": "Q3 2026",
+    ...
+  }
+}`}
+          </Code>
+        </section>
+
+        {/* ── GET /stats ── */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MethodBadge method="GET" />
+            <h2 className="font-semibold text-base font-mono">/api/v1/stats</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Aggregierte Kennzahlen der aktuellen Versorgungslage. Nützlich für Dashboards und Monitoring.
+          </p>
+          <Code>{`curl "https://engpassradar.ch/api/v1/stats"
+
+{
+  "data": {
+    "active": 705,
+    "uniqueAtcGroups": 148,
+    "avgDaysSinceMeldung": 203,
+    "lastUpdated": "2026-04-19T03:15:00Z",
+    "duration": {
+      "under2Weeks": 42,
+      "weeks2to6": 89,
+      "weeks6to26": 201,
+      "months6to12": 178,
+      "over1Year": 195
+    },
+    "regulatory": {
+      "bwl": 87,
+      "pflichtlager": 112,
+      "kassenpflichtig": 534
+    },
+    "topAtcGroups": [
+      { "atc": "N02", "bezeichnung": "Analgetika", "count": 54 },
+      ...
+    ]
+  }
+}`}
+          </Code>
+        </section>
+
+        {/* ── GET /timeline ── */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MethodBadge method="GET" />
+            <h2 className="font-semibold text-base font-mono">/api/v1/timeline</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Wöchentliche Zeitreihe: neue Engpässe und aktiver Bestand. Ideal für Trendanalysen.
+          </p>
+          <ParamTable rows={[
+            { name: 'weeks', type: 'integer', desc: 'Anzahl Wochen zurück (4–260, Standard: 52)', example: '104' },
+          ]} />
+          <Code>{`curl "https://engpassradar.ch/api/v1/timeline?weeks=12"
+
+{
+  "data": [
+    { "week": "2026-W14", "newShortages": 18, "activeShortages": 712 },
+    { "week": "2026-W15", "newShortages": 22, "activeShortages": 705 },
+    ...
+  ],
+  "meta": { "weeks": 12, "generatedAt": "2026-04-19T10:00:00Z" }
+}`}
+          </Code>
+        </section>
+
+        {/* ── GET /alternatives ── */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MethodBadge method="GET" />
+            <h2 className="font-semibold text-base font-mono">/api/alternatives</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Wirkstoffgleiche Alternativen für ein Produkt, aufgeteilt in gleiche Firma, Co-Marketing und alle Alternativen.
+            Antworten werden 24 Stunden gecacht.
+          </p>
+          <ParamTable rows={[
+            { name: 'gtin', type: 'string', required: true, desc: 'GTIN des Produkts', example: '7680654320016' },
+          ]} />
+          <Code>{`curl "https://engpassradar.ch/api/alternatives?gtin=7680654320016"
+
+{
+  "gleicheFirma": [],
+  "coMarketing": [
+    { "bezeichnung": "Olmesartan Spirig HC Lactab 20 mg", "firma": "Spirig HealthCare", "gtin": "7680591620011" }
+  ],
+  "alleAlternativen": [
+    { "bezeichnung": "Olmesartan Sandoz Filmtabl 20 mg", "firma": "Sandoz", "gtin": "7680630420018", "typ": "G" }
+  ]
+}`}
+          </Code>
+        </section>
+
+        {/* ── POST /alternatives/batch ── */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MethodBadge method="POST" />
+            <h2 className="font-semibold text-base font-mono">/api/alternatives/batch</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Alternativenabfrage für bis zu 50 GTINs in einem einzigen Request. Deutlich effizienter als N Einzelanfragen.
+          </p>
+          <Code>{`curl -X POST "https://engpassradar.ch/api/alternatives/batch" \\
+  -H "Content-Type: application/json" \\
+  -d '{"gtins": ["7680654320016", "7680591620011"]}'
+
+[
+  { "gtin": "7680654320016", "data": { "alleAlternativen": [...], ... } },
+  { "gtin": "7680591620011", "data": null }
+]`}
+          </Code>
+          <p className="text-xs text-muted-foreground">
+            <code className="font-mono bg-muted px-1 rounded">data: null</code> wenn für eine GTIN noch keine gecachten Alternativen vorhanden sind.
+          </p>
+        </section>
+
+        {/* ── GET /export/csv ── */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MethodBadge method="GET" />
+            <h2 className="font-semibold text-base font-mono">/api/export/csv</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Gibt alle (gefilterten) Engpässe als CSV-Datei zurück. Direkt in Excel oder Python pandas importierbar.
+          </p>
+          <ParamTable rows={[
+            { name: 'search', type: 'string', desc: 'Volltextsuche', example: 'pregabalin' },
+            { name: 'status', type: 'string', desc: 'Status-Code(s), kommagetrennt', example: '1,4' },
+            { name: 'firma', type: 'string', desc: 'Exakter Firmenname', example: 'Novartis' },
+            { name: 'atc', type: 'string', desc: 'ATC-Code-Präfix', example: 'N06' },
+          ]} />
+          <Code>{`# Alle Neuropharmaka-Engpässe als CSV herunterladen
+curl "https://engpassradar.ch/api/export/csv?atc=N06" -o n06-engpaesse.csv
+
+# In Python:
+import pandas as pd
+df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
+          </Code>
+          <p className="text-xs text-muted-foreground">
+            Felder: Bezeichnung, Firma, ATC-Code, Status, Lieferbar ab, Letzte Mutation, Tage seit Meldung, GTIN, Pharmacode, Erstmals gesehen
+          </p>
+        </section>
+
+        {/* ── GET /health ── */}
+        <section className="space-y-4">
+          <div className="flex items-center gap-2">
+            <MethodBadge method="GET" />
+            <h2 className="font-semibold text-base font-mono">/api/health</h2>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            System-Health-Check. Gibt <code className="font-mono bg-muted px-1 rounded">200</code> wenn alle Systeme bereit,
+            <code className="font-mono bg-muted px-1 rounded">503</code> bei Problemen.
+          </p>
+          <Code>{`curl "https://engpassradar.ch/api/health"
+
+{
+  "status": "healthy",
+  "timestamp": "2026-04-19T10:00:00Z",
+  "database": { "healthy": true, "latencyMs": 12 },
+  "cache": { "entries": 84, "utilizationPercent": "42.0" }
+}`}
+          </Code>
+        </section>
+
+        {/* Error codes */}
+        <section className="space-y-3">
+          <h2 className="font-semibold text-base">HTTP Status Codes</h2>
+          <div className="rounded-lg border overflow-hidden divide-y text-xs">
+            {[
+              { code: '200', desc: 'Erfolgreich' },
+              { code: '400', desc: 'Ungültige Parameter (z. B. falsche GTIN)' },
+              { code: '404', desc: 'Produkt nicht gefunden' },
+              { code: '500', desc: 'Interner Serverfehler' },
+              { code: '503', desc: 'System degradiert (nur bei /api/health)' },
+            ].map(e => (
+              <div key={e.code} className="flex items-center gap-4 px-4 py-2.5 bg-card">
+                <span className={`font-mono font-bold w-10 ${e.code.startsWith('2') ? 'text-emerald-600 dark:text-emerald-400' : e.code.startsWith('4') ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{e.code}</span>
+                <span className="text-muted-foreground">{e.desc}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Caching */}
+        <section className="space-y-3">
+          <h2 className="font-semibold text-base">Caching</h2>
+          <div className="rounded-lg border overflow-hidden divide-y text-xs">
+            {[
+              { endpoint: '/api/v1/shortages', ttl: '5 min', stale: '1 h' },
+              { endpoint: '/api/v1/shortages/:gtin', ttl: '5 min', stale: '1 h' },
+              { endpoint: '/api/v1/stats', ttl: '5 min', stale: '1 h' },
+              { endpoint: '/api/v1/timeline', ttl: '1 h', stale: '24 h' },
+              { endpoint: '/api/alternatives', ttl: '1 h', stale: '24 h' },
+            ].map(r => (
+              <div key={r.endpoint} className="flex items-center gap-4 px-4 py-2.5 bg-card">
+                <code className="font-mono flex-1 text-foreground">{r.endpoint}</code>
+                <span className="text-muted-foreground">s-maxage: {r.ttl}</span>
+                <span className="text-muted-foreground">stale: {r.stale}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Score */}
+        <section className="space-y-2">
+          <h2 className="font-semibold text-base">Severity Score</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Jeder Engpass-Datensatz enthält einen <strong className="text-foreground">engpassradar Severity Score</strong> (0–100).
+            Die genaue Berechnung ist auf der{' '}
+            <Link href="/methodik" className="underline hover:text-foreground">Methodik-Seite</Link>{' '}
+            dokumentiert.
+          </p>
+        </section>
+
+        {/* RSS */}
+        <section className="space-y-3">
+          <h2 className="font-semibold text-base">RSS-Feeds</h2>
+          <div className="rounded-lg border overflow-hidden divide-y text-xs">
+            {[
+              { url: '/rss.xml', desc: 'Alle aktuellen Engpässe' },
+              { url: '/wirkstoff/{atc}/feed.xml', desc: 'Engpässe nach ATC-Gruppe (z. B. /wirkstoff/C09/feed.xml)' },
+            ].map(r => (
+              <div key={r.url} className="flex items-center gap-4 px-4 py-2.5 bg-card">
+                <code className="font-mono text-foreground">{r.url}</code>
+                <span className="text-muted-foreground">{r.desc}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <footer className="border-t pt-6 text-xs text-muted-foreground">
+          Daten täglich aktualisiert aus drugshortage.ch, BWL und ODDB.
+          Feedback & Fragen: <a href="mailto:info@engpassradar.ch" className="underline hover:text-foreground">info@engpassradar.ch</a>
+        </footer>
+      </div>
     </main>
   )
 }
