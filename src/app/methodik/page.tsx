@@ -3,9 +3,9 @@ import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 
 export const metadata: Metadata = {
-  title: 'Score-Methodik | engpass.radar',
+  title: 'Methodik & Datenquellen | engpassradar.ch',
   description:
-    'Erklärung des engpass.radar Severity Score — proprietärer Index zur Bewertung des Schweregrads von Arzneimittel-Lieferengpässen in der Schweiz.',
+    'Wie engpassradar.ch Schweizer Medikamenten-Lieferengpässe erfasst: Datenquellen (drugshortage.ch, BWL, ODDB), Aktualisierungsrhythmus und Severity Score.',
 }
 
 const jsonLd = {
@@ -35,7 +35,145 @@ export default function MetodikPage() {
         </Link>
 
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">Score-Methodik</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Methodik & Datenquellen</h1>
+          <p className="text-muted-foreground text-sm">
+            Wie engpassradar.ch Schweizer Medikamenten-Lieferengpässe erfasst, aufbereitet und bewertet
+          </p>
+        </div>
+
+        {/* Data sources */}
+        <section className="space-y-4">
+          <h2 className="font-semibold text-base">Datenquellen</h2>
+          <div className="divide-y rounded-lg border overflow-hidden text-sm">
+            {[
+              {
+                name: 'drugshortage.ch',
+                url: 'https://www.drugshortage.ch',
+                badge: 'Primärquelle',
+                badgeColor: 'bg-blue-500/10 text-blue-600 dark:text-blue-400',
+                desc: 'Private Plattform der Martinelli Consulting GmbH zur Erfassung von Medikamenten-Lieferengpässen in der Schweiz. Pharmaunternehmen melden hier freiwillig Engpässe und Erlöschungen von Zulassungen. Alle Produktdaten, Status-Codes und Alternativprodukte stammen aus dieser Quelle.',
+              },
+              {
+                name: 'BWL — Bundesamt für wirtschaftliche Landesversorgung',
+                url: 'https://www.bwl.admin.ch/de/meldestelle-heilmittel',
+                badge: 'Pflichtlagerliste',
+                badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+                desc: 'Das BWL publiziert die Liste der pflichtlagerpflichtigen Heilmittel. Produkte auf dieser Liste sind für die Versorgungssicherheit der Schweiz besonders kritisch — bei einem Engpass besteht erhöhtes Risiko für Patienten.',
+              },
+              {
+                name: 'ODDB / ywesee',
+                url: 'https://www.oddb.org',
+                badge: 'Preise & ATC',
+                badgeColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+                desc: 'Die Open Drug Database liefert Apothekenverkaufspreise (Ex-Factory) sowie ATC-Codes für gemeldete Produkte. Diese Daten werden täglich abgeglichen, um Preisveränderungen und therapeutische Einordnung aktuell zu halten.',
+              },
+            ].map(s => (
+              <div key={s.name} className="px-4 py-4 bg-card space-y-1.5">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <a
+                    href={s.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-sm hover:underline"
+                  >
+                    {s.name}
+                  </a>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${s.badgeColor}`}>{s.badge}</span>
+                </div>
+                <p className="text-xs text-muted-foreground leading-relaxed">{s.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Data collection */}
+        <section className="space-y-3">
+          <h2 className="font-semibold text-base">Erhebung & Aktualisierung</h2>
+          <div className="rounded-lg border bg-card p-5 space-y-4 text-sm">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              {[
+                { value: 'täglich', label: 'Aktualisierungsrhythmus' },
+                { value: '9\'255+', label: 'erfasste Präparate' },
+                { value: '9\'373+', label: 'Engpass-Episoden gesamt' },
+                { value: '705+', label: 'aktuell aktive Engpässe' },
+              ].map(s => (
+                <div key={s.label} className="space-y-0.5">
+                  <p className="text-xl font-black tabular-nums text-foreground">{s.value}</p>
+                  <p className="text-xs text-muted-foreground leading-tight">{s.label}</p>
+                </div>
+              ))}
+            </div>
+            <hr className="border-border/40" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Ein automatisierter Scraper läuft täglich und ruft alle gemeldeten Engpässe von drugshortage.ch ab.
+              Dabei werden neue Produkte erfasst, bestehende Einträge aktualisiert und — falls ein Produkt von
+              der Plattform verschwindet — die Engpass-Episode als geschlossen markiert (<em>resolved</em>).
+              Diese Episode-Logik ermöglicht es, die Gesamtdauer und Häufigkeit von Engpässen pro Wirkstoff
+              über Zeit zu analysieren.
+            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Preise und ATC-Codes werden in einem separaten Schritt aus ODDB abgeglichen.
+              Die Pflichtlagerliste des BWL wird bei jeder Scrape-Runde verglichen, da sie sich nur selten ändert.
+            </p>
+          </div>
+        </section>
+
+        {/* Episode tracking */}
+        <section className="space-y-3">
+          <h2 className="font-semibold text-base">Episode-Tracking</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Jeder Engpass wird als <strong className="text-foreground">Episode</strong> verfolgt — eine
+            zeitlich abgegrenzte Periode, in der ein Produkt auf drugshortage.ch als Engpass gemeldet ist.
+            Verschwindet ein Produkt aus der Meldeplattform, gilt die Episode als abgeschlossen.
+            Taucht dasselbe Produkt später erneut auf, beginnt eine neue Episode.
+          </p>
+          <div className="rounded-lg border bg-card overflow-hidden text-xs">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="border-b bg-muted/50">
+                  <th className="py-2 px-4 text-left font-medium text-muted-foreground">Feld</th>
+                  <th className="py-2 px-4 text-left font-medium text-muted-foreground">Beschreibung</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y">
+                {[
+                  ['opened_at', 'Datum, an dem das Produkt erstmals in diesem Scrape-Zyklus als Engpass erschien'],
+                  ['closed_at', 'Datum, an dem das Produkt nicht mehr in der Meldeplattform gelistet war'],
+                  ['duration_days', 'Berechnete Dauer der Episode (closed_at − opened_at)'],
+                  ['is_active', 'true, solange der Engpass aktuell aktiv ist'],
+                ].map(([field, desc]) => (
+                  <tr key={field}>
+                    <td className="py-2 px-4 font-mono text-foreground">{field}</td>
+                    <td className="py-2 px-4 text-muted-foreground">{desc}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* Analytical methodology */}
+        <section className="space-y-3">
+          <h2 className="font-semibold text-base">Analytische Auswertung</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Für Analysen wie <em>«Häufigste Lieferengpässe nach Wirkstoff»</em> werden Produktnamen
+            normalisiert: Der erste Teil des Handelsnamens (vor Stärke- und Darreichungsformangabe)
+            dient als Proxy für den Wirkstoff. Wirkstoff-Gruppierungen ermöglichen es,
+            mehrere Stärken und Generika eines Medikaments zusammenzufassen — z. B.
+            «Pregabalin» mit 22 aktiven Stärken/Firmen gleichzeitig.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Eine exakte Wirkstoff-Normalisierung via ATC-Code ist für zukünftige Versionen geplant.
+            Die aktuelle Methodik deckt den Grossteil der Fälle ab, kann jedoch bei
+            Kombinationspräparaten oder stark abweichenden Handelsnamen unvollständig sein.
+          </p>
+        </section>
+
+        <hr className="border-border/40" />
+
+        {/* Score section header */}
+        <div className="space-y-2">
+          <h2 className="text-lg font-bold tracking-tight">Severity Score</h2>
           <p className="text-muted-foreground text-sm">
             Wie der <span className="font-medium text-foreground">engpass.radar Severity Score</span> berechnet wird
           </p>
@@ -216,12 +354,6 @@ export default function MetodikPage() {
           </ul>
         </section>
 
-        <p className="text-xs text-muted-foreground border-t pt-6">
-          Methodik von engpass.radar · Datenquellen:{' '}
-          <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">drugshortage.ch</a>
-          {', '}
-          <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">BWL</a>
-        </p>
       </div>
     </main>
   )

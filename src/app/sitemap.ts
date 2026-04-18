@@ -1,12 +1,21 @@
 import { MetadataRoute } from 'next'
 import { getAllDrugSlugs, getAllAtcCodes } from '@/lib/db'
 import { getCachedLRU } from '@/lib/cache-lru'
+import { getAllPosts } from '@/lib/blog'
 
 // ✅ Enable ISR - regenerate sitemap every 24 hours
 export const revalidate = 86400 // 24 hours
 
 // ✅ Pre-render at build time, allow on-demand revalidation
 export const dynamic = 'force-static'
+
+const STATIC_PAGES = [
+  { path: '/blog',              priority: 0.8, changeFrequency: 'weekly'  as const },
+  { path: '/methodik',          priority: 0.7, changeFrequency: 'monthly' as const },
+  { path: '/datenschutz',       priority: 0.3, changeFrequency: 'monthly' as const },
+  { path: '/nutzungsbedingungen', priority: 0.3, changeFrequency: 'monthly' as const },
+  { path: '/api-docs',          priority: 0.5, changeFrequency: 'monthly' as const },
+]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://engpassradar.ch'
@@ -22,8 +31,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     3600 // 1 hour cache
   )
 
-  // ✅ Pre-allocate array with exact size (2x faster, 50% less memory)
-  const result: MetadataRoute.Sitemap = new Array(1 + drugSlugs.length + atcCodes.length)
+  const blogPosts = getAllPosts()
+
+  // ✅ Pre-allocate array with exact size
+  const result: MetadataRoute.Sitemap = new Array(
+    1 + STATIC_PAGES.length + blogPosts.length + drugSlugs.length + atcCodes.length
+  )
   let i = 0
 
   // Homepage
@@ -32,6 +45,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: now,
     changeFrequency: 'hourly' as const,
     priority: 1.0,
+  }
+
+  // Static pages
+  for (const page of STATIC_PAGES) {
+    result[i++] = {
+      url: `${baseUrl}${page.path}`,
+      lastModified: now,
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+    }
+  }
+
+  // Blog posts
+  for (const post of blogPosts) {
+    result[i++] = {
+      url: `${baseUrl}/blog/${post.slug}`,
+      lastModified: post.updatedAt ? new Date(post.updatedAt) : (post.date ? new Date(post.date) : now),
+      changeFrequency: 'monthly' as const,
+      priority: 0.7,
+    }
   }
 
   // Drug pages - single iteration, no intermediate arrays
