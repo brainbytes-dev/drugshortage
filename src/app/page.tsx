@@ -179,15 +179,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             </a>
           </div>
 
-          {/* Source line */}
-          <p className="hero-animate hero-animate-5 text-xs text-muted-foreground">
-            Daten aus{' '}
-            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">drugshortage.ch</a>
-            {', '}
-            <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">BWL</a>
-            {' und '}
-            <a href="https://ch.oddb.org/de/gcc/home/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground transition-colors">ODDB</a>
-          </p>
         </div>
       </section>
 
