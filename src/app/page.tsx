@@ -361,7 +361,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             ))}
           </div>
           <p className="mt-6 text-xs text-muted-foreground leading-relaxed">
-            Entwickelt, weil die Schweiz ein schnelleres Werkzeug für Engpass-Monitoring verdient.
+            Entwickelt, weil die Schweiz ein schnelles Werkzeug für Engpass-Monitoring verdient.
           </p>
         </div>
       </section>
