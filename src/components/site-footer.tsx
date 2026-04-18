@@ -13,7 +13,7 @@ export function SiteFooter() {
           {', '}
           <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">BWL</a>
           {' & '}
-          <a href="https://ch.oddb.org/de/gcc/home/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">HIN/ODDB</a>
+          <a href="https://ch.oddb.org/de/gcc/home/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">ODDB</a>
           {' '}· täglich aktualisiert · keine Gewähr auf Vollständigkeit
         </p>
 

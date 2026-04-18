@@ -156,7 +156,7 @@ export default function ApiDocsPage() {
       </section>
 
       <footer className="border-t pt-6 text-xs text-muted-foreground">
-        Daten täglich aktualisiert aus drugshortage.ch, BWL und HIN/ODDB.
+        Daten täglich aktualisiert aus drugshortage.ch, BWL und ODDB.
       </footer>
     </main>
   )
