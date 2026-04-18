@@ -61,7 +61,7 @@ export function NewsletterSignup() {
     <div className="flex flex-col items-center gap-5">
       <div className="space-y-2">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-          Engpass-Signal
+          Engpass-Signal Newsletter
         </p>
         <p className="text-lg font-bold tracking-tight">Immer informiert. Nie überrascht.</p>
         <p className="text-sm text-muted-foreground max-w-sm mx-auto">
