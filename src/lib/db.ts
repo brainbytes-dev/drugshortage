@@ -465,14 +465,25 @@ export async function getShortagesByAtc(atc: string): Promise<Shortage[]> {
   return rows.map(mapShortage)
 }
 
-export async function getAllAtcCodes(): Promise<Array<{ atc: string; bezeichnung: string }>> {
-  const rows = await prisma.shortage.findMany({
+export async function getAllAtcCodes(): Promise<Array<{ atc: string; bezeichnung: string; lastSeenAt: Date | null }>> {
+  const groups = await prisma.shortage.groupBy({
+    by: ['atcCode'],
     where: { isActive: true },
-    select: { atcCode: true, bezeichnung: true },
-    distinct: ['atcCode'],
+    _max: { lastSeenAt: true },
     orderBy: { atcCode: 'asc' },
   })
-  return rows.map(r => ({ atc: r.atcCode, bezeichnung: r.bezeichnung }))
+  // Fetch one bezeichnung per atcCode for display
+  const namen = await prisma.shortage.findMany({
+    where: { atcCode: { in: groups.map(g => g.atcCode) }, isActive: true },
+    select: { atcCode: true, bezeichnung: true },
+    distinct: ['atcCode'],
+  })
+  const nameMap = new Map(namen.map(r => [r.atcCode, r.bezeichnung]))
+  return groups.map(g => ({
+    atc: g.atcCode,
+    bezeichnung: nameMap.get(g.atcCode) ?? g.atcCode,
+    lastSeenAt: g._max.lastSeenAt ?? null,
+  }))
 }
 
 export async function getShortageBySlug(slug: string): Promise<Shortage | null> {
