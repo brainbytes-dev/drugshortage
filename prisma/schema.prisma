@@ -174,6 +174,22 @@ model ShortageEpisode {
   @@map("shortage_episodes")
 }
 
+// Watchlist subscriptions: users subscribe to ATC codes and receive email alerts on shortage changes
+model WatchlistSubscription {
+  id          Int       @id @default(autoincrement())
+  email       String
+  atcCode     String
+  token       String    @unique @default(cuid())
+  confirmed   Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  lastAlertAt DateTime?
+
+  @@unique([email, atcCode], map: "uq_watchlist_email_atc")
+  @@index([atcCode, confirmed], map: "idx_watchlist_atc_confirmed")
+  @@index([confirmed],          map: "idx_watchlist_confirmed")
+  @@map("watchlist_subscriptions")
+}
+
 // Off-market drugs: permanently withdrawn (ausserHandel), sales discontinued (Vertriebseinstellung), or authorization expired (Erlöschen)
 // Source: drugshortage.ch/ausserHandel.aspx + drugshortage.ch/Vertriebseinstellung.aspx + oddb_products (authStatus E/S)
 // Note: "datum" meaning differs by category:

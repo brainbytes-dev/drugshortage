@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
 import { getAllAtcCodes, getShortagesByAtc, getSubstanzByAtc } from '@/lib/db'
 import { toSlug } from '@/lib/slug'
+import { WatchlistForm } from '@/components/watchlist-form'
 
 interface PageProps {
   params: Promise<{ atc: string }>
@@ -133,6 +134,8 @@ export default async function WirkstoffPage({ params }: PageProps) {
             ))}
           </ul>
         </section>
+
+        <WatchlistForm atcCode={atc} atcName={substanz ?? atc} />
 
         <p className="text-xs text-muted-foreground border-t pt-4">
           Daten von drugshortage.ch · keine Gewähr auf Vollständigkeit
