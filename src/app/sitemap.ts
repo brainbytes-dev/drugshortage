@@ -78,10 +78,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   // ATC pages - single iteration, no intermediate arrays
-  for (const { atc } of atcCodes) {
+  for (const { atc, lastSeenAt } of atcCodes) {
     result[i++] = {
       url: `${baseUrl}/wirkstoff/${atc}`,
-      lastModified: now,
+      lastModified: lastSeenAt ?? now,
       changeFrequency: 'daily' as const,
       priority: 0.7,
     }
