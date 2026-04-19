@@ -278,9 +278,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       {/* ── Wie es funktioniert ─────────────────────────────────── */}
       <section className="border-t border-border/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 py-24 sm:py-32">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-20 sm:mb-24">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-20 sm:mb-24">
             Wie es funktioniert
-          </p>
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {[
               {
@@ -325,9 +325,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       {/* ── Was Sie hier finden ─────────────────────────────────── */}
       <section className="border-t border-border/40 bg-muted/[0.08]">
         <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
             Was Sie hier finden
-          </p>
+          </h2>
           <div className="overflow-hidden rounded-xl border border-border/60 bg-card">
             {[
               'Alle Quellen in einem Dashboard (drugshortage.ch + BWL + ODDB)',
@@ -374,9 +374,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       />
       <section id="faq" className="border-t border-border/40 bg-muted/[0.15]">
         <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
             Häufige Fragen
-          </p>
+          </h2>
           <div className="divide-y divide-border/40">
             {[
               {

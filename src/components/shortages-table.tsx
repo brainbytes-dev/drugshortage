@@ -172,9 +172,9 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               size="sm"
               disabled={page <= 1}
               onClick={() => navigate({ page: '1' }, 'table')}
-              title="Erste Seite"
+              aria-label="Erste Seite"
             >
-              <ChevronsLeft className="h-4 w-4" />
+              <ChevronsLeft className="h-4 w-4" aria-hidden="true" />
             </Button>
             {/* Prev page */}
             <Button
@@ -182,9 +182,9 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               size="sm"
               disabled={page <= 1}
               onClick={() => navigate({ page: String(page - 1) }, 'table')}
-              title="Vorherige Seite"
+              aria-label="Vorherige Seite"
             >
-              <ChevronLeft className="h-4 w-4" />
+              <ChevronLeft className="h-4 w-4" aria-hidden="true" />
             </Button>
             {/* Manual page input — key={page} resets the uncontrolled input when page changes */}
             <input
@@ -194,6 +194,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               min={1}
               max={totalPages}
               defaultValue={String(page)}
+              aria-label={`Seite, von ${totalPages}`}
               onBlur={() => {
                 const n = parseInt(pageInputRef.current?.value ?? '', 10)
                 if (!isNaN(n) && n >= 1 && n <= totalPages && n !== page) {
@@ -207,16 +208,16 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               }}
               className="w-12 h-8 rounded-md border border-input bg-background text-center text-sm tabular-nums focus:outline-none focus:ring-1 focus:ring-ring"
             />
-            <span className="text-sm text-muted-foreground tabular-nums">/ {totalPages}</span>
+            <span className="text-sm text-muted-foreground tabular-nums" aria-hidden="true">/ {totalPages}</span>
             {/* Next page */}
             <Button
               variant="outline"
               size="sm"
               disabled={page >= totalPages}
               onClick={() => navigate({ page: String(page + 1) }, 'table')}
-              title="Nächste Seite"
+              aria-label="Nächste Seite"
             >
-              <ChevronRight className="h-4 w-4" />
+              <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Button>
             {/* Last page */}
             <Button
@@ -224,9 +225,9 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               size="sm"
               disabled={page >= totalPages}
               onClick={() => navigate({ page: String(totalPages) }, 'table')}
-              title="Letzte Seite"
+              aria-label="Letzte Seite"
             >
-              <ChevronsRight className="h-4 w-4" />
+              <ChevronsRight className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
         </div>

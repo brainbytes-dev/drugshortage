@@ -72,7 +72,9 @@ export function NewsletterSignup() {
 
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <div className="flex flex-col sm:flex-row gap-2">
+          <label htmlFor="newsletter-email" className="sr-only">E-Mail-Adresse für Newsletter</label>
           <input
+            id="newsletter-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -84,6 +86,7 @@ export function NewsletterSignup() {
           <button
             type="submit"
             disabled={status === 'loading'}
+            aria-label="Newsletter abonnieren"
             className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 active:scale-[0.98] transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {status === 'loading' ? (
