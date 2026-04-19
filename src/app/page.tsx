@@ -15,8 +15,7 @@ import { ResetFiltersButton } from '@/components/reset-filters-button'
 import { NeueMeldungenButton } from '@/components/neue-meldungen-button'
 import { ExportCsvButton } from '@/components/export-csv-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
-import { TimelineChart } from '@/components/timeline-chart'
-import { AtcTreemap } from '@/components/atc-treemap'
+import { LazyTimelineChart, LazyAtcTreemap } from '@/components/lazy-charts'
 import { NewsletterSignup } from '@/components/newsletter-signup'
 import type { ShortagesQuery } from '@/lib/types'
 
@@ -191,11 +190,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         <KPICards stats={kpi} historicalCount={historicalTotal} />
 
         {/* Weekly Timeline Chart */}
-        <TimelineChart initialData={weeklyTimeline} />
+        <LazyTimelineChart initialData={weeklyTimeline} />
 
         {/* ATC Treemap */}
         {overview && overview.atcGruppen.length > 0 && (
-          <AtcTreemap data={overview.atcGruppen} />
+          <LazyAtcTreemap data={overview.atcGruppen} />
         )}
 
         {/* View Switch + Overview Buttons in one row */}
