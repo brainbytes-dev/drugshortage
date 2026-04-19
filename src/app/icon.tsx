@@ -8,21 +8,23 @@ export default function Icon() {
     (
       <div
         style={{
-          background: '#2d8f8f',
+          background: 'white',
           borderRadius: '7px',
           width: '100%',
           height: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          color: 'white',
           fontFamily: 'system-ui, sans-serif',
-          fontSize: '13px',
-          fontWeight: 600,
+          fontSize: '19px',
+          fontWeight: 800,
           letterSpacing: '-0.5px',
+          lineHeight: 1,
+          gap: 0,
         }}
       >
-        e·r
+        <span style={{ color: '#252525' }}>e</span>
+        <span style={{ color: '#2d8f8f' }}>.r</span>
       </div>
     ),
     size,
