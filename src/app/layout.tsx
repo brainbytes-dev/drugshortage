@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Script from 'next/script'
 import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { ScrollToTop } from '@/components/scroll-to-top'
@@ -23,6 +24,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   // hreflang: add <link rel="alternate" hreflang="fr" href="https://www.engpassradar.ch/fr/..." /> in <head> once FR/IT content exists
   return (
     <html lang="de" suppressHydrationWarning>
+      <head>
+        {process.env.NEXT_PUBLIC_GA_ID && (
+          <>
+            <Script
+              src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+              strategy="afterInteractive"
+            />
+            <Script id="gtag-init" strategy="afterInteractive">{`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+            `}</Script>
+          </>
+        )}
+      </head>
       <body className={`${inter.className} antialiased`}>
         <script
           type="application/ld+json"
