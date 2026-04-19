@@ -6,9 +6,6 @@ import { getAllPosts } from '@/lib/blog'
 // ✅ Enable ISR - regenerate sitemap every 24 hours
 export const revalidate = 86400 // 24 hours
 
-// ✅ Pre-render at build time, allow on-demand revalidation
-export const dynamic = 'force-static'
-
 const STATIC_PAGES = [
   { path: '/blog',              priority: 0.8, changeFrequency: 'weekly'  as const },
   { path: '/methodik',          priority: 0.7, changeFrequency: 'monthly' as const },

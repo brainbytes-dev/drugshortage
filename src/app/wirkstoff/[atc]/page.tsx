@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
-import { getAllAtcCodes, getShortagesByAtc, getSubstanzByAtc } from '@/lib/db'
+import { getShortagesByAtc, getSubstanzByAtc } from '@/lib/db'
 import { toSlug } from '@/lib/slug'
 import { WatchlistForm } from '@/components/watchlist-form'
 
@@ -11,11 +11,6 @@ interface PageProps {
 }
 
 export const revalidate = 3600
-
-export async function generateStaticParams() {
-  const codes = await getAllAtcCodes()
-  return codes.map(c => ({ atc: c.atc }))
-}
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { atc } = await params
