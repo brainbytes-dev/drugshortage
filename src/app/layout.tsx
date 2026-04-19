@@ -34,8 +34,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Script id="gtag-init" strategy="afterInteractive">{`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                analytics_storage: 'granted',
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                regions: ['CH']
+              });
               gtag('js', new Date());
-              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
+              gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', { anonymize_ip: true });
             `}</Script>
           </>
         )}
