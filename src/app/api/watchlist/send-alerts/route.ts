@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import { getResend, FROM_ADDRESS, SITE_URL } from '@/lib/resend'
+import { alertEmail, alertSubject } from '@/lib/email-templates'
 
 export const dynamic = 'force-dynamic'
 
@@ -68,47 +69,18 @@ export async function POST(req: NextRequest) {
     const unsubUrl = `${SITE_URL}/api/watchlist/unsubscribe?token=${sub.token}`
     const dashboardUrl = `${SITE_URL}/wirkstoff/${sub.atcCode}`
 
-    const newRows = newShortages.map(s =>
-      `<tr><td style="padding:6px 0;border-bottom:1px solid #f0f0f0"><strong>${s.bezeichnung}</strong> <span style="color:#666;font-size:13px">(${s.firma})</span></td><td style="padding:6px 0 6px 12px;border-bottom:1px solid #f0f0f0;color:#dc2626;font-size:13px">Status ${s.statusCode ?? '—'}</td></tr>`
-    ).join('')
-
-    const resolvedRows = resolvedShortages.map(s =>
-      `<tr><td style="padding:6px 0;border-bottom:1px solid #f0f0f0"><strong>${s.bezeichnung}</strong> <span style="color:#666;font-size:13px">(${s.firma})</span></td><td style="padding:6px 0 6px 12px;border-bottom:1px solid #f0f0f0;color:#16a34a;font-size:13px">Aufgelöst</td></tr>`
-    ).join('')
-
-    const html = `
-      <div style="font-family:system-ui,sans-serif;max-width:520px;margin:0 auto;color:#1a1a1a">
-        <p style="font-size:18px;font-weight:700;margin-bottom:4px">engpass.radar</p>
-        <p style="color:#666;font-size:14px;margin-top:0">Engpass-Alert: ${atcName} (${sub.atcCode})</p>
-
-        ${newShortages.length > 0 ? `
-        <p style="font-weight:600;margin-bottom:8px">🔴 ${newShortages.length} neuer Engpass${newShortages.length > 1 ? 'e' : ''}</p>
-        <table style="width:100%;border-collapse:collapse">${newRows}</table>
-        ` : ''}
-
-        ${resolvedShortages.length > 0 ? `
-        <p style="font-weight:600;margin:16px 0 8px">✅ ${resolvedShortages.length} aufgelöst</p>
-        <table style="width:100%;border-collapse:collapse">${resolvedRows}</table>
-        ` : ''}
-
-        <a href="${dashboardUrl}" style="display:inline-block;margin:24px 0 8px;padding:10px 20px;background:#2d8f8f;color:white;text-decoration:none;border-radius:6px;font-weight:600;font-size:14px">
-          Alle ${atcName}-Engpässe ansehen
-        </a>
-
-        <hr style="border:none;border-top:1px solid #eee;margin:24px 0 12px"/>
-        <p style="color:#999;font-size:12px">
-          Sie erhalten diese E-Mail, weil Sie einen Engpass-Alert für ${sub.atcCode} eingerichtet haben. ·
-          <a href="${unsubUrl}" style="color:#999">Abmelden</a> ·
-          <a href="${SITE_URL}/datenschutz" style="color:#999">Datenschutz</a>
-        </p>
-      </div>
-    `
-
     await getResend().emails.send({
       from: FROM_ADDRESS,
       to: sub.email,
-      subject: `Engpass-Alert ${atcName}: ${newShortages.length > 0 ? `${newShortages.length} neu` : ''}${newShortages.length > 0 && resolvedShortages.length > 0 ? ', ' : ''}${resolvedShortages.length > 0 ? `${resolvedShortages.length} aufgelöst` : ''}`,
-      html,
+      subject: alertSubject(atcName, newShortages.length, resolvedShortages.length),
+      html: alertEmail({
+        atcCode: sub.atcCode,
+        atcName,
+        newShortages,
+        resolvedShortages,
+        dashboardUrl,
+        unsubUrl,
+      }),
     })
 
     await prisma.watchlistSubscription.update({
