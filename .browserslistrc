@@ -1,0 +1,7 @@
+# Modern browsers only — no legacy polyfills
+# Covers 95%+ of Swiss healthcare professional audience
+Chrome >= 103
+Firefox >= 102
+Edge >= 103
+Safari >= 15.6
+Opera >= 89
