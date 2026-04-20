@@ -245,7 +245,7 @@ export function parseCompletedFromHtml(html: string): Shortage[] {
 // Older entries are stored as-is to avoid 24k+ HTTP requests on every run
 const COMPLETED_ENRICH_LIMIT = 500
 
-export async function fetchAndParseCompleted(): Promise<Shortage[]> {
+export async function fetchAndParseCompleted(enrich = false): Promise<Shortage[]> {
   const res = await fetch(COMPLETED_URL, { headers: FETCH_HEADERS })
   if (!res.ok) {
     throw new Error(`Failed to fetch completed shortages: ${res.status} ${res.statusText}`)
@@ -255,11 +255,13 @@ export async function fetchAndParseCompleted(): Promise<Shortage[]> {
   const shortages = parseCompletedFromHtml(html)
   console.log(`[scraper] Fetched ${shortages.length} completed (historical) entries`)
 
-  // Enrich only the most recent entries (list is newest-first)
-  const toEnrich = shortages.slice(0, COMPLETED_ENRICH_LIMIT).filter(s => s.detailUrl)
-  if (toEnrich.length > 0) {
-    console.log(`[scraper] Enriching ${toEnrich.length} recent completed entries with detail data...`)
-    await enrichWithDetails(toEnrich)
+  // Only enrich when explicitly requested (not in daily cron — 500 HTTP requests takes too long)
+  if (enrich) {
+    const toEnrich = shortages.slice(0, COMPLETED_ENRICH_LIMIT).filter(s => s.detailUrl)
+    if (toEnrich.length > 0) {
+      console.log(`[scraper] Enriching ${toEnrich.length} recent completed entries with detail data...`)
+      await enrichWithDetails(toEnrich)
+    }
   }
 
   return shortages

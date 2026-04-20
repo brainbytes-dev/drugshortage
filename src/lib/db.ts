@@ -141,50 +141,41 @@ export async function upsertShortages(
 }
 
 export async function upsertCompletedShortages(incoming: Shortage[]): Promise<{ inserted: number }> {
+  if (incoming.length === 0) return { inserted: 0 }
+
   const now = new Date()
-  let totalInserted = 0
 
-  // ✅ Use createMany with skipDuplicates for bulk insert (100x faster)
-  const existingGtins = new Set(
-    (await prisma.shortage.findMany({ select: { gtin: true } }))
-      .map(r => r.gtin)
-  )
+  // skipDuplicates handles uniqueness — no need to pre-load all GTINs from DB
+  const result = await prisma.shortage.createMany({
+    data: incoming.map(s => ({
+      gtin: s.gtin,
+      pharmacode: s.pharmacode || '',
+      bezeichnung: s.bezeichnung,
+      firma: s.firma,
+      atcCode: s.atcCode,
+      gengrp: s.gengrp || '',
+      statusCode: s.statusCode,
+      statusText: s.statusText,
+      datumLieferfahigkeit: s.datumLieferfahigkeit ?? '',
+      datumLetzteMutation: s.datumLetzteMutation ?? '',
+      tageSeitMeldung: s.tageSeitMeldung ?? 0,
+      detailUrl: s.detailUrl ?? '',
+      alternativenUrl: s.alternativenUrl ?? null,
+      ersteMeldung: s.ersteMeldung ?? null,
+      ersteMeldungDurch: s.ersteMeldungDurch ?? null,
+      ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
+      artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
+      voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
+      bemerkungen: s.bemerkungen ?? null,
+      slug: toSlug(s.bezeichnung),
+      firstSeenAt: now,
+      lastSeenAt: now,
+      isActive: false,
+    })),
+    skipDuplicates: true,
+  })
 
-  const newEntries = incoming.filter(s => !existingGtins.has(s.gtin))
-
-  if (newEntries.length > 0) {
-    await prisma.shortage.createMany({
-      data: newEntries.map(s => ({
-        gtin: s.gtin,
-        pharmacode: s.pharmacode || '',
-        bezeichnung: s.bezeichnung,
-        firma: s.firma,
-        atcCode: s.atcCode,
-        gengrp: s.gengrp || '',
-        statusCode: s.statusCode,
-        statusText: s.statusText,
-        datumLieferfahigkeit: s.datumLieferfahigkeit ?? '',
-        datumLetzteMutation: s.datumLetzteMutation ?? '',
-        tageSeitMeldung: s.tageSeitMeldung ?? 0,
-        detailUrl: s.detailUrl ?? '',
-        alternativenUrl: s.alternativenUrl ?? null,
-        ersteMeldung: s.ersteMeldung ?? null,
-        ersteMeldungDurch: s.ersteMeldungDurch ?? null,
-        ersteInfoDurchFirma: s.ersteInfoDurchFirma ?? null,
-        artDerInfoDurchFirma: s.artDerInfoDurchFirma ?? null,
-        voraussichtlicheDauer: s.voraussichtlicheDauer ?? null,
-        bemerkungen: s.bemerkungen ?? null,
-        slug: toSlug(s.bezeichnung),
-        firstSeenAt: now,
-        lastSeenAt: now,
-        isActive: false, // Historical data
-      })),
-      skipDuplicates: true,
-    })
-    totalInserted = newEntries.length
-  }
-
-  return { inserted: totalInserted }
+  return { inserted: result.count }
 }
 
 
