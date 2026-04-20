@@ -19,6 +19,7 @@ const jsonLd = {
       name: 'engpass.radar',
       url: 'https://www.engpassradar.ch',
       founder: { '@type': 'Person', name: 'Henrik Rühe' },
+      legalName: 'HM Consulting Rühe',
       address: {
         '@type': 'PostalAddress',
         streetAddress: 'Buchenweg 18',
@@ -47,9 +48,12 @@ export default function ImpressumPage() {
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">Betreiber dieser Website</h2>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
-            Henrik Rühe<br />
+            HM Consulting Rühe<br />
             Buchenweg 18<br />
             5036 Oberentfelden, Schweiz
+          </p>
+          <p className="text-[15px] text-muted-foreground leading-relaxed">
+            Verantwortlich: Henrik Rühe
           </p>
           <p className="text-muted-foreground">
             E-Mail:{' '}
@@ -126,7 +130,7 @@ export default function ImpressumPage() {
           <h2 className="text-lg font-semibold">Urheberrechte</h2>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
             Das Urheberrecht und alle anderen Rechte an Inhalten, Bildern, Fotos oder anderen
-            Dateien auf der Website gehören ausschliesslich Henrik Rühe oder den speziell
+            Dateien auf der Website gehören ausschliesslich HM Consulting Rühe oder den speziell
             genannten Rechteinhabern. Für die Reproduktion jeglicher Elemente muss im Voraus
             die schriftliche Zustimmung der Urheberrechtsinhaber eingeholt werden.
           </p>
