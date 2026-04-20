@@ -84,8 +84,7 @@ export default function ApiLandingPage() {
             REST API — v1 öffentlich verfügbar
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-tight">
-            Daten der Lieferengpässe direkt in Ihr System —
-            <br className="hidden sm:block" />
+            Daten der Lieferengpässe direkt in Ihr System —{' '}
             <span className="gradient-text">die einzige Schweizer Arzneimittel-Engpass-API.</span>
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
