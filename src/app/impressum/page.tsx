@@ -86,6 +86,13 @@ export default function ImpressumPage() {
             </li>
           </ul>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
+            Datenbasis:{' '}
+            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+              drugshortage.ch
+            </a>
+            {' '}der Martinelli Consulting GmbH, Zürich — alle Rechte an den Originaldaten verbleiben beim jeweiligen Datenanbieter.
+          </p>
+          <p className="text-[15px] text-muted-foreground leading-relaxed">
             Wir erheben keinen Anspruch auf die Vollständigkeit oder Richtigkeit der angezeigten
             Informationen. Massgebliche und verbindliche Informationen finden sich ausschliesslich
             auf den offiziellen Seiten von Swissmedic und drugshortage.ch.
