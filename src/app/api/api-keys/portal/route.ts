@@ -4,9 +4,10 @@ import { prisma } from "@/lib/prisma"
 import { verifyMagicToken } from '@/lib/api-keys'
 import { SITE_URL } from '@/lib/resend'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
   const token = req.nextUrl.searchParams.get('token')
   if (!token) return NextResponse.json({ error: 'token required' }, { status: 400 })
 

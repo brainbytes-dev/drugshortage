@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { SITE_URL } from '@/lib/resend'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
   const { email, priceId } = await req.json()
   if (!email || !priceId) {
     return NextResponse.json({ error: 'email and priceId required' }, { status: 400 })

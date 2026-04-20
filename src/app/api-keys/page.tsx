@@ -108,7 +108,7 @@ function Dashboard({ token }: { token: string }) {
 
         <div className="border rounded-md p-3 bg-muted/50">
           <p className="text-xs font-mono text-muted-foreground">
-            curl -H &quot;Authorization: Bearer &lt;dein-key&gt;&quot; \<br />
+            curl -H &quot;Authorization: Bearer &lt;ihr-key&gt;&quot; \<br />
             &nbsp;&nbsp;https://engpassradar.ch/api/v1/shortages
           </p>
         </div>

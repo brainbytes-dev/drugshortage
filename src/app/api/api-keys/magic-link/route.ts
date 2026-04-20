@@ -25,13 +25,13 @@ export async function POST(req: NextRequest) {
   await resend.emails.send({
     from: FROM_ADDRESS,
     to: email,
-    subject: 'Dein Engpassradar Dashboard-Link',
+    subject: 'Ihr Engpassradar Dashboard-Link',
     html: `
-<p>Hallo,</p>
-<p>hier ist dein Link zum API-Dashboard (gültig 30 Tage):</p>
+<p>Guten Tag,</p>
+<p>hier ist Ihr Link zum API-Dashboard (gültig 30 Tage):</p>
 <p><a href="${dashboardUrl}">${dashboardUrl}</a></p>
-<p>Hinweis: Der Link zeigt deinen aktuellen Plan und deine Nutzung, aber nicht mehr den originalen API-Key.</p>
-<p>Falls du deinen Key verloren hast, kontaktiere uns unter support@engpassradar.ch — wir generieren einen neuen.</p>
+<p>Hinweis: Der Link zeigt Ihren aktuellen Plan und Ihre Nutzung, aber nicht mehr den originalen API-Key.</p>
+<p>Falls Sie Ihren Key verloren haben, kontaktieren Sie uns unter support@engpassradar.ch — wir generieren einen neuen.</p>
 <p>Engpassradar</p>
 `,
   })

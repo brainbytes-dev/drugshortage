@@ -31,7 +31,7 @@ export default function ResearchPage() {
       <div>
         <h1 className="text-2xl font-semibold">Research-Zugang</h1>
         <p className="text-muted-foreground mt-1 text-sm">
-          Kostenloser API-Key für Forschung, Journalismus und akademische Institutionen (2'000 Anfragen/Tag).
+          Kostenloser API-Key für Forschung, Journalismus und akademische Institutionen (2&apos;000 Anfragen/Tag).
         </p>
       </div>
 

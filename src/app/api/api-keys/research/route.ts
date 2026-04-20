@@ -45,8 +45,8 @@ export async function POST(req: NextRequest) {
     await resend.emails.send({
       from: FROM_ADDRESS,
       to: email,
-      subject: 'Dein Engpassradar Research-Key (bereits vorhanden)',
-      html: `<p>Du hast bereits einen Research-Key. <a href="${dashboardUrl}">Hier zum Dashboard</a>.</p>`,
+      subject: 'Ihr Engpassradar Research-Key (bereits vorhanden)',
+      html: `<p>Sie haben bereits einen Research-Key. <a href="${dashboardUrl}">Hier zum Dashboard</a>.</p>`,
     })
     return NextResponse.json({ sent: true })
   }
@@ -74,10 +74,10 @@ export async function POST(req: NextRequest) {
   await resend.emails.send({
     from: FROM_ADDRESS,
     to: email,
-    subject: 'Dein kostenloser Engpassradar Research-Key',
+    subject: 'Ihr kostenloser Engpassradar Research-Key',
     html: `
-<p>Hallo,</p>
-<p>dein Research-Key:</p>
+<p>Guten Tag,</p>
+<p>Ihr Research-Key:</p>
 <pre style="background:#f4f4f5;padding:12px;border-radius:6px;font-size:14px;">${plaintext}</pre>
 <p>Limit: 2'000 Anfragen/Tag. Kein Ablaufdatum.</p>
 <p><a href="${dashboardUrl}">API-Dashboard →</a></p>
