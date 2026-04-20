@@ -8,7 +8,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 const NAV_LINKS = [
   { href: '/', label: 'Home', num: '01' },
   { href: '/methodik', label: 'Methodik', num: '02' },
-  { href: '/api-docs', label: 'API', num: '03' },
+  { href: '/api', label: 'API', num: '03' },
   { href: '/#faq', label: 'FAQ', num: '04', isFaq: true },
 ]
 
