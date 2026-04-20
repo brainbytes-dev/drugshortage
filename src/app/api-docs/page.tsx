@@ -99,6 +99,20 @@ export default function ApiDocsPage() {
           </p>
         </header>
 
+        {/* API Pricing CTA */}
+        <div className="rounded-lg border border-blue-200 dark:border-blue-800 bg-blue-50/50 dark:bg-blue-950/20 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <p className="text-sm text-foreground">
+            <span className="font-medium">Mehr als 100 Req/Std?</span>
+            {' '}Professional-Keys ab CHF 39/Monat — mit Severity Scoring und 10 000 Req/Tag.
+          </p>
+          <Link
+            href="/api"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700 transition-colors"
+          >
+            API-Zugang & Preise →
+          </Link>
+        </div>
+
         {/* Base URL */}
         <section className="space-y-2">
           <h2 className="font-semibold text-base">Base URL</h2>
