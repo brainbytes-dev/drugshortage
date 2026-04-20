@@ -150,7 +150,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
           {/* Subtitle */}
           <p className="hero-animate hero-animate-3 text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Über <strong className="text-foreground">{kpi.totalActive}</strong> aktive Engpässe aus 3 offiziellen Quellen.
+            Über <strong className="text-foreground">{kpi.totalActive}</strong> aktive Engpässe aus offiziellen Quellen.
             Täglich aktualisiert. Kostenlos, ohne Login.
           </p>
 

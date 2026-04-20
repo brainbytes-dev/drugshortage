@@ -6,7 +6,7 @@ export function SiteFooter() {
 
         {/* Infotext — oben auf Mobile, links auf Desktop */}
         <p className="text-center sm:text-left order-1">
-          Daten von{' '}
+          Primärdaten von{' '}
           <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">drugshortage.ch</a>
           {' '}· täglich aktualisiert
         </p>
