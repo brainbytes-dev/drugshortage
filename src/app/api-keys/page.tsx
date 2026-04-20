@@ -164,7 +164,7 @@ function SignupForm() {
               onChange={(e) => setSelectedPrice(PRICES.find((p) => p.priceId === e.target.value) ?? PRICES[0])}
             >
               {PRICES.map((p) => (
-                <option key={p.priceId} value={p.priceId}>{p.label}</option>
+                <option key={p.label} value={p.priceId}>{p.label}</option>
               ))}
             </select>
           </div>
