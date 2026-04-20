@@ -8,10 +8,6 @@ export function SiteFooter() {
         <p className="text-center sm:text-left order-1">
           Daten von{' '}
           <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">drugshortage.ch</a>
-          {', '}
-          <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">BWL</a>
-          {' & '}
-          <a href="https://ch.oddb.org/de/gcc/home/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">ODDB</a>
           {' '}· täglich aktualisiert
         </p>
 
