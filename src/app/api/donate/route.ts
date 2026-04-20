@@ -2,9 +2,14 @@ import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { SITE_URL } from '@/lib/resend'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+export const dynamic = 'force-dynamic'
+
+function getStripe() {
+  return new Stripe(process.env.STRIPE_SECRET_KEY!)
+}
 
 export async function POST(req: NextRequest) {
+  const stripe = getStripe()
   const { amount } = await req.json()
   const cents = Math.round(Number(amount) * 100)
   if (!cents || cents < 500) {

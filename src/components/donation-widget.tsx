@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 const PRESETS = [10, 25, 50]
 
 export function DonationWidget() {
+  const router = useRouter()
   const [amount, setAmount] = useState<string>('')
   const [loading, setLoading] = useState(false)
 
@@ -18,7 +20,7 @@ export function DonationWidget() {
       body: JSON.stringify({ amount: chf }),
     })
     const { url } = await res.json()
-    if (url) window.location.href = url
+    if (url) router.push(url)
     setLoading(false)
   }
 

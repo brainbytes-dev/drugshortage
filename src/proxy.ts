@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { createHash } from 'crypto'
+import { prisma } from '@/lib/prisma'
+
+// proxy.ts (Next.js 16) — always Node.js runtime, Prisma is allowed here.
 
 const TIER_LIMITS: Record<string, number> = {
   free: 100,
@@ -11,79 +14,64 @@ const TIER_LIMITS: Record<string, number> = {
   data_license: 999999999,
 }
 
-// Lazy-initialized to avoid edge-runtime issues at import time
-let ratelimit: Ratelimit | null = null
-function getRatelimit(): Ratelimit | null {
+let freeRatelimit: Ratelimit | null = null
+
+function getFreeRatelimit(): Ratelimit | null {
   if (!process.env.UPSTASH_REDIS_REST_URL) return null
-  if (!ratelimit) {
-    const redis = new Redis({
-      url: process.env.UPSTASH_REDIS_REST_URL!,
-      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
-    })
-    ratelimit = new Ratelimit({
-      redis,
+  if (!freeRatelimit) {
+    freeRatelimit = new Ratelimit({
+      redis: new Redis({
+        url: process.env.UPSTASH_REDIS_REST_URL!,
+        token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+      }),
       limiter: Ratelimit.slidingWindow(100, '60 s'),
       prefix: 'rl:free',
     })
   }
-  return ratelimit
+  return freeRatelimit
 }
 
-function sha256(val: string): string {
-  return createHash('sha256').update(val).digest('hex')
-}
-
-function rateLimitHeaders(limit: number, remaining: number, resetAt: number) {
+function rateLimitHeaders(limit: number, remaining: number, resetSec: number) {
   return {
     'X-RateLimit-Limit': String(limit),
     'X-RateLimit-Remaining': String(Math.max(0, remaining)),
-    'X-RateLimit-Reset': String(resetAt),
+    'X-RateLimit-Reset': String(resetSec),
   }
 }
 
-function tooManyRequests(tier: string, limit: number, resetAt: number) {
+function tooMany(tier: string, limit: number, resetSec: number) {
   return NextResponse.json(
-    { error: 'rate_limit_exceeded', tier, limit, reset_at: new Date(resetAt * 1000).toISOString() },
-    {
-      status: 429,
-      headers: rateLimitHeaders(limit, 0, resetAt),
-    }
+    { error: 'rate_limit_exceeded', tier, limit, reset_at: new Date(resetSec * 1000).toISOString() },
+    { status: 429, headers: rateLimitHeaders(limit, 0, resetSec) }
   )
 }
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl
-
-  const isProtected =
-    pathname.startsWith('/api/v1/') || pathname.startsWith('/api/export/')
+  const isProtected = pathname.startsWith('/api/v1/') || pathname.startsWith('/api/export/')
   if (!isProtected) return NextResponse.next()
 
   const authHeader = req.headers.get('authorization') ?? ''
   const bearerKey = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null
 
-  // ── Free tier: IP-based sliding window (no key) ───────────────────────────
+  // ── Free tier: IP-based sliding window ────────────────────────────────────
   if (!bearerKey) {
-    const rl = getRatelimit()
-    if (rl) {
-      const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '127.0.0.1'
-      const { success, limit, remaining, reset } = await rl.limit(`ip:${ip}`)
-      const resetSec = Math.floor(reset / 1000)
-      if (!success) return tooManyRequests('free', limit, resetSec)
-      const res = NextResponse.next()
-      Object.entries(rateLimitHeaders(limit, remaining, resetSec)).forEach(([k, v]) =>
-        res.headers.set(k, v)
-      )
-      return res
-    }
-    return NextResponse.next()
+    const rl = getFreeRatelimit()
+    if (!rl) return NextResponse.next()
+
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '127.0.0.1'
+    const { success, limit, remaining, reset } = await rl.limit(`ip:${ip}`)
+    const resetSec = Math.floor(reset / 1000)
+
+    if (!success) return tooMany('free', limit, resetSec)
+
+    const res = NextResponse.next()
+    Object.entries(rateLimitHeaders(limit, remaining, resetSec)).forEach(([k, v]) => res.headers.set(k, v))
+    return res
   }
 
   // ── Key-based tiers ───────────────────────────────────────────────────────
-  const hash = sha256(bearerKey)
-
-  // Dynamic import avoids Prisma being bundled into the edge runtime.
-  // We run in Node.js (Fluid Compute), so this is fine.
-  const { prisma } = await import('@/lib/prisma')
+  const hash = createHash('sha256').update(bearerKey).digest('hex')
   const apiKey = await prisma.apiKey.findUnique({ where: { keyHash: hash } })
 
   if (!apiKey || !apiKey.active) {
@@ -93,7 +81,6 @@ export async function middleware(req: NextRequest) {
   const tier = apiKey.tier
   const limit = TIER_LIMITS[tier] ?? 100
 
-  // Daily reset
   const today = new Date()
   today.setHours(0, 0, 0, 0)
   const lastReset = new Date(apiKey.lastReset)
@@ -108,9 +95,10 @@ export async function middleware(req: NextRequest) {
     })
   }
 
+  const tomorrow = Math.floor((today.getTime() + 86400000) / 1000)
+
   if (dailyCount >= limit) {
-    const resetAt = Math.floor((today.getTime() + 86400000) / 1000)
-    return tooManyRequests(tier, limit, resetAt)
+    return tooMany(tier, limit, tomorrow)
   }
 
   await prisma.apiKey.update({
@@ -118,7 +106,6 @@ export async function middleware(req: NextRequest) {
     data: { dailyCount: { increment: 1 } },
   })
 
-  const tomorrow = Math.floor((today.getTime() + 86400000) / 1000)
   const res = NextResponse.next()
   Object.entries(rateLimitHeaders(limit, limit - dailyCount - 1, tomorrow)).forEach(([k, v]) =>
     res.headers.set(k, v)

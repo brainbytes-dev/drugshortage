@@ -4,7 +4,9 @@ import { prisma } from "@/lib/prisma"
 import { generateApiKey, signMagicToken, tierDailyLimit } from '@/lib/api-keys'
 import { getResend, FROM_ADDRESS, SITE_URL } from '@/lib/resend'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+export const dynamic = 'force-dynamic'
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? 'placeholder')
 
 const PRICE_TO_TIER: Record<string, string> = {
   [process.env.STRIPE_PRICE_PROFESSIONAL_MONTHLY ?? '']: 'professional',
@@ -20,14 +22,14 @@ async function sendApiKeyMail(email: string, plaintext: string, tier: string, ke
   await resend.emails.send({
     from: FROM_ADDRESS,
     to: email,
-    subject: 'Dein Engpassradar API-Key',
+    subject: 'Ihr Engpassradar API-Key',
     html: `
-<p>Hallo,</p>
-<p>vielen Dank für dein Abo. Hier ist dein API-Key:</p>
+<p>Guten Tag,</p>
+<p>vielen Dank für Ihr Abo. Hier ist Ihr API-Key:</p>
 <pre style="background:#f4f4f5;padding:12px;border-radius:6px;font-size:14px;">${plaintext}</pre>
 <p><strong>Wichtig:</strong> Dieser Key wird nur einmal angezeigt. Bitte jetzt kopieren und sicher aufbewahren.</p>
-<p>Dein Tier: <strong>${tier}</strong></p>
-<p><a href="${dashboardUrl}">Zum API-Dashboard</a> — dort siehst du deine Nutzung und kannst das Abo verwalten.</p>
+<p>Ihr Tier: <strong>${tier}</strong></p>
+<p><a href="${dashboardUrl}">Zum API-Dashboard</a> — dort sehen Sie Ihre Nutzung und können das Abo verwalten.</p>
 <p>Schnellstart:</p>
 <pre style="background:#f4f4f5;padding:12px;border-radius:6px;font-size:14px;">curl -H "Authorization: Bearer ${plaintext}" \\
   ${SITE_URL}/api/v1/shortages</pre>
@@ -98,11 +100,11 @@ async function handlePaymentFailed(invoice: Stripe.Invoice) {
   await resend.emails.send({
     from: FROM_ADDRESS,
     to: customer.email,
-    subject: 'Zahlungsproblem bei deinem Engpassradar-Abo',
+    subject: 'Zahlungsproblem bei Ihrem Engpassradar-Abo',
     html: `
-<p>Hallo,</p>
-<p>leider konnte deine letzte Zahlung nicht verarbeitet werden.</p>
-<p>Bitte aktualisiere deine Zahlungsmethode im <a href="${SITE_URL}/api/api-keys/portal">Kunden-Portal</a>, damit dein Abo aktiv bleibt.</p>
+<p>Guten Tag,</p>
+<p>leider konnte Ihre letzte Zahlung nicht verarbeitet werden.</p>
+<p>Bitte aktualisieren Sie Ihre Zahlungsmethode im <a href="${SITE_URL}/api/api-keys/portal">Kunden-Portal</a>, damit Ihr Abo aktiv bleibt.</p>
 <p>Engpassradar</p>
 `,
   })
