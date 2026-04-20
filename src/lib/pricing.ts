@@ -19,8 +19,8 @@ export const TIERS: Tier[] = [
     label: 'Free',
     price: '0',
     priceNote: 'Kein Key erforderlich',
-    dailyLimit: '100 Req/Std',
-    rateLimit: 'IP-basiert, Sliding Window',
+    dailyLimit: '100 Req/Tag',
+    rateLimit: 'IP-basiert, kein Key',
     features: [
       'Alle öffentlichen Endpunkte',
       'JSON + CSV Export',
