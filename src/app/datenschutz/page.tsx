@@ -43,7 +43,7 @@ const content = `
 </ul>
 
 <h2 id="m3">Verantwortlicher</h2>
-<p>Henrik Rühe<br>Buchenweg 18<br>5036 Oberentfelden, Schweiz</p>
+<p>HM Consulting Rühe<br>Buchenweg 18<br>5036 Oberentfelden, Schweiz</p>
 <p>Vertretungsberechtigte Personen: Henrik Rühe</p>
 <p>E-Mail-Adresse: <a href="mailto:info@engpassradar.ch">info@engpassradar.ch</a></p>
 <p>Impressum: <a href="https://engpassradar.ch/impressum" target="_blank">https://engpassradar.ch/impressum</a></p>

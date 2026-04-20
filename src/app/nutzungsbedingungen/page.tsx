@@ -31,7 +31,7 @@ export default function NutzungsbedingungenPage() {
           <h2 className="text-lg font-semibold">1. Geltungsbereich</h2>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
             Diese Nutzungsbedingungen gelten für die Nutzung der Website engpassradar.ch sowie aller
-            damit verbundenen Dienste (nachfolgend «Dienst»), betrieben von Henrik Rühe,
+            damit verbundenen Dienste (nachfolgend «Dienst»), betrieben von HM Consulting Rühe,
             Buchenweg 18, 5036 Oberentfelden, Schweiz.
           </p>
         </section>
