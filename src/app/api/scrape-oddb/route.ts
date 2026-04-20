@@ -3,6 +3,9 @@ import { fetchOddbProducts, fetchOddbArticlePrices } from '@/lib/oddb-scraper'
 import { upsertOddbProducts, upsertOddbPrices } from '@/lib/db'
 
 // Runs independently of the daily scrape — call weekly or on-demand
+// Vercel Cron sends GET; keep POST for manual/internal calls
+export const GET = POST
+
 export async function POST(request: Request) {
   const auth = request.headers.get('authorization')
   const secret = process.env.CRON_SECRET

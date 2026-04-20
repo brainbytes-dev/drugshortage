@@ -6,6 +6,9 @@ import { saveOverviewStats, saveScrapeRun, upsertCompletedShortages, upsertBwlSh
 import { invalidateStatsCache } from '@/lib/db-cached-example'
 import { fetchBwlData } from '@/lib/bwl-scraper'
 
+// Vercel Cron sends GET; keep POST for manual/internal calls
+export const GET = POST
+
 export async function POST(request: Request) {
   const auth = request.headers.get('authorization')
   const secret = process.env.CRON_SECRET

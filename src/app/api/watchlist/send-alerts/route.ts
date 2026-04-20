@@ -5,6 +5,9 @@ import { alertEmail, alertSubject } from '@/lib/email-templates'
 
 export const dynamic = 'force-dynamic'
 
+// Vercel Cron sends GET; keep POST for manual/internal calls
+export const GET = POST
+
 export async function POST(req: NextRequest) {
   // Secured: only Vercel cron or internal calls
   const authHeader = req.headers.get('authorization')
