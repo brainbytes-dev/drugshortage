@@ -212,3 +212,22 @@ model OffMarketDrug {
   @@index([category, atcCode], map: "idx_offmarket_category_atc")
   @@map("off_market_drugs")
 }
+
+// USB Basel (Universitätsspital Basel, Spitalpharmazie) weekly PDF report
+// Source: https://www.spitalpharmazie-basel.ch/Lieferengpassbericht.pdf
+// No GTIN available — SAP-Nr. is internal USB identifier, not globally unique
+// Key value: infoBezueger field contains substitute/alternative drug recommendations
+model UsbShortage {
+  id           Int      @id @default(autoincrement())
+  beginn       String?  // original date string from PDF (e.g. "01.04.25")
+  sapNr        String   // SAP number (USB-internal identifier)
+  praeparat    String
+  wirkstoffe   String
+  hersteller   String
+  infoBezueger String   @db.Text // often multi-line, contains substitute recommendations
+  fetchedAt    DateTime @updatedAt
+
+  @@unique([sapNr], map: "uq_usb_sapnr")
+  @@index([hersteller], map: "idx_usb_hersteller")
+  @@map("usb_shortages")
+}

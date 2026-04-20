@@ -980,3 +980,42 @@ export async function getTopRecurringDrugs(limit = 20) {
     take: limit,
   })
 }
+
+// ── USB Basel ─────────────────────────────────────────────────────────────────
+
+import type { UsbShortageEntry } from './usb-scraper'
+
+/**
+ * Upsert USB Basel shortages.
+ * Keyed by sapNr — if the entry already exists it gets updated in-place.
+ */
+export async function upsertUsbShortages(
+  entries: UsbShortageEntry[],
+): Promise<{ upserted: number }> {
+  if (entries.length === 0) return { upserted: 0 }
+
+  let upserted = 0
+  for (const entry of entries) {
+    await prisma.usbShortage.upsert({
+      where: { sapNr: entry.sapNr },
+      update: {
+        beginn: entry.beginn,
+        praeparat: entry.praeparat,
+        wirkstoffe: entry.wirkstoffe,
+        hersteller: entry.hersteller,
+        infoBezueger: entry.infoBezueger,
+      },
+      create: {
+        beginn: entry.beginn,
+        sapNr: entry.sapNr,
+        praeparat: entry.praeparat,
+        wirkstoffe: entry.wirkstoffe,
+        hersteller: entry.hersteller,
+        infoBezueger: entry.infoBezueger,
+      },
+    })
+    upserted++
+  }
+
+  return { upserted }
+}
