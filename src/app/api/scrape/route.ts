@@ -6,6 +6,8 @@ import { saveOverviewStats, saveScrapeRun, upsertCompletedShortages, upsertBwlSh
 import { invalidateStatsCache } from '@/lib/db-cached-example'
 import { fetchBwlData } from '@/lib/bwl-scraper'
 
+export const maxDuration = 300 // 5 min — scrape + historical insert needs time
+
 // Vercel Cron sends GET; keep POST for manual/internal calls
 export const GET = POST
 
@@ -36,7 +38,7 @@ export async function POST(request: Request) {
 
     let historicalInserted = 0
     try {
-      const completedShortages = await fetchAndParseCompleted()
+      const completedShortages = await fetchAndParseCompleted(false) // no enrichment in daily cron
       const result = await upsertCompletedShortages(completedShortages)
       historicalInserted = result.inserted
     } catch (histErr) {
