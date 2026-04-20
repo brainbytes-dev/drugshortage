@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CheckCircle2, Zap, ShieldCheck, BarChart3, ArrowRight, Code2 } from 'lucide-react'
-import { TIERS } from '@/lib/pricing'
+import { Zap, ShieldCheck, BarChart3, ArrowRight, Code2 } from 'lucide-react'
+import { PricingSection } from '@/components/pricing-section'
 
 export const metadata: Metadata = {
   title: 'API für Schweizer Arzneimittel-Lieferengpässe | engpassradar.ch',
@@ -77,15 +77,16 @@ export default function ApiLandingPage() {
     <main className="min-h-screen bg-background">
 
       {/* ── HERO ── */}
-      <section className="border-b bg-gradient-to-b from-blue-50/60 to-background dark:from-blue-950/20 dark:to-background">
+      <section className="border-b bg-gradient-to-b from-primary/5 to-background">
         <div className="max-w-3xl mx-auto px-4 py-16 sm:py-24 text-center space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
             REST API — v1 öffentlich verfügbar
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-tight">
-            Engpass-Daten direkt in Ihr System —<br className="hidden sm:block" />
-            <span className="text-blue-600 dark:text-blue-400">die einzige Schweizer Arzneimittel-Shortage-API.</span>
+            Engpass-Daten direkt in Ihr System —
+            <br className="hidden sm:block" />
+            <span className="gradient-text">die einzige Schweizer Arzneimittel-Shortage-API.</span>
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Tagesaktuelle Lieferengpässe, BWL-Warnungen und Severity Scores für alle ~700 aktiven Engpässe.
@@ -94,7 +95,7 @@ export default function ApiLandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <Link
               href="/api-keys"
-              className="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:bg-primary/90 transition-colors"
             >
               API-Zugang erhalten
               <ArrowRight className="h-4 w-4" />
@@ -121,8 +122,8 @@ export default function ApiLandingPage() {
         <div className="grid sm:grid-cols-3 gap-6">
           {VALUE_PROPS.map(({ icon: Icon, title, body }) => (
             <div key={title} className="rounded-xl border bg-card p-5 space-y-3">
-              <div className="h-8 w-8 rounded-lg bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center">
-                <Icon className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Icon className="h-4 w-4 text-primary" />
               </div>
               <h3 className="font-semibold text-sm text-foreground">{title}</h3>
               <p className="text-xs text-muted-foreground leading-relaxed">{body}</p>
@@ -136,7 +137,7 @@ export default function ApiLandingPage() {
         <div className="max-w-3xl mx-auto px-4 py-10 space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Beispiel-Request</p>
-            <Link href="/api-docs" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+            <Link href="/api-docs" className="text-xs text-slate-400 hover:text-slate-200 transition-colors">
               Alle Endpunkte →
             </Link>
           </div>
@@ -146,89 +147,10 @@ export default function ApiLandingPage() {
         </div>
       </section>
 
-      {/* ── PRICING ── */}
-      <section id="pricing" className="max-w-4xl mx-auto px-4 py-16 space-y-8">
-        <div className="text-center space-y-2">
-          <h2 className="text-2xl font-bold tracking-tight">Tarife & Preise</h2>
-          <p className="text-sm text-muted-foreground">
-            Alle Preise in CHF, zzgl. MwSt. Monatliche Kündigung jederzeit möglich.
-          </p>
-        </div>
+      {/* ── PRICING (Client Component with toggle) ── */}
+      <PricingSection />
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {TIERS.map((tier) => (
-            <div
-              key={tier.key}
-              className={`relative rounded-xl border p-5 space-y-4 flex flex-col ${
-                tier.highlight
-                  ? 'border-blue-500 bg-blue-50/50 dark:bg-blue-950/20 shadow-md'
-                  : 'bg-card'
-              }`}
-            >
-              {tier.highlight && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="rounded-full bg-blue-600 px-3 py-0.5 text-xs font-semibold text-white shadow">
-                    Beliebt
-                  </span>
-                </div>
-              )}
-
-              <div className="space-y-1">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  {tier.label}
-                </p>
-                <div className="flex items-baseline gap-1">
-                  {tier.price !== null ? (
-                    <>
-                      <span className="text-2xl font-bold text-foreground">CHF {tier.price}</span>
-                      <span className="text-xs text-muted-foreground">/ Monat</span>
-                    </>
-                  ) : (
-                    <span className="text-sm font-semibold text-foreground">{tier.priceNote}</span>
-                  )}
-                </div>
-                {tier.price !== null && (
-                  <p className="text-xs text-muted-foreground">{tier.priceNote}</p>
-                )}
-              </div>
-
-              <div className="space-y-1.5 flex-1">
-                <p className="text-xs font-medium text-foreground">
-                  {tier.dailyLimit}
-                </p>
-                <ul className="space-y-1.5">
-                  {tier.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
-                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 mt-0.5 shrink-0" />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <Link
-                href={tier.ctaHref}
-                className={`mt-auto inline-flex items-center justify-center gap-1.5 rounded-lg px-4 py-2 text-xs font-semibold transition-colors ${
-                  tier.highlight
-                    ? 'bg-blue-600 text-white hover:bg-blue-700'
-                    : 'border bg-background text-foreground hover:bg-muted'
-                }`}
-              >
-                {tier.cta}
-                <ArrowRight className="h-3 w-3" />
-              </Link>
-            </div>
-          ))}
-        </div>
-
-        {/* Feature comparison note */}
-        <p className="text-center text-xs text-muted-foreground">
-          Alle Tarife beinhalten GTIN, Pharmacode, ATC-Code, Severity Score und tagesaktuelle Engpass-Daten.{' '}
-          <Link href="/api-docs" className="underline hover:text-foreground">Vollständige Endpunkte →</Link>
-        </p>
-      </section>
-
-      {/* ── SOCIAL PROOF / CONTEXT ── */}
+      {/* ── STATS ── */}
       <section className="border-y bg-muted/30">
         <div className="max-w-3xl mx-auto px-4 py-10">
           <div className="grid sm:grid-cols-3 gap-6 text-center">
@@ -260,29 +182,32 @@ export default function ApiLandingPage() {
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section className="border-t bg-blue-600 dark:bg-blue-700">
+      <section className="border-t bg-primary">
         <div className="max-w-2xl mx-auto px-4 py-14 text-center space-y-5">
-          <h2 className="text-xl font-bold text-white">Bereit für den Echtbetrieb?</h2>
-          <p className="text-sm text-blue-100">
+          <h2 className="text-xl font-bold text-primary-foreground">Bereit für den Echtbetrieb?</h2>
+          <p className="text-sm text-primary-foreground/80">
             Starten Sie kostenlos — kein Key, kein Login. Oder sichern Sie sich einen Professional-Key für produktiven Einsatz.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link
               href="/api-keys"
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-blue-700 hover:bg-blue-50 transition-colors shadow"
+              className="inline-flex items-center gap-2 rounded-lg bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors shadow"
             >
               API-Key erhalten
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/api-docs"
-              className="inline-flex items-center gap-2 rounded-lg border border-blue-400 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg border border-primary-foreground/30 px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/10 transition-colors"
             >
               Dokumentation lesen
             </Link>
           </div>
-          <p className="text-xs text-blue-200">
-            Fragen? <a href="mailto:api@engpassradar.ch" className="underline hover:text-white">api@engpassradar.ch</a>
+          <p className="text-xs text-primary-foreground/60">
+            Fragen?{' '}
+            <a href="mailto:api@engpassradar.ch" className="underline hover:text-primary-foreground">
+              api@engpassradar.ch
+            </a>
           </p>
         </div>
       </section>
