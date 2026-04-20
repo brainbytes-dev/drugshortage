@@ -70,7 +70,7 @@ export default function ImpressumPage() {
               <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
                 drugshortage.ch
               </a>{' '}
-              (Martinelli Consulting GmbH, Zürich) — Aktive und historische Medikamenten-Lieferengpässe (täglich)
+              (Martinelli Consulting GmbH) — Aktive und historische Medikamenten-Lieferengpässe (täglich)
             </li>
             <li>
               <a href="https://www.bwl.admin.ch/de/meldestelle-heilmittel" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
@@ -79,8 +79,8 @@ export default function ImpressumPage() {
               — Versorgungsstörungen bei Heilmitteln (täglich)
             </li>
             <li>
-              <a href="https://download.hin.ch/download/oddb2xml/" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
-                HIN / oddb2xml
+              <a href="https://ch.oddb.org" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
+                ODDB / ch.oddb.org
               </a>{' '}
               — Schweizer Arzneimittelstammdaten (Wirkstoff, Zusammensetzung, Swissmedic-Nr), wöchentlich
             </li>
