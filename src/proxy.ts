@@ -24,7 +24,7 @@ function getFreeRatelimit(): Ratelimit | null {
         url: process.env.UPSTASH_REDIS_REST_URL!,
         token: process.env.UPSTASH_REDIS_REST_TOKEN!,
       }),
-      limiter: Ratelimit.slidingWindow(100, '60 s'),
+      limiter: Ratelimit.slidingWindow(100, '24 h'),
       prefix: 'rl:free',
     })
   }
