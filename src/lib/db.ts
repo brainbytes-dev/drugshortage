@@ -1019,3 +1019,52 @@ export async function upsertUsbShortages(
 
   return { upserted }
 }
+
+// ── Hero stats ────────────────────────────────────────────────────────────────
+
+export interface HeroStats {
+  activeCount: number
+  newThisWeek: number
+  resolvedThisWeek: number
+  longTermCount: number
+  longTermPct: number
+  historicalTotal: number
+  isoWeek: number
+}
+
+export async function getHeroStats(): Promise<HeroStats> {
+  const now = new Date()
+
+  // Current ISO week boundaries (Mon 00:00)
+  const day = now.getUTCDay() || 7
+  const weekStart = new Date(now)
+  weekStart.setUTCDate(now.getUTCDate() - (day - 1))
+  weekStart.setUTCHours(0, 0, 0, 0)
+
+  const sixMonthsAgo = new Date(now)
+  sixMonthsAgo.setUTCMonth(sixMonthsAgo.getUTCMonth() - 6)
+
+  // ISO week number
+  const jan4 = new Date(Date.UTC(now.getUTCFullYear(), 0, 4))
+  const startOfWeek1 = new Date(jan4)
+  startOfWeek1.setUTCDate(jan4.getUTCDate() - ((jan4.getUTCDay() || 7) - 1))
+  const isoWeek = Math.ceil(((now.getTime() - startOfWeek1.getTime()) / 86400000 + 1) / 7)
+
+  const [activeCount, newThisWeek, resolvedThisWeek, longTermCount, historicalTotal] = await Promise.all([
+    prisma.shortage.count({ where: { isActive: true, statusCode: { gte: 1, lte: 5 } } }),
+    prisma.shortage.count({ where: { isActive: true, firstSeenAt: { gte: weekStart } } }),
+    prisma.shortageEpisode.count({ where: { endedAt: { gte: weekStart } } }),
+    prisma.shortage.count({ where: { isActive: true, statusCode: { gte: 1, lte: 5 }, firstSeenAt: { lte: sixMonthsAgo } } }),
+    prisma.shortage.count(),
+  ])
+
+  return {
+    activeCount,
+    newThisWeek,
+    resolvedThisWeek,
+    longTermCount,
+    longTermPct: activeCount > 0 ? Math.round((longTermCount / activeCount) * 100) : 0,
+    historicalTotal,
+    isoWeek,
+  }
+}
