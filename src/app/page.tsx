@@ -109,8 +109,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       <main id="dashboard" className="bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
 
-        {/* KPI Cards */}
-        <KPICards stats={kpi} historicalCount={historicalTotal} />
+        {/* KPI Cards — hidden, stats now shown in hero */}
+        <div className="hidden">
+          <KPICards stats={kpi} historicalCount={historicalTotal} />
+        </div>
 
         {/* View Switch + Overview Buttons in one row */}
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -136,11 +138,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           </div>
         </div>
 
-        {/* Search + Filters (Engpässe only) */}
+        {/* Filters (search is in hero) */}
         {!isOffMarket && !isHistorical && (
           <Suspense fallback={null}>
             <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
-              <SearchBar />
               <FilterBar firmaList={firmaList} />
               <ResetFiltersButton />
               <NeueMeldungenButton />
@@ -149,11 +150,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           </Suspense>
         )}
 
-        {/* Off-market / historical search only */}
+        {/* Off-market / historical: reset only */}
         {(isOffMarket || isHistorical) && (
           <Suspense fallback={null}>
             <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
-              <SearchBar />
               <ResetFiltersButton />
             </div>
           </Suspense>

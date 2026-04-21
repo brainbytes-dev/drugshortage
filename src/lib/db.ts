@@ -1053,7 +1053,8 @@ export async function getHeroStats(): Promise<HeroStats> {
     prisma.shortageEpisode.count({ where: { endedAt: { gte: weekStart } } }),
     // Use tageSeitMeldung (official days since report) — firstSeenAt only tracks our scrape ingestion date
     prisma.shortage.count({ where: { isActive: true, statusCode: { gte: 1, lte: 5 }, tageSeitMeldung: { gte: 180 } } }),
-    prisma.shortage.count(),
+    // Resolved/historical: only closed shortages (isActive=false), not counting still-active ones
+    prisma.shortage.count({ where: { isActive: false } }),
   ])
 
   return {

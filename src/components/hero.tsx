@@ -1,19 +1,34 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
+import { Sparkles } from 'lucide-react'
 import type { HeroStats } from '@/lib/db'
 
 interface HeroProps extends HeroStats {}
 
 export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount, longTermPct, historicalTotal, isoWeek }: HeroProps) {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [query, setQuery] = useState('')
 
-  function submit(term: string) {
+  const neuActive = searchParams.get('neu') === '1'
+
+  function submitSearch(term: string) {
     const q = term.trim()
     if (!q) return
-    router.push(`/?search=${encodeURIComponent(q)}`)
+    router.push(`/?search=${encodeURIComponent(q)}#dashboard`)
+  }
+
+  function toggleNeu() {
+    const p = new URLSearchParams(searchParams.toString())
+    if (neuActive) {
+      p.delete('neu')
+    } else {
+      p.set('neu', '1')
+      p.delete('page')
+    }
+    router.push(`/?${p.toString()}#dashboard`)
   }
 
   return (
@@ -55,12 +70,12 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           <div className="flex flex-col gap-5 lg:border-l lg:border-border lg:pl-8 border-t border-border pt-6 lg:pt-0">
             <DeltaRow label={`Neu seit KW ${isoWeek}`} value={`+${newThisWeek}`} tone="neutral" />
             <DeltaRow label={`Beendet seit KW ${isoWeek}`} value={`−${resolvedThisWeek}`} tone="good" />
-            <DeltaRow label="≥ 6 Monate aktiv" value={longTermCount.toLocaleString('de-CH')} suffix={`${longTermPct} %`} />
+            <DeltaRow label="≥ 6 Monate aktiv" value={longTermCount.toLocaleString('de-CH')} suffix={`${longTermPct} %`} />
             <DeltaRow label="Historische Fälle" value={historicalTotal.toLocaleString('de-CH')} suffix="seit 2018" />
           </div>
         </div>
 
-        {/* Search */}
+        {/* Search + Neue Meldungen */}
         <div className="mt-16 max-w-[760px]">
           <label
             htmlFor="hero-search"
@@ -68,38 +83,42 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           >
             Suchen
           </label>
-          <div className="flex items-center gap-3.5 px-5 py-4 bg-muted/40 border border-border/80 rounded-lg">
-            <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" className="text-muted-foreground shrink-0" aria-hidden>
-              <circle cx="9" cy="9" r="6" /><path d="M14 14l4 4" strokeLinecap="round" />
-            </svg>
-            <input
-              id="hero-search"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && submit(query)}
-              placeholder="Wirkstoff, Handelsname, ATC-Code oder Firma"
-              className="flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
-            />
-            <button
-              onClick={() => submit(query)}
-              aria-label="Suche starten"
-              className="font-mono text-[11px] text-muted-foreground px-[7px] py-[3px] border border-border/80 rounded"
-            >
-              ↵
-            </button>
-          </div>
-
-          {/* Chips */}
-          <div className="mt-3.5 flex flex-wrap gap-2.5">
-            {['Amoxicillin', 'Metformin', 'ATC · J01', 'Insulin', 'Tamoxifen'].map(term => (
+          <div className="flex items-stretch gap-2">
+            {/* Search input */}
+            <div className="flex flex-1 items-center gap-3.5 px-5 py-4 bg-muted/40 border border-border/80 rounded-lg">
+              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" className="text-muted-foreground shrink-0" aria-hidden>
+                <circle cx="9" cy="9" r="6" /><path d="M14 14l4 4" strokeLinecap="round" />
+              </svg>
+              <input
+                id="hero-search"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && submitSearch(query)}
+                placeholder="Wirkstoff, Handelsname, ATC-Code oder Firma"
+                className="flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
+              />
               <button
-                key={term}
-                onClick={() => submit(term.replace(' · ', ' '))}
-                className="text-[13px] text-muted-foreground px-3 py-[5px] border border-border rounded-full bg-background hover:border-primary/50 hover:text-foreground transition-colors duration-150"
+                onClick={() => submitSearch(query)}
+                aria-label="Suche starten"
+                className="font-mono text-[11px] text-muted-foreground px-[7px] py-[3px] border border-border/80 rounded shrink-0"
               >
-                {term}
+                ↵
               </button>
-            ))}
+            </div>
+
+            {/* Neue Meldungen button */}
+            <button
+              onClick={toggleNeu}
+              className={[
+                'inline-flex items-center gap-2 rounded-lg border px-5 text-sm font-medium transition-colors shrink-0 whitespace-nowrap',
+                neuActive
+                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'
+                  : 'border-border/80 bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted',
+              ].join(' ')}
+            >
+              <Sparkles className="h-4 w-4 shrink-0" />
+              Neue Meldungen
+            </button>
           </div>
         </div>
 
