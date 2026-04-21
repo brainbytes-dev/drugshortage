@@ -226,16 +226,17 @@ model StripeCustomer {
 
 // API keys — free (IP-based, no row), research, professional, institutional, data_license
 model ApiKey {
-  id          String          @id @default(cuid())
-  customerId  String?
-  customer    StripeCustomer? @relation(fields: [customerId], references: [id])
-  keyHash     String          @unique
-  tier        String          @default("free")
-  dailyLimit  Int             @default(100)
-  dailyCount  Int             @default(0)
-  lastReset   DateTime        @default(now())
-  active      Boolean         @default(true)
-  createdAt   DateTime        @default(now())
+  id             String          @id @default(cuid())
+  customerId     String?
+  customer       StripeCustomer? @relation(fields: [customerId], references: [id])
+  keyHash        String          @unique
+  keyEncrypted   String?         // AES-256-GCM encrypted plaintext key for dashboard display
+  tier           String          @default("free")
+  dailyLimit     Int             @default(100)
+  dailyCount     Int             @default(0)
+  lastReset      DateTime        @default(now())
+  active         Boolean         @default(true)
+  createdAt      DateTime        @default(now())
 
   @@index([keyHash], map: "idx_api_keys_hash")
   @@map("api_keys")

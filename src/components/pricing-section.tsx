@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { CheckCircle2, ArrowRight, Zap, GraduationCap } from 'lucide-react'
 import { TIERS, type Tier } from '@/lib/pricing'
@@ -167,7 +167,7 @@ function PaidCard({ tier, yearly }: { tier: Tier; yearly: boolean }) {
           ))}
         </ul>
 
-        <Link
+        <a
           href={
             yearly && tier.paymentLinkYearly ? tier.paymentLinkYearly
             : !yearly && tier.paymentLinkMonthly ? tier.paymentLinkMonthly
@@ -181,7 +181,7 @@ function PaidCard({ tier, yearly }: { tier: Tier; yearly: boolean }) {
         >
           {tier.cta}
           <ArrowRight className="h-3 w-3" />
-        </Link>
+        </a>
       </div>
     </div>
   )
@@ -190,6 +190,14 @@ function PaidCard({ tier, yearly }: { tier: Tier; yearly: boolean }) {
 export function PricingSection() {
   const [yearly, setYearly] = useState(false)
 
+  useEffect(() => {
+    const handlePageShow = (e: PageTransitionEvent) => {
+      if (e.persisted) window.location.reload()
+    }
+    window.addEventListener('pageshow', handlePageShow)
+    return () => window.removeEventListener('pageshow', handlePageShow)
+  }, [])
+
   return (
     <section id="pricing" className="max-w-5xl mx-auto px-4 py-16 space-y-10">
 
@@ -197,7 +205,7 @@ export function PricingSection() {
       <div className="text-center space-y-5">
         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Tarife & Preise</h2>
         <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-          Alle Preise in CHF, zzgl. MwSt. Monatliche Kündigung jederzeit möglich.
+          Alle Preise in CHF. Monatliche Kündigung jederzeit möglich.
         </p>
         <div className="inline-flex items-center gap-1 rounded-full border bg-muted/40 p-1">
           <button

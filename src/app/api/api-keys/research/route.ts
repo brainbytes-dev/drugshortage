@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from "@/lib/prisma"
-import { generateApiKey, signMagicToken, tierDailyLimit } from '@/lib/api-keys'
+import { generateApiKey, signMagicToken, tierDailyLimit, encryptApiKeyValue } from '@/lib/api-keys'
 import { getResend, FROM_ADDRESS, SITE_URL } from '@/lib/resend'
 
 // Auto-approve: .edu domains and common Swiss academic/hospital domains
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
     data: {
       customerId: customer.id,
       keyHash: hash,
+      keyEncrypted: encryptApiKeyValue(plaintext),
       tier: 'research',
       dailyLimit: tierDailyLimit('research'),
     },

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from "@/lib/prisma"
-import { verifyMagicToken } from '@/lib/api-keys'
+import { verifyMagicToken, decryptApiKeyValue } from '@/lib/api-keys'
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get('token')
@@ -16,10 +16,13 @@ export async function GET(req: NextRequest) {
 
   const apiKey = await prisma.apiKey.findUnique({
     where: { id: keyId },
-    select: { tier: true, dailyLimit: true, dailyCount: true, createdAt: true, active: true },
+    select: { tier: true, dailyLimit: true, dailyCount: true, createdAt: true, active: true, keyEncrypted: true },
   })
 
   if (!apiKey) return NextResponse.json({ error: 'not_found' }, { status: 404 })
 
-  return NextResponse.json(apiKey)
+  const { keyEncrypted, ...rest } = apiKey
+  const plaintext = keyEncrypted ? decryptApiKeyValue(keyEncrypted) : null
+
+  return NextResponse.json({ ...rest, plaintext })
 }

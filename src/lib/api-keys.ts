@@ -1,4 +1,4 @@
-import { randomBytes, createHash } from 'crypto'
+import { randomBytes, createHash, createCipheriv, createDecipheriv } from 'crypto'
 import { SignJWT, jwtVerify } from 'jose'
 
 const TIER_LIMITS: Record<string, number> = {
@@ -38,4 +38,25 @@ export async function verifyMagicToken(token: string): Promise<{ keyId: string; 
     throw new Error('Invalid token payload')
   }
   return { keyId: payload.keyId, email: payload.email }
+}
+
+function getEncryptionKey(): Buffer {
+  const secret = process.env.API_KEY_ENCRYPTION_SECRET
+  if (!secret) throw new Error('API_KEY_ENCRYPTION_SECRET is not set')
+  return Buffer.from(secret, 'hex')
+}
+
+export function encryptApiKeyValue(plaintext: string): string {
+  const iv = randomBytes(12)
+  const cipher = createCipheriv('aes-256-gcm', getEncryptionKey(), iv)
+  const encrypted = Buffer.concat([cipher.update(plaintext, 'utf8'), cipher.final()])
+  const tag = cipher.getAuthTag()
+  return `${iv.toString('hex')}:${tag.toString('hex')}:${encrypted.toString('hex')}`
+}
+
+export function decryptApiKeyValue(stored: string): string {
+  const [ivHex, tagHex, encHex] = stored.split(':')
+  const decipher = createDecipheriv('aes-256-gcm', getEncryptionKey(), Buffer.from(ivHex, 'hex'))
+  decipher.setAuthTag(Buffer.from(tagHex, 'hex'))
+  return decipher.update(Buffer.from(encHex, 'hex')).toString('utf8') + decipher.final('utf8')
 }

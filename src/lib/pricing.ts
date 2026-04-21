@@ -49,7 +49,7 @@ export const TIERS: Tier[] = [
       'Forschungsnachweis erforderlich',
     ],
     cta: 'Research-Key beantragen',
-    ctaHref: '/api-keys/research',
+    ctaHref: '/api-keys?tab=research',
   },
   {
     key: 'professional',
