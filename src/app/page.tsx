@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimelineWithActive, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt, queryHistoricalShortages, getHistoricalCount, getHeroStats } from '@/lib/db'
-import { getKPIStatsCached as getKPIStats, getFirmaListCached as getFirmaList } from '@/lib/db-cached-example'
+import { getKPIStatsCached as getKPIStats } from '@/lib/db-cached-example'
 import { KPICards } from '@/components/kpi-cards'
 import { SearchBar } from '@/components/search-bar-optimized'
-import { FilterBar } from '@/components/filter-bar'
 import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
 import { HistoricalTable } from '@/components/historical-table'
@@ -58,10 +57,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     sort: params.sort,
   }
 
-  const [response, kpi, firmaList, overview, bwlGtins, weeklyTimeline, offMarketResponse, offMarketStats, lastScrapedAt, historicalResponse, historicalCount, heroStats] = await Promise.all([
+  const [response, kpi, overview, bwlGtins, weeklyTimeline, offMarketResponse, offMarketStats, lastScrapedAt, historicalResponse, historicalCount, heroStats] = await Promise.all([
     isOffMarket || isHistorical ? Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }) : queryShortages(query),
     getKPIStats(),
-    isOffMarket || isHistorical ? Promise.resolve([] as string[]) : getFirmaList(),
     getOverviewStats(),
     isOffMarket || isHistorical ? Promise.resolve([] as string[]) : getBwlGtins().catch(() => [] as string[]),
     getWeeklyTimelineWithActive().catch(() => []),
@@ -130,11 +128,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           />
         </Suspense>
 
-        {/* Filters (search + neue meldungen are in hero) */}
+        {/* Filters */}
         {!isOffMarket && !isHistorical && (
           <Suspense fallback={null}>
             <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
-              <FilterBar firmaList={firmaList} />
               <ResetFiltersButton />
               <ExportCsvButton />
             </div>
