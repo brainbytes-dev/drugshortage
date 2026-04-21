@@ -18,7 +18,7 @@ export function DonationWidget() {
       body: JSON.stringify({ amount: chf }),
     })
     const { url } = await res.json()
-    if (url) window.location.href = url
+    if (url) window.location.assign(url)
     setLoading(false)
   }
 
