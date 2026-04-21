@@ -64,6 +64,13 @@ export default function ImpressumPage() {
         </section>
 
         <section className="space-y-3">
+          <h2 className="text-lg font-semibold">Mehrwertsteuer</h2>
+          <p className="text-[15px] text-muted-foreground leading-relaxed">
+            Mehrwertsteuerbefreit gemäss Art. 10 Abs. 2a Bundesgesetz über die Mehrwertsteuer (MWSTG) vom 12. Juni 2009.
+          </p>
+        </section>
+
+        <section className="space-y-3">
           <h2 className="text-lg font-semibold">Datenquellen</h2>
           <p className="text-[15px] text-muted-foreground leading-relaxed">
             Die auf dieser Website angezeigten Daten stammen aus folgenden öffentlichen Quellen,

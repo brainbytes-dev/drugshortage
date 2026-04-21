@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { prisma } from "@/lib/prisma"
-import { generateApiKey, signMagicToken, tierDailyLimit } from '@/lib/api-keys'
+import { generateApiKey, signMagicToken, tierDailyLimit, encryptApiKeyValue } from '@/lib/api-keys'
 import { getResend, FROM_ADDRESS, SITE_URL } from '@/lib/resend'
 
 export const dynamic = 'force-dynamic'
@@ -27,9 +27,8 @@ async function sendApiKeyMail(email: string, plaintext: string, tier: string, ke
 <p>Guten Tag,</p>
 <p>vielen Dank für Ihr Abo. Hier ist Ihr API-Key:</p>
 <pre style="background:#f4f4f5;padding:12px;border-radius:6px;font-size:14px;">${plaintext}</pre>
-<p><strong>Wichtig:</strong> Dieser Key wird nur einmal angezeigt. Bitte jetzt kopieren und sicher aufbewahren.</p>
 <p>Ihr Tier: <strong>${tier}</strong></p>
-<p><a href="${dashboardUrl}">Zum API-Dashboard</a> — dort sehen Sie Ihre Nutzung und können das Abo verwalten.</p>
+<p><a href="${dashboardUrl}">Zum API-Dashboard →</a> — dort sehen Sie Ihren Key jederzeit, verwalten Ihr Abo und überwachen Ihre Nutzung.</p>
 <p>Schnellstart:</p>
 <pre style="background:#f4f4f5;padding:12px;border-radius:6px;font-size:14px;">curl -H "Authorization: Bearer ${plaintext}" \\
   ${SITE_URL}/api/v1/shortages</pre>
@@ -58,6 +57,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
     data: {
       customerId: customer.id,
       keyHash: hash,
+      keyEncrypted: encryptApiKeyValue(plaintext),
       tier,
       dailyLimit: tierDailyLimit(tier),
     },
