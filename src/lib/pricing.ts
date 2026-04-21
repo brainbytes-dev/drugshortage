@@ -14,6 +14,8 @@ export interface Tier {
   stripePriceMonthly?: string
   stripePriceYearly?: string
   yearlyAmountCHF?: number  // actual Stripe yearly charge for savings display
+  paymentLinkMonthly?: string
+  paymentLinkYearly?: string
 }
 
 export const TIERS: Tier[] = [
@@ -68,6 +70,8 @@ export const TIERS: Tier[] = [
     stripePriceMonthly: 'price_1TOe4p2EVyJLltFI9XPSgZgP',
     stripePriceYearly: 'price_1TOe4q2EVyJLltFIZMKM7PTV',
     yearlyAmountCHF: 390,
+    paymentLinkMonthly: 'https://buy.stripe.com/5kQ7sEaOn9arb4h9Qd3AY00',
+    paymentLinkYearly: 'https://buy.stripe.com/4gM5kw7Cb72jb4hbYl3AY01',
   },
   {
     key: 'institutional',
@@ -87,6 +91,8 @@ export const TIERS: Tier[] = [
     stripePriceMonthly: 'price_1TOe4q2EVyJLltFIxRI4EHNZ',
     stripePriceYearly: 'price_1TOe4r2EVyJLltFIrRiprlr3',
     yearlyAmountCHF: 1990,
+    paymentLinkMonthly: 'https://buy.stripe.com/eVq4gs1dN4Ubegtfax3AY02',
+    paymentLinkYearly: 'https://buy.stripe.com/5kQ28k3lVbiz5JX4vT3AY03',
   },
   {
     key: 'data_license',
