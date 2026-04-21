@@ -79,6 +79,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     <>
       <script
         type="application/ld+json"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -102,7 +103,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
       {/* Dashboard */}
       <main id="dashboard" className="bg-background">
-      <div className="max-w-7xl mx-auto px-4 py-6 space-y-3">
+      <div className="max-w-7xl mx-auto px-4 pt-3 pb-6 space-y-3">
 
         {/* KPI Cards — hidden, stats now shown in hero */}
         <div className="hidden">
@@ -230,6 +231,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       {/* ── FAQ ─────────────────────────────────────────────────── */}
       <script
         type="application/ld+json"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",

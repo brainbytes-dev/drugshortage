@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect, useRef, useTransition } from 'react'
 import { Sparkles, X, Download } from 'lucide-react'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
@@ -13,10 +13,24 @@ interface HeroProps extends HeroStats {
   atcGruppen: AtcGruppeStats[]
 }
 
+function fmtCH(n: number): string {
+  return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '’')
+}
+
 export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount, longTermPct, historicalTotal, isoWeek, firmenRanking, atcGruppen }: HeroProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [query, setQuery] = useState('')
+  const [, startTransition] = useTransition()
+  const [query, setQuery] = useState(searchParams.get('search') ?? '')
+  const debounceRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Sync input when URL changes externally (e.g. clear filters)
+  useEffect(() => {
+    setQuery(searchParams.get('search') ?? '')
+  }, [searchParams])
+
+  // Cleanup debounce on unmount
+  useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
 
   const neuActive = searchParams.get('neu') === '1'
   const hasActiveFilter = !!searchParams.get('search') || neuActive
@@ -39,10 +53,34 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
     window.location.href = `/api/export/csv${params.size > 0 ? '?' + params.toString() : ''}`
   }
 
+  function handleQueryChange(value: string) {
+    setQuery(value)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString())
+      if (value.trim()) {
+        params.set('search', value.trim())
+      } else {
+        params.delete('search')
+      }
+      params.delete('page')
+      startTransition(() => {
+        router.replace(`/?${params.toString()}#dashboard`, { scroll: false })
+      })
+    }, 300)
+  }
+
   function submitSearch(term: string) {
     const q = term.trim()
-    if (!q) return
-    router.push(`/?search=${encodeURIComponent(q)}#dashboard`)
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    const params = new URLSearchParams(searchParams.toString())
+    if (q) {
+      params.set('search', q)
+    } else {
+      params.delete('search')
+    }
+    params.delete('page')
+    router.push(`/?${params.toString()}#dashboard`)
   }
 
   function toggleNeu() {
@@ -59,7 +97,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
   return (
     <div className="w-full bg-background">
       {/* Outer container matches dashboard max-w-7xl px-4 exactly */}
-      <div className="max-w-7xl mx-auto px-4 pt-[72px] pb-[88px]">
+      <div className="max-w-7xl mx-auto px-4 pt-[72px] pb-6">
 
         {/* Inner section: eyebrow + grid get extra horizontal breathing room */}
         <div className="px-10">
@@ -84,7 +122,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
               className="font-sans text-[clamp(128px,14vw,184px)] font-semibold leading-[0.88] tracking-[-0.055em] text-foreground tabular-nums mb-5"
               aria-label={`${activeCount} aktive Engpässe`}
             >
-              {activeCount.toLocaleString('de-CH')}
+              {fmtCH(activeCount)}
             </p>
             <h1 className="text-[34px] font-medium tracking-[-0.02em] leading-[1.15] text-foreground m-0 max-w-[720px]">
               Medikamente in der Schweiz sind aktuell als nicht lieferbar gemeldet.
@@ -102,8 +140,8 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           <div className="flex flex-col gap-5 lg:border-l lg:border-border lg:pl-8 border-t border-border pt-6 lg:pt-0">
             <DeltaRow label={`Neu seit KW ${isoWeek}`} value={`+${newThisWeek}`} tone="neutral" />
             <DeltaRow label={`Beendet seit KW ${isoWeek}`} value={`−${resolvedThisWeek}`} tone="good" />
-            <DeltaRow label="≥ 6 Monate aktiv" value={longTermCount.toLocaleString('de-CH')} suffix={`${longTermPct} %`} />
-            <DeltaRow label="Historische Fälle" value={historicalTotal.toLocaleString('de-CH')} suffix="seit 2018" />
+            <DeltaRow label="≥ 6 Monate aktiv" value={fmtCH(longTermCount)} suffix={`${longTermPct} %`} />
+            <DeltaRow label="Historische Fälle" value={fmtCH(historicalTotal)} suffix="seit 2018" />
           </div>
         </div>
 
@@ -126,7 +164,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
               <input
                 id="hero-search"
                 value={query}
-                onChange={e => setQuery(e.target.value)}
+                onChange={e => handleQueryChange(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && submitSearch(query)}
                 placeholder="Wirkstoff, Handelsname, ATC-Code oder Firma"
                 className="min-w-0 flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
