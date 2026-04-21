@@ -11,6 +11,9 @@ export interface Tier {
   cta: string
   ctaHref: string
   highlight?: boolean
+  stripePriceMonthly?: string
+  stripePriceYearly?: string
+  yearlyAmountCHF?: number  // actual Stripe yearly charge for savings display
 }
 
 export const TIERS: Tier[] = [
@@ -62,6 +65,9 @@ export const TIERS: Tier[] = [
     cta: 'Professional abonnieren',
     ctaHref: '/api-keys?tier=professional',
     highlight: true,
+    stripePriceMonthly: 'price_1TOe4p2EVyJLltFI9XPSgZgP',
+    stripePriceYearly: 'price_1TOe4q2EVyJLltFIZMKM7PTV',
+    yearlyAmountCHF: 390,
   },
   {
     key: 'institutional',
@@ -78,6 +84,9 @@ export const TIERS: Tier[] = [
     ],
     cta: 'Institutional abonnieren',
     ctaHref: '/api-keys?tier=institutional',
+    stripePriceMonthly: 'price_1TOe4q2EVyJLltFIxRI4EHNZ',
+    stripePriceYearly: 'price_1TOe4r2EVyJLltFIrRiprlr3',
+    yearlyAmountCHF: 1990,
   },
   {
     key: 'data_license',

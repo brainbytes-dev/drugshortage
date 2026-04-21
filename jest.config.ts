@@ -7,6 +7,9 @@ const config: Config = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   testMatch: ['**/tests/**/*.test.ts', '**/tests/**/*.test.tsx'],
+  transformIgnorePatterns: [
+    'node_modules/.pnpm/(?!(jose@))',
+  ],
 }
 
 export default config
