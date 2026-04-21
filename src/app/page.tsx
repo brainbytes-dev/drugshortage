@@ -9,8 +9,6 @@ import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
 import { HistoricalTable } from '@/components/historical-table'
 import { ViewSwitch } from '@/components/view-switch'
-import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
-import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import { ResetFiltersButton } from '@/components/reset-filters-button'
 import { NeueMeldungenButton } from '@/components/neue-meldungen-button'
 import { ExportCsvButton } from '@/components/export-csv-button'
@@ -102,7 +100,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       <HeroAutoSkip />
       {/* Hero — Live-Zahl */}
       {heroStats && (
-        <Hero {...heroStats} />
+        <Hero
+          {...heroStats}
+          firmenRanking={overview?.firmenRanking ?? []}
+          atcGruppen={overview?.atcGruppen ?? []}
+        />
       )}
 
       {/* Dashboard */}
@@ -114,37 +116,26 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           <KPICards stats={kpi} historicalCount={historicalTotal} />
         </div>
 
-        {/* View Switch + Overview Buttons in one row */}
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <Suspense fallback={null}>
-            <ViewSwitch
-              active={view}
-              counts={{
-                engpaesse: kpi.totalActive,
-                ausserHandel: offMarketStats.ausserHandel,
-                vertriebseingestellt: offMarketStats.vertriebseingestellt,
-                erloschen: offMarketStats.erloschen,
-                historisch: historicalTotal,
-              }}
-            />
-          </Suspense>
-          <div className="flex items-center gap-2">
-            {overview && overview.firmenRanking.length > 0 && (
-              <FirmaRankingSheet firmenRanking={overview.firmenRanking} />
-            )}
-            {overview && overview.atcGruppen.length > 0 && (
-              <AtcGruppenSheet atcGruppen={overview.atcGruppen} />
-            )}
-          </div>
-        </div>
+        {/* View Switch */}
+        <Suspense fallback={null}>
+          <ViewSwitch
+            active={view}
+            counts={{
+              engpaesse: kpi.totalActive,
+              ausserHandel: offMarketStats.ausserHandel,
+              vertriebseingestellt: offMarketStats.vertriebseingestellt,
+              erloschen: offMarketStats.erloschen,
+              historisch: historicalTotal,
+            }}
+          />
+        </Suspense>
 
-        {/* Filters (search is in hero) */}
+        {/* Filters (search + neue meldungen are in hero) */}
         {!isOffMarket && !isHistorical && (
           <Suspense fallback={null}>
             <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
               <FilterBar firmaList={firmaList} />
               <ResetFiltersButton />
-              <NeueMeldungenButton />
               <ExportCsvButton />
             </div>
           </Suspense>
