@@ -167,12 +167,14 @@ function Dashboard({ token }: { token: string }) {
         )}
 
         <div className="flex gap-2 flex-wrap">
-          <a
-            href={`/api/api-keys/portal?token=${encodeURIComponent(token)}`}
-            className="inline-flex items-center justify-center rounded-md border border-input px-3 py-1.5 text-sm font-medium hover:bg-accent transition-colors"
-          >
-            Abo verwalten →
-          </a>
+          {data.tier !== 'free' && data.tier !== 'research' && (
+            <a
+              href={`/api/api-keys/portal?token=${encodeURIComponent(token)}`}
+              className="inline-flex items-center justify-center rounded-md border border-input px-3 py-1.5 text-sm font-medium hover:bg-accent transition-colors"
+            >
+              Abo verwalten →
+            </a>
+          )}
           {!newKey && !confirmRegen && (
             <button
               onClick={() => setConfirmRegen(true)}
