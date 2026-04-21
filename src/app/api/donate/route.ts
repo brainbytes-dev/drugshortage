@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
       },
     ],
     success_url: `${SITE_URL}/danke`,
-    cancel_url: `${SITE_URL}/api-docs`,
+    cancel_url: `${SITE_URL}/spenden`,
   })
 
   return NextResponse.json({ url: session.url })
