@@ -338,7 +338,7 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
 
         <p className="text-xs text-muted-foreground text-center pt-1">
           Noch kein Key?{' '}
-          <Link href="/#pricing" className="underline hover:text-foreground">Tarife ansehen →</Link>
+          <Link href="/api#pricing" className="underline hover:text-foreground">Tarife ansehen →</Link>
         </p>
       </CardContent>
     </Card>

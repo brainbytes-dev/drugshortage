@@ -106,7 +106,7 @@ export default function ApiDocsPage() {
             {' '}Professional-Keys ab CHF 39/Monat — mit Severity Scoring und 10 000 Req/Tag.
           </p>
           <Link
-            href="/#pricing"
+            href="/api#pricing"
             className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             API-Zugang & Preise →
