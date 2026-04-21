@@ -10,7 +10,8 @@ import { DonationWidget } from '@/components/donation-widget'
 const NAV_LINKS = [
   { href: '/', label: 'Home', num: '01' },
   { href: '/methodik', label: 'Methodik', num: '02' },
-  { href: '/#faq', label: 'FAQ', num: '03', isFaq: true },
+  { href: '/api', label: 'API', num: '03' },
+  { href: '/#faq', label: 'FAQ', num: '04', isFaq: true },
 ]
 
 export function SiteHeader() {

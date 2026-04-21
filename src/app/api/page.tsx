@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Zap, ShieldCheck, BarChart3, ArrowRight, Code2 } from 'lucide-react'
-import { PricingSection } from '@/components/pricing-section'
+
+import { PricingSection, FinalCtaSection } from '@/components/pricing-section'
 
 export const metadata: Metadata = {
   title: 'API für Schweizer Arzneimittel-Lieferengpässe | engpassradar.ch',
@@ -181,35 +182,7 @@ export default function ApiLandingPage() {
       </section>
 
       {/* ── FINAL CTA ── */}
-      <section className="border-t bg-primary">
-        <div className="max-w-2xl mx-auto px-4 py-14 text-center space-y-5">
-          <h2 className="text-xl font-bold text-primary-foreground">Bereit für den Echtbetrieb?</h2>
-          <p className="text-sm text-primary-foreground/80">
-            Starten Sie kostenlos — kein Key, kein Login. Oder sichern Sie sich einen Professional-Key für produktiven Einsatz.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a
-              href="#pricing"
-              className="inline-flex items-center gap-2 rounded-lg bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors shadow"
-            >
-              Preise & Tarife
-              <ArrowRight className="h-4 w-4" />
-            </a>
-            <Link
-              href="/api-docs"
-              className="inline-flex items-center gap-2 rounded-lg border border-primary-foreground/30 px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/10 transition-colors"
-            >
-              Dokumentation lesen
-            </Link>
-          </div>
-          <p className="text-xs text-primary-foreground/60">
-            Fragen?{' '}
-            <a href="mailto:api@engpassradar.ch" className="underline hover:text-primary-foreground">
-              api@engpassradar.ch
-            </a>
-          </p>
-        </div>
-      </section>
+      <FinalCtaSection />
 
     </main>
   )
