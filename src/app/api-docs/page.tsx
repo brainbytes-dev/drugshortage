@@ -80,9 +80,9 @@ export default function ApiDocsPage() {
       />
       <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
 
-        <Link href="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+        <Link href="/api" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" />
-          Zur Übersicht
+          Zur API-Übersicht
         </Link>
 
         {/* Header */}

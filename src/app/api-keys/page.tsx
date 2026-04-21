@@ -289,7 +289,9 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
               </p>
             ) : (
               <>
-                <p className="text-sm text-muted-foreground">Sie erhalten einen Link zu Ihrem Dashboard per E-Mail.</p>
+                <p className="text-xs text-muted-foreground">
+                  Engpassradar verwendet passwortlose Anmeldung via Magic-Link. Geben Sie Ihre registrierte E-Mail ein — Sie erhalten einen 30-Tage-gültigen Dashboard-Link.
+                </p>
                 <Input
                   type="email"
                   placeholder="Registrierte E-Mail"
@@ -367,6 +369,11 @@ function ApiKeysContent() {
           Engpassradar-API für automatisierte Abfragen und Systemintegrationen.
         </p>
       </div>
+      {!token && (
+        <div className="rounded-md border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
+          Neu hier? API-Keys erhalten Sie auf der <a href="/api#pricing" className="underline hover:text-foreground">API-Seite</a>. Bestehende Kunden: Dashboard-Link per E-Mail anfordern.
+        </div>
+      )}
       {token
         ? <Dashboard token={token} />
         : <AccessForm initialTab={tabParam === 'research' ? 'research' : 'lost'} />

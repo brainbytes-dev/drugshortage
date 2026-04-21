@@ -32,7 +32,7 @@ export const TIERS: Tier[] = [
       'Kein API-Key notwendig',
       'Empfohlen für Tests & Prototypen',
     ],
-    cta: 'Direkt loslegen',
+    cta: 'API ausprobieren',
     ctaHref: '/api-docs',
   },
   {
