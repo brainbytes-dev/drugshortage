@@ -414,19 +414,23 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 a: <>engpass.radar ist ein Informationswerkzeug, kein behördliches Register. Anzeige, Score und Alternativen-Hinweise werden automatisiert aggregiert; Fehler in der Primärquelle werden unverändert übernommen. Für klinische, pharmazeutische oder regulatorische Entscheidungen gelten ausschliesslich die offiziellen Quellen.</>,
               },
             ] as { q: string; a: React.ReactNode }[]).map(({ q, a }, i) => (
-              <div key={q} className="py-6 border-b border-border/40">
-                <div className="flex items-baseline gap-[14px] mb-[10px]">
-                  <span className="font-mono text-[11px] text-primary font-medium min-w-[28px] shrink-0">
+              <details key={q} className="group border-b border-border/40">
+                <summary className="flex items-baseline gap-[14px] py-6 cursor-pointer list-none select-none">
+                  <span className="font-mono text-[11px] text-primary font-medium min-w-[28px] shrink-0 mt-[3px]">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <span className="text-[16px] font-semibold leading-snug tracking-[-0.005em]">
+                  <span className="flex-1 text-[16px] font-semibold leading-snug tracking-[-0.005em] group-hover:text-primary transition-colors duration-200">
                     {q}
                   </span>
-                </div>
-                <p className="pl-[42px] text-[14.5px] text-muted-foreground leading-[1.62] sm:pr-10">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
+                    className="h-4 w-4 shrink-0 text-muted-foreground group-open:rotate-45 transition-transform duration-200 ease-out ml-4" aria-hidden>
+                    <path strokeLinecap="round" d="M8 2v12M2 8h12" />
+                  </svg>
+                </summary>
+                <p className="pl-[42px] pb-6 text-[14.5px] text-muted-foreground leading-[1.62] sm:pr-10">
                   {a}
                 </p>
-              </div>
+              </details>
             ))}
           </div>
         </div>
