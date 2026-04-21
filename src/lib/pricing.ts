@@ -41,7 +41,7 @@ export const TIERS: Tier[] = [
     dailyLimit: '2 000 Req/Tag',
     rateLimit: 'Key-basiert',
     features: [
-      'Für Universitäten & Spitäler',
+      'Für Universitäten & Forschungsinstitutionen',
       'Höheres Limit ohne Kosten',
       'Schnellere Freischaltung bei .edu-Mail',
       'Forschungsnachweis erforderlich',

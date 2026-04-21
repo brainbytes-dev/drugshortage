@@ -58,7 +58,7 @@ export default function ResearchPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Automatisch akzeptiert: .edu, .ac.*, Schweizer Uni- und Spitalsdomains
+                Automatisch akzeptiert: .edu, .ac.*, Schweizer Uni- und Forschungsdomains
               </p>
             </div>
             <div>
