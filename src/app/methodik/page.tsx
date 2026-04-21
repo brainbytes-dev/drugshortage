@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
+import { prisma } from '@/lib/prisma-optimized'
+
+export const revalidate = 3600
 
 export const metadata: Metadata = {
   title: 'Methodik & Datenquellen | engpassradar.ch',
@@ -20,7 +23,13 @@ const jsonLd = {
   },
 }
 
-export default function MetodikPage() {
+export default async function MetodikPage() {
+  const [activeCount, totalProducts, totalEpisodes] = await Promise.all([
+    prisma.shortage.count({ where: { isActive: true } }),
+    prisma.shortage.count(),
+    prisma.shortageEpisode.count(),
+  ])
+
   return (
     <main className="min-h-screen bg-background">
       <script
@@ -100,9 +109,9 @@ export default function MetodikPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               {[
                 { value: 'täglich', label: 'Aktualisierungsrhythmus' },
-                { value: '9\'255+', label: 'erfasste Präparate' },
-                { value: '9\'373+', label: 'Engpass-Episoden gesamt' },
-                { value: '705+', label: 'aktuell aktive Engpässe' },
+                { value: `${totalProducts.toLocaleString('de-CH')}`, label: 'erfasste Präparate' },
+                { value: `${totalEpisodes.toLocaleString('de-CH')}`, label: 'Engpass-Episoden gesamt' },
+                { value: `${activeCount.toLocaleString('de-CH')}`, label: 'aktuell aktive Engpässe' },
               ].map(s => (
                 <div key={s.label} className="space-y-0.5">
                   <p className="text-xl font-black tabular-nums text-foreground">{s.value}</p>

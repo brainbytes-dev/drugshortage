@@ -28,7 +28,7 @@ export const revalidate = 3600 // ISR: revalidate every hour
 
 export const metadata: Metadata = {
   title: 'Lieferengpass Medikamente Schweiz | engpass.radar',
-  description: 'Alle aktuellen Medikamenten-Lieferengpässe der Schweiz — täglich aus drugshortage.ch und BWL aktualisiert. Suche nach Wirkstoff, Firma oder ATC-Code. Kostenlos, kein Login.',
+  description: 'Alle aktuellen Medikamenten-Lieferengpässe der Schweiz — täglich aus drugshortage.ch und BWL aktualisiert. Suche nach Wirkstoff, Firma oder ATC-Code. Öffentlich zugänglich, ohne Registrierung.',
 }
 
 export default async function DashboardPage({ searchParams }: PageProps) {
@@ -198,7 +198,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               {
                 step: '01',
                 title: 'Alle Quellen, ein Dashboard',
-                body: 'Jeden Morgen liegen die neuesten Engpass-Meldungen aus allen offiziellen Schweizer Quellen bereit — ohne dass Sie selbst drei Portale prüfen müssen.',
+                body: 'Die neuesten Engpass-Meldungen aus allen offiziellen Schweizer Quellen — täglich abgeglichen, ohne dass Sie selbst drei Portale prüfen müssen.',
               },
               {
                 step: '02',
@@ -208,7 +208,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               {
                 step: '03',
                 title: 'Finden statt suchen',
-                body: 'Volltextsuche, Filter nach Firma oder ATC-Gruppe, Detailseite pro Präparat. Kein Login, kein Abo, kostenlos.',
+                body: 'Volltextsuche, Filter nach Firma oder ATC-Gruppe, Detailseite pro Präparat. Öffentlich zugänglich, ohne Registrierung.',
               },
             ].map(({ step, title, body }) => (
               <div
@@ -251,7 +251,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               'Verlaufs-Timeline (Wochen-Ansicht)',
               'CSV-Export',
               'REST API für Eigenintegration',
-              'Kostenlos, kein Login, kein Abo',
+              'Öffentlich zugänglich, ohne Registrierung',
             ].map((feature, i, arr) => (
               <div
                 key={feature}
