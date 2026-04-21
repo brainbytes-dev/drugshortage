@@ -1,22 +1,38 @@
-# engpass.radar — Swiss Drug Shortage Tracker
+# engpass.radar
 
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org)
+**Swiss Drug Shortage Intelligence Platform**
+
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js&logoColor=white)](https://nextjs.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com)
+[![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io)
+[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-
-A modern dashboard that tracks current drug shortages in Switzerland. Data is scraped daily from [drugshortage.ch](https://www.drugshortage.ch) and displayed with KPI cards, full-text search, status/company filters, sortable table, and a detail drawer.
+[![Last Commit](https://img.shields.io/github/last-commit/brainbytes-dev/engpassradar)](https://github.com/brainbytes-dev/engpassradar/commits/main)
+[![Issues](https://img.shields.io/github/issues/brainbytes-dev/engpassradar)](https://github.com/brainbytes-dev/engpassradar/issues)
 
 ---
 
-## Features
+Real-time tracking of drug shortages across Switzerland. Data is automatically collected daily from multiple official sources — processed, enriched, and made searchable for healthcare professionals, pharmacists, and the public.
 
-- **Daily scrape** — cheerio-based parser pulls the full ASP.NET table from drugshortage.ch
-- **KPI cards** — active shortage count, top manufacturer, ATC group coverage, average days since report
-- **Search** — real-time full-text search across drug name, company, and ATC code
-- **Filters** — filter by status level (1–5) and manufacturer
-- **Sortable table** — sort by any column; URL-driven so links are shareable
-- **Detail drawer** — click any row to see GTIN, pharmacode, delivery date, mutation history, and source link
-- **Cron endpoint** — `POST /api/scrape` secured with a Bearer token, wired to Vercel Cron
+> Built by [HM Consulting Rühe](https://engpass.radar) · Not affiliated with or endorsed by drugshortage.ch or any official authority.
+
+---
+
+## What it does
+
+| Feature | Details |
+|---|---|
+| **Multi-source ingestion** | drugshortage.ch (HTML), BWL/admin.ch (XML/XLSX), USB Basel Spitalpharmazie (PDF) |
+| **128k medication index** | Full ODDB product database: ingredient, Swissmedic-Nr, composition, GTIN |
+| **Off-market tracking** | `AUSSER_HANDEL` (permanently withdrawn) and `VERTRIEBSEINSTELLUNG` (sales discontinued) |
+| **Alternatives** | Per-shortage alternative suggestions cached by GTIN |
+| **Watchlist** | Save and monitor specific drugs; email alerts on status change |
+| **CSV export** | Full dataset export for downstream analysis |
+| **Public REST API** | Programmatic access via `/api/v1/` |
+| **RSS feed** | Subscribe to shortage updates via `/rss.xml` |
+| **Blog / Newsletter** | Curated shortage reports and analysis |
+| **Daily cron** | Fully automated scrape at 03:00 UTC via Vercel Cron |
 
 ---
 
@@ -24,68 +40,25 @@ A modern dashboard that tracks current drug shortages in Switzerland. Data is sc
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 14 (App Router, Server Components) |
-| Language | TypeScript 5 |
+| Framework | Next.js 15 (App Router, Server Components, ISR) |
+| Language | TypeScript 5 (strict mode) |
 | Styling | Tailwind CSS + shadcn/ui |
-| Scraping | cheerio (HTML), SheetJS (XLSX), fast-xml-parser (XML) |
+| Scraping | cheerio (HTML) · SheetJS (XLSX) · fast-xml-parser (XML) · pdf-parse (PDF) |
 | ORM | Prisma 7 with PrismaPg Driver Adapter |
 | Database | Supabase PostgreSQL |
 | Testing | Jest + ts-jest |
-| Deployment | Vercel |
+| Deployment | Vercel (Fluid Compute, Cron) |
 
 ---
 
-## Getting Started
+## Data Sources
 
-### Prerequisites
-
-- Node.js 18+
-- npm 9+
-
-### Installation
-
-```bash
-git clone https://github.com/brainbytes-dev/engpassradar.git
-cd drugshortage
-npm install
-```
-
-### Environment Variables
-
-Create a `.env.local` file in the project root (see `.env.example`):
-
-```env
-DATABASE_URL=postgresql://...          # Pooled connection (Supavisor port 6543)
-DIRECT_URL=postgresql://...            # Direct connection (port 5432) for migrations
-CRON_SECRET=your-secret-here
-```
-
-> `CRON_SECRET` protects the `POST /api/scrape` endpoint. Use a long random string in production.
-
-### Run Locally
-
-```bash
-# Fetch current shortage data
-npm run scrape
-
-# Start development server
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
-
----
-
-## Scripts
-
-| Command | Description |
-|---|---|
-| `npm run dev` | Start Next.js development server |
-| `npm run build` | Production build |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npm test` | Run Jest test suite |
-| `npm run scrape` | Fetch and store current shortages |
+| Source | Format | Content |
+|---|---|---|
+| [drugshortage.ch](https://www.drugshortage.ch) | HTML | Active shortages with status 1–5 |
+| [bwl.admin.ch](https://www.bwl.admin.ch) | XLSX / XML | Federal supply disruptions |
+| [USB Basel Spitalpharmazie](https://www.unispital-basel.ch) | PDF | Hospital pharmacy shortage list |
+| [ODDB / Swissmedic](https://www.oddb.org) | CSV | 128k Swiss medication index |
 
 ---
 
@@ -95,93 +68,141 @@ Open [http://localhost:3000](http://localhost:3000).
 src/
 ├── app/
 │   ├── api/
-│   │   ├── scrape/route.ts           # POST — cron trigger (Bearer auth)
-│   │   └── shortages/route.ts        # GET  — search, filter, paginate
-│   ├── firma/[slug]/page.tsx         # Firma-Profil (ISR)
-│   ├── medikament/[slug]/page.tsx    # Medikament-Detail (ISR)
-│   ├── methodik/page.tsx             # Methodik & Datenquellen
+│   │   ├── alternatives/        # Per-drug alternative suggestions
+│   │   ├── export/              # CSV export
+│   │   ├── health/              # Health check
+│   │   ├── newsletter/          # Newsletter subscription
+│   │   ├── scrape/              # Cron trigger (Bearer auth)
+│   │   ├── scrape-oddb/         # ODDB medication index sync
+│   │   ├── scrape-usb/          # USB Basel PDF scraper
+│   │   ├── shortages/           # Search, filter, paginate
+│   │   ├── timeline/            # Historical shortage timeline
+│   │   ├── v1/                  # Public REST API
+│   │   └── watchlist/           # Watchlist management
+│   ├── blog/                    # Shortage analysis articles
+│   ├── firma/[slug]/            # Manufacturer profiles (ISR)
+│   ├── gtin/[gtin]/             # GTIN lookup
+│   ├── medikament/[slug]/       # Drug detail pages (ISR)
+│   ├── methodik/                # Methodology & data sources
+│   ├── wirkstoff/[slug]/        # Active ingredient pages
+│   ├── watchlist/               # User watchlist UI
 │   ├── layout.tsx
-│   └── page.tsx                      # Dashboard (Server Component)
-├── components/
-│   ├── filter-bar.tsx                # Status + company dropdowns
-│   ├── kpi-cards.tsx                 # 4-card KPI grid
-│   ├── search-bar.tsx                # Full-text search input
-│   ├── shortage-drawer.tsx           # Detail slide-out
-│   ├── shortages-table.tsx           # Sortable, paginated table
-│   └── status-badge.tsx              # Color-coded status badge
+│   └── page.tsx                 # Dashboard (Server Component)
+├── components/                  # UI components (shadcn/ui based)
 ├── lib/
-│   ├── db.ts                         # Prisma data layer
-│   ├── scraper.ts                    # cheerio HTML parser + off-market parsers
-│   ├── slug.ts                       # URL slug helper
-│   └── types.ts                      # TypeScript interfaces
+│   ├── db.ts                    # Single data access layer (Prisma)
+│   ├── scraper.ts               # drugshortage.ch HTML parser
+│   ├── scraper-usb.ts           # USB Basel PDF parser
+│   ├── slug.ts                  # URL slug helper
+│   └── types.ts                 # TypeScript interfaces
 └── scripts/
-    └── scrape.ts                     # CLI scrape script
+    └── scrape.ts                # CLI scrape entry point
 prisma/
-└── schema.prisma                     # DB schema (7 models, all indexes)
+└── schema.prisma                # DB schema — all 7 models, all indexes
 tests/
-├── api/shortages.test.ts
-└── lib/
-    ├── db.test.ts
-    └── scraper.test.ts
+├── api/                         # API route tests
+└── lib/                         # Unit tests
 ```
 
 ---
 
 ## Database Schema
 
-Data is persisted in Supabase PostgreSQL via Prisma ORM (`prisma/schema.prisma`).
-
 | Table | Content |
 |---|---|
-| `shortages` | Active & historical shortages (`isActive` flag), with `slug` for URL routing |
-| `overview_stats` | Aggregated stats per scrape run |
-| `scrape_runs` | Scrape execution log |
-| `alternatives_cache` | Cached alternatives from drugshortage.ch (GTIN key) |
-| `bwl_shortages` | Federal supply disruptions from bwl.admin.ch (GTIN join) |
-| `oddb_products` | 128k CH medications: ingredient, Swissmedic-Nr, composition |
-| `off_market_drugs` | Off-market drugs: `AUSSER_HANDEL` (permanently withdrawn) and `VERTRIEBSEINSTELLUNG` (sales discontinued) |
+| `shortages` | Active & historical shortages with `isActive` flag and `slug` |
+| `overview_stats` | Aggregated KPI stats per scrape run |
+| `scrape_runs` | Scrape execution log with duration and record counts |
+| `alternatives_cache` | Cached alternatives keyed by GTIN |
+| `bwl_shortages` | Federal supply disruptions joined by GTIN |
+| `oddb_products` | 128k Swiss medications: ingredient, Swissmedic-Nr, composition |
+| `off_market_drugs` | Off-market drugs: withdrawn and discontinued products |
 
 All indexes are defined in `prisma/schema.prisma` — never in loose SQL files.
 
-## Data Layer
+---
 
-`src/lib/db.ts` is the single data access layer:
+## Getting Started
 
-- **`upsertShortages(incoming)`** — batch upsert with slug generation, soft-deletes missing entries (`isActive: false`)
-- **`queryShortages(query)`** — filters, sorts, and paginates active records (status 1–5)
-- **`getKPIStats()`** — aggregates KPI metrics
-- **`getFirmaList()`** — unique sorted manufacturer list for the filter dropdown
-- **`upsertOffMarketDrugs(entries)`** — upserts `off_market_drugs` rows by `(gtin, category)`
-- **`queryOffMarketDrugs(query)`** — paginated query with category filter
-- **`getOffMarketStats()`** — counts by category
+### Prerequisites
+
+- Node.js 20+
+- pnpm 9+
+- Supabase project (PostgreSQL)
+
+### Installation
+
+```bash
+git clone https://github.com/brainbytes-dev/engpassradar.git
+cd engpassradar
+pnpm install
+```
+
+### Environment Variables
+
+Copy `.env.example` to `.env.local`:
+
+```env
+DATABASE_URL=postgresql://...      # Pooled connection (Supavisor port 6543)
+DIRECT_URL=postgresql://...        # Direct connection (port 5432) — for migrations
+CRON_SECRET=your-secret-here       # Protects /api/scrape — use a long random string
+```
+
+### Database Setup
+
+```bash
+pnpm prisma migrate deploy
+pnpm prisma generate
+```
+
+### Run Locally
+
+```bash
+pnpm run scrape   # Pull current shortage data into the DB
+pnpm dev          # Start dev server at http://localhost:3000
+```
 
 ---
 
-## Cron Job (Vercel)
+## Scripts
 
-`vercel.json` configures a daily scrape at 03:00 UTC:
+| Command | Description |
+|---|---|
+| `pnpm dev` | Start Next.js development server |
+| `pnpm build` | Production build |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run ESLint |
+| `pnpm test` | Run Jest test suite |
+| `pnpm run scrape` | Fetch and store current shortages |
 
-```json
-{
-  "crons": [
-    {
-      "path": "/api/scrape",
-      "schedule": "0 3 * * *"
-    }
-  ]
-}
-```
+---
 
-Set `CRON_SECRET` in your Vercel environment variables to match your `.env.local` value.
+## API
+
+| Endpoint | Method | Description |
+|---|---|---|
+| `/api/v1/shortages` | GET | List shortages with search, filter, pagination |
+| `/api/v1/shortages/[slug]` | GET | Single shortage detail |
+| `/api/alternatives` | GET | Alternative drug suggestions by GTIN |
+| `/api/export` | GET | Full CSV export |
+| `/api/health` | GET | Health check |
+| `/api/scrape` | GET | Cron trigger (requires `Authorization: Bearer <CRON_SECRET>`) |
+| `/rss.xml` | GET | RSS feed of latest shortages |
 
 ---
 
 ## Deployment
 
 1. Push to GitHub
-2. Import the repo at [vercel.com/new](https://vercel.com/new)
-3. Add `CRON_SECRET` as an environment variable
+2. Import at [vercel.com/new](https://vercel.com/new)
+3. Set environment variables: `DATABASE_URL`, `DIRECT_URL`, `CRON_SECRET`
 4. Deploy — Vercel runs the daily cron automatically
+
+The cron is configured in `vercel.json` (daily at 03:00 UTC):
+
+```json
+{ "crons": [{ "path": "/api/scrape", "schedule": "0 3 * * *" }] }
+```
 
 ---
 
@@ -189,8 +210,10 @@ Set `CRON_SECRET` in your Vercel environment variables to match your `.env.local
 
 See [CONTRIBUTING.md](CONTRIBUTING.md).
 
----
+## Security
+
+Found a vulnerability? See [SECURITY.md](SECURITY.md) for responsible disclosure.
 
 ## License
 
-[MIT](LICENSE) — © 2026 BrainBytes
+[MIT](LICENSE) — © 2026 [HM Consulting Rühe](https://engpass.radar)

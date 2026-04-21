@@ -1,24 +1,29 @@
-# Contributing
+# Contributing to engpass.radar
 
-Thank you for your interest in contributing to the Swiss Drug Shortage Tracker.
+Thank you for your interest in contributing. This document covers everything you need to get started.
 
 ## Getting Started
 
-1. Fork the repository
+1. Fork the repository on GitHub
 2. Clone your fork and install dependencies:
    ```bash
-   git clone https://github.com/<your-username>/drugshortage.git
-   cd drugshortage
-   npm install
+   git clone https://github.com/<your-username>/engpassradar.git
+   cd engpassradar
+   pnpm install
    ```
-3. Create a `.env.local` file (see [README.md](README.md))
-4. Run the scraper to populate local data:
+3. Copy `.env.example` to `.env.local` and fill in your values (see [README.md](README.md))
+4. Set up the database:
    ```bash
-   npm run scrape
+   pnpm prisma migrate deploy
+   pnpm prisma generate
    ```
-5. Start the dev server:
+5. Populate local data:
    ```bash
-   npm run dev
+   pnpm run scrape
+   ```
+6. Start the dev server:
+   ```bash
+   pnpm dev
    ```
 
 ## Workflow
@@ -27,45 +32,61 @@ Thank you for your interest in contributing to the Swiss Drug Shortage Tracker.
    ```bash
    git checkout -b feat/your-feature
    ```
-2. Make your changes
+2. Make your changes — keep PRs focused and small
 3. Run tests and lint before committing:
    ```bash
-   npm test
-   npm run lint
+   pnpm test
+   pnpm lint
    ```
 4. Open a Pull Request against `main`
 
 ## Code Style
 
-- TypeScript strict mode — no `any`, no untyped exports
+- TypeScript strict mode — no `any`, use `unknown` and narrow properly
 - Keep files under 500 lines; one clear responsibility per file
-- Follow existing patterns — Server Components for data, Client Components for interactivity
-- No comments unless the logic is non-obvious
+- Server Components for data fetching, Client Components for interactivity
+- No comments unless the *why* is non-obvious — never narrate the *what*
+- All database access goes through `src/lib/db.ts` — never query Prisma directly from routes
 
 ## Tests
 
-- All new logic in `src/lib/` requires tests in `tests/lib/`
-- API routes require tests in `tests/api/`
+- New logic in `src/lib/` → tests in `tests/lib/`
+- New API routes → tests in `tests/api/`
 - UI components do not require tests
-- Run `npm test` — all suites must pass before opening a PR
+- All suites must pass: `pnpm test`
+
+## Database Changes
+
+- Schema changes go in `prisma/schema.prisma` only
+- Never write raw SQL migration files — use `pnpm prisma migrate dev --name <description>`
+- All indexes must be defined in the schema, not in separate SQL files
 
 ## Commit Messages
 
-Use conventional commits:
+Use [Conventional Commits](https://www.conventionalcommits.org/):
 
 ```
 feat: add ATC filter dropdown
 fix: correct sort direction on first click
 chore: bump dependencies
+docs: update API endpoint table
 ```
+
+No emojis. Imperative mood. Present tense.
 
 ## Reporting Issues
 
-Open an issue on GitHub with:
+Use the GitHub issue templates. Include:
 - Steps to reproduce
 - Expected vs. actual behaviour
 - Node.js version (`node -v`)
+- Browser (for UI issues)
 
-## Data Source
+## Data Sources
 
-All data comes from [drugshortage.ch](https://www.drugshortage.ch). This project is not affiliated with or endorsed by drugshortage.ch. Please be respectful with scrape frequency.
+This project scrapes publicly available data from:
+- [drugshortage.ch](https://www.drugshortage.ch)
+- [bwl.admin.ch](https://www.bwl.admin.ch)
+- [USB Basel Spitalpharmazie](https://www.unispital-basel.ch)
+
+This project is not affiliated with or endorsed by any of these sources. Be respectful with scrape frequency — the daily cron at 03:00 UTC is sufficient.
