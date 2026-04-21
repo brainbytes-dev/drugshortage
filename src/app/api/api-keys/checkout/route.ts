@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
     success_url: `${SITE_URL}/api-keys/success`,
     cancel_url: `${SITE_URL}/api-keys`,
     billing_address_collection: 'required',
+    allow_promotion_codes: true,
     tax_id_collection: { enabled: true },
     automatic_tax: { enabled: true },
   })
