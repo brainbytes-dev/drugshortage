@@ -17,11 +17,11 @@ export function SiteHeader() {
   const pathname = usePathname()
   void pathname // used for FAQ scroll detection only
   const [open, setOpen] = useState(false)
-  const [donateOpen, setDonateOpen] = useState(false)
+  const [donateOpen, setDonateOpen] = useState(
+    () => typeof window !== 'undefined' && window.location.hash === '#donate'
+  )
 
   useEffect(() => {
-    // Auto-open if #donate is in URL (e.g. back-navigation from Stripe)
-    if (window.location.hash === '#donate') setDonateOpen(true)
     const onHash = () => {
       if (window.location.hash === '#donate') setDonateOpen(true)
     }

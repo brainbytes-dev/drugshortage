@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
+import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -337,7 +338,7 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
 
         <p className="text-xs text-muted-foreground text-center pt-1">
           Noch kein Key?{' '}
-          <a href="/#pricing" className="underline hover:text-foreground">Tarife ansehen →</a>
+          <Link href="/#pricing" className="underline hover:text-foreground">Tarife ansehen →</Link>
         </p>
       </CardContent>
     </Card>
