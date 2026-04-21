@@ -20,10 +20,26 @@ export function SiteHeader() {
   const [donateOpen, setDonateOpen] = useState(false)
 
   useEffect(() => {
-    if (!donateOpen) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setDonateOpen(false) }
-    window.addEventListener('keydown', onKey)
-    return () => window.removeEventListener('keydown', onKey)
+    // Auto-open if #donate is in URL (e.g. back-navigation from Stripe)
+    if (window.location.hash === '#donate') setDonateOpen(true)
+    const onHash = () => {
+      if (window.location.hash === '#donate') setDonateOpen(true)
+    }
+    window.addEventListener('hashchange', onHash)
+    return () => window.removeEventListener('hashchange', onHash)
+  }, [])
+
+  useEffect(() => {
+    if (donateOpen) {
+      window.location.hash = 'donate'
+      const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setDonateOpen(false) }
+      window.addEventListener('keydown', onKey)
+      return () => window.removeEventListener('keydown', onKey)
+    } else {
+      if (window.location.hash === '#donate') {
+        history.replaceState(null, '', window.location.pathname + window.location.search)
+      }
+    }
   }, [donateOpen])
 
   function closeMenu() {
