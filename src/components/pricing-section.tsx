@@ -5,10 +5,8 @@ import Link from 'next/link'
 import { CheckCircle2, ArrowRight, Zap, GraduationCap } from 'lucide-react'
 import { TIERS, type Tier } from '@/lib/pricing'
 
-const DISCOUNT = 0.15
-
-function yearlyPrice(monthly: number) {
-  return Math.floor(monthly * (1 - DISCOUNT))
+function yearlyMonthlyEquivalent(yearlyAmount: number) {
+  return Math.floor(yearlyAmount / 12)
 }
 
 // First two tiers (free + research) are merged into one combined card
@@ -93,10 +91,12 @@ function FreeCombinedCard() {
 function PaidCard({ tier, yearly }: { tier: Tier; yearly: boolean }) {
   const monthlyNum = tier.price !== null ? parseInt(tier.price, 10) : null
   const displayPrice =
-    monthlyNum !== null && yearly && monthlyNum > 0 ? yearlyPrice(monthlyNum) : monthlyNum
+    monthlyNum !== null && yearly && monthlyNum > 0 && tier.yearlyAmountCHF
+      ? yearlyMonthlyEquivalent(tier.yearlyAmountCHF)
+      : monthlyNum
   const annualSavings =
-    monthlyNum !== null && yearly && monthlyNum > 0
-      ? (monthlyNum - yearlyPrice(monthlyNum)) * 12
+    monthlyNum !== null && yearly && monthlyNum > 0 && tier.yearlyAmountCHF
+      ? monthlyNum * 12 - tier.yearlyAmountCHF
       : null
 
   return (
@@ -216,7 +216,7 @@ export function PricingSection() {
           >
             Jährlich
             <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 text-[10px] font-bold leading-none">
-              −15 %
+              2 Mt. gratis
             </span>
           </button>
         </div>
