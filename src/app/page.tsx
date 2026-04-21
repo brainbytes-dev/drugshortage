@@ -6,7 +6,6 @@ import { KPICards } from '@/components/kpi-cards'
 import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
 import { HistoricalTable } from '@/components/historical-table'
-import { ResetFiltersButton } from '@/components/reset-filters-button'
 import { ExportCsvButton } from '@/components/export-csv-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
 import { Hero } from '@/components/hero'
@@ -111,13 +110,14 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           <KPICards stats={kpi} historicalCount={historicalTotal} />
         </div>
 
-        {/* Filter action row — × appears when filter active, flush right */}
-        <Suspense fallback={null}>
-          <div className="flex items-center justify-end gap-2">
-            <ResetFiltersButton />
-            {!isOffMarket && !isHistorical && <ExportCsvButton />}
-          </div>
-        </Suspense>
+        {/* Export button row */}
+        {!isOffMarket && !isHistorical && (
+          <Suspense fallback={null}>
+            <div className="flex justify-end">
+              <ExportCsvButton />
+            </div>
+          </Suspense>
+        )}
 
         {/* Table */}
         <Suspense fallback={null}>
