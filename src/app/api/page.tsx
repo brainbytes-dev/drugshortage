@@ -6,7 +6,7 @@ import { PricingSection, FinalCtaSection } from '@/components/pricing-section'
 
 export const metadata: Metadata = {
   title: 'API für Schweizer Arzneimittel-Lieferengpässe | engpassradar.ch',
-  description: 'Die einzige Schweizer REST API für Arzneimittel-Lieferengpässe — mit Severity Scoring, ATC-Alerting und täglicher Aktualisierung. Für Kliniken, Apotheken und Softwarehersteller.',
+  description: 'REST API für Schweizer Arzneimittel-Lieferengpässe — mit Severity Scoring, ATC-Filterung und täglicher Aktualisierung. Für Kliniken, Apotheken und Softwarehersteller.',
 }
 
 const CURL_EXAMPLE = `curl "https://engpassradar.ch/api/v1/shortages?atc=C09&status=1,4" \\
@@ -85,28 +85,28 @@ export default function ApiLandingPage() {
             REST API — v1 öffentlich verfügbar
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-tight">
-            Daten der Lieferengpässe direkt in Ihr System —{' '}
-            <span className="gradient-text">die einzige Schweizer Arzneimittel-Engpass-API.</span>
+            Lieferengpass-Daten direkt in Ihr System —{' '}
+            <span className="gradient-text">die Schweizer REST API für Arzneimittel-Engpässe.</span>
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
             Tagesaktuelle Lieferengpässe, BWL-Warnungen und Severity Scores für alle ~700 aktiven Engpässe.
             Für Spitäler, Apothekenketten und pharmazeutische Softwarehersteller.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <a
-              href="#pricing"
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:bg-primary/90 transition-colors"
-            >
-              Preise & Tarife
-              <ArrowRight className="h-4 w-4" />
-            </a>
             <Link
               href="/api-docs"
-              className="inline-flex items-center gap-2 rounded-lg border bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:bg-primary/90 transition-colors"
             >
               <Code2 className="h-4 w-4" />
-              Dokumentation
+              Dokumentation & Quickstart
             </Link>
+            <a
+              href="#pricing"
+              className="inline-flex items-center gap-2 rounded-lg border bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+            >
+              Tarife & Preise
+              <ArrowRight className="h-4 w-4" />
+            </a>
           </div>
           <p className="text-xs text-muted-foreground pt-1">
             Keine Kreditkarte für erste Tests. Free-Tier ohne Key-Registrierung.

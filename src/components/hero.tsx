@@ -68,7 +68,10 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
             </h1>
             <p className="text-base text-muted-foreground mt-[18px] max-w-[580px] leading-[1.55]">
               Aggregiert aus drugshortage.ch, BWL-Pflichtlager und der
-              USB-Basel-Liste. Täglich abgeglichen, öffentlich zugänglich.
+              USB-Basel-Liste. Täglich abgeglichen, öffentlich zugänglich.{' '}
+              <a href="/methodik" className="font-mono text-[13px] text-primary hover:underline">
+                Methodik & Quellen →
+              </a>
             </p>
           </div>
 
