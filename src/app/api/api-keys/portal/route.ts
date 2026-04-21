@@ -24,8 +24,9 @@ export async function GET(req: NextRequest) {
     include: { customer: true },
   })
 
-  if (!apiKey?.customer) {
-    return NextResponse.json({ error: 'no_subscription' }, { status: 404 })
+  if (!apiKey?.customer || !apiKey.customer.stripeId.startsWith('cus_')) {
+    // Research / free users have no real Stripe subscription
+    return NextResponse.redirect(`${SITE_URL}/api-keys?token=${token}&portal=no_subscription`)
   }
 
   const portalSession = await stripe.billingPortal.sessions.create({
