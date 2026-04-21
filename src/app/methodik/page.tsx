@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react'
 export const metadata: Metadata = {
   title: 'Methodik & Datenquellen | engpassradar.ch',
   description:
-    'Wie engpassradar.ch Schweizer Medikamenten-Lieferengpässe erfasst: Datenquellen (drugshortage.ch, BWL, ODDB), Aktualisierungsrhythmus und Severity Score.',
+    'Wie engpassradar.ch Schweizer Medikamenten-Lieferengpässe erfasst: Datenquellen (drugshortage.ch, BWL, ODDB, USB Spitalpharmazie Basel), Aktualisierungsrhythmus und Severity Score.',
 }
 
 const jsonLd = {
@@ -67,6 +67,13 @@ export default function MetodikPage() {
                 badgeColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
                 desc: 'Die Open Drug Database liefert Apothekenverkaufspreise (Ex-Factory) sowie ATC-Codes für gemeldete Produkte. Diese Daten werden täglich abgeglichen, um Preisveränderungen und therapeutische Einordnung aktuell zu halten.',
               },
+              {
+                name: 'USB — Spitalpharmazie Basel',
+                url: 'https://www.spitalpharmazie-basel.ch',
+                badge: 'Spitalapotheke',
+                badgeColor: 'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+                desc: 'Das Universitätsspital Basel (USB) publiziert wöchentlich einen Lieferengpassbericht seiner Spitalpharmazie als PDF. Dieser enthält interne SAP-Nummern, betroffene Wirkstoffe und — besonders wertvoll — konkrete Substitutionsempfehlungen aus klinisch-pharmazeutischer Sicht. Diese Quelle ergänzt die drugshortage.ch-Daten um eine spitalpharmazeutische Perspektive, die sonst öffentlich nicht zugänglich ist.',
+              },
             ].map(s => (
               <div key={s.name} className="px-4 py-4 bg-card space-y-1.5">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -114,6 +121,12 @@ export default function MetodikPage() {
             <p className="text-xs text-muted-foreground leading-relaxed">
               Preise und ATC-Codes werden in einem separaten Schritt aus ODDB abgeglichen.
               Die Pflichtlagerliste des BWL wird bei jeder Scrape-Runde verglichen, da sie sich nur selten ändert.
+            </p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Der wöchentliche Lieferengpassbericht der Spitalpharmazie Basel (USB) wird automatisch
+              als PDF abgerufen und geparst. Die enthaltenen Wirkstoffe und Substitutionsempfehlungen
+              werden in einer separaten Tabelle gehalten und sind nicht direkt mit den drugshortage.ch-Einträgen
+              verknüpft — die Daten dienen als ergänzende, klinisch-pharmazeutische Perspektive.
             </p>
           </div>
         </section>
