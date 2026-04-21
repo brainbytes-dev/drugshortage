@@ -112,14 +112,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         {/* KPI Cards */}
         <KPICards stats={kpi} historicalCount={historicalTotal} />
 
-        {/* Weekly Timeline Chart */}
-        <LazyTimelineChart initialData={weeklyTimeline} />
-
-        {/* ATC Treemap */}
-        {overview && overview.atcGruppen.length > 0 && (
-          <LazyAtcTreemap data={overview.atcGruppen} />
-        )}
-
         {/* View Switch + Overview Buttons in one row */}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <Suspense fallback={null}>
@@ -193,6 +185,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             />
           )}
         </Suspense>
+
+        {/* Charts — below the table so data is immediately reachable */}
+        <LazyTimelineChart initialData={weeklyTimeline} />
+
+        {overview && overview.atcGruppen.length > 0 && (
+          <LazyAtcTreemap data={overview.atcGruppen} />
+        )}
 
       </div>
       </main>

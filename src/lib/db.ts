@@ -1041,9 +1041,6 @@ export async function getHeroStats(): Promise<HeroStats> {
   weekStart.setUTCDate(now.getUTCDate() - (day - 1))
   weekStart.setUTCHours(0, 0, 0, 0)
 
-  const sixMonthsAgo = new Date(now)
-  sixMonthsAgo.setUTCMonth(sixMonthsAgo.getUTCMonth() - 6)
-
   // ISO week number
   const jan4 = new Date(Date.UTC(now.getUTCFullYear(), 0, 4))
   const startOfWeek1 = new Date(jan4)
@@ -1054,7 +1051,8 @@ export async function getHeroStats(): Promise<HeroStats> {
     prisma.shortage.count({ where: { isActive: true, statusCode: { gte: 1, lte: 5 } } }),
     prisma.shortage.count({ where: { isActive: true, firstSeenAt: { gte: weekStart } } }),
     prisma.shortageEpisode.count({ where: { endedAt: { gte: weekStart } } }),
-    prisma.shortage.count({ where: { isActive: true, statusCode: { gte: 1, lte: 5 }, firstSeenAt: { lte: sixMonthsAgo } } }),
+    // Use tageSeitMeldung (official days since report) — firstSeenAt only tracks our scrape ingestion date
+    prisma.shortage.count({ where: { isActive: true, statusCode: { gte: 1, lte: 5 }, tageSeitMeldung: { gte: 180 } } }),
     prisma.shortage.count(),
   ])
 
