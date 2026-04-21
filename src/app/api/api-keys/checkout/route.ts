@@ -17,6 +17,7 @@ export async function POST(req: NextRequest) {
     line_items: [{ price: priceId, quantity: 1 }],
     success_url: `${SITE_URL}/api-keys/success`,
     cancel_url: `${SITE_URL}/api-keys`,
+    billing_address_collection: 'required',
     tax_id_collection: { enabled: true },
     automatic_tax: { enabled: true },
   })
