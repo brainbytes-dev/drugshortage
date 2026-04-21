@@ -188,13 +188,13 @@ export default function ApiLandingPage() {
             Starten Sie kostenlos — kein Key, kein Login. Oder sichern Sie sich einen Professional-Key für produktiven Einsatz.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <Link
-              href="/api-keys"
+            <a
+              href="#pricing"
               className="inline-flex items-center gap-2 rounded-lg bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors shadow"
             >
-              API-Key erhalten
+              Preise & Tarife
               <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
             <Link
               href="/api-docs"
               className="inline-flex items-center gap-2 rounded-lg border border-primary-foreground/30 px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/10 transition-colors"
