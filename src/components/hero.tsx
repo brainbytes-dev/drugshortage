@@ -3,11 +3,17 @@
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
 import { Sparkles } from 'lucide-react'
+import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
+import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import type { HeroStats } from '@/lib/db'
+import type { FirmaRanking, AtcGruppeStats } from '@/lib/types'
 
-interface HeroProps extends HeroStats {}
+interface HeroProps extends HeroStats {
+  firmenRanking: FirmaRanking[]
+  atcGruppen: AtcGruppeStats[]
+}
 
-export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount, longTermPct, historicalTotal, isoWeek }: HeroProps) {
+export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount, longTermPct, historicalTotal, isoWeek, firmenRanking, atcGruppen }: HeroProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [query, setQuery] = useState('')
@@ -75,8 +81,8 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           </div>
         </div>
 
-        {/* Search + Neue Meldungen */}
-        <div className="mt-16 max-w-[760px]">
+        {/* Search + buttons — full width of the left column */}
+        <div className="mt-16">
           <label
             htmlFor="hero-search"
             className="block text-[11.5px] font-medium text-muted-foreground tracking-[0.03em] uppercase mb-2.5"
@@ -84,8 +90,8 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
             Suchen
           </label>
           <div className="flex items-stretch gap-2">
-            {/* Search input */}
-            <div className="flex flex-1 items-center gap-3.5 px-5 py-4 bg-muted/40 border border-border/80 rounded-lg">
+            {/* Search input — grows, never compresses below a readable width */}
+            <div className="flex min-w-0 flex-1 items-center gap-3.5 px-5 py-4 bg-muted/40 border border-border/80 rounded-lg">
               <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" className="text-muted-foreground shrink-0" aria-hidden>
                 <circle cx="9" cy="9" r="6" /><path d="M14 14l4 4" strokeLinecap="round" />
               </svg>
@@ -95,7 +101,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
                 onChange={e => setQuery(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && submitSearch(query)}
                 placeholder="Wirkstoff, Handelsname, ATC-Code oder Firma"
-                className="flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
+                className="min-w-0 flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
               />
               <button
                 onClick={() => submitSearch(query)}
@@ -106,19 +112,21 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
               </button>
             </div>
 
-            {/* Neue Meldungen button */}
+            {/* Action buttons — shrink-0 so they never compress the search bar */}
             <button
               onClick={toggleNeu}
               className={[
-                'inline-flex items-center gap-2 rounded-lg border px-5 text-sm font-medium transition-colors shrink-0 whitespace-nowrap',
+                'inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-4 text-sm font-medium transition-colors whitespace-nowrap',
                 neuActive
                   ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'
                   : 'border-border/80 bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted',
               ].join(' ')}
             >
-              <Sparkles className="h-4 w-4 shrink-0" />
+              <Sparkles className="h-3.5 w-3.5 shrink-0" />
               Neue Meldungen
             </button>
+            {firmenRanking.length > 0 && <FirmaRankingSheet firmenRanking={firmenRanking} />}
+            {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
           </div>
         </div>
 
