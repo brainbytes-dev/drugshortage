@@ -3,7 +3,6 @@ import { Suspense } from 'react'
 import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimelineWithActive, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt, queryHistoricalShortages, getHistoricalCount, getHeroStats } from '@/lib/db'
 import { getKPIStatsCached as getKPIStats } from '@/lib/db-cached-example'
 import { KPICards } from '@/components/kpi-cards'
-import { SearchBar } from '@/components/search-bar-optimized'
 import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
 import { HistoricalTable } from '@/components/historical-table'
@@ -112,10 +111,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           <KPICards stats={kpi} historicalCount={historicalTotal} />
         </div>
 
-        {/* Search row — full width, buttons flush right */}
+        {/* Filter action row — × appears when filter active, flush right */}
         <Suspense fallback={null}>
-          <div className="flex items-center gap-2">
-            <SearchBar />
+          <div className="flex items-center justify-end gap-2">
             <ResetFiltersButton />
             {!isOffMarket && !isHistorical && <ExportCsvButton />}
           </div>
