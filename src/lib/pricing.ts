@@ -92,7 +92,7 @@ export const TIERS: Tier[] = [
     key: 'data_license',
     label: 'Data License',
     price: null,
-    priceNote: 'ab CHF 499 / Monat',
+    priceNote: 'Individuelles Angebot',
     dailyLimit: 'Unbegrenzt',
     rateLimit: 'Individuell vereinbart',
     features: [

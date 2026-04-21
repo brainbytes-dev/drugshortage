@@ -11,8 +11,7 @@ function yearlyMonthlyEquivalent(yearlyAmount: number) {
 
 // First two tiers (free + research) are merged into one combined card
 const FREE_TIERS = TIERS.filter(t => t.key === 'free' || t.key === 'research')
-// data_license is shown separately as "Auf Anfrage" contact row, not as a card
-const PAID_TIERS = TIERS.filter(t => t.key !== 'free' && t.key !== 'research' && t.key !== 'data_license')
+const PAID_TIERS = TIERS.filter(t => t.key !== 'free' && t.key !== 'research')
 
 function FreeCombinedCard() {
   const [tab, setTab] = useState<'free' | 'research'>('free')
@@ -223,28 +222,12 @@ export function PricingSection() {
         </div>
       </div>
 
-      {/* 3 cards: 1 combined free/research + 2 paid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-stretch">
+      {/* 4 cards: 1 combined free/research + 3 paid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 items-stretch">
         <FreeCombinedCard />
         {PAID_TIERS.map((tier) => (
           <PaidCard key={tier.key} tier={tier} yearly={yearly} />
         ))}
-      </div>
-
-      {/* Data License — contact row */}
-      <div className="rounded-xl border bg-muted/30 px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold">Data License</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Vollständiger Datensatz, Bulk-Export, White-Label & Redistribution — ab CHF 499/Monat
-          </p>
-        </div>
-        <Link
-          href="mailto:api@engpassradar.ch"
-          className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border bg-background px-4 py-2.5 text-xs font-semibold text-foreground hover:bg-muted transition-colors"
-        >
-          Auf Anfrage <ArrowRight className="h-3 w-3" />
-        </Link>
       </div>
 
       <p className="text-center text-xs text-muted-foreground">
