@@ -67,16 +67,37 @@ export function SearchBar() {
     [router, pathname, searchParams]
   )
 
+  const clearSearch = useCallback(() => {
+    setValue('')
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('search')
+    params.delete('page')
+    startTransition(() => {
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+    })
+  }, [router, pathname, searchParams])
+
   return (
     <div className="relative flex-1">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
       <Input
         ref={inputRef}
         placeholder="Suchen… (⌘K)"
         value={value}
         onChange={handleChange}
-        className="pl-9"
+        className={value ? 'pl-9 pr-8' : 'pl-9'}
       />
+      {value && (
+        <button
+          onClick={clearSearch}
+          aria-label="Suche zurücksetzen"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground hover:text-foreground transition-colors"
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+            <path d="M2 2l10 10M12 2L2 12" />
+          </svg>
+        </button>
+      )}
     </div>
   )
 }

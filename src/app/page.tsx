@@ -7,9 +7,7 @@ import { SearchBar } from '@/components/search-bar-optimized'
 import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
 import { HistoricalTable } from '@/components/historical-table'
-import { ViewSwitch } from '@/components/view-switch'
 import { ResetFiltersButton } from '@/components/reset-filters-button'
-import { NeueMeldungenButton } from '@/components/neue-meldungen-button'
 import { ExportCsvButton } from '@/components/export-csv-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
 import { Hero } from '@/components/hero'
@@ -107,45 +105,21 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
       {/* Dashboard */}
       <main id="dashboard" className="bg-background">
-      <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
+      <div className="max-w-7xl mx-auto px-4 py-6 space-y-3">
 
         {/* KPI Cards — hidden, stats now shown in hero */}
         <div className="hidden">
           <KPICards stats={kpi} historicalCount={historicalTotal} />
         </div>
 
-        {/* View Switch */}
+        {/* Search row — full width, buttons flush right */}
         <Suspense fallback={null}>
-          <ViewSwitch
-            active={view}
-            counts={{
-              engpaesse: kpi.totalActive,
-              ausserHandel: offMarketStats.ausserHandel,
-              vertriebseingestellt: offMarketStats.vertriebseingestellt,
-              erloschen: offMarketStats.erloschen,
-              historisch: historicalTotal,
-            }}
-          />
+          <div className="flex items-center gap-2">
+            <SearchBar />
+            <ResetFiltersButton />
+            {!isOffMarket && !isHistorical && <ExportCsvButton />}
+          </div>
         </Suspense>
-
-        {/* Filters */}
-        {!isOffMarket && !isHistorical && (
-          <Suspense fallback={null}>
-            <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
-              <ResetFiltersButton />
-              <ExportCsvButton />
-            </div>
-          </Suspense>
-        )}
-
-        {/* Off-market / historical: reset only */}
-        {(isOffMarket || isHistorical) && (
-          <Suspense fallback={null}>
-            <div className="flex flex-col sm:flex-row gap-2 flex-wrap">
-              <ResetFiltersButton />
-            </div>
-          </Suspense>
-        )}
 
         {/* Table */}
         <Suspense fallback={null}>
