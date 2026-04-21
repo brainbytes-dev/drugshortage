@@ -183,7 +183,7 @@ export default function NutzungsbedingungenPage() {
             <p className="text-[15px] text-muted-foreground leading-relaxed">
               Der kostenlose Research-Tarif (2 000 Req/Tag) steht Universitäten, Fachhochschulen
               und Schweizer Spitälern zur Verfügung. Der Antrag erfolgt über{' '}
-              <a href="/api-keys/research" className="underline hover:text-foreground">engpassradar.ch/api-keys/research</a>.
+              <a href="/api-keys?tab=research" className="underline hover:text-foreground">engpassradar.ch/api-keys</a>.
               Voraussetzung ist eine gültige institutionelle E-Mail-Adresse oder ein glaubwürdiger
               Forschungsnachweis. Bei Falschangaben kann der Key ohne Vorwarnung gesperrt werden.
               Der Research-Tarif darf nicht für kommerzielle Produkte eingesetzt werden.
