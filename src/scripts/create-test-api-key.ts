@@ -3,9 +3,6 @@
  * Usage: npx tsx src/scripts/create-test-api-key.ts [tier]
  * Example: npx tsx src/scripts/create-test-api-key.ts professional
  */
-import { config } from 'dotenv'
-config({ path: '.env.local' })
-
 import { prisma } from '../lib/prisma'
 import { generateApiKey, signMagicToken, tierDailyLimit, encryptApiKeyValue } from '../lib/api-keys'
 const tier = (process.argv[2] ?? 'professional') as string
