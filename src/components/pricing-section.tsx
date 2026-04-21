@@ -168,7 +168,11 @@ function PaidCard({ tier, yearly }: { tier: Tier; yearly: boolean }) {
         </ul>
 
         <Link
-          href={tier.ctaHref}
+          href={
+            yearly && tier.paymentLinkYearly ? tier.paymentLinkYearly
+            : !yearly && tier.paymentLinkMonthly ? tier.paymentLinkMonthly
+            : tier.ctaHref
+          }
           className={`mt-auto inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-semibold transition-colors ${
             tier.highlight
               ? 'bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm'
