@@ -20,7 +20,6 @@ export async function POST(req: NextRequest) {
     billing_address_collection: 'required',
     allow_promotion_codes: true,
     tax_id_collection: { enabled: true },
-    automatic_tax: { enabled: true },
   })
 
   return NextResponse.json({ url: session.url })
