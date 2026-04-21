@@ -106,7 +106,7 @@ export default function ApiDocsPage() {
             {' '}Professional-Keys ab CHF 39/Monat — mit Severity Scoring und 10 000 Req/Tag.
           </p>
           <Link
-            href="/api"
+            href="/#pricing"
             className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             API-Zugang & Preise →
@@ -454,7 +454,7 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
           </div>
           <div className="flex gap-3 text-sm">
             <Link href="/api-keys" className="text-primary underline underline-offset-2">API-Key beantragen →</Link>
-            <Link href="/api-keys/research" className="text-muted-foreground underline underline-offset-2">Research-Zugang (kostenlos)</Link>
+            <Link href="/api-keys?tab=research" className="text-muted-foreground underline underline-offset-2">Research-Zugang (kostenlos)</Link>
           </div>
           <div className="rounded-lg border overflow-hidden divide-y text-xs">
             {[

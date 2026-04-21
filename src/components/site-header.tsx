@@ -3,7 +3,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { Heart, X } from 'lucide-react'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { DonationWidget } from '@/components/donation-widget'
 
 const NAV_LINKS = [
   { href: '/', label: 'Home', num: '01' },
@@ -15,6 +17,14 @@ export function SiteHeader() {
   const pathname = usePathname()
   void pathname // used for FAQ scroll detection only
   const [open, setOpen] = useState(false)
+  const [donateOpen, setDonateOpen] = useState(false)
+
+  useEffect(() => {
+    if (!donateOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setDonateOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [donateOpen])
 
   function closeMenu() {
     setOpen(false)
@@ -67,6 +77,14 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setDonateOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-muted/40 px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              aria-label="Engpassradar unterstützen"
+            >
+              <Heart className="h-3.5 w-3.5 text-red-500" />
+              <span className="hidden sm:inline">Spenden</span>
+            </button>
             <div className="rounded-md border border-border/60 bg-muted/40">
               <ThemeToggle />
             </div>
@@ -84,6 +102,28 @@ export function SiteHeader() {
           </div>
         </div>
       </header>
+
+      {/* Donation popup */}
+      {donateOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setDonateOpen(false)} />
+          <div className="relative w-full max-w-sm rounded-2xl border bg-card shadow-xl p-6 space-y-5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Heart className="h-4 w-4 text-red-500" />
+                <h2 className="font-semibold text-sm">Engpassradar unterstützen</h2>
+              </div>
+              <button onClick={() => setDonateOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Engpassradar ist kostenlos und unabhängig. Mit einer Spende helfen Sie, Server, Daten und Weiterentwicklung zu finanzieren.
+            </p>
+            <DonationWidget />
+          </div>
+        </div>
+      )}
 
       {/* Overlay — rendered even when closed so transitions play */}
       <div
