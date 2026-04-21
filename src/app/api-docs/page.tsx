@@ -99,6 +99,20 @@ export default function ApiDocsPage() {
           </p>
         </header>
 
+        {/* API Pricing CTA */}
+        <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <p className="text-sm text-foreground">
+            <span className="font-medium">Mehr als 100 Req/Std?</span>
+            {' '}Professional-Keys ab CHF 39/Monat — mit Severity Scoring und 10 000 Req/Tag.
+          </p>
+          <Link
+            href="/api"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            API-Zugang & Preise →
+          </Link>
+        </div>
+
         {/* Base URL */}
         <section className="space-y-2">
           <h2 className="font-semibold text-base">Base URL</h2>
@@ -414,6 +428,54 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
               </div>
             ))}
           </div>
+        </section>
+
+        {/* Rate Limits & Pricing */}
+        <section className="space-y-4">
+          <h2 className="font-semibold text-base">Rate Limits & API-Zugang</h2>
+          <p className="text-sm text-muted-foreground">
+            Die API ist kostenlos für Forschung und kleine Teams. Für kommerzielle Integrationen bitte einen Plan wählen, der den Betrieb trägt.
+          </p>
+          <div className="rounded-lg border overflow-hidden divide-y text-xs">
+            {[
+              { tier: 'Free', limit: '100 Req/Stunde', key: 'Kein Key nötig', price: 'CHF 0' },
+              { tier: 'Research', limit: '2\'000 Req/Tag', key: 'Kostenlos, E-Mail-Bestätigung', price: 'CHF 0' },
+              { tier: 'Professional', limit: '10\'000 Req/Tag', key: 'API-Key via Stripe', price: 'CHF 39/Mo' },
+              { tier: 'Institutional', limit: '100\'000 Req/Tag', key: 'API-Key, Batch-Endpoints, Webhooks', price: 'CHF 199/Mo' },
+              { tier: 'Data License', limit: 'Unlimitiert', key: 'Bulk-Dump, White-Label, SLA', price: 'ab CHF 499/Mo' },
+            ].map(r => (
+              <div key={r.tier} className="grid grid-cols-4 gap-2 px-4 py-2.5 bg-card items-center">
+                <span className="font-medium text-foreground">{r.tier}</span>
+                <span className="text-muted-foreground">{r.limit}</span>
+                <span className="text-muted-foreground hidden sm:block">{r.key}</span>
+                <span className="text-right font-mono text-foreground">{r.price}</span>
+              </div>
+            ))}
+          </div>
+          <div className="flex gap-3 text-sm">
+            <Link href="/api-keys" className="text-primary underline underline-offset-2">API-Key beantragen →</Link>
+            <Link href="/api-keys/research" className="text-muted-foreground underline underline-offset-2">Research-Zugang (kostenlos)</Link>
+          </div>
+          <div className="rounded-lg border overflow-hidden divide-y text-xs">
+            {[
+              { code: '401', desc: 'Ungültiger oder inaktiver API-Key' },
+              { code: '429', desc: 'Rate-Limit überschritten — X-RateLimit-Reset enthält den Reset-Zeitstempel' },
+            ].map(e => (
+              <div key={e.code} className="flex items-center gap-4 px-4 py-2.5 bg-card">
+                <span className="font-mono font-bold w-10 text-amber-600 dark:text-amber-400">{e.code}</span>
+                <span className="text-muted-foreground">{e.desc}</span>
+              </div>
+            ))}
+          </div>
+          <Code>{`# Mit API-Key (Professional/Institutional)
+curl -H "Authorization: Bearer <ihr-api-key>" \\
+  "https://engpassradar.ch/api/v1/shortages?atc=C09"
+
+# Response-Header
+X-RateLimit-Limit: 10000
+X-RateLimit-Remaining: 9847
+X-RateLimit-Reset: 1746057600
+X-Api-Tier: professional`}</Code>
         </section>
 
         {/* RSS */}

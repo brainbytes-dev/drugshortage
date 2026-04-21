@@ -213,6 +213,34 @@ model OffMarketDrug {
   @@map("off_market_drugs")
 }
 
+// Stripe customer — one row per paying email
+model StripeCustomer {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  stripeId  String   @unique
+  createdAt DateTime @default(now())
+  apiKeys   ApiKey[]
+
+  @@map("stripe_customers")
+}
+
+// API keys — free (IP-based, no row), research, professional, institutional, data_license
+model ApiKey {
+  id          String          @id @default(cuid())
+  customerId  String?
+  customer    StripeCustomer? @relation(fields: [customerId], references: [id])
+  keyHash     String          @unique
+  tier        String          @default("free")
+  dailyLimit  Int             @default(100)
+  dailyCount  Int             @default(0)
+  lastReset   DateTime        @default(now())
+  active      Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+
+  @@index([keyHash], map: "idx_api_keys_hash")
+  @@map("api_keys")
+}
+
 // USB Basel (Universitätsspital Basel, Spitalpharmazie) weekly PDF report
 // Source: https://www.spitalpharmazie-basel.ch/Lieferengpassbericht.pdf
 // No GTIN available — SAP-Nr. is internal USB identifier, not globally unique

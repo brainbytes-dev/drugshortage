@@ -316,7 +316,16 @@ export default async function MedikamentPage({ params }: PageProps) {
         )}
 
         <p className="text-xs text-muted-foreground border-t pt-4">
-          Daten von drugshortage.ch · keine Gewähr auf Vollständigkeit
+          Quelle:{' '}
+          <a
+            href="https://www.drugshortage.ch"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-foreground"
+          >
+            drugshortage.ch
+          </a>
+          {' '}· keine Gewähr auf Vollständigkeit
         </p>
       </div>
     </main>
