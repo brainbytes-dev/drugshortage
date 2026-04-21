@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-import { Sparkles } from 'lucide-react'
+import { Sparkles, X } from 'lucide-react'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import type { HeroStats } from '@/lib/db'
@@ -19,6 +19,16 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
   const [query, setQuery] = useState('')
 
   const neuActive = searchParams.get('neu') === '1'
+  const hasActiveFilter = !!searchParams.get('search') || neuActive
+
+  function clearFilters() {
+    const p = new URLSearchParams(searchParams.toString())
+    p.delete('search')
+    p.delete('neu')
+    p.delete('page')
+    setQuery('')
+    router.push(`/?${p.toString()}#dashboard`)
+  }
 
   function submitSearch(term: string) {
     const q = term.trim()
@@ -136,6 +146,15 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
             </button>
             {firmenRanking.length > 0 && <FirmaRankingSheet firmenRanking={firmenRanking} />}
             {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
+            {hasActiveFilter && (
+              <button
+                onClick={clearFilters}
+                aria-label="Filter zurücksetzen"
+                className="inline-flex shrink-0 items-center justify-center rounded-lg border border-border/80 bg-muted/40 h-full px-3 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
 
