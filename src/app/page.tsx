@@ -52,7 +52,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     sort: params.sort,
   }
 
-  const [response, kpi, overview, bwlGtins, weeklyTimeline, offMarketResponse, offMarketStats, lastScrapedAt, historicalResponse, historicalCount, heroStats] = await Promise.all([
+  const [response, kpi, overview, bwlGtins, weeklyTimeline, offMarketResponse, , , historicalResponse, historicalCount, heroStats] = await Promise.all([
     isOffMarket || isHistorical ? Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }) : queryShortages(query),
     getKPIStats(),
     getOverviewStats(),

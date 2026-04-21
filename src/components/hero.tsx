@@ -26,7 +26,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
 
   // Sync input when URL changes externally (e.g. clear filters)
   useEffect(() => {
-    setQuery(searchParams.get('search') ?? '')
+    startTransition(() => setQuery(searchParams.get('search') ?? ''))
   }, [searchParams])
 
   // Cleanup debounce on unmount
