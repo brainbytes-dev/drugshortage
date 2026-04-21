@@ -6,7 +6,6 @@ import { KPICards } from '@/components/kpi-cards'
 import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
 import { HistoricalTable } from '@/components/historical-table'
-import { ExportCsvButton } from '@/components/export-csv-button'
 import { HeroAutoSkip } from '@/components/hero-auto-skip'
 import { Hero } from '@/components/hero'
 import { LazyTimelineChart, LazyAtcTreemap } from '@/components/lazy-charts'
@@ -110,15 +109,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           <KPICards stats={kpi} historicalCount={historicalTotal} />
         </div>
 
-        {/* Export button row */}
-        {!isOffMarket && !isHistorical && (
-          <Suspense fallback={null}>
-            <div className="flex justify-end">
-              <ExportCsvButton />
-            </div>
-          </Suspense>
-        )}
-
         {/* Table */}
         <Suspense fallback={null}>
           {isHistorical ? (
@@ -146,12 +136,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           )}
         </Suspense>
 
-        {/* Charts — below the table so data is immediately reachable */}
-        <LazyTimelineChart initialData={weeklyTimeline} />
-
-        {overview && overview.atcGruppen.length > 0 && (
-          <LazyAtcTreemap data={overview.atcGruppen} />
-        )}
+        {/* Charts section */}
+        <section id="statistik" className="scroll-mt-16 space-y-3">
+          <LazyTimelineChart initialData={weeklyTimeline} />
+          {overview && overview.atcGruppen.length > 0 && (
+            <LazyAtcTreemap data={overview.atcGruppen} />
+          )}
+        </section>
 
       </div>
       </main>

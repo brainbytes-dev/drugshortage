@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState } from 'react'
-import { Sparkles, X } from 'lucide-react'
+import { Sparkles, X, Download } from 'lucide-react'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import type { HeroStats } from '@/lib/db'
@@ -28,6 +28,15 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
     p.delete('page')
     setQuery('')
     router.push(`/?${p.toString()}#dashboard`)
+  }
+
+  function exportCsv() {
+    const params = new URLSearchParams()
+    for (const key of ['search', 'status', 'firma', 'atc', 'sort']) {
+      const v = searchParams.get(key)
+      if (v) params.set(key, v)
+    }
+    window.location.href = `/api/export/csv${params.size > 0 ? '?' + params.toString() : ''}`
   }
 
   function submitSearch(term: string) {
@@ -146,19 +155,46 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
             </button>
             {firmenRanking.length > 0 && <FirmaRankingSheet firmenRanking={firmenRanking} />}
             {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
-            {hasActiveFilter && (
-              <button
-                onClick={clearFilters}
-                aria-label="Filter zurücksetzen"
-                className="inline-flex shrink-0 items-center justify-center rounded-lg border border-border/80 bg-muted/40 h-full px-3 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            )}
+
+            {/* Stacked icon column: × (if active) + CSV export */}
+            <div className="flex flex-col shrink-0 self-stretch gap-[3px]">
+              {hasActiveFilter && (
+                <Tip label="Filter zurücksetzen">
+                  <button
+                    onClick={clearFilters}
+                    aria-label="Filter zurücksetzen"
+                    className="flex flex-1 items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </Tip>
+              )}
+              <Tip label="Aktuelle Ansicht als CSV exportieren">
+                <button
+                  onClick={exportCsv}
+                  aria-label="CSV exportieren"
+                  className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  style={{ flex: hasActiveFilter ? '1' : undefined, paddingTop: hasActiveFilter ? undefined : '0', height: hasActiveFilter ? undefined : '100%' }}
+                >
+                  <Download className="h-3.5 w-3.5" />
+                </button>
+              </Tip>
+            </div>
           </div>
         </div>
 
       </div>{/* end max-w-7xl */}
+    </div>
+  )
+}
+
+function Tip({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="group relative flex flex-col flex-1">
+      {children}
+      <span className="pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-popover border border-border px-2 py-1 text-[11px] text-foreground shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50">
+        {label}
+      </span>
     </div>
   )
 }
