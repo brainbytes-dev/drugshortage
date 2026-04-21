@@ -92,13 +92,13 @@ export default function ApiLandingPage() {
             Für Spitäler, Apothekenketten und pharmazeutische Softwarehersteller.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <Link
-              href="/api-keys"
+            <a
+              href="#pricing"
               className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:bg-primary/90 transition-colors"
             >
-              API-Zugang erhalten
+              Preise & Tarife
               <ArrowRight className="h-4 w-4" />
-            </Link>
+            </a>
             <Link
               href="/api-docs"
               className="inline-flex items-center gap-2 rounded-lg border bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
