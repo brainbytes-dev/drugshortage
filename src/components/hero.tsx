@@ -39,7 +39,11 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
 
   return (
     <div className="w-full bg-background">
-      <div className="max-w-[1280px] mx-auto px-14 pt-[72px] pb-[88px]">
+      {/* Outer container matches dashboard max-w-7xl px-4 exactly */}
+      <div className="max-w-7xl mx-auto px-4 pt-[72px] pb-[88px]">
+
+        {/* Inner section: eyebrow + grid get extra horizontal breathing room */}
+        <div className="px-10">
 
         {/* Eyebrow */}
         <div className="inline-flex items-center gap-2.5 mb-11">
@@ -84,7 +88,9 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           </div>
         </div>
 
-        {/* Search + buttons — full width of the left column */}
+        </div>{/* end px-10 inner */}
+
+        {/* Search + buttons — outer px-4 width = same as table */}
         <div className="mt-16">
           <label
             htmlFor="hero-search"
@@ -133,7 +139,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           </div>
         </div>
 
-      </div>
+      </div>{/* end max-w-7xl */}
     </div>
   )
 }
