@@ -89,7 +89,7 @@ export default function ApiLandingPage() {
             <span className="gradient-text">die Schweizer REST API für Arzneimittel-Engpässe.</span>
           </h1>
           <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Tagesaktuelle Lieferengpässe, BWL-Warnungen und Severity Scores für alle ~700 aktiven Engpässe.
+            Tagesaktuelle Lieferengpässe, BWL-Warnungen und Severity Scores — täglich abgeglichen.
             Für Spitäler, Apothekenketten und pharmazeutische Softwarehersteller.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
@@ -155,7 +155,7 @@ export default function ApiLandingPage() {
         <div className="max-w-3xl mx-auto px-4 py-10">
           <div className="grid sm:grid-cols-3 gap-6 text-center">
             {[
-              { value: '~700', label: 'Aktive Engpässe täglich' },
+              { value: 'täglich', label: 'Engpässe aktualisiert' },
               { value: '148+', label: 'ATC-Gruppen abgedeckt' },
               { value: '24 h', label: 'Max. Datenverzug' },
             ].map(({ value, label }) => (
@@ -169,15 +169,32 @@ export default function ApiLandingPage() {
       </section>
 
       {/* ── FAQ ── */}
-      <section className="max-w-2xl mx-auto px-4 py-14 space-y-6">
-        <h2 className="text-xl font-bold tracking-tight text-center">Häufige Fragen</h2>
-        <div className="space-y-4">
-          {FAQS.map(({ q, a }) => (
-            <div key={q} className="rounded-lg border bg-card p-4 space-y-2">
-              <p className="text-sm font-semibold text-foreground">{q}</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">{a}</p>
-            </div>
-          ))}
+      <section className="border-t border-border/40 bg-muted/[0.15]">
+        <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
+          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+            Häufige Fragen
+          </h2>
+          <div className="border-t border-border/40">
+            {FAQS.map(({ q, a }, i) => (
+              <details key={q} className="group border-b border-border/40">
+                <summary className="flex items-baseline gap-[14px] py-6 cursor-pointer list-none select-none">
+                  <span className="font-mono text-[11px] text-primary font-medium min-w-[28px] shrink-0 mt-[3px]">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span className="flex-1 text-[16px] font-semibold leading-snug tracking-[-0.005em] group-hover:text-primary transition-colors duration-200">
+                    {q}
+                  </span>
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
+                    className="h-4 w-4 shrink-0 text-muted-foreground group-open:rotate-45 transition-transform duration-200 ease-out ml-4" aria-hidden>
+                    <path strokeLinecap="round" d="M8 2v12M2 8h12" />
+                  </svg>
+                </summary>
+                <p className="pl-[42px] pb-6 text-[14.5px] text-muted-foreground leading-[1.62] sm:pr-10">
+                  {a}
+                </p>
+              </details>
+            ))}
+          </div>
         </div>
       </section>
 
