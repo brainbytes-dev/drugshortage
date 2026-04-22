@@ -78,41 +78,78 @@ export default function ApiLandingPage() {
     <main className="min-h-screen bg-background">
 
       {/* ── HERO ── */}
-      <section className="border-b bg-gradient-to-b from-primary/5 to-background">
-        <div className="max-w-3xl mx-auto px-4 py-16 sm:py-24 text-center space-y-6">
-          <div className="inline-flex items-center gap-2 rounded-full border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-sm">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            REST API — v1 öffentlich verfügbar
+      <div className="w-full bg-background border-b border-border/40">
+        <div className="max-w-7xl mx-auto px-4 pt-[72px] pb-[60px]">
+          <div className="px-10">
+
+            {/* Eyebrow */}
+            <div className="inline-flex items-center gap-2.5 mb-11">
+              <span aria-hidden="true" className="relative flex h-[7px] w-[7px] shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[oklch(0.58_0.13_150)] opacity-75" />
+                <span className="relative inline-flex rounded-full h-[7px] w-[7px] bg-[oklch(0.58_0.13_150)]" />
+              </span>
+              <span className="font-mono text-[11.5px] text-muted-foreground tracking-[0.04em] uppercase">
+                REST API — v1 · JSON · CSV · Webhooks
+              </span>
+            </div>
+
+            {/* Two-column grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-[72px] items-end">
+
+              {/* Left: headline + description + CTAs */}
+              <div>
+                <h1 className="text-[clamp(40px,5vw,68px)] font-semibold leading-[1.0] tracking-[-0.03em] text-foreground mb-5 max-w-[720px]">
+                  Lieferengpass-Daten direkt in Ihr System.
+                </h1>
+                <p className="text-base text-muted-foreground max-w-[540px] leading-[1.55] mb-8">
+                  Tagesaktuelle Engpässe, BWL-Warnungen und Severity Scores über eine einfache REST API.
+                  Für Spitäler, Apothekenketten und pharmazeutische Softwarehersteller.
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link
+                    href="/api-docs"
+                    className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+                  >
+                    <Code2 className="h-4 w-4" />
+                    Dokumentation & Quickstart
+                  </Link>
+                  <a
+                    href="#pricing"
+                    className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+                  >
+                    Tarife & Preise
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                </div>
+                <p className="text-[12px] text-muted-foreground mt-4">
+                  Free-Tier ohne Key-Registrierung. Keine Kreditkarte für erste Tests.
+                </p>
+              </div>
+
+              {/* Right: stat rows */}
+              <div className="flex flex-col gap-5 lg:border-l lg:border-border lg:pl-8 border-t border-border pt-6 lg:pt-0">
+                {[
+                  { label: 'Datenverzug', value: '≤ 24 h' },
+                  { label: 'ATC-Gruppen abgedeckt', value: '148+' },
+                  { label: 'Engpässe täglich aktualisiert', value: '✓' },
+                  { label: 'Free-Tier', value: 'kein Key', suffix: 'nötig' },
+                ].map(({ label, value, suffix }) => (
+                  <div key={label}>
+                    <p className="text-[12px] text-muted-foreground tracking-[0.02em] mb-1.5">{label}</p>
+                    <div className="flex items-baseline gap-2.5">
+                      <span className="font-sans text-[28px] font-semibold tracking-[-0.01em] tabular-nums text-foreground">
+                        {value}
+                      </span>
+                      {suffix && <span className="text-[13px] text-muted-foreground">{suffix}</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight text-foreground leading-tight">
-            Lieferengpass-Daten direkt in Ihr System —{' '}
-            <span className="gradient-text">die Schweizer REST API für Arzneimittel-Engpässe.</span>
-          </h1>
-          <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Tagesaktuelle Lieferengpässe, BWL-Warnungen und Severity Scores — täglich abgeglichen.
-            Für Spitäler, Apothekenketten und pharmazeutische Softwarehersteller.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <Link
-              href="/api-docs"
-              className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow hover:bg-primary/90 transition-colors"
-            >
-              <Code2 className="h-4 w-4" />
-              Dokumentation & Quickstart
-            </Link>
-            <a
-              href="#pricing"
-              className="inline-flex items-center gap-2 rounded-lg border bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
-            >
-              Tarife & Preise
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          </div>
-          <p className="text-xs text-muted-foreground pt-1">
-            Keine Kreditkarte für erste Tests. Free-Tier ohne Key-Registrierung.
-          </p>
         </div>
-      </section>
+      </div>
 
       {/* ── VALUE PROPS ── */}
       <section className="max-w-3xl mx-auto px-4 py-14 space-y-6">
@@ -149,24 +186,6 @@ export default function ApiLandingPage() {
 
       {/* ── PRICING (Client Component with toggle) ── */}
       <PricingSection />
-
-      {/* ── STATS ── */}
-      <section className="border-y bg-muted/30">
-        <div className="max-w-3xl mx-auto px-4 py-10">
-          <div className="grid sm:grid-cols-3 gap-6 text-center">
-            {[
-              { value: 'täglich', label: 'Engpässe aktualisiert' },
-              { value: '148+', label: 'ATC-Gruppen abgedeckt' },
-              { value: '24 h', label: 'Max. Datenverzug' },
-            ].map(({ value, label }) => (
-              <div key={label} className="space-y-1">
-                <p className="text-2xl font-bold text-foreground">{value}</p>
-                <p className="text-xs text-muted-foreground">{label}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* ── FAQ ── */}
       <section className="border-t border-border/40 bg-muted/[0.15]">
