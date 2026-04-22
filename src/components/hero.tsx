@@ -155,69 +155,76 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           >
             Suchen
           </label>
-          <div className="flex items-stretch gap-2">
-            {/* Search input — grows, never compresses below a readable width */}
-            <div className="flex min-w-0 flex-1 items-center gap-3.5 px-5 py-4 bg-muted/40 border border-border/80 rounded-lg">
-              <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" className="text-muted-foreground shrink-0" aria-hidden>
-                <circle cx="9" cy="9" r="6" /><path d="M14 14l4 4" strokeLinecap="round" />
-              </svg>
-              <input
-                id="hero-search"
-                value={query}
-                onChange={e => handleQueryChange(e.target.value)}
-                onKeyDown={e => e.key === 'Enter' && submitSearch(query)}
-                placeholder="Wirkstoff, Handelsname, ATC-Code oder Firma"
-                className="min-w-0 flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
-              />
-              <button
-                onClick={() => submitSearch(query)}
-                aria-label="Suche starten"
-                className="font-mono text-[11px] text-muted-foreground px-[7px] py-[3px] border border-border/80 rounded shrink-0"
-              >
-                ↵
-              </button>
-            </div>
+          {/* Mobile: search row + buttons row stacked. sm+: single row */}
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
 
-            {/* Action buttons — shrink-0 so they never compress the search bar */}
-            <button
-              onClick={toggleNeu}
-              className={[
-                'inline-flex shrink-0 items-center gap-1.5 rounded-lg border px-4 text-sm font-medium transition-colors whitespace-nowrap',
-                neuActive
-                  ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'
-                  : 'border-border/80 bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted',
-              ].join(' ')}
-            >
-              <Sparkles className="h-3.5 w-3.5 shrink-0" />
-              Neue Meldungen
-            </button>
-            {firmenRanking.length > 0 && <FirmaRankingSheet firmenRanking={firmenRanking} />}
-            {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
+            {/* Row 1 (mobile) / left part (desktop): search input + stacked icons */}
+            <div className="flex min-w-0 flex-1 items-stretch gap-2">
+              <div className="flex min-w-0 flex-1 items-center gap-3.5 px-5 py-4 bg-muted/40 border border-border/80 rounded-lg">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" className="text-muted-foreground shrink-0" aria-hidden>
+                  <circle cx="9" cy="9" r="6" /><path d="M14 14l4 4" strokeLinecap="round" />
+                </svg>
+                <input
+                  id="hero-search"
+                  value={query}
+                  onChange={e => handleQueryChange(e.target.value)}
+                  onKeyDown={e => e.key === 'Enter' && submitSearch(query)}
+                  placeholder="Wirkstoff, Handelsname, ATC-Code oder Firma"
+                  className="min-w-0 flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
+                />
+                <button
+                  onClick={() => submitSearch(query)}
+                  aria-label="Suche starten"
+                  className="font-mono text-[11px] text-muted-foreground px-[7px] py-[3px] border border-border/80 rounded shrink-0"
+                >
+                  ↵
+                </button>
+              </div>
 
-            {/* Stacked icon column: × (if active) + CSV export */}
-            <div className="flex flex-col shrink-0 self-stretch gap-[3px]">
-              {hasActiveFilter && (
-                <Tip label="Filter zurücksetzen">
+              {/* Stacked icon column — always next to the search input */}
+              <div className="flex flex-col shrink-0 self-stretch gap-[3px]">
+                {hasActiveFilter && (
+                  <Tip label="Filter zurücksetzen">
+                    <button
+                      onClick={clearFilters}
+                      aria-label="Filter zurücksetzen"
+                      className="flex flex-1 items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </Tip>
+                )}
+                <Tip label="Aktuelle Ansicht als CSV exportieren">
                   <button
-                    onClick={clearFilters}
-                    aria-label="Filter zurücksetzen"
-                    className="flex flex-1 items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    onClick={exportCsv}
+                    aria-label="CSV exportieren"
+                    className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    style={{ flex: hasActiveFilter ? '1' : undefined, paddingTop: hasActiveFilter ? undefined : '0', height: hasActiveFilter ? undefined : '100%' }}
                   >
-                    <X className="h-3.5 w-3.5" />
+                    <Download className="h-3.5 w-3.5" />
                   </button>
                 </Tip>
-              )}
-              <Tip label="Aktuelle Ansicht als CSV exportieren">
-                <button
-                  onClick={exportCsv}
-                  aria-label="CSV exportieren"
-                  className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                  style={{ flex: hasActiveFilter ? '1' : undefined, paddingTop: hasActiveFilter ? undefined : '0', height: hasActiveFilter ? undefined : '100%' }}
-                >
-                  <Download className="h-3.5 w-3.5" />
-                </button>
-              </Tip>
+              </div>
             </div>
+
+            {/* Row 2 (mobile) / right part (desktop): action buttons */}
+            <div className="flex items-stretch gap-2">
+              <button
+                onClick={toggleNeu}
+                className={[
+                  'inline-flex flex-1 sm:flex-none shrink-0 items-center justify-center gap-1.5 rounded-lg border px-4 py-3 sm:py-0 text-sm font-medium transition-colors whitespace-nowrap',
+                  neuActive
+                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'
+                    : 'border-border/80 bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted',
+                ].join(' ')}
+              >
+                <Sparkles className="h-3.5 w-3.5 shrink-0" />
+                Neue Meldungen
+              </button>
+              {firmenRanking.length > 0 && <FirmaRankingSheet firmenRanking={firmenRanking} />}
+              {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
+            </div>
+
           </div>
         </div>
 
