@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { CheckCircle2, ArrowRight, Zap, GraduationCap, X } from 'lucide-react'
+import { CheckCircle2, ArrowRight, Zap, X } from 'lucide-react'
 import { TIERS, type Tier } from '@/lib/pricing'
 
 function yearlyMonthlyEquivalent(yearlyAmount: number) {
@@ -11,65 +11,47 @@ function yearlyMonthlyEquivalent(yearlyAmount: number) {
 
 const PAID_TIERS = TIERS.filter(t => t.key !== 'free' && t.key !== 'research')
 
-function FreeTierCard({ tier }: { tier: Tier }) {
+function FreeTierRow({ tier }: { tier: Tier }) {
   const isResearch = tier.key === 'research'
   return (
-    <div className={`relative flex flex-col rounded-2xl border transition-all duration-200 ${
+    <div className={`flex items-center justify-between gap-4 rounded-xl border px-5 py-4 transition-colors ${
       isResearch
-        ? 'border-violet-200/60 bg-violet-50/40 dark:bg-violet-950/10 dark:border-violet-800/30 hover:shadow-md'
-        : 'bg-card hover:shadow-md hover:border-border/80'
+        ? 'border-violet-200/60 bg-violet-50/30 dark:bg-violet-950/10 dark:border-violet-800/30'
+        : 'border-border/60 bg-muted/30'
     }`}>
-      <div className="p-5 flex flex-col flex-1 space-y-4">
-
-        <div className="flex items-center justify-between">
-          <p className={`text-[11px] font-bold uppercase tracking-widest ${
+      <div className="flex items-center gap-4 min-w-0">
+        <div>
+          <p className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${
             isResearch ? 'text-violet-600 dark:text-violet-400' : 'text-muted-foreground'
           }`}>
             {tier.label}
           </p>
-          {isResearch && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-violet-100 dark:bg-violet-900/40 px-2 py-0.5 text-[10px] font-semibold text-violet-700 dark:text-violet-300">
-              <GraduationCap className="h-3 w-3" />
-              Akademisch
-            </span>
-          )}
+          <p className="text-[15px] font-bold text-foreground mt-0.5">Kostenlos</p>
         </div>
-
-        <div className="min-h-[52px] space-y-0.5">
-          <div className="flex items-baseline gap-1">
-            <span className="text-3xl font-extrabold tracking-tight text-foreground">Kostenlos</span>
-          </div>
-          <p className="text-[11px] text-muted-foreground">{tier.priceNote}</p>
+        <div className="hidden sm:flex flex-col gap-0.5 border-l border-border/40 pl-4">
+          <span className="text-[12px] font-medium text-foreground">{tier.dailyLimit}</span>
+          <span className="text-[11px] text-muted-foreground">{tier.rateLimit}</span>
         </div>
-
-        <div className="rounded-lg bg-muted/60 px-3 py-2">
-          <p className="text-[11px] font-semibold text-foreground">{tier.dailyLimit}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">{tier.rateLimit}</p>
-        </div>
-
-        <ul className="space-y-2 flex-1">
-          {tier.features.map((f) => (
-            <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
-              <CheckCircle2 className={`h-3.5 w-3.5 mt-0.5 shrink-0 ${
-                isResearch ? 'text-violet-500' : 'text-emerald-500'
-              }`} />
+        <ul className="hidden md:flex gap-4">
+          {tier.features.slice(0, 2).map(f => (
+            <li key={f} className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+              <CheckCircle2 className={`h-3 w-3 shrink-0 ${isResearch ? 'text-violet-500' : 'text-emerald-500'}`} />
               {f}
             </li>
           ))}
         </ul>
-
-        <Link
-          href={tier.ctaHref}
-          className={`mt-auto inline-flex items-center justify-center gap-1.5 rounded-xl px-4 py-2.5 text-xs font-semibold transition-colors ${
-            isResearch
-              ? 'bg-violet-600 text-white hover:bg-violet-700 shadow-sm'
-              : 'border bg-background text-foreground hover:bg-muted'
-          }`}
-        >
-          {tier.cta}
-          <ArrowRight className="h-3 w-3" />
-        </Link>
       </div>
+      <Link
+        href={tier.ctaHref}
+        className={`shrink-0 inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12px] font-semibold transition-colors whitespace-nowrap ${
+          isResearch
+            ? 'bg-violet-600 text-white hover:bg-violet-700'
+            : 'border border-border/80 bg-background text-foreground hover:bg-muted'
+        }`}
+      >
+        {tier.cta}
+        <ArrowRight className="h-3 w-3" />
+      </Link>
     </div>
   )
 }
@@ -299,66 +281,74 @@ export function PricingSection() {
   }, [])
 
   return (
-    <section id="pricing" className="max-w-5xl mx-auto px-4 py-16 space-y-10">
-
+    <section id="pricing" className="border-t border-border/40">
       {checkoutModal && (
         <CheckoutModal state={checkoutModal} onClose={() => setCheckoutModal(null)} />
       )}
 
-      {/* Header + billing toggle */}
-      <div className="text-center space-y-5">
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Tarife & Preise</h2>
-        <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-          Alle Preise in CHF. Monatliche Kündigung jederzeit möglich.
-        </p>
-        <div className="inline-flex items-center gap-1 rounded-full border bg-muted/40 p-1">
-          <button
-            onClick={() => setYearly(false)}
-            className={`rounded-full px-5 py-2 text-xs font-semibold transition-all ${
-              !yearly
-                ? 'bg-background shadow text-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Monatlich
-          </button>
-          <button
-            onClick={() => setYearly(true)}
-            className={`rounded-full px-5 py-2 text-xs font-semibold transition-all flex items-center gap-2 ${
-              yearly
-                ? 'bg-background shadow text-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            Jährlich
-            <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 text-[10px] font-bold leading-none">
-              2 Mt. gratis
-            </span>
-          </button>
+      <div className="max-w-6xl mx-auto px-4 py-20 sm:py-28">
+
+        {/* Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-3">
+              Tarife & Preise
+            </p>
+            <p className="text-[14px] text-muted-foreground max-w-sm leading-relaxed">
+              Alle Preise in CHF, exkl. MwSt. Monatliche Kündigung jederzeit möglich.
+            </p>
+          </div>
+          {/* Billing toggle */}
+          <div className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/40 p-1 self-start sm:self-auto">
+            <button
+              onClick={() => setYearly(false)}
+              className={`rounded-full px-5 py-2 text-xs font-semibold transition-all ${
+                !yearly ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Monatlich
+            </button>
+            <button
+              onClick={() => setYearly(true)}
+              className={`rounded-full px-5 py-2 text-xs font-semibold transition-all flex items-center gap-2 ${
+                yearly ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              Jährlich
+              <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 text-[10px] font-bold leading-none">
+                2 Mt. gratis
+              </span>
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* 5 cards: Free + Research (each own card) + 3 paid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 items-stretch">
-        {TIERS.filter(t => t.key === 'free' || t.key === 'research').map((tier) => (
-          <FreeTierCard key={tier.key} tier={tier} />
-        ))}
-        {PAID_TIERS.map((tier) => (
-          <PaidCard
-            key={tier.key}
-            tier={tier}
-            yearly={yearly}
-            onCheckout={(t, y) => setCheckoutModal({ tier: t, yearly: y })}
-          />
-        ))}
-      </div>
+        {/* Free + Research — compact horizontal rows */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+          {TIERS.filter(t => t.key === 'free' || t.key === 'research').map((tier) => (
+            <FreeTierRow key={tier.key} tier={tier} />
+          ))}
+        </div>
 
-      <p className="text-center text-xs text-muted-foreground">
-        Alle Tarife beinhalten GTIN, Pharmacode, ATC-Code, Severity Score und tagesaktuelle Engpass-Daten.{' '}
-        <Link href="/api-docs" className="underline hover:text-foreground">
-          Vollständige Endpunkte →
-        </Link>
-      </p>
+        {/* Paid tiers — 3 columns, room to breathe */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 items-stretch">
+          {PAID_TIERS.map((tier) => (
+            <PaidCard
+              key={tier.key}
+              tier={tier}
+              yearly={yearly}
+              onCheckout={(t, y) => setCheckoutModal({ tier: t, yearly: y })}
+            />
+          ))}
+        </div>
+
+        <p className="mt-10 text-[12px] text-muted-foreground">
+          Alle Tarife beinhalten GTIN, Pharmacode, ATC-Code, Severity Score und tagesaktuelle Engpass-Daten.{' '}
+          <Link href="/api-docs" className="underline hover:text-foreground">
+            Vollständige Endpunkte →
+          </Link>
+        </p>
+
+      </div>
     </section>
   )
 }
