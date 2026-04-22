@@ -9,10 +9,9 @@ import { DonationWidget } from '@/components/donation-widget'
 
 const NAV_LINKS = [
   { href: '/', label: 'Home', num: '01' },
-  { href: '/methodik', label: 'Methodik', num: '02' },
-  { href: '/api', label: 'API', num: '03' },
-  { href: '/#statistik', label: 'Statistik', num: '04', isHash: 'statistik' },
-  { href: '/#faq', label: 'FAQ', num: '05', isFaq: true },
+  { href: '/#faq', label: 'FAQ', num: '02', isFaq: true },
+  { href: '/methodik', label: 'Methodik', num: '03' },
+  { href: '/api', label: 'API', num: '04' },
 ]
 
 export function SiteHeader() {
@@ -67,14 +66,6 @@ export function SiteHeader() {
     }
   }
 
-  function handleStatistik(e: React.MouseEvent<HTMLAnchorElement>) {
-    closeMenu()
-    if (pathname === '/') {
-      e.preventDefault()
-      document.getElementById('statistik')?.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
-
   return (
     <>
       <header className="bg-background/80 backdrop-blur-md sticky top-0 z-50 border-b border-border/40">
@@ -90,11 +81,6 @@ export function SiteHeader() {
             {NAV_LINKS.map(link =>
               link.isFaq ? (
                 <a key={link.href} href={link.href} onClick={handleFaq}
-                  className="hover:text-foreground transition-colors">
-                  {link.label}
-                </a>
-              ) : link.isHash === 'statistik' ? (
-                <a key={link.href} href={link.href} onClick={handleStatistik}
                   className="hover:text-foreground transition-colors">
                   {link.label}
                 </a>
@@ -187,19 +173,6 @@ export function SiteHeader() {
                   <a
                     href={link.href}
                     onClick={handleFaq}
-                    className="group flex items-baseline justify-between py-5"
-                  >
-                    <span className="text-4xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
-                      {link.label}
-                    </span>
-                    <span className="text-xs font-mono text-muted-foreground/40 group-hover:text-primary/50 transition-colors">
-                      {link.num}
-                    </span>
-                  </a>
-                ) : link.isHash === 'statistik' ? (
-                  <a
-                    href={link.href}
-                    onClick={handleStatistik}
                     className="group flex items-baseline justify-between py-5"
                   >
                     <span className="text-4xl font-bold tracking-tight text-foreground group-hover:text-primary transition-colors duration-200">
