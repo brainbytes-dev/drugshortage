@@ -175,62 +175,62 @@ export default function ApiLandingPage() {
       </section>
 
       {/* ── CODE TERMINAL ── */}
-      <section className="border-t border-border/40 bg-[#0d1117]">
+      <section className="border-t border-border/40 bg-slate-50 dark:bg-[#0d1117]">
         <div className="max-w-7xl mx-auto px-4 py-14">
 
           {/* Section label */}
           <div className="flex items-center justify-between mb-8">
-            <p className="font-mono text-[11px] text-slate-500 uppercase tracking-[0.18em]">Beispiel-Request</p>
-            <Link href="/api-docs" className="font-mono text-[11px] text-slate-500 hover:text-slate-300 transition-colors">
+            <p className="font-mono text-[11px] text-slate-400 dark:text-slate-500 uppercase tracking-[0.18em]">Beispiel-Request</p>
+            <Link href="/api-docs" className="font-mono text-[11px] text-slate-400 dark:text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
               Alle Endpunkte →
             </Link>
           </div>
 
           {/* Terminal window */}
-          <div className="rounded-xl overflow-hidden border border-white/[0.06] shadow-2xl">
+          <div className="rounded-xl overflow-hidden border border-slate-200 dark:border-white/[0.06] shadow-sm dark:shadow-2xl">
 
             {/* Chrome bar */}
-            <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/[0.06]">
+            <div className="flex items-center gap-2 px-4 py-3 bg-slate-100 dark:bg-[#161b22] border-b border-slate-200 dark:border-white/[0.06]">
               <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
               <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
               <span className="h-3 w-3 rounded-full bg-[#28c840]" />
               <div className="ml-3 flex gap-1">
-                <span className="rounded-md bg-white/[0.06] px-4 py-1 font-mono text-[11px] text-slate-400 border border-white/[0.06]">
+                <span className="rounded-md bg-white dark:bg-white/[0.06] px-4 py-1 font-mono text-[11px] text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-white/[0.06]">
                   request.sh
                 </span>
-                <span className="rounded-md px-4 py-1 font-mono text-[11px] text-slate-500">
+                <span className="rounded-md px-4 py-1 font-mono text-[11px] text-slate-400 dark:text-slate-500">
                   response.json
                 </span>
               </div>
             </div>
 
             {/* Split panes */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/[0.06]">
+            <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-slate-200 dark:divide-white/[0.06] bg-white dark:bg-[#0d1117]">
 
               {/* Left: curl request */}
               <div className="p-6">
-                <p className="font-mono text-[10px] text-slate-600 uppercase tracking-widest mb-4">Request</p>
+                <p className="font-mono text-[10px] text-slate-400 dark:text-slate-600 uppercase tracking-widest mb-4">Request</p>
                 <pre className="font-mono text-[13px] leading-[1.75] overflow-x-auto whitespace-pre">
-                  {/* $ prompt */}
                   <span className="text-[oklch(0.58_0.13_150)]">$</span>
                   {' '}
-                  <span className="text-slate-200">{CURL_REQUEST}</span>
+                  <span className="text-slate-700 dark:text-slate-200">{CURL_REQUEST}</span>
                 </pre>
               </div>
 
               {/* Right: JSON response */}
               <div className="p-6">
-                <p className="font-mono text-[10px] text-slate-600 uppercase tracking-widest mb-4">Response <span className="text-[oklch(0.58_0.13_150)] ml-2">200 OK</span></p>
-                <pre className="font-mono text-[13px] leading-[1.75] overflow-x-auto whitespace-pre text-slate-300">
+                <p className="font-mono text-[10px] text-slate-400 dark:text-slate-600 uppercase tracking-widest mb-4">
+                  Response <span className="text-[oklch(0.58_0.13_150)] ml-2">200 OK</span>
+                </p>
+                <pre className="font-mono text-[13px] leading-[1.75] overflow-x-auto whitespace-pre">
                   {JSON_RESPONSE.split('\n').map((line, i) => {
-                    // Colorize keys, strings, numbers
                     const colored = line
                       .replace(/"([^"]+)":/g, '<k>"$1"</k>:')
                       .replace(/: "([^"]+)"/g, ': <s>"$1"</s>')
                       .replace(/: (\d+)/g, ': <n>$1</n>')
                     return (
                       <span key={i} dangerouslySetInnerHTML={{ __html: colored + '\n' }}
-                        className="[&_k]:text-[#79b8ff] [&_s]:text-[#9ecbff] [&_n]:text-[#f8c555]" />
+                        className="text-slate-600 dark:text-slate-300 [&_k]:text-blue-600 dark:[&_k]:text-[#79b8ff] [&_s]:text-blue-500 dark:[&_s]:text-[#9ecbff] [&_n]:text-amber-600 dark:[&_n]:text-[#f8c555]" />
                     )
                   })}
                 </pre>
