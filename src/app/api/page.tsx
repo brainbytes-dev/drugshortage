@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Zap, ShieldCheck, BarChart3, ArrowRight, Code2 } from 'lucide-react'
+import { ArrowRight, Code2 } from 'lucide-react'
 
 import { PricingSection, FinalCtaSection } from '@/components/pricing-section'
 
@@ -34,17 +34,14 @@ const CURL_EXAMPLE = `curl "https://engpassradar.ch/api/v1/shortages?atc=C09&sta
 
 const VALUE_PROPS = [
   {
-    icon: Zap,
     title: 'Tagesaktuelle Daten',
     body: 'Täglicher Scrape aus drugshortage.ch und BWL — immer der aktuelle Stand, nicht gestern.',
   },
   {
-    icon: BarChart3,
     title: 'Severity Scoring',
     body: 'Jedes Präparat erhält einen kombinierten Score aus Dauer, Alternativen, BWL-Status und Kritikalität.',
   },
   {
-    icon: ShieldCheck,
     title: 'Schweiz-nativ',
     body: 'GTIN, Pharmacode, ATC-Gruppen und Swissmedic-Daten — kein Mapping, keine Lücken.',
   },
@@ -152,33 +149,33 @@ export default function ApiLandingPage() {
       </div>
 
       {/* ── VALUE PROPS ── */}
-      <section className="max-w-3xl mx-auto px-4 py-14 space-y-6">
-        <h2 className="text-center text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Warum engpassradar.ch
-        </h2>
-        <div className="grid sm:grid-cols-3 gap-6">
-          {VALUE_PROPS.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-xl border bg-card p-5 space-y-3">
-              <div className="h-8 w-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                <Icon className="h-4 w-4 text-primary" />
+      <section className="border-t border-border/40">
+        <div className="max-w-7xl mx-auto px-4 py-20 sm:py-24">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+            Warum engpassradar.ch
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
+            {VALUE_PROPS.map(({ title, body }, i) => (
+              <div key={title}>
+                <p className="font-mono text-[11px] text-primary mb-4">{String(i + 1).padStart(2, '0')}</p>
+                <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-foreground mb-3">{title}</h3>
+                <p className="text-[14px] text-muted-foreground leading-[1.6]">{body}</p>
               </div>
-              <h3 className="font-semibold text-sm text-foreground">{title}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">{body}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ── CODE SNIPPET ── */}
-      <section className="border-y bg-slate-950 dark:bg-slate-900">
-        <div className="max-w-3xl mx-auto px-4 py-10 space-y-4">
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-mono font-semibold text-slate-400 uppercase tracking-wider">Beispiel-Request</p>
-            <Link href="/api-docs" className="text-xs text-slate-400 hover:text-slate-200 transition-colors">
+      <section className="border-t border-border/40 bg-[#0d1117] dark:bg-slate-900">
+        <div className="max-w-7xl mx-auto px-4 py-14">
+          <div className="flex items-center justify-between mb-8">
+            <p className="font-mono text-[11px] text-slate-400 uppercase tracking-[0.18em]">Beispiel-Request</p>
+            <Link href="/api-docs" className="font-mono text-[11px] text-slate-400 hover:text-slate-200 transition-colors">
               Alle Endpunkte →
             </Link>
           </div>
-          <pre className="text-xs font-mono text-slate-200 leading-relaxed overflow-x-auto whitespace-pre">
+          <pre className="text-[13px] font-mono text-slate-200 leading-relaxed overflow-x-auto whitespace-pre">
             {CURL_EXAMPLE}
           </pre>
         </div>
