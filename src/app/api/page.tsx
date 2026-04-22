@@ -9,10 +9,13 @@ export const metadata: Metadata = {
   description: 'REST API für Schweizer Arzneimittel-Lieferengpässe — mit Severity Scoring, ATC-Filterung und täglicher Aktualisierung. Für Kliniken, Apotheken und Softwarehersteller.',
 }
 
-const CURL_EXAMPLE = `curl "https://engpassradar.ch/api/v1/shortages?atc=C09&status=1,4" \\
-  -H "X-Api-Key: ihr_api_key"
+const CURL_REQUEST = `curl "https://engpassradar.ch/api/v1/shortages
+  ?atc=C09
+  &status=1,4
+  &limit=1" \\
+  -H "X-Api-Key: ihr_api_key"`
 
-{
+const JSON_RESPONSE = `{
   "data": [
     {
       "gtin": "7680654320016",
@@ -24,12 +27,17 @@ const CURL_EXAMPLE = `curl "https://engpassradar.ch/api/v1/shortages?atc=C09&sta
       "score": {
         "total": 57,
         "label": "Mittel",
-        "breakdown": { "duration": 22, "noAlternatives": 15 }
+        "breakdown": {
+          "duration": 22,
+          "noAlternatives": 15
+        }
       }
     }
   ],
   "total": 68,
-  "meta": { "generatedAt": "2026-04-20T10:00:00Z" }
+  "meta": {
+    "generatedAt": "2026-04-20T10:00:00Z"
+  }
 }`
 
 const VALUE_PROPS = [
@@ -166,18 +174,71 @@ export default function ApiLandingPage() {
         </div>
       </section>
 
-      {/* ── CODE SNIPPET ── */}
-      <section className="border-t border-border/40 bg-[#0d1117] dark:bg-slate-900">
+      {/* ── CODE TERMINAL ── */}
+      <section className="border-t border-border/40 bg-[#0d1117]">
         <div className="max-w-7xl mx-auto px-4 py-14">
+
+          {/* Section label */}
           <div className="flex items-center justify-between mb-8">
-            <p className="font-mono text-[11px] text-slate-400 uppercase tracking-[0.18em]">Beispiel-Request</p>
-            <Link href="/api-docs" className="font-mono text-[11px] text-slate-400 hover:text-slate-200 transition-colors">
+            <p className="font-mono text-[11px] text-slate-500 uppercase tracking-[0.18em]">Beispiel-Request</p>
+            <Link href="/api-docs" className="font-mono text-[11px] text-slate-500 hover:text-slate-300 transition-colors">
               Alle Endpunkte →
             </Link>
           </div>
-          <pre className="text-[13px] font-mono text-slate-200 leading-relaxed overflow-x-auto whitespace-pre">
-            {CURL_EXAMPLE}
-          </pre>
+
+          {/* Terminal window */}
+          <div className="rounded-xl overflow-hidden border border-white/[0.06] shadow-2xl">
+
+            {/* Chrome bar */}
+            <div className="flex items-center gap-2 px-4 py-3 bg-[#161b22] border-b border-white/[0.06]">
+              <span className="h-3 w-3 rounded-full bg-[#ff5f57]" />
+              <span className="h-3 w-3 rounded-full bg-[#febc2e]" />
+              <span className="h-3 w-3 rounded-full bg-[#28c840]" />
+              <div className="ml-3 flex gap-1">
+                <span className="rounded-md bg-white/[0.06] px-4 py-1 font-mono text-[11px] text-slate-400 border border-white/[0.06]">
+                  request.sh
+                </span>
+                <span className="rounded-md px-4 py-1 font-mono text-[11px] text-slate-500">
+                  response.json
+                </span>
+              </div>
+            </div>
+
+            {/* Split panes */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-white/[0.06]">
+
+              {/* Left: curl request */}
+              <div className="p-6">
+                <p className="font-mono text-[10px] text-slate-600 uppercase tracking-widest mb-4">Request</p>
+                <pre className="font-mono text-[13px] leading-[1.75] overflow-x-auto whitespace-pre">
+                  {/* $ prompt */}
+                  <span className="text-[oklch(0.58_0.13_150)]">$</span>
+                  {' '}
+                  <span className="text-slate-200">{CURL_REQUEST}</span>
+                </pre>
+              </div>
+
+              {/* Right: JSON response */}
+              <div className="p-6">
+                <p className="font-mono text-[10px] text-slate-600 uppercase tracking-widest mb-4">Response <span className="text-[oklch(0.58_0.13_150)] ml-2">200 OK</span></p>
+                <pre className="font-mono text-[13px] leading-[1.75] overflow-x-auto whitespace-pre text-slate-300">
+                  {JSON_RESPONSE.split('\n').map((line, i) => {
+                    // Colorize keys, strings, numbers
+                    const colored = line
+                      .replace(/"([^"]+)":/g, '<k>"$1"</k>:')
+                      .replace(/: "([^"]+)"/g, ': <s>"$1"</s>')
+                      .replace(/: (\d+)/g, ': <n>$1</n>')
+                    return (
+                      <span key={i} dangerouslySetInnerHTML={{ __html: colored + '\n' }}
+                        className="[&_k]:text-[#79b8ff] [&_s]:text-[#9ecbff] [&_n]:text-[#f8c555]" />
+                    )
+                  })}
+                </pre>
+              </div>
+
+            </div>
+          </div>
+
         </div>
       </section>
 
