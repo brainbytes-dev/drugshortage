@@ -373,7 +373,7 @@ export function FinalCtaSection() {
             onClick={() => setCheckoutModal({ tier: professionalTier, yearly: false })}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Professional abonnieren — CHF 39/Mo
+            Professional abonnieren
             <ArrowRight className="h-4 w-4" />
           </button>
           <Link
