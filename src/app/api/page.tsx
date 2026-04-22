@@ -226,11 +226,11 @@ export default function ApiLandingPage() {
                   {JSON_RESPONSE.split('\n').map((line, i) => {
                     const colored = line
                       .replace(/"([^"]+)":/g, '<k>"$1"</k>:')
-                      .replace(/: "([^"]+)"/g, ': <s>"$1"</s>')
+                      .replace(/: "([^"]+)"/g, ': <v>"$1"</v>')
                       .replace(/: (\d+)/g, ': <n>$1</n>')
                     return (
                       <span key={i} dangerouslySetInnerHTML={{ __html: colored + '\n' }}
-                        className="text-slate-600 dark:text-slate-300 [&_k]:text-blue-600 dark:[&_k]:text-[#79b8ff] [&_s]:text-blue-500 dark:[&_s]:text-[#9ecbff] [&_n]:text-amber-600 dark:[&_n]:text-[#f8c555]" />
+                        className="text-slate-600 dark:text-slate-300 [&_k]:text-blue-600 dark:[&_k]:text-[#79b8ff] [&_v]:text-blue-500 dark:[&_v]:text-[#9ecbff] [&_n]:text-amber-600 dark:[&_n]:text-[#f8c555]" />
                     )
                   })}
                 </pre>
