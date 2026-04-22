@@ -354,33 +354,38 @@ export function FinalCtaSection() {
   const professionalTier = TIERS.find(t => t.key === 'professional')!
 
   return (
-    <section className="border-t bg-primary">
+    <section className="border-t border-border/40">
       {checkoutModal && (
         <CheckoutModal state={checkoutModal} onClose={() => setCheckoutModal(null)} />
       )}
-      <div className="max-w-2xl mx-auto px-4 py-14 text-center space-y-5">
-        <h2 className="text-xl font-bold text-primary-foreground">Bereit für den Echtbetrieb?</h2>
-        <p className="text-sm text-primary-foreground/80">
+      <div className="max-w-7xl mx-auto px-4 py-20 sm:py-28">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-6">
+          Loslegen
+        </p>
+        <h2 className="text-[clamp(28px,3.5vw,48px)] font-semibold tracking-[-0.025em] text-foreground leading-[1.1] mb-5 max-w-xl">
+          Bereit für den Echtbetrieb?
+        </h2>
+        <p className="text-[14px] text-muted-foreground max-w-md leading-[1.6] mb-10">
           Starten Sie kostenlos — kein Key, kein Login. Oder sichern Sie sich einen Professional-Key für produktiven Einsatz.
         </p>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => setCheckoutModal({ tier: professionalTier, yearly: false })}
-            className="inline-flex items-center gap-2 rounded-lg bg-background px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors shadow"
+            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             Professional abonnieren — CHF 39/Mo
             <ArrowRight className="h-4 w-4" />
           </button>
           <Link
             href="/api-keys?tab=research"
-            className="inline-flex items-center gap-2 rounded-lg border border-primary-foreground/30 px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary-foreground/10 transition-colors"
+            className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
           >
             Research-Key beantragen
           </Link>
         </div>
-        <p className="text-xs text-primary-foreground/60">
+        <p className="text-[12px] text-muted-foreground mt-6">
           Fragen?{' '}
-          <a href="mailto:api@engpassradar.ch" className="underline hover:text-primary-foreground">
+          <a href="mailto:api@engpassradar.ch" className="underline hover:text-foreground">
             api@engpassradar.ch
           </a>
         </p>
