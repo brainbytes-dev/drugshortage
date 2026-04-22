@@ -363,10 +363,10 @@ export function FinalCtaSection() {
           Loslegen
         </p>
         <h2 className="text-[clamp(28px,3.5vw,48px)] font-semibold tracking-[-0.025em] text-foreground leading-[1.1] mb-5 max-w-xl">
-          Bereit für den Echtbetrieb?
+          Jetzt integrieren.
         </h2>
         <p className="text-[14px] text-muted-foreground max-w-md leading-[1.6] mb-10">
-          Starten Sie kostenlos — kein Key, kein Login. Oder sichern Sie sich einen Professional-Key für produktiven Einsatz.
+          Kostenlos testen — ohne Key, ohne Login. Für produktive Integrationen gibt es Professional- und Institutional-Pläne.
         </p>
         <div className="flex flex-wrap items-center gap-3">
           <button
