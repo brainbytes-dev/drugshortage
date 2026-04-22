@@ -48,7 +48,7 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger
-        render={<button className="flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors" />}
+        render={<button className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors whitespace-nowrap" />}
       >
         <Building2 className="h-4 w-4 text-primary" />
         Firmen-Ranking
