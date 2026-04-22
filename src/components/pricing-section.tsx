@@ -14,36 +14,32 @@ const PAID_TIERS = TIERS.filter(t => t.key !== 'free' && t.key !== 'research')
 function FreeTierRow({ tier }: { tier: Tier }) {
   const isResearch = tier.key === 'research'
   return (
-    <div className={`flex items-center justify-between gap-4 rounded-xl border px-5 py-4 transition-colors ${
+    <div className={`flex flex-col gap-4 rounded-xl border px-5 py-5 ${
       isResearch
         ? 'border-violet-200/60 bg-violet-50/30 dark:bg-violet-950/10 dark:border-violet-800/30'
         : 'border-border/60 bg-muted/30'
     }`}>
-      <div className="flex items-center gap-4 min-w-0">
+      <div className="flex items-start justify-between gap-3">
         <div>
           <p className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${
             isResearch ? 'text-violet-600 dark:text-violet-400' : 'text-muted-foreground'
           }`}>
             {tier.label}
           </p>
-          <p className="text-[15px] font-bold text-foreground mt-0.5">Kostenlos</p>
+          <p className="text-[22px] font-bold text-foreground mt-1 leading-none">Kostenlos</p>
+          <p className="text-[11px] text-muted-foreground mt-1">{tier.priceNote}</p>
         </div>
-        <div className="hidden sm:flex flex-col gap-0.5 border-l border-border/40 pl-4">
-          <span className="text-[12px] font-medium text-foreground">{tier.dailyLimit}</span>
-          <span className="text-[11px] text-muted-foreground">{tier.rateLimit}</span>
-        </div>
-        <ul className="hidden md:flex gap-4">
-          {tier.features.slice(0, 2).map(f => (
-            <li key={f} className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
-              <CheckCircle2 className={`h-3 w-3 shrink-0 ${isResearch ? 'text-violet-500' : 'text-emerald-500'}`} />
-              {f}
-            </li>
-          ))}
-        </ul>
+        <span className={`shrink-0 rounded-md px-2.5 py-1 text-[11px] font-semibold ${
+          isResearch
+            ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300'
+            : 'bg-muted text-muted-foreground'
+        }`}>
+          {tier.dailyLimit}
+        </span>
       </div>
       <Link
         href={tier.ctaHref}
-        className={`shrink-0 inline-flex items-center gap-1.5 rounded-lg px-4 py-2 text-[12px] font-semibold transition-colors whitespace-nowrap ${
+        className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[12px] font-semibold transition-colors ${
           isResearch
             ? 'bg-violet-600 text-white hover:bg-violet-700'
             : 'border border-border/80 bg-background text-foreground hover:bg-muted'
