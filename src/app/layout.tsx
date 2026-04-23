@@ -12,6 +12,20 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Lieferengpass Medikamente Schweiz | engpass.radar',
   description: 'Alle aktuellen Medikamenten-Lieferengpässe der Schweiz — täglich aus drugshortage.ch und BWL aktualisiert. Suche nach Wirkstoff, Firma oder ATC-Code. Kostenlos, kein Login.',
+  metadataBase: new URL('https://engpassradar.ch'),
+  openGraph: {
+    type: 'website',
+    siteName: 'engpass.radar',
+    title: 'Lieferengpass Medikamente Schweiz | engpass.radar',
+    description: 'Tagesaktuelle Medikamenten-Lieferengpässe der Schweiz — Severity Score, Alternativen, ATC-Filter. Aus drugshortage.ch, BWL und ODDB.',
+    url: 'https://engpassradar.ch',
+    locale: 'de_CH',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'engpass.radar — Schweizer Medikamenten-Lieferengpässe',
+    description: 'Tagesaktuelle Engpässe, Severity Scores und Alternativen. Kostenlos, ohne Login.',
+  },
   icons: {
     icon: [
       { url: '/favicon-light.svg', type: 'image/svg+xml', media: '(prefers-color-scheme: light)' },
