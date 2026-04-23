@@ -181,32 +181,53 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </section>
 
       {/* ── Was Sie hier finden ─────────────────────────────────── */}
-      <section className="border-t border-border/40 bg-muted/[0.08]">
-        <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
+      <section className="border-t border-border/40 bg-slate-50 dark:bg-[#0d1117]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-20 sm:py-24">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
             Was Sie hier finden
           </p>
-          <div className="border-t border-border/40">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border/30">
             {[
-              'Alle Quellen in einem Dashboard (drugshortage.ch + BWL + ODDB)',
-              'Täglich automatisch aktualisiert',
-              'Volltextsuche nach Wirkstoff, Produkt, Firma',
-              'Filter nach ATC-Gruppe, Status, Firma',
-              'Severity Score pro Engpass',
-              'Alternativen-Vorschläge (wirkstoffgleich)',
-              'Verlaufs-Timeline (Wochen-Ansicht)',
-              'CSV-Export',
-              'REST API für Eigenintegration',
-              'Öffentlich zugänglich, ohne Registrierung',
-            ].map((feature, i) => (
-              <div
-                key={feature}
-                className="flex items-center justify-between gap-4 py-4 border-b border-border/40 text-sm"
-              >
-                <span className="text-foreground/80">{feature}</span>
-                <svg className="h-4 w-4 shrink-0 text-[oklch(0.58_0.13_150)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                </svg>
+              {
+                cat: 'Daten',
+                items: [
+                  { label: 'Alle Quellen vereint', desc: 'drugshortage.ch + BWL + ODDB' },
+                  { label: 'Täglich aktualisiert', desc: 'Automatisch, Zeitstempel sichtbar' },
+                  { label: 'Severity Score', desc: 'Dauer · Alternativen · BWL-Status' },
+                  { label: 'Verlaufs-Timeline', desc: 'Wochen-Ansicht der Entwicklung' },
+                ],
+              },
+              {
+                cat: 'Suche & Filter',
+                items: [
+                  { label: 'Volltextsuche', desc: 'Wirkstoff, Produkt, Firma' },
+                  { label: 'ATC-Filter', desc: '148+ Wirkstoffgruppen' },
+                  { label: 'Status- & Firmenfilter', desc: 'Kombinierbar, ohne Reload' },
+                  { label: 'Alternativen-Vorschläge', desc: 'Wirkstoffgleiche Präparate' },
+                ],
+              },
+              {
+                cat: 'Schnittstellen',
+                items: [
+                  { label: 'CSV-Export', desc: 'Tagesaktuelle Rohdaten' },
+                  { label: 'REST API', desc: 'JSON, filterbar, ohne Registrierung' },
+                  { label: 'Webhooks', desc: 'Push bei neuen Engpässen (API-Plan)' },
+                  { label: 'Öffentlich zugänglich', desc: 'Kein Login, kein Paywall' },
+                ],
+              },
+            ].map(({ cat, items }) => (
+              <div key={cat} className="bg-slate-50 dark:bg-[#0d1117] px-6 sm:px-8 py-8 space-y-5">
+                <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 pb-4 border-b border-border/40">
+                  {cat}
+                </p>
+                <ul className="space-y-4">
+                  {items.map(({ label, desc }) => (
+                    <li key={label}>
+                      <p className="text-[14px] font-semibold text-foreground leading-snug">{label}</p>
+                      <p className="text-[12px] text-muted-foreground mt-0.5">{desc}</p>
+                    </li>
+                  ))}
+                </ul>
               </div>
             ))}
           </div>
