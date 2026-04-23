@@ -107,17 +107,17 @@ export default function ApiLandingPage() {
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-3 mb-10">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center sm:justify-start gap-3 mb-10">
               <Link
                 href="/api-docs"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
               >
                 <Code2 className="h-4 w-4" />
                 Dokumentation & Quickstart
               </Link>
               <a
                 href="#pricing"
-                className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
               >
                 Tarife & Preise
                 <ArrowRight className="h-4 w-4" />

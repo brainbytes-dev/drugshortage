@@ -289,7 +289,7 @@ export function PricingSection() {
             </p>
           </div>
           {/* Billing toggle */}
-          <div className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/40 p-1 self-start sm:self-auto">
+          <div className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/40 p-1 self-center sm:self-auto">
             <button
               onClick={() => setYearly(false)}
               className={`rounded-full px-5 py-2 text-xs font-semibold transition-all ${
