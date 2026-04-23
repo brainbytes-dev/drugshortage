@@ -16,14 +16,12 @@ function FreeTierRow({ tier }: { tier: Tier }) {
   return (
     <div className={`flex flex-col gap-4 rounded-xl border px-5 py-5 ${
       isResearch
-        ? 'border-primary/25 bg-primary/[0.04]'
+        ? 'border-border bg-card'
         : 'border-border/60 bg-muted/30'
     }`}>
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className={`text-[11px] font-semibold uppercase tracking-[0.12em] ${
-            isResearch ? 'text-primary' : 'text-muted-foreground'
-          }`}>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
             {tier.label}
           </p>
           <p className="text-[22px] font-bold text-foreground mt-1 leading-none">Kostenlos</p>
@@ -31,7 +29,7 @@ function FreeTierRow({ tier }: { tier: Tier }) {
         </div>
         <span className={`shrink-0 rounded-md px-2.5 py-1 text-[11px] font-semibold ${
           isResearch
-            ? 'bg-primary/10 text-primary'
+            ? 'bg-muted text-foreground'
             : 'bg-muted text-muted-foreground'
         }`}>
           {tier.dailyLimit}
@@ -41,7 +39,7 @@ function FreeTierRow({ tier }: { tier: Tier }) {
         href={tier.ctaHref}
         className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[12px] font-semibold transition-colors ${
           isResearch
-            ? 'bg-primary text-primary-foreground hover:bg-primary/90'
+            ? 'bg-foreground text-background hover:bg-foreground/90'
             : 'border border-border/80 bg-background text-foreground hover:bg-muted'
         }`}
       >
