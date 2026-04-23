@@ -84,74 +84,61 @@ export default function ApiLandingPage() {
 
       {/* ── HERO ── */}
       <div className="w-full bg-background border-b border-border/40">
-        <div className="max-w-7xl mx-auto px-4 pt-[72px] pb-[60px]">
-          <div className="px-10">
+        <div className="max-w-7xl mx-auto px-4 pt-[72px] pb-[64px]">
+          <div className="px-10 max-w-[760px]">
 
             {/* Eyebrow */}
-            <div className="inline-flex items-center gap-2.5 mb-11">
+            <div className="inline-flex items-center gap-2.5 mb-10">
               <span aria-hidden="true" className="relative flex h-[7px] w-[7px] shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[oklch(0.58_0.13_150)] opacity-75" />
                 <span className="relative inline-flex rounded-full h-[7px] w-[7px] bg-[oklch(0.58_0.13_150)]" />
               </span>
               <span className="font-mono text-[11.5px] text-muted-foreground tracking-[0.04em] uppercase">
-                REST API — v1 · JSON · CSV · Webhooks
+                Developer API
               </span>
             </div>
 
-            {/* Two-column grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-[72px] items-end">
+            <h1 className="text-[clamp(40px,5vw,68px)] font-semibold leading-[1.0] tracking-[-0.03em] text-foreground mb-5">
+              Lieferengpass-Daten direkt in Ihr System.
+            </h1>
+            <p className="text-base text-muted-foreground max-w-[520px] leading-[1.6] mb-9">
+              Tagesaktuelle Engpässe, BWL-Warnungen und Severity Scores über eine einfache REST API.
+              Für Spitäler, Apothekenketten und pharmazeutische Softwarehersteller.
+            </p>
 
-              {/* Left: headline + description + CTAs */}
-              <div>
-                <h1 className="text-[clamp(40px,5vw,68px)] font-semibold leading-[1.0] tracking-[-0.03em] text-foreground mb-5 max-w-[720px]">
-                  Lieferengpass-Daten direkt in Ihr System.
-                </h1>
-                <p className="text-base text-muted-foreground max-w-[540px] leading-[1.55] mb-8">
-                  Tagesaktuelle Engpässe, BWL-Warnungen und Severity Scores über eine einfache REST API.
-                  Für Spitäler, Apothekenketten und pharmazeutische Softwarehersteller.
-                </p>
-                <div className="flex flex-wrap items-center gap-3">
-                  <Link
-                    href="/api-docs"
-                    className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
-                  >
-                    <Code2 className="h-4 w-4" />
-                    Dokumentation & Quickstart
-                  </Link>
-                  <a
-                    href="#pricing"
-                    className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
-                  >
-                    Tarife & Preise
-                    <ArrowRight className="h-4 w-4" />
-                  </a>
-                </div>
-                <p className="text-[12px] text-muted-foreground mt-4">
-                  Free-Tier ohne Key-Registrierung. Keine Kreditkarte für erste Tests.
-                </p>
-              </div>
-
-              {/* Right: stat rows */}
-              <div className="flex flex-col gap-5 lg:border-l lg:border-border lg:pl-8 border-t border-border pt-6 lg:pt-0">
-                {[
-                  { label: 'Datenverzug', value: '≤ 24 h' },
-                  { label: 'ATC-Gruppen abgedeckt', value: '148+' },
-                  { label: 'Engpässe täglich aktualisiert', value: '✓' },
-                  { label: 'Free-Tier', value: 'kein Key', suffix: 'nötig' },
-                ].map(({ label, value, suffix }) => (
-                  <div key={label}>
-                    <p className="text-[12px] text-muted-foreground tracking-[0.02em] mb-1.5">{label}</p>
-                    <div className="flex items-baseline gap-2.5">
-                      <span className="font-sans text-[28px] font-semibold tracking-[-0.01em] tabular-nums text-foreground">
-                        {value}
-                      </span>
-                      {suffix && <span className="text-[13px] text-muted-foreground">{suffix}</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
+            {/* CTAs */}
+            <div className="flex flex-wrap items-center gap-3 mb-10">
+              <Link
+                href="/api-docs"
+                className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+              >
+                <Code2 className="h-4 w-4" />
+                Dokumentation & Quickstart
+              </Link>
+              <a
+                href="#pricing"
+                className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+              >
+                Tarife & Preise
+                <ArrowRight className="h-4 w-4" />
+              </a>
             </div>
+
+            {/* Fact strip */}
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              {[
+                '≤ 24 h Datenverzug',
+                '148+ ATC-Gruppen',
+                'Free-Tier ohne Key',
+                'JSON · CSV · Webhooks',
+              ].map((fact, i, arr) => (
+                <span key={fact} className="flex items-center gap-2 text-[12px] text-muted-foreground">
+                  {fact}
+                  {i < arr.length - 1 && <span aria-hidden className="text-border">·</span>}
+                </span>
+              ))}
+            </div>
+
           </div>
         </div>
       </div>

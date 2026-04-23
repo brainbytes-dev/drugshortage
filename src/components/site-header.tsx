@@ -96,13 +96,13 @@ export function SiteHeader() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setDonateOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-md border border-border/60 bg-muted/40 px-2.5 py-1.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              className="inline-flex items-center gap-1.5 h-8 rounded-md border border-border/60 bg-muted/40 px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               aria-label="Engpassradar unterstützen"
             >
               <Heart className="h-3.5 w-3.5 text-red-500" />
               <span className="hidden sm:inline">Spenden</span>
             </button>
-            <div className="rounded-md border border-border/60 bg-muted/40">
+            <div className="h-8 rounded-md border border-border/60 bg-muted/40">
               <ThemeToggle />
             </div>
 
