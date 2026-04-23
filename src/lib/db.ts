@@ -1056,7 +1056,8 @@ export async function getHeroStats(): Promise<HeroStats> {
       FROM "shortages"
       WHERE "isActive" = true
         AND "ersteMeldung" ~ '^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$'
-        AND TO_DATE("ersteMeldung", 'DD.MM.YYYY') >= DATE_TRUNC('week', NOW())
+        AND DATE_TRUNC('week', TO_DATE("ersteMeldung", 'DD.MM.YYYY')::timestamp)::date
+            = DATE_TRUNC('week', CURRENT_DATE::timestamp)::date
     `),
     prisma.shortageEpisode.count({ where: { endedAt: { gte: weekStart } } }),
     prisma.shortage.count({ where: { isActive: true, tageSeitMeldung: { gte: 180 } } }),
