@@ -27,11 +27,7 @@ function FreeTierRow({ tier }: { tier: Tier }) {
           <p className="text-[22px] font-bold text-foreground mt-1 leading-none">Kostenlos</p>
           <p className="text-[11px] text-muted-foreground mt-1">{tier.priceNote}</p>
         </div>
-        <span className={`shrink-0 rounded-md px-2.5 py-1 text-[11px] font-semibold ${
-          isResearch
-            ? 'bg-muted text-foreground'
-            : 'bg-muted text-muted-foreground'
-        }`}>
+        <span className="shrink-0 rounded-md px-2.5 py-1 text-[11px] font-semibold bg-muted text-muted-foreground">
           {tier.dailyLimit}
         </span>
       </div>
@@ -39,7 +35,7 @@ function FreeTierRow({ tier }: { tier: Tier }) {
         href={tier.ctaHref}
         className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[12px] font-semibold transition-colors ${
           isResearch
-            ? 'bg-foreground text-background hover:bg-foreground/90'
+            ? 'bg-secondary text-secondary-foreground border border-border hover:bg-muted'
             : 'border border-border/80 bg-background text-foreground hover:bg-muted'
         }`}
       >
