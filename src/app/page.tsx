@@ -6,7 +6,6 @@ import { KPICards } from '@/components/kpi-cards'
 import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
 import { HistoricalTable } from '@/components/historical-table'
-import { HeroAutoSkip } from '@/components/hero-auto-skip'
 import { Hero } from '@/components/hero'
 import { LazyTimelineChart, LazyAtcTreemap } from '@/components/lazy-charts'
 import { NewsletterSignup } from '@/components/newsletter-signup'
@@ -91,7 +90,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           }).replace(/</g, '\u003c')
         }}
       />
-      <HeroAutoSkip />
       {/* Hero — Live-Zahl */}
       {heroStats && (
         <Hero
