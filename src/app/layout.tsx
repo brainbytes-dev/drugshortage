@@ -20,6 +20,7 @@ export const metadata: Metadata = {
     description: 'Tagesaktuelle Medikamenten-Lieferengpässe der Schweiz — Severity Score, Alternativen, ATC-Filter. Aus drugshortage.ch, BWL und ODDB.',
     url: 'https://engpassradar.ch',
     locale: 'de_CH',
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'engpass.radar — Schweizer Medikamenten-Lieferengpässe' }],
   },
   twitter: {
     card: 'summary_large_image',
