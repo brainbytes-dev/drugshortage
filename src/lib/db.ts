@@ -1047,13 +1047,22 @@ export async function getHeroStats(): Promise<HeroStats> {
   startOfWeek1.setUTCDate(jan4.getUTCDate() - ((jan4.getUTCDay() || 7) - 1))
   const isoWeek = Math.ceil(((now.getTime() - startOfWeek1.getTime()) / 86400000 + 1) / 7)
 
-  const [activeCount, newThisWeek, resolvedThisWeek, longTermCount, historicalTotal] = await Promise.all([
+  // newThisWeek uses ersteMeldung (official report date from drugshortage.ch),
+  // consistent with the weekly timeline chart which also groups by ersteMeldung.
+  const [activeCount, [newThisWeekRow], resolvedThisWeek, longTermCount, historicalTotal] = await Promise.all([
     prisma.shortage.count({ where: { isActive: true } }),
-    prisma.shortage.count({ where: { isActive: true, firstSeenAt: { gte: weekStart } } }),
+    prisma.$queryRaw<[{ count: bigint }]>(Prisma.sql`
+      SELECT COUNT(*)::int AS count
+      FROM "shortages"
+      WHERE "isActive" = true
+        AND "ersteMeldung" ~ '^[0-9]{2}\.[0-9]{2}\.[0-9]{4}$'
+        AND TO_DATE("ersteMeldung", 'DD.MM.YYYY') >= DATE_TRUNC('week', NOW())
+    `),
     prisma.shortageEpisode.count({ where: { endedAt: { gte: weekStart } } }),
     prisma.shortage.count({ where: { isActive: true, tageSeitMeldung: { gte: 180 } } }),
     prisma.shortage.count({ where: { isActive: false } }),
   ])
+  const newThisWeek = Number(newThisWeekRow?.count ?? 0)
 
   return {
     activeCount,

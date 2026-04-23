@@ -151,10 +151,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       {/* ── Wie es funktioniert ─────────────────────────────────── */}
       <section className="border-t border-border/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 py-24 sm:py-32">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-20 sm:mb-24">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
             Wie es funktioniert
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {[
               {
                 step: '01',
@@ -164,7 +164,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               {
                 step: '02',
                 title: 'Sofort zugeordnet',
-                body: "Wirkstoff, ATC-Code und Hersteller sind automatisch ergänzt. Kein manuelles Nachschlagen, kein Copy-Paste zwischen Systemen.",
+                body: 'Wirkstoff, ATC-Code und Hersteller sind automatisch ergänzt. Kein manuelles Nachschlagen, kein Copy-Paste zwischen Systemen.',
               },
               {
                 step: '03',
@@ -172,23 +172,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 body: 'Volltextsuche, Filter nach Firma oder ATC-Gruppe, Detailseite pro Präparat. Öffentlich zugänglich, ohne Registrierung.',
               },
             ].map(({ step, title, body }) => (
-              <div
-                key={step}
-                className="group relative flex flex-col gap-5 rounded-xl border border-border/60 bg-card p-8 sm:p-10 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-[0_8px_30px_-8px_oklch(0.52_0.09_200/0.15)]"
-              >
-                {/* Ghost number */}
-                <span
-                  aria-hidden
-                  className="absolute -right-2 -bottom-4 text-[96px] font-black leading-none select-none pointer-events-none tabular-nums text-foreground/[0.04] group-hover:text-primary/[0.07] transition-colors duration-300"
-                >
-                  {step}
-                </span>
-
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary tabular-nums">
-                  {step}
-                </span>
-                <h3 className="text-xl font-bold leading-snug tracking-tight">{title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+              <div key={step}>
+                <p className="font-mono text-[11px] text-primary mb-5">{step}</p>
+                <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-foreground mb-3">{title}</h3>
+                <p className="text-[14px] text-muted-foreground leading-[1.65]">{body}</p>
               </div>
             ))}
           </div>
@@ -198,10 +185,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       {/* ── Was Sie hier finden ─────────────────────────────────── */}
       <section className="border-t border-border/40 bg-muted/[0.08]">
         <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
             Was Sie hier finden
-          </h2>
-          <div className="overflow-hidden rounded-xl border border-border/60 bg-card">
+          </p>
+          <div className="border-t border-border/40">
             {[
               'Alle Quellen in einem Dashboard (drugshortage.ch + BWL + ODDB)',
               'Täglich automatisch aktualisiert',
@@ -213,13 +200,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               'CSV-Export',
               'REST API für Eigenintegration',
               'Öffentlich zugänglich, ohne Registrierung',
-            ].map((feature, i, arr) => (
+            ].map((feature, i) => (
               <div
                 key={feature}
-                className={`flex items-center justify-between gap-4 px-6 py-4 text-sm${i < arr.length - 1 ? ' border-b border-border/40' : ''}`}
+                className="flex items-center justify-between gap-4 py-4 border-b border-border/40 text-sm"
               >
                 <span className="text-foreground/80">{feature}</span>
-                <svg className="h-4 w-4 shrink-0 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                <svg className="h-4 w-4 shrink-0 text-[oklch(0.58_0.13_150)]" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
