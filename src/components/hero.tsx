@@ -208,7 +208,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
             </div>
 
             {/* Row 2 (mobile) / right part (desktop): action buttons */}
-            <div className="flex items-stretch gap-2">
+            <div className="flex flex-wrap items-stretch gap-2">
               <button
                 onClick={toggleNeu}
                 className={[
