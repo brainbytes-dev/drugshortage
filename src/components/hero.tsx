@@ -212,7 +212,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
               <button
                 onClick={toggleNeu}
                 className={[
-                  'inline-flex flex-1 sm:flex-none shrink-0 items-center justify-center gap-1.5 rounded-lg border px-4 py-3 sm:py-0 text-sm font-medium transition-colors whitespace-nowrap',
+                  'inline-flex flex-1 sm:flex-none shrink-0 items-center justify-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap',
                   neuActive
                     ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'
                     : 'border-border/80 bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted',
