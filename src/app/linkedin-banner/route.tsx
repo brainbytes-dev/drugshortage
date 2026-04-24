@@ -40,37 +40,42 @@ export async function GET() {
           </span>
         </div>
 
-        {/* Right: stat pills */}
-        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-          {([
-            ['aktive', 'Engpässe'],
-            ['ATC-Gruppen', 'filterbar'],
-            ['täglich', 'aktualisiert'],
-            ['kostenlos', 'ohne Login'],
-          ] as [string, string][]).map(([num, label]) => (
-            <div key={label} style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 3,
-              background: SUBTLE,
-              border: `1px solid ${BORDER}`,
-              borderRadius: 10,
-              padding: '10px 20px',
-              minWidth: 110,
-            }}>
-              <span style={{ color: TEXT, fontSize: 20, fontWeight: 700 }}>{num}</span>
-              <span style={{ color: MUTED, fontSize: 11 }}>{label}</span>
-            </div>
-          ))}
-
-          {/* Pulse dot + URL */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4, marginLeft: 8 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <div style={{ width: 7, height: 7, borderRadius: 4, background: PRIMARY }} />
-              <span style={{ color: PRIMARY, fontSize: 13, fontWeight: 600 }}>live</span>
-            </div>
-            <span style={{ color: MUTED, fontSize: 13 }}>engpassradar.ch</span>
+        {/* Right: 2x2 stat grid + domain */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {([
+              ['aktive', 'Engpässe'],
+              ['ATC-Gruppen', 'filterbar'],
+            ] as [string, string][]).map(([num, label]) => (
+              <div key={label} style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+                background: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: 8,
+                padding: '7px 16px', minWidth: 100,
+              }}>
+                <span style={{ color: TEXT, fontSize: 16, fontWeight: 700 }}>{num}</span>
+                <span style={{ color: MUTED, fontSize: 10 }}>{label}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            {([
+              ['täglich', 'aktualisiert'],
+              ['kostenlos', 'ohne Login'],
+            ] as [string, string][]).map(([num, label]) => (
+              <div key={label} style={{
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+                background: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: 8,
+                padding: '7px 16px', minWidth: 100,
+              }}>
+                <span style={{ color: TEXT, fontSize: 16, fontWeight: 700 }}>{num}</span>
+                <span style={{ color: MUTED, fontSize: 10 }}>{label}</span>
+              </div>
+            ))}
+          </div>
+          {/* Domain */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <div style={{ width: 6, height: 6, borderRadius: 3, background: PRIMARY }} />
+            <span style={{ color: MUTED, fontSize: 12 }}>engpassradar.ch</span>
           </div>
         </div>
       </div>
