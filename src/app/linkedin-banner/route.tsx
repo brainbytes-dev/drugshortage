@@ -44,6 +44,7 @@ export async function GET() {
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           {([
             ['aktive', 'Engpässe'],
+            ['ATC-Gruppen', 'filterbar'],
             ['täglich', 'aktualisiert'],
             ['kostenlos', 'ohne Login'],
           ] as [string, string][]).map(([num, label]) => (
