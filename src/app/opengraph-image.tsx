@@ -57,7 +57,6 @@ export default function Image() {
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', gap: 12 }}>
             {([
-              ['700+', 'aktive Engpässe'],
               ['148+', 'ATC-Gruppen'],
               ['täglich', 'aktualisiert'],
               ['kostenlos', 'ohne Login'],
