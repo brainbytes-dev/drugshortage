@@ -43,7 +43,7 @@ export async function GET() {
         {/* Right: stat pills */}
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           {([
-            ['ATC-Gruppen', 'filterbar'],
+            ['aktive', 'Engpässe'],
             ['täglich', 'aktualisiert'],
             ['kostenlos', 'ohne Login'],
           ] as [string, string][]).map(([num, label]) => (

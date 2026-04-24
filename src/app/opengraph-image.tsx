@@ -57,7 +57,7 @@ export default function Image() {
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', gap: 12 }}>
             {([
-              ['ATC-Gruppen', 'filterbar'],
+              ['aktive', 'Engpässe'],
               ['täglich', 'aktualisiert'],
               ['kostenlos', 'ohne Login'],
             ] as [string, string][]).map(([num, label]) => (
