@@ -168,100 +168,109 @@ export default async function BlogPostPage({ params }: PageProps) {
     <main className="min-h-screen bg-background">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
-      {/* Cover image */}
+      {/* Article hero header */}
+      <section className="border-b border-border/40">
+        <div className="max-w-3xl mx-auto px-4 py-12 sm:py-16">
+          {/* Breadcrumb */}
+          <Link
+            href="/blog"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8 group"
+          >
+            <ArrowLeft className="h-3 w-3 group-hover:-translate-x-0.5 transition-transform duration-150" />
+            Berichte &amp; Analysen
+          </Link>
+
+          <div className="space-y-5">
+            {/* Eyebrow row */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+                {post.category && (
+                  <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
+                    {post.category}
+                  </span>
+                )}
+              </div>
+              <span className="text-muted-foreground/40 text-xs">—</span>
+              {post.date && (
+                <time dateTime={post.date} className="text-xs text-muted-foreground">
+                  {new Date(post.date).toLocaleDateString("de-CH", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </time>
+              )}
+              {post.readingTime && (
+                <span className="text-xs text-muted-foreground">{post.readingTime} Lesezeit</span>
+              )}
+              {post.dataAsOf && (
+                <span className="text-xs text-muted-foreground/60">Datenstand: {post.dataAsOf}</span>
+              )}
+            </div>
+
+            <h1 className="text-2xl sm:text-4xl font-bold tracking-tight leading-snug">
+              {post.title}
+            </h1>
+
+            {post.description && (
+              <p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
+                {post.description}
+              </p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Cover image — only if present */}
       {hasCoverImage && (
-        <div className="w-full bg-muted">
-          <div className="max-w-4xl mx-auto">
+        <div className="w-full bg-muted border-b border-border/40">
+          <div className="max-w-7xl mx-auto">
             <Image
               src={post.coverImage!}
               alt={post.coverImageAlt ?? post.title}
               width={1200}
               height={630}
-              className="w-full object-cover"
+              className="w-full object-cover max-h-[420px]"
               priority
             />
           </div>
         </div>
       )}
 
-      <div className="max-w-3xl mx-auto px-4 py-12 space-y-8">
-        {/* Back link */}
-        <Link
-          href="/blog"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="h-3.5 w-3.5" />
-          Alle Beiträge
-        </Link>
+      {/* Article content */}
+      <div className="max-w-3xl mx-auto px-4 py-12">
+        <div>
+          <article className="prose prose-neutral dark:prose-invert max-w-none blog-content">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {cleanContent}
+            </ReactMarkdown>
+          </article>
 
-        {/* Post header */}
-        <header className="space-y-4">
-          <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            {post.category && (
-              <span className="inline-flex items-center rounded-full border border-border/60 bg-muted/50 px-2.5 py-0.5 font-medium text-foreground/70">
-                {post.category}
-              </span>
-            )}
-            {post.date && (
-              <time dateTime={post.date}>
-                {new Date(post.date).toLocaleDateString("de-CH", {
-                  day: "2-digit",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </time>
-            )}
-            {post.readingTime && <span>{post.readingTime} Lesezeit</span>}
-            {post.dataAsOf && (
-              <span className="text-muted-foreground/70">Datenstand: {post.dataAsOf}</span>
-            )}
-          </div>
-
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-snug">
-            {post.title}
-          </h1>
-
-          {post.description && (
-            <p className="text-base text-muted-foreground leading-relaxed">
-              {post.description}
-            </p>
+          {/* Author footer */}
+          {post.author && (
+            <div className="mt-12 pt-6 border-t border-border/40 flex items-center gap-3 text-sm text-muted-foreground">
+              <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-xs shrink-0">
+                {post.author[0].toUpperCase()}
+              </div>
+              <div>
+                <span className="font-medium text-foreground">{post.author}</span>
+                {post.date && (
+                  <span> · {new Date(post.date).toLocaleDateString("de-CH", { day: "2-digit", month: "long", year: "numeric" })}</span>
+                )}
+              </div>
+            </div>
           )}
-        </header>
 
-        {/* Divider */}
-        <hr className="border-border/40" />
-
-        {/* Content — rendered via react-markdown + GFM */}
-        <article className="prose prose-neutral dark:prose-invert max-w-none blog-content">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {cleanContent}
-          </ReactMarkdown>
-        </article>
-
-        {/* Author + date footer */}
-        {post.author && (
-          <div className="pt-6 border-t border-border/40 flex items-center gap-3 text-sm text-muted-foreground">
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-xs">
-              {post.author[0].toUpperCase()}
-            </div>
-            <div>
-              <span className="font-medium text-foreground">{post.author}</span>
-              {post.date && (
-                <span> · {new Date(post.date).toLocaleDateString("de-CH", { day: "2-digit", month: "long", year: "numeric" })}</span>
-              )}
-            </div>
+          <div className="mt-8">
+            <Link
+              href="/blog"
+              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors group"
+            >
+              <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform duration-150" />
+              Zurück zur Übersicht
+            </Link>
           </div>
-        )}
-
-        {/* Back link */}
-        <div className="pt-2">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Zurück zur Übersicht
-          </Link>
         </div>
       </div>
     </main>
