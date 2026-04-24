@@ -40,43 +40,31 @@ export async function GET() {
           </span>
         </div>
 
-        {/* Right: 2x2 stat grid + domain */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {([
-              ['aktive', 'Engpässe'],
-              ['ATC-Gruppen', 'filterbar'],
-            ] as [string, string][]).map(([num, label]) => (
-              <div key={label} style={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
-                background: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: 8,
-                padding: '7px 16px', minWidth: 100,
-              }}>
-                <span style={{ color: TEXT, fontSize: 16, fontWeight: 700 }}>{num}</span>
-                <span style={{ color: MUTED, fontSize: 10 }}>{label}</span>
-              </div>
-            ))}
-          </div>
-          <div style={{ display: 'flex', gap: 8 }}>
-            {([
-              ['täglich', 'aktualisiert'],
-              ['kostenlos', 'ohne Login'],
-            ] as [string, string][]).map(([num, label]) => (
-              <div key={label} style={{
-                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
-                background: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: 8,
-                padding: '7px 16px', minWidth: 100,
-              }}>
-                <span style={{ color: TEXT, fontSize: 16, fontWeight: 700 }}>{num}</span>
-                <span style={{ color: MUTED, fontSize: 10 }}>{label}</span>
-              </div>
-            ))}
-          </div>
-          {/* Domain */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <div style={{ width: 6, height: 6, borderRadius: 3, background: PRIMARY }} />
-            <span style={{ color: MUTED, fontSize: 12 }}>engpassradar.ch</span>
-          </div>
+        {/* Center: 2x2 badge grid */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'center' }}>
+          {([
+            [['aktive', 'Engpässe'], ['ATC-Gruppen', 'filterbar']],
+            [['täglich', 'aktualisiert'], ['kostenlos', 'ohne Login']],
+          ] as [string, string][][]).map((row, ri) => (
+            <div key={ri} style={{ display: 'flex', gap: 8 }}>
+              {row.map(([top, bottom]) => (
+                <div key={top} style={{
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2,
+                  background: SUBTLE, border: `1px solid ${BORDER}`, borderRadius: 8,
+                  padding: '7px 0', width: 112,
+                }}>
+                  <span style={{ color: TEXT, fontSize: 15, fontWeight: 700 }}>{top}</span>
+                  <span style={{ color: MUTED, fontSize: 10 }}>{bottom}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Right: domain vertically centered */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 5 }}>
+          <div style={{ width: 6, height: 6, borderRadius: 3, background: PRIMARY }} />
+          <span style={{ color: MUTED, fontSize: 13 }}>engpassradar.ch</span>
         </div>
       </div>
     ),
