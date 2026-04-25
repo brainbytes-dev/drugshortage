@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -168,7 +169,12 @@ export default async function BlogPostPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
+      <Script
+        id={`json-ld-${slug}`}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd }}
+        strategy="beforeInteractive"
+      />
 
       {/* Article hero header */}
       <section className="border-b border-border/40">
