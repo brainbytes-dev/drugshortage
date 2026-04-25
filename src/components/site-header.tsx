@@ -12,7 +12,6 @@ const NAV_LINKS = [
   { href: '/#faq', label: 'FAQ', num: '02', isFaq: true },
   { href: '/methodik', label: 'Methodik', num: '03' },
   { href: '/api', label: 'API', num: '04' },
-  { href: '/blog', label: 'Berichte', num: '05' },
 ]
 
 export function SiteHeader() {
