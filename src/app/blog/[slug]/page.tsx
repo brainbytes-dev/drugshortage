@@ -140,6 +140,8 @@ function sanitizeForMarkdown(raw: string): string {
   return raw
     // Remove HTML comments (<!-- ... -->)
     .replace(/<!--[\s\S]*?-->/g, "")
+    // Remove <script> blocks — JSON-LD is already injected by buildJsonLd() in the page component
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
     // Remove JSX-style tags with curlybrace props (e.g. <Component {{...}}>...</Component>)
     // but preserve plain HTML like <figure>, <svg>, <iframe>
     .replace(/<\w+[^>]*\{\{[\s\S]*?\}\}[^>]*>[\s\S]*?<\/\w+>/g, "")
