@@ -1,0 +1,157 @@
+---
+title: "Der Engpass-Score: Wie engpassradar.ch Lieferengpässe nach Kritikalität bewertet"
+description: "Wie bewertet engpassradar.ch die Schwere eines Lieferengpasses? Dieser Artikel erklärt die Methodik des Engpass-Scores — vier Faktoren, ein Index von 0 bis 100."
+date: "2026-06-22"
+updatedAt: "2026-06-22"
+category: "Methodik"
+pillar: 4
+template: "faq-knowledge"
+keywords: ["engpass score medikamente methodik", "kritikalität lieferengpass bewertung", "engpassradar methodik"]
+dataAsOf: "2026-04-25"
+readingTime: "4 min"
+cta: "dashboard"
+author: "Henrik"
+ogImage: "https://engpassradar.ch/opengraph-image"
+canonical: "https://engpassradar.ch/blog/engpass-score-methodik-engpassradar"
+---
+
+Nicht jeder Lieferengpass ist gleich kritisch. Ein Präparat, das seit 18 Monaten fehlt, keine bekannten Alternativen hat und auf der Pflichtlagerliste des Bundes steht, stellt eine ganz andere Versorgungssituation dar als ein Engpass, der seit zwei Wochen gemeldet ist und bei dem der Zulassungsinhaber aktiv kommuniziert. [Engpassradar.ch](https://engpassradar.ch) bildet diesen Unterschied mit einem einzigen, nachvollziehbaren Wert ab: dem **Engpass-Score**.
+
+Dieser Artikel erklärt, wie der Score berechnet wird, welche vier Faktoren einfliessen und was der Wert in der täglichen Praxis bedeutet.
+
+> **Das Wichtigste in Kürze**
+> - Der Engpass-Score ist ein proprietärer Index von 0 bis 100, der die Kritikalität eines aktiven Lieferengpasses bewertet.
+> - Vier Faktoren fliessen ein: Transparenz des Zulassungsinhabers (bis 35 Punkte), Engpassdauer (bis 30 Punkte), fehlende Alternativen (bis 20 Punkte) und BWL-Pflichtlagerstatus (bis 15 Punkte).
+> - Ein Score ab 80 wird als «Kritisch» eingestuft; darunter folgen «Hoch» (60–79), «Mittel» (40–59) und «Niedrig» (unter 40).
+> - Der Score wird täglich neu berechnet — jede Änderung im Engpassstatus fliesst sofort ein.
+
+---
+
+## 1. Was ist der Engpass-Score auf engpassradar.ch?
+
+Der Engpass-Score ist ein numerischer Index, der jedem aktiven Lieferengpass in der Datenbank von engpassradar.ch automatisch zugewiesen wird. Er zeigt auf einen Blick, wie kritisch ein Engpass aus Versorgungsperspektive einzuschätzen ist — und ersetzt die rein chronologische Sortierung nach Meldedatum durch eine inhaltlich begründete Priorisierung.
+
+Der Wertebereich reicht von 0 (minimale Kritikalität) bis 100 (maximale Kritikalität). Ein hoher Score bedeutet: Der Engpass dauert lange, der Hersteller kommuniziert wenig, es gibt keine bekannten Alternativen, und das Präparat ist versorgungskritisch genug, um im strategischen Pflichtlager des Bundes (BWL) geführt zu werden.
+
+---
+
+## 2. Welche Faktoren fliessen in den Score ein?
+
+Der Score setzt sich aus vier unabhängig berechneten Teilwerten zusammen, die anschliessend addiert werden. Die Faktoren spiegeln jene Dimensionen wider, die aus Sicht der Versorgungssicherheit am stärksten ins Gewicht fallen — vergleichbar mit dem Ansatz der Europäischen Arzneimittel-Agentur (EMA), die bei ihrer Bewertung von Arzneimittelengpässen ebenfalls zwischen Verfügbarkeitsstatus, therapeutischer Substituierbarkeit und systemischer Bedeutung unterscheidet (EMA, *Guideline on the formalised risk assessment for the availability of medicinal products for human use*, 2022).
+
+Die vier Faktoren sind:
+
+| Faktor | Max. Punkte | Beschreibung |
+|---|---|---|
+| **Transparenz** | 35 | Wie aktiv kommuniziert der Zulassungsinhaber? |
+| **Dauer** | 30 | Wie lange besteht der Engpass bereits? |
+| **Keine Alternativen** | 20 | Existieren bekannte Alternativen? |
+| **Kritische Versorgung** | 15 | Ist das Präparat auf der BWL-Liste? |
+
+---
+
+## 3. Wie wird der Score gewichtet?
+
+Jeder Faktor wird nach einer festen Skala berechnet:
+
+**Transparenz (0–35 Punkte):** Dieser Faktor bewertet invers, wie gut der Zulassungsinhaber über den Engpass informiert. Die Bewertung basiert auf dem Statuscode, den das Meldesystem drugshortage.ch jedem Engpass zuweist:
+
+| Statuscode | Bedeutung | Punkte |
+|---|---|---|
+| 1 | Direktmeldung / volle Kooperation | 5 |
+| 2 | Teilweise Kooperation | 12 |
+| 3 | Eingeschränkte Kommunikation | 22 |
+| 4 | Keine Kommunikation («still»)  | 35 |
+| 5 | In Verhandlung | 20 |
+
+Je schlechter die Kommunikation, desto höher die Punktzahl — und desto höher der Gesamtscore.
+
+**Dauer (0–30 Punkte):** Die Zeit seit der Erstmeldung wird in Stufen bewertet:
+
+| Dauer seit Meldung | Punkte |
+|---|---|
+| ≤ 14 Tage | 5 |
+| 15–30 Tage | 10 |
+| 31–90 Tage | 17 |
+| 91–180 Tage | 22 |
+| 181–365 Tage | 27 |
+| > 365 Tage | 30 |
+
+**Keine Alternativen (0 oder 20 Punkte):** Sind in der ODDB-Datenbank keine Alternativen für das betroffene Präparat hinterlegt, werden 20 Punkte addiert. Sind Alternativen bekannt, entfallen diese Punkte vollständig.
+
+**Kritische Versorgung (0 oder 15 Punkte):** Ist das Präparat auf der Pflichtlagerliste des Bundesamts für wirtschaftliche Landesversorgung (BWL) verzeichnet, werden 15 Punkte addiert. Der BWL-Status ist ein direkter Indikator für die strategische Bedeutung eines Arzneimittels für die Schweizer Versorgungssicherheit — ähnlich der WHO-Liste unentbehrlicher Arzneimittel (*WHO Model List of Essential Medicines*, 23. Ausgabe, 2023), die ebenfalls nach therapeutischer Relevanz und Substituierbarkeit priorisiert.
+
+---
+
+## 4. Was bedeutet ein Score von 0 vs. 100?
+
+Ein **Score von 0** ist in der Praxis nicht erreichbar, da selbst ein frisch gemeldeter Engpass mit voller Kooperation (Statuscode 1) mindestens 5 Punkte für die Dauer und 5 Punkte für die Transparenz erhält. Ein sehr tiefer Score (z.B. unter 20) signalisiert: Der Engpass ist erst seit wenigen Tagen bekannt, der Hersteller kommuniziert proaktiv, und Alternativen sind verfügbar.
+
+Ein **Score von 100** tritt ein, wenn alle vier Faktoren ihr Maximum erreichen: Der Zulassungsinhaber kommuniziert gar nicht (35 Punkte), der Engpass besteht seit über einem Jahr (30 Punkte), es gibt keine bekannten Alternativen (20 Punkte), und das Präparat ist auf der BWL-Liste (15 Punkte). Ein solcher Engpass stellt die maximale Versorgungsbedrohung dar, die das Modell abbilden kann.
+
+Die Bewertungsstufen im Überblick:
+
+| Score | Stufe | Farbe |
+|---|---|---|
+| 80–100 | Kritisch | Rot |
+| 60–79 | Hoch | Orange |
+| 40–59 | Mittel | Gelb |
+| 0–39 | Niedrig | Grün |
+
+---
+
+## 5. Warum ist ein Score besser als eine reine chronologische Liste?
+
+Eine rein nach Meldedatum sortierte Engpassliste behandelt einen seit drei Jahren stummen Engpass ohne Alternativen identisch wie eine 48-Stunden-Meldung mit aktiver Herstellerkommunikation. Das ist für die operative Praxis in Apotheken und Spitalapotheken wenig hilfreich.
+
+Der Score adressiert dieses Problem, indem er vier klinisch und regulatorisch relevante Dimensionen zu einem einzigen Rang verdichtet. Fachpersonen können mit einem Blick erkennen, welche Engpässe in ihrer Beschaffungsplanung prioritär behandelt werden müssen — ohne jeden Eintrag einzeln analysieren zu müssen.
+
+Dieses Prinzip entspricht dem Ansatz etablierter Bewertungssysteme im Gesundheitswesen: Die EMA etwa nutzt für ihre Shortage-Severity-Klassifikation (*MSSG Shortage Severity Categorisation*, 2022) ebenfalls eine mehrdimensionale Matrix, die unter anderem therapeutische Substituierbarkeit und Kommunikationsstatus des Zulassungsinhabers einbezieht.
+
+---
+
+## 6. Wie oft wird der Score aktualisiert?
+
+Der Engpass-Score wird täglich neu berechnet. Sobald sich ein Parameter ändert — beispielsweise weil ein neuer Statuscode gemeldet wird, weil Alternativen in der ODDB hinterlegt werden oder weil ein weiterer Tag zur Engpassdauer hinzukommt — fliesst diese Änderung in die tägliche Neuberechnung ein.
+
+Der Score ist deshalb keine statische Kennzahl, sondern ein dynamischer Indikator, der den aktuellen Stand eines Engpasses zu jedem Zeitpunkt abbildet. Ein Engpass, der gestern noch «Mittel» war, kann heute «Hoch» sein — etwa wenn die Kommunikation des Zulassungsinhabers ausbleibt und die Meldefrist überschritten wird.
+
+---
+
+## 7. Kann der Score für eigene Analysen verwendet werden?
+
+Ja. Engpassradar.ch stellt eine API bereit, über die Fachpersonen und Institutionen die Engpassdaten — einschliesslich des Scores und der vier Teilwerte — strukturiert abfragen können. Das ist insbesondere für Spitalapotheken mit internem Monitoring-System, Einkaufsorganisationen und Softwareanbieter im Gesundheitswesen relevant.
+
+Details zur API, zu den verfügbaren Endpunkten und zu den Zugangsvoraussetzungen finden Sie unter [engpassradar.ch/api](https://engpassradar.ch/api). Für institutionelle Anfragen stehen wir unter der dort hinterlegten Kontaktadresse zur Verfügung.
+
+---
+
+## 8. Wo sehe ich den Score im Dashboard?
+
+Den Engpass-Score sehen Sie direkt im Dashboard für jeden aktiven Engpass. Er wird als Zahl (0–100) gemeinsam mit der farbigen Kritikalitätsstufe («Kritisch», «Hoch», «Mittel», «Niedrig») angezeigt. Über die Filterfunktion können Sie die Ansicht auf Engpässe ab einem bestimmten Score-Schwellenwert einschränken — beispielsweise nur Engpässe mit Score ≥ 60, also «Hoch» oder «Kritisch».
+
+Für jeden Engpass ist zudem eine Detailansicht abrufbar, die die vier Teilwerte (Transparenz, Dauer, Alternativen, BWL-Status) einzeln ausweist — damit Sie nachvollziehen können, welcher Faktor den Score in die Höhe treibt.
+
+---
+
+## Häufig gestellte Fragen
+
+### Welche Datenquellen liegen dem Score zugrunde?
+
+Der Score kombiniert Daten aus drei Quellen: die offiziellen Engpassmeldungen von drugshortage.ch (Swissmedic-Meldepflicht), die Pflichtlagerdaten des BWL sowie die Alternativenpräparate-Daten der ODDB-Arzneimitteldatenbank. Alle drei Quellen werden täglich importiert und synchronisiert.
+
+### Warum erhält Statuscode 4 («keine Kommunikation») mehr Punkte als Statuscode 5 («in Verhandlung»)?
+
+Weil fehlende Kommunikation aus Versorgungsperspektive problematischer ist als eine laufende Verhandlung. Statuscode 5 signalisiert, dass eine Lösung in Arbeit ist — das mildert die Kritikalität gegenüber einem vollständigen Schweigen des Zulassungsinhabers.
+
+### Ist der Score auch für gemeldete, aber bereits behobene Engpässe sichtbar?
+
+Nein. Der Score wird ausschliesslich für aktive, noch offene Engpässe berechnet und angezeigt. Abgeschlossene Engpässe in der historischen Datenbank führen keinen laufenden Score.
+
+### Kann der Score den klinischen Schweregrad eines Arzneimittels abbilden?
+
+Nein — das ist eine bewusste Abgrenzung. Der Score bewertet die Versorgungssituation eines Engpasses, nicht die therapeutische Bedeutung des Wirkstoffs selbst. Ein Vitamin-D-Präparat mit sehr schlechter Herstellerkommunikation, langer Dauer und ohne Alternativen kann rechnerisch einen höheren Score erreichen als ein Antibiotikum mit aktiver Kommunikation. Für die klinische Priorisierung sollten Sie den Score deshalb immer in Kombination mit Ihrer eigenen Einschätzung der therapeutischen Relevanz verwenden.
+
+---
+
+*Den Engpass-Score sehen Sie direkt im Dashboard für jeden aktiven Engpass. Die Daten werden täglich aktualisiert — aktuelle Werte jederzeit unter [engpassradar.ch](https://engpassradar.ch) abrufbar. [Methodik der Datenerhebung](https://engpassradar.ch/methodik).*
