@@ -456,6 +456,83 @@ export async function getShortagesByAtc(atc: string): Promise<Shortage[]> {
   return rows.map(mapShortage)
 }
 
+export type ProductAvailability = {
+  gtin: string
+  bezeichnung: string
+  firma: string | null
+  atcCode: string
+  authStatus: string | null
+  ppub: number | null
+  pexf: number | null
+  status: 'in_shortage' | 'off_market' | 'available'
+  shortage: Shortage | null
+}
+
+/**
+ * Full product catalog for an ATC code.
+ * Merges oddb_products (all registered drugs) with shortages + off_market_drugs.
+ * Falls back gracefully when the full ODDB import hasn't been run yet —
+ * in that case shortage-only rows appear without ODDB enrichment.
+ */
+export async function getAllProductsByAtc(atc: string): Promise<ProductAvailability[]> {
+  const [oddbProducts, shortages, offMarket] = await Promise.all([
+    prisma.oddbProduct.findMany({
+      where: { atcCode: { startsWith: atc } },
+      orderBy: { bezeichnungDe: 'asc' },
+    }),
+    prisma.shortage.findMany({
+      where: { isActive: true, atcCode: { startsWith: atc } },
+    }),
+    prisma.offMarketDrug.findMany({
+      where: { atcCode: { startsWith: atc } },
+    }),
+  ])
+
+  const shortageByGtin = new Map(shortages.map(s => [s.gtin, mapShortage(s)]))
+  const offMarketGtins = new Set(offMarket.map(o => o.gtin))
+  const seenGtins = new Set<string>()
+  const results: ProductAvailability[] = []
+
+  // All ODDB products for this ATC
+  for (const p of oddbProducts) {
+    seenGtins.add(p.gtin)
+    const shortage = shortageByGtin.get(p.gtin) ?? null
+    const isOffMarket = offMarketGtins.has(p.gtin) || p.authStatus === 'E' || p.authStatus === 'S'
+    const status: ProductAvailability['status'] = shortage ? 'in_shortage' : isOffMarket ? 'off_market' : 'available'
+    results.push({
+      gtin: p.gtin,
+      bezeichnung: p.bezeichnungDe,
+      firma: p.firma ?? shortage?.firma ?? null,
+      atcCode: p.atcCode,
+      authStatus: p.authStatus,
+      ppub: p.ppub ?? null,
+      pexf: p.pexf ?? null,
+      status,
+      shortage,
+    })
+  }
+
+  // Shortages without an ODDB row yet (full import not done or GTIN not in ODDB)
+  for (const s of shortages) {
+    if (seenGtins.has(s.gtin)) continue
+    results.push({
+      gtin: s.gtin,
+      bezeichnung: s.bezeichnung,
+      firma: s.firma,
+      atcCode: s.atcCode,
+      authStatus: null,
+      ppub: null,
+      pexf: null,
+      status: 'in_shortage',
+      shortage: mapShortage(s),
+    })
+  }
+
+  // Sort: in_shortage first → available → off_market
+  const order = { in_shortage: 0, available: 1, off_market: 2 }
+  return results.sort((a, b) => order[a.status] - order[b.status])
+}
+
 export async function getAllAtcCodes(): Promise<Array<{ atc: string; bezeichnung: string; lastSeenAt: Date | null }>> {
   const groups = await prisma.shortage.groupBy({
     by: ['atcCode'],
@@ -602,6 +679,7 @@ export async function upsertOddbPrices(
             pexf: p.pexf,
             // SALECD: 'A'=active → null, 'I'=inactive → 'E' (erloschen)
             ...(p.salecd != null ? { authStatus: p.salecd === 'I' ? 'E' : 'A' } : {}),
+            ...(p.firma ? { firma: p.firma } : {}),
           },
         })
       )

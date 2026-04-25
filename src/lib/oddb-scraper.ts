@@ -15,18 +15,24 @@ export interface OddbProductData {
 
 export interface OddbPriceData {
   gtin: string
-  ppub: number | null // Publikumspreis in CHF
-  pexf: number | null // Fabrikabgabepreis in CHF
+  ppub: number | null   // Publikumspreis in CHF
+  pexf: number | null   // Fabrikabgabepreis in CHF
   salecd: string | null // SALECD: 'A'=active, 'I'=inactive (erloschen/ausser handel)
+  firma: string | null  // Manufacturer name from ADRNA field
 }
 
-/** Fetch and parse article-level prices (PPUB / PEXF) from oddb_article.xml (~80 MB).
+/** Fetch and parse article-level data (prices + manufacturer) from oddb_article.xml (~80 MB).
  *
- * XML structure: <ARTICLE><ART><ARTBAR><CDTYP>E13</CDTYP><BC>07680...</BC></ARTBAR>
- *   <ARTPRI><PTYP>PPUB</PTYP><PRICE>12.35</PRICE></ARTPRI>...</ART></ARTICLE>
+ * XML structure: <ARTICLE><ART>
+ *   <ARTBAR><CDTYP>E13</CDTYP><BC>07680...</BC></ARTBAR>
+ *   <ARTPRI><PTYP>PPUB</PTYP><PRICE>12.35</PRICE></ARTPRI>
+ *   <ADRNA>Sandoz Pharmaceuticals AG</ADRNA>
+ *   <SALECD>A</SALECD>
+ * </ART></ARTICLE>
  *
  * GTIN: ARTBAR.BC where CDTYP=E13. BC is GTIN-14 (14 digits); Swiss GTIN-13 starts with 7680.
  * Strip leading 0 from GTIN-14 to get GTIN-13: "07680494930101" → "7680494930101".
+ * firma: ADRNA field (direct child of ART). Falls back to null if absent.
  */
 export async function fetchOddbArticlePrices(): Promise<OddbPriceData[]> {
   const response = await fetch(ODDB_ARTICLE_URL, {
@@ -63,6 +69,8 @@ export async function fetchOddbArticlePrices(): Promise<OddbPriceData[]> {
     if (!gtin) continue
 
     const salecd = art.SALECD ? String(art.SALECD).trim() : null
+    // ADRNA = Adressname (manufacturer). Direct child of ART in oddb_article.xml.
+    const firma = art.ADRNA ? String(art.ADRNA).trim() : null
 
     // Collect prices from ARTPRI entries
     const artpris = (Array.isArray(art.ARTPRI) ? art.ARTPRI : art.ARTPRI ? [art.ARTPRI] : []) as Record<string, unknown>[]
@@ -77,7 +85,7 @@ export async function fetchOddbArticlePrices(): Promise<OddbPriceData[]> {
       }
     }
 
-    results.push({ gtin, ppub, pexf, salecd })
+    results.push({ gtin, ppub, pexf, salecd, firma })
   }
   return results
 }
