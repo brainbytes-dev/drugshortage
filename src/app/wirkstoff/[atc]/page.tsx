@@ -6,9 +6,21 @@ import { getShortagesByAtc, getSubstanzByAtc, getAllProductsByAtc } from '@/lib/
 import { toSlug } from '@/lib/slug'
 import { WatchlistForm } from '@/components/watchlist-form'
 
-interface PageProps { params: Promise<{ atc: string }> }
+interface PageProps {
+  params: Promise<{ atc: string }>
+  searchParams: Promise<{ filter?: string }>
+}
 
 export const revalidate = 3600
+
+type FilterKey = 'all' | 'in_shortage' | 'available' | 'off_market'
+
+const FILTERS: { key: FilterKey; label: string; dot?: string }[] = [
+  { key: 'all',         label: 'Alle' },
+  { key: 'in_shortage', label: 'Im Engpass',    dot: 'bg-destructive' },
+  { key: 'available',   label: 'Verfügbar',     dot: 'bg-emerald-500' },
+  { key: 'off_market',  label: 'Ausser Handel', dot: 'bg-muted-foreground/50' },
+]
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { atc } = await params
@@ -31,8 +43,10 @@ const STATUS_LABEL: Record<string, { label: string; dot: string; text: string }>
   off_market:  { label: 'Ausser Handel', dot: 'bg-muted-foreground',  text: 'text-muted-foreground' },
 }
 
-export default async function WirkstoffPage({ params }: PageProps) {
-  const { atc } = await params
+export default async function WirkstoffPage({ params, searchParams }: PageProps) {
+  const [{ atc }, { filter: rawFilter }] = await Promise.all([params, searchParams])
+  const activeFilter: FilterKey = (FILTERS.find(f => f.key === rawFilter)?.key) ?? 'all'
+
   const [shortages, substanz, allProducts] = await Promise.all([
     getShortagesByAtc(atc),
     getSubstanzByAtc(atc).catch(() => null),
@@ -47,9 +61,18 @@ export default async function WirkstoffPage({ params }: PageProps) {
   const totalCatalog = allProducts.length
   const avgTage = Math.round(shortages.reduce((s, x) => s + (x.tageSeitMeldung ?? 0), 0) / shortageCount)
   const firmen = [...new Set(shortages.map(s => s.firma).filter(Boolean))]
-
-  // Only show the "full catalog" view if we have more products than just shortages
   const hasFullCatalog = totalCatalog > shortageCount
+
+  const filteredProducts = activeFilter === 'all'
+    ? allProducts
+    : allProducts.filter(p => p.status === activeFilter)
+
+  const filterCounts: Record<FilterKey, number> = {
+    all: totalCatalog,
+    in_shortage: shortageCount,
+    available: availableCount,
+    off_market: offMarketCount,
+  }
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -145,17 +168,46 @@ export default async function WirkstoffPage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* ─── Produktliste ─────────────────────────────────────────────── */}
-      <div className="max-w-4xl mx-auto px-4 py-10 space-y-10">
+      {/* ─── Filter + Produktliste ────────────────────────────────────── */}
+      <div className="max-w-4xl mx-auto px-4 py-10 space-y-6">
+
+        {/* Filter badges */}
+        {hasFullCatalog && (
+          <div className="flex flex-wrap items-center gap-2">
+            {FILTERS.map(f => {
+              const count = filterCounts[f.key]
+              if (count === 0 && f.key !== 'all') return null
+              const isActive = activeFilter === f.key
+              const href = f.key === 'all' ? `/wirkstoff/${atc}` : `/wirkstoff/${atc}?filter=${f.key}`
+              return (
+                <Link
+                  key={f.key}
+                  href={href}
+                  scroll={false}
+                  className={[
+                    'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors duration-150',
+                    isActive
+                      ? 'border-foreground bg-foreground text-background'
+                      : 'border-border/60 bg-muted/30 text-muted-foreground hover:text-foreground hover:border-border',
+                  ].join(' ')}
+                >
+                  {f.dot && <span className={`h-1.5 w-1.5 rounded-full ${f.dot} ${isActive ? 'opacity-80' : ''}`} />}
+                  {f.label}
+                  <span className={`tabular-nums ${isActive ? 'opacity-70' : 'opacity-60'}`}>{count}</span>
+                </Link>
+              )
+            })}
+          </div>
+        )}
 
         {hasFullCatalog ? (
-          /* Full catalog view — 3 status groups */
-          <section className="space-y-3">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-              Alle Präparate ({totalCatalog})
-            </h2>
+          <section className="space-y-1">
+            <p className="text-xs text-muted-foreground pb-1">
+              {filteredProducts.length} Präparat{filteredProducts.length !== 1 ? 'e' : ''}
+              {activeFilter !== 'all' ? ` (gefiltert von ${totalCatalog})` : ''}
+            </p>
             <div className="divide-y divide-border/40">
-              {allProducts.map(p => {
+              {filteredProducts.map(p => {
                 const st = STATUS_LABEL[p.status]
                 const href = p.shortage
                   ? `/medikament/${p.shortage.slug ?? toSlug(p.bezeichnung)}`
