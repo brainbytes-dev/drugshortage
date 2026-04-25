@@ -1,13 +1,11 @@
 import { MetadataRoute } from 'next'
 import { getAllDrugSlugs, getAllAtcCodes } from '@/lib/db'
 import { getCachedLRU } from '@/lib/cache-lru'
-import { getAllPosts } from '@/lib/blog'
 
 // ✅ Enable ISR - regenerate sitemap every 24 hours
 export const revalidate = 86400 // 24 hours
 
 const STATIC_PAGES = [
-  { path: '/blog',              priority: 0.8, changeFrequency: 'weekly'  as const },
   { path: '/methodik',          priority: 0.7, changeFrequency: 'monthly' as const },
   { path: '/datenschutz',       priority: 0.3, changeFrequency: 'monthly' as const },
   { path: '/nutzungsbedingungen', priority: 0.3, changeFrequency: 'monthly' as const },
@@ -28,11 +26,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     3600 // 1 hour cache
   )
 
-  const blogPosts = getAllPosts()
-
   // ✅ Pre-allocate array with exact size
   const result: MetadataRoute.Sitemap = new Array(
-    1 + STATIC_PAGES.length + blogPosts.length + drugSlugs.length + atcCodes.length
+    1 + STATIC_PAGES.length + drugSlugs.length + atcCodes.length
   )
   let i = 0
 
@@ -51,16 +47,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: now,
       changeFrequency: page.changeFrequency,
       priority: page.priority,
-    }
-  }
-
-  // Blog posts
-  for (const post of blogPosts) {
-    result[i++] = {
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: post.updatedAt ? new Date(post.updatedAt) : (post.date ? new Date(post.date) : now),
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
     }
   }
 
