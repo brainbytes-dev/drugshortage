@@ -128,6 +128,7 @@ model OddbProduct {
   prodno          String   // Swissmedic product number e.g. "0060201"
   bezeichnungDe   String
   atcCode         String
+  firma           String?  // Manufacturer name — sourced from oddb_article.xml (ADRNA field)
   substanz        String?
   zusammensetzung String?
   ppub            Float?   // Publikumspreis in CHF (public price incl. VAT)
@@ -135,6 +136,8 @@ model OddbProduct {
   authStatus      String?  // Swissmedic authorization status: 'A'=active, 'E'=erloschen, 'S'=sistiert etc.
   fetchedAt       DateTime @updatedAt
 
+  // ATC lookup is the hot path for wirkstoff pages — full product catalog by ATC
+  @@index([atcCode], map: "idx_oddb_atc")
   @@map("oddb_products")
 }
 

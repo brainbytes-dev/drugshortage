@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Content & FAQ Konzept — engpass.radar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:       oklch(0.985 0.002 240);
+    --fg:       oklch(0.18 0.01 240);
+    --muted:    oklch(0.45 0.01 240);
+    --muted-2:  oklch(0.72 0.01 240);
+    --card:     oklch(1 0 0);
+    --border:   oklch(0.91 0.005 240);
+    --border-2: oklch(0.84 0.005 240);
+    --primary:  oklch(0.52 0.09 200);
+    --primary-soft: oklch(0.52 0.09 200 / .08);
+    --destructive: oklch(0.58 0.21 27);
+    --warning:  oklch(0.75 0.16 75);
+    --success:  oklch(0.62 0.14 150);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:var(--bg); color:var(--fg);
+    font-size:15px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace; font-feature-settings:"tnum"}
+  .wrap{max-width:860px; margin:0 auto; padding:72px 32px 120px}
+
+  /* brand header */
+  .brand{
+    display:flex; align-items:center; justify-content:space-between;
+    font-weight:600; letter-spacing:-0.01em; font-size:15px;
+    padding-bottom:28px; border-bottom:1px solid var(--border);
+  }
+  .brand .logo{text-transform:lowercase}
+  .brand .logo .dot{color:var(--primary)}
+  .brand .meta{font-size:11px; text-transform:uppercase; letter-spacing:.18em; color:var(--muted)}
+
+  /* doc title */
+  .title-block{margin:48px 0 56px}
+  .eyebrow{
+    font-size:11px; text-transform:uppercase; letter-spacing:.18em;
+    color:var(--primary); font-weight:600; margin-bottom:20px
+  }
+  h1{
+    font-size:clamp(34px,4.2vw,48px); font-weight:700;
+    letter-spacing:-0.025em; line-height:1.08; margin:0 0 20px;
+  }
+  .lede{font-size:18px; color:var(--muted); max-width:640px; line-height:1.55}
+
+  /* sections */
+  section{margin-top:64px}
+  h2{
+    font-size:22px; font-weight:600; letter-spacing:-0.015em;
+    margin:0 0 8px; display:flex; align-items:baseline; gap:14px;
+  }
+  h2 .num{
+    font-family:'JetBrains Mono',monospace; font-size:12px;
+    color:var(--primary); font-weight:500; letter-spacing:0;
+  }
+  h2 + .sub{color:var(--muted); margin:0 0 28px; font-size:14px}
+
+  h3{font-size:15px; font-weight:600; margin:28px 0 10px; letter-spacing:-0.005em}
+
+  p{margin:0 0 14px; color:var(--fg)}
+  p.muted{color:var(--muted)}
+  ul{margin:0 0 14px; padding-left:20px}
+  li{margin-bottom:6px}
+  li::marker{color:var(--muted-2)}
+
+  /* tables */
+  table{
+    width:100%; border-collapse:collapse; font-size:13.5px;
+    margin:16px 0 20px; background:var(--card);
+    border:1px solid var(--border); border-radius:10px; overflow:hidden;
+  }
+  th,td{
+    text-align:left; padding:12px 16px; vertical-align:top;
+    border-bottom:1px solid var(--border);
+  }
+  th{
+    font-weight:600; font-size:11px; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--muted); background:oklch(0.985 0.002 240);
+  }
+  tr:last-child td{border-bottom:0}
+  td .mono{font-size:12.5px}
+
+  /* principle cards */
+  .principles{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:1px; background:var(--border); border:1px solid var(--border);
+    border-radius:12px; overflow:hidden; margin:16px 0 24px;
+  }
+  .principle{background:var(--card); padding:22px 22px 24px}
+  .principle .k{
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    color:var(--primary); margin-bottom:10px;
+  }
+  .principle h4{margin:0 0 8px; font-size:14px; font-weight:600; letter-spacing:-0.005em}
+  .principle p{margin:0; font-size:13px; color:var(--muted); line-height:1.55}
+
+  /* FAQ rewrite block */
+  .faq{
+    margin:20px 0 10px; border-top:1px solid var(--border);
+  }
+  .faq-item{padding:24px 0; border-bottom:1px solid var(--border)}
+  .faq-q{
+    display:flex; align-items:baseline; gap:14px;
+    font-weight:600; font-size:16px; margin-bottom:10px;
+    letter-spacing:-0.005em;
+  }
+  .faq-q .idx{
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    color:var(--primary); font-weight:500; min-width:28px;
+  }
+  .faq-a{color:var(--fg); font-size:14.5px; padding-left:42px; line-height:1.62}
+  .faq-a + .faq-note{
+    padding-left:42px; margin-top:10px; font-size:12px; color:var(--muted);
+    display:flex; gap:10px; align-items:baseline;
+  }
+  .faq-note .tag{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:.1em;
+    color:var(--primary); padding:2px 8px;
+    background:var(--primary-soft); border-radius:4px;
+  }
+
+  /* before/after */
+  .ba{
+    display:grid; grid-template-columns:1fr 1fr; gap:1px;
+    background:var(--border); border:1px solid var(--border);
+    border-radius:10px; overflow:hidden; margin:14px 0 20px;
+  }
+  .ba > div{background:var(--card); padding:18px 20px}
+  .ba .label{
+    font-family:'JetBrains Mono',monospace; font-size:10.5px;
+    text-transform:uppercase; letter-spacing:.12em;
+    margin-bottom:10px; display:inline-flex; align-items:center; gap:6px;
+  }
+  .ba .before .label{color:var(--destructive)}
+  .ba .after .label{color:var(--success)}
+  .ba p{font-size:13.5px; margin:0; color:var(--fg); line-height:1.55}
+  .ba .before p{color:var(--muted)}
+
+  /* callout */
+  .callout{
+    border-left:2px solid var(--primary);
+    padding:14px 0 14px 20px; margin:20px 0;
+    color:var(--fg); font-size:14.5px;
+  }
+  .callout strong{color:var(--primary); font-weight:600}
+
+  /* content matrix */
+  .matrix{font-size:13px}
+  .matrix td{vertical-align:top}
+  .matrix td:first-child{white-space:nowrap; font-weight:600}
+  .pill{
+    display:inline-block; padding:2px 8px; border-radius:999px;
+    font-size:11px; font-weight:500; letter-spacing:.02em;
+    background:var(--primary-soft); color:var(--primary);
+  }
+  .pill.gray{background:oklch(0.91 0.005 240); color:var(--muted)}
+
+  /* footer */
+  footer{
+    margin-top:96px; padding-top:28px; border-top:1px solid var(--border);
+    font-size:12px; color:var(--muted); display:flex; justify-content:space-between;
+  }
+
+  @media (max-width:640px){
+    .wrap{padding:40px 20px 80px}
+    .ba{grid-template-columns:1fr}
+    .faq-a, .faq-note{padding-left:0}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">
+    <div class="logo">engpass<span class="dot">.radar</span></div>
+    <div class="meta">Interndokument · 21.04.2026</div>
+  </div>
+
+  <div class="title-block">
+    <div class="eyebrow">Konzept 01 · Content &amp; FAQ</div>
+    <h1>Was steht wo — und warum.</h1>
+    <p class="lede">
+      Ein Content-Gerüst und ein FAQ-Neuentwurf, ausgerichtet auf
+      Spitalapotheker:innen, Offizin und Fachjournalisten. Ziel: Vertrauen
+      durch Methodik und Daten — nicht durch Marketing.
+    </p>
+  </div>
+
+  <!-- ─── 01 Leitprinzipien ─────────────────────────────── -->
+  <section>
+    <h2><span class="num">01</span> Leitprinzipien</h2>
+    <p class="sub">Fünf Filter, die jeder Content-Baustein bestehen muss, bevor er live geht.</p>
+
+    <div class="principles">
+      <div class="principle">
+        <div class="k">P1</div>
+        <h4>Datum vor Deutung</h4>
+        <p>Jede Aussage führt mit einer Zahl, einem Datum oder einer messbaren Tatsache. Keine redaktionellen Wertungen wie „kritisch“ oder „alarmierend“.</p>
+      </div>
+      <div class="principle">
+        <div class="k">P2</div>
+        <h4>Methodik vor Preis</h4>
+        <p>Institutionelle Leser:innen fragen zuerst nach Quelle, Takt und Pflege — nicht nach Kosten. Mit Methodik führen, Kostenfreiheit als Fussnote.</p>
+      </div>
+      <div class="principle">
+        <div class="k">P3</div>
+        <h4>Ein Ton, durchgängig</h4>
+        <p>Klinisch-sachlich, zweite Person formal, Schweizer Rechtschreibung. Kein „revolutionär“, kein „KI-gestützt“, kein Imperativ-Marketing.</p>
+      </div>
+      <div class="principle">
+        <div class="k">P4</div>
+        <h4>Respekt gegenüber der Primärquelle</h4>
+        <p>drugshortage.ch ist die Primärquelle, BWL und ODDB supplementieren. Keine Vergleichsangriffe, keine impliziten Abwertungen.</p>
+      </div>
+      <div class="principle">
+        <div class="k">P5</div>
+        <h4>Ein Versprechen, das haltbar ist</h4>
+        <p>„Täglich aktualisiert“ statt fixer Uhrzeit. „Öffentlich zugänglich“ statt „gratis“. Nichts versprechen, was ein einzelner Scraper-Ausfall kippen kann.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 02 Content-Matrix ─────────────────────────────── -->
+  <section>
+    <h2><span class="num">02</span> Content-Inventar</h2>
+    <p class="sub">Wo welcher Inhalt hingehört — und wen er konvertieren soll.</p>
+
+    <table class="matrix">
+      <thead>
+        <tr>
+          <th>Ort</th>
+          <th>Funktion</th>
+          <th>Zielgruppe</th>
+          <th>Conversion</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Hero</td>
+          <td>Value Proposition in einem Atemzug. Eine Zahl, eine Quelle, ein Takt.</td>
+          <td>Alle (Erstkontakt)</td>
+          <td>Scroll → Dashboard</td>
+        </tr>
+        <tr>
+          <td>Dashboard</td>
+          <td>Das Produkt. Such-, Filter- und Zeitreihen-Interface.</td>
+          <td>Apotheker:innen täglich</td>
+          <td>Bookmark / Wiederkehr</td>
+        </tr>
+        <tr>
+          <td>Wie es funktioniert</td>
+          <td>Nutzen in drei Schritten — nicht Prozess, sondern Ergebnis.</td>
+          <td>Zweifler / Neukontakt</td>
+          <td>Vertrauen → Scroll</td>
+        </tr>
+        <tr>
+          <td>Was Sie hier finden</td>
+          <td>Feature-Inventar. Implizite Differenzierung ohne Namensnennung.</td>
+          <td>Evaluierende</td>
+          <td>Newsletter / Methodik</td>
+        </tr>
+        <tr>
+          <td>/methodik</td>
+          <td>Langform: Quellen, Takt, Score-Formel, Limitierungen. Auditierbar.</td>
+          <td>Institutionelle, Journalisten</td>
+          <td>Zitation, GSASA-Pitch</td>
+        </tr>
+        <tr>
+          <td>FAQ (Homepage)</td>
+          <td>Die fünf Fragen, die vor dem ersten Bookmark geklärt sein müssen.</td>
+          <td>Skeptiker:innen</td>
+          <td>Vertrauen → Abonnement</td>
+        </tr>
+        <tr>
+          <td>/blog</td>
+          <td>Datenanalysen aus Bestandsdaten. SEO + Zitationsanker.</td>
+          <td>Fachpresse, Forschung</td>
+          <td>Backlinks, Newsletter</td>
+        </tr>
+        <tr>
+          <td>Monatsbericht (PDF)</td>
+          <td>Trojanisches Pferd in Redaktionen. Zitierbar, archivierbar.</td>
+          <td>Medien, Behörden</td>
+          <td>Presseplatzierung</td>
+        </tr>
+        <tr>
+          <td>Engpass-Signal (Newsletter)</td>
+          <td>Wöchentliches Signal — Zahl, Schwerpunkt, Aktion.</td>
+          <td>Spitalapotheker:innen</td>
+          <td>Retention (N-Star)</td>
+        </tr>
+        <tr>
+          <td>/api</td>
+          <td>Kommerzielle Landingpage. Tiers, Integration, DPA.</td>
+          <td>Software-Anbieter, IT</td>
+          <td>Stripe / Data-License</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Rolle der FAQ:</strong> Sie ist keine Feature-Liste in Frageform.
+      Sie ist der Ort, an dem Einwände ausgeräumt werden, die sonst zum
+      Tab-Schliessen führen — „Woher stammt das?“, „Kann ich das im Spital verwenden?“,
+      „Wer haftet?“. Alles, was darüber hinausgeht, gehört auf <span class="mono">/methodik</span> oder
+      in den Blog.
+    </div>
+  </section>
+
+  <!-- ─── 03 FAQ-Neuentwurf ─────────────────────────────── -->
+  <section>
+    <h2><span class="num">03</span> FAQ — Neuentwurf (8 Fragen)</h2>
+    <p class="sub">Von 5 auf 8 erweitert. Reihenfolge nach Häufigkeit des echten Einwands, nicht nach Angenehmheit.</p>
+
+    <h3>Auswahllogik</h3>
+    <ul>
+      <li><strong>Herkunft</strong> zuerst (Wer / Woher / Wozu) — das ist die erste Frage in Healthcare.</li>
+      <li><strong>Aktualität</strong> und <strong>Vollständigkeit</strong> direkt danach — Vertrauen in die Daten.</li>
+      <li><strong>Kosten und Geschäftsmodell</strong> mitten drin, nicht versteckt — sonst wirkt es zwielichtig.</li>
+      <li><strong>Haftung</strong> und <strong>Nutzung im Betrieb</strong> zum Schluss — das sind die prozeduralen Fragen.</li>
+    </ul>
+
+    <div class="faq">
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="idx">01</span><span>Wer steckt hinter engpass.radar?</span></div>
+        <div class="faq-a">
+          engpass.radar ist ein unabhängiges Projekt von Henrik Rühe, Neurologe in
+          der Schweiz. Kein Pharma-Sponsor, keine Werbung, keine Affiliate-Links.
+          Entwickelt aus klinischem Eigenbedarf und in der Freizeit betrieben.
+          Der Quellcode ist öffentlich einsehbar auf GitHub.
+        </div>
+        <div class="faq-note"><span class="tag">Trust</span>Herkunft + Unabhängigkeit in zwei Sätzen — die stärkste Frage für Institutionen.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="idx">02</span><span>Woher stammen die Daten?</span></div>
+        <div class="faq-a">
+          Die Engpass-Meldungen kommen primär von drugshortage.ch. Ergänzend
+          werden die Daten des Bundesamts für wirtschaftliche Landesversorgung
+          (BWL) und die Shortage-Liste der Spitalpharmazie des Universitätsspitals
+          Basel einbezogen. Wirkstoff, ATC-Code, Swissmedic-Nummer und GTIN
+          stammen aus der öffentlichen ODDB-Referenzdatenbank.
+        </div>
+        <div class="faq-note"><span class="tag">Methodik</span>Alle vier Quellen namentlich, in Reihenfolge ihrer Rolle.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="idx">03</span><span>Wie aktuell sind die Daten?</span></div>
+        <div class="faq-a">
+          Die Daten werden täglich automatisch abgeglichen. Am Seitenkopf sehen Sie
+          jederzeit, wann der letzte Import gelaufen ist. Sollte ein Abgleich
+          einmal ausfallen, wird das am Zeitstempel sichtbar — kein nachgezogener
+          Stand wird als aktuell ausgewiesen.
+        </div>
+        <div class="faq-note"><span class="tag">Haltbar</span>„Täglich“ ohne fixe Uhrzeit — operativer Puffer.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="idx">04</span><span>Ist die Liste vollständig?</span></div>
+        <div class="faq-a">
+          engpass.radar zeigt, was in den aggregierten Quellen gemeldet ist —
+          nicht mehr und nicht weniger. Nicht gemeldete Engpässe erscheinen hier
+          nicht. Für behördlich massgebliche Informationen gilt immer die
+          Primärquelle.
+        </div>
+        <div class="faq-note"><span class="tag">Ehrlich</span>Limitierung benannt, bevor ein Nutzer sie entdeckt.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="idx">05</span><span>Kostet das etwas?</span></div>
+        <div class="faq-a">
+          Das Dashboard, die Suche, die Detailseiten, der CSV-Export und die
+          Basis-API sind öffentlich zugänglich. Kostenpflichtig sind höhere
+          API-Kontingente, White-Label-Integrationen und SLA-gebundene
+          Institutional-Pläne — adressiert an Software-Anbieter und
+          Spitalapotheken-Ketten. Details auf <span class="mono">/api</span>.
+        </div>
+        <div class="faq-note"><span class="tag">Positionierung</span>„Öffentlich zugänglich“ statt „gratis“. Paywall transparent, nicht versteckt.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="idx">06</span><span>Kann ich die Daten weiterverarbeiten oder in ein eigenes System einbinden?</span></div>
+        <div class="faq-a">
+          Ja. Ein CSV-Export ist verfügbar, eine öffentliche REST-API steht unter
+          <span class="mono">engpassradar.ch/api-docs</span> bereit. Der Free-Tier funktioniert ohne
+          Anmeldung. Für produktive Integrationen gibt es
+          Professional- und Institutional-Pläne mit höheren Kontingenten und SLA.
+        </div>
+        <div class="faq-note"><span class="tag">Aligned</span>Status konsistent mit JSON-LD — der bisherige Widerspruch ist aufgelöst.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="idx">07</span><span>Darf ich engpass.radar im Spital- oder Apotheken-Alltag einsetzen?</span></div>
+        <div class="faq-a">
+          Ja — als Informations- und Monitoring-Werkzeug. Für pharmazeutische
+          oder klinische Entscheide ist die Primärquelle (drugshortage.ch,
+          Swissmedic, BWL) massgeblich. Der Monatsbericht und der
+          Engpass-Signal-Newsletter sind zitierfähig und dürfen intern
+          weitergegeben werden.
+        </div>
+        <div class="faq-note"><span class="tag">Use-Case</span>Klärt den prozeduralen Einwand explizit, statt ihn zu umgehen.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q"><span class="idx">08</span><span>Haftung und Gewähr</span></div>
+        <div class="faq-a">
+          engpass.radar ist ein Informationswerkzeug, kein behördliches Register.
+          Anzeige, Score und Alternativen-Hinweise werden automatisiert
+          aggregiert; Fehler in der Primärquelle werden unverändert übernommen.
+          Für klinische, pharmazeutische oder regulatorische Entscheidungen
+          gelten ausschliesslich die offiziellen Quellen.
+        </div>
+        <div class="faq-note"><span class="tag">Rechtlich</span>Haftungsausschluss prägnant, ohne juristisches Disclaimer-Inferno.</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── 04 Vorher/Nachher ─────────────────────────────── -->
+  <section>
+    <h2><span class="num">04</span> Fixes gegenüber Bestand</h2>
+    <p class="sub">Drei konkrete Stellen, an denen der Text aktuell gegen die eigenen Prinzipien arbeitet.</p>
+
+    <h3>Datenquelle — unterrepräsentiert</h3>
+    <div class="ba">
+      <div class="before">
+        <div class="label">Jetzt</div>
+        <p>„Engpass-Meldungen kommen direkt von drugshortage.ch und dem Bundesamt für wirtschaftliche Landesversorgung (BWL). Wirkstoff- und ATC-Daten werden automatisch aus öffentlichen Referenzdatenbanken ergänzt.“</p>
+      </div>
+      <div class="after">
+        <div class="label">Vorschlag</div>
+        <p>„Die Engpass-Meldungen kommen primär von drugshortage.ch. Ergänzend: BWL (Pflichtlager), USB Basel Spitalpharmazie (PDF-Liste) und ODDB (Referenzdaten für Wirkstoff, ATC, Swissmedic-Nr. und GTIN).“</p>
+      </div>
+    </div>
+
+    <h3>API-Status — Widerspruch zum JSON-LD</h3>
+    <div class="ba">
+      <div class="before">
+        <div class="label">Jetzt</div>
+        <p>Sichtbarer FAQ-Text: „CSV-Export ist verfügbar. Eine öffentliche REST API steht unter /api-docs bereit — kostenlos, ohne Registrierung.“ — aber im Repo ist die Paid-API live.</p>
+      </div>
+      <div class="after">
+        <div class="label">Vorschlag</div>
+        <p>Basis öffentlich, höhere Kontingente kostenpflichtig — Tier-Modell nennen, Link auf <span class="mono">/api</span>. Eine Zeile, keine Werbung.</p>
+      </div>
+    </div>
+
+    <h3>„Warum existiert das?“ — fehlt ganz</h3>
+    <div class="ba">
+      <div class="before">
+        <div class="label">Jetzt</div>
+        <p>Kein Satz zur Herkunft auf der Homepage. Das stärkste Trust-Signal ist im FAQ-Akkordeon begraben.</p>
+      </div>
+      <div class="after">
+        <div class="label">Vorschlag</div>
+        <p>Frage 01 der neuen FAQ macht die Herkunft sichtbar. Zusätzlich ein kurzer Herkunfts-Satz auf <span class="mono">/methodik</span> und im Footer.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 05 Priorisierung ─────────────────────────────── -->
+  <section>
+    <h2><span class="num">05</span> Umsetzung — Reihenfolge</h2>
+    <p class="sub">Nach Hebel × Aufwand. Nichts davon kostet Geld, alles ist Copy-Edit oder Reorganisation.</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40px">#</th>
+          <th>Aufgabe</th>
+          <th style="width:100px">Aufwand</th>
+          <th style="width:90px">Hebel</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="mono">01</td>
+          <td>FAQ-Neuentwurf live — 8 Fragen, neue Reihenfolge, konsistent mit JSON-LD</td>
+          <td class="mono">45 min</td>
+          <td><span class="pill">sehr hoch</span></td>
+        </tr>
+        <tr>
+          <td class="mono">02</td>
+          <td>Header-Navigation (Dashboard · Methodik · API · Bericht · FAQ)</td>
+          <td class="mono">30 min</td>
+          <td><span class="pill">sehr hoch</span></td>
+        </tr>
+        <tr>
+          <td class="mono">03</td>
+          <td>FAQ-Schema (JSON-LD) auf neue 8 Fragen angleichen</td>
+          <td class="mono">15 min</td>
+          <td><span class="pill">hoch</span></td>
+        </tr>
+        <tr>
+          <td class="mono">04</td>
+          <td>Methodik-Seite vom Footer in Header-Nav heben</td>
+          <td class="mono">10 min</td>
+          <td><span class="pill">hoch</span></td>
+        </tr>
+        <tr>
+          <td class="mono">05</td>
+          <td>„Wie es funktioniert“ in Blockform belassen, aber Ghost-Nummern schärfer setzen</td>
+          <td class="mono">20 min</td>
+          <td><span class="pill gray">mittel</span></td>
+        </tr>
+        <tr>
+          <td class="mono">06</td>
+          <td>Blog-Post #1 („Die 20 am häufigsten fehlenden Medikamente 2025/2026“) — aus Bestandsdaten</td>
+          <td class="mono">2 h</td>
+          <td><span class="pill">hoch</span></td>
+        </tr>
+        <tr>
+          <td class="mono">07</td>
+          <td>Monatsbericht-PDF-Route <span class="mono">/bericht/april-2026</span> vorbereiten</td>
+          <td class="mono">2 h</td>
+          <td><span class="pill">hoch</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Ein einziger Grundsatz:</strong> Jede Ergänzung am Content muss aus
+      Bestandsdaten produzierbar sein. Keine spekulativen Inhalte, keine
+      Platzhalter, keine Ankündigungen. Nur veröffentlichen, was sich belegen
+      lässt — das ist die Grundlage für Zitationsfähigkeit und für den Ruf
+      als „zuverlässiges Signal“.
+    </div>
+  </section>
+
+  <footer>
+    <div>engpass.radar · Content &amp; FAQ Konzept</div>
+    <div class="mono">v1 · 21.04.2026</div>
+  </footer>
+
+</div>
+</body>
+</html>

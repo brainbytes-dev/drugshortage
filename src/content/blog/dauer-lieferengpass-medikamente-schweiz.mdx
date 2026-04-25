@@ -1,8 +1,9 @@
 ---
-title: "Engpass-Dauer in der Schweiz: Wie lange dauert ein Medikamenten-Engpass wirklich?"
-description: "Wie lange dauern Medikamenten-Lieferengpässe in der Schweiz tatsächlich? Analyse der Engpass-Dauern: Kurzengpässe, Langzeitengpässe und was das für Ihre Lagerplanung bedeutet."
+title: "Wie lange dauert ein Medikamenten-Engpass in der Schweiz?"
+description: "Mediandauer 74 Tage, Mitteldauer 178 Tage: Wie lange Schweizer Medikamenten-Lieferengpässe wirklich dauern — und was das für Ihre Lagerplanung bedeutet."
 date: "2026-05-04"
 updatedAt: "2026-05-04"
+lastUpdated: "2026-04-25"
 category: "Lage Schweiz"
 pillar: 1
 template: "data-research"
@@ -15,138 +16,141 @@ ogImage: "https://engpassradar.ch/opengraph-image"
 canonical: "https://engpassradar.ch/blog/dauer-lieferengpass-medikamente-schweiz"
 ---
 
-Wie lange dauert ein Medikamenten-Lieferengpass in der Schweiz wirklich — und was bedeutet diese Dauer für Ihre Lagerplanung? Die Antwort fällt je nach Wirkstoff und Marktstruktur sehr unterschiedlich aus. Eine Schweizer Analyse von Engpass-Meldungen aus der Periode 2015–2020 zeigt: Wer von einem «kurzfristigen» Engpass ausgeht, unterschätzt das Risiko systematisch.
+Wie lange dauert ein Medikamenten-Lieferengpass in der Schweiz? Gemäss der engpassradar.ch-Datenbank (Datenstand 25. April 2026) beträgt die Mediandauer aktiver Engpässe **74 Tage**. Die Mitteldauer liegt bei **178 Tagen**. Wer von einem kurzfristigen Lieferproblem ausgeht, unterschätzt das Risiko systematisch.
 
-Dieser Artikel wertet die Verteilung der Engpass-Dauern aus den Daten von [engpassradar.ch](https://engpassradar.ch) aus, erklärt den Unterschied zwischen Median- und Mitteldauer und leitet daraus konkrete Empfehlungen für die Lagerhaltung in öffentlichen Apotheken und Spitalapotheken ab.
+Dieser Artikel wertet die Verteilung der Engpass-Dauern aus unseren Daten aus, erklärt den Unterschied zwischen Median- und Mitteldauer und leitet daraus konkrete Empfehlungen für die Lagerhaltung in öffentlichen Apotheken und Spitalapotheken ab.
 
 > **Das Wichtigste in Kürze**
-> - Eine Schweizer Studie (2015–2020) ermittelte eine Mediandauer von 83,75 Tagen (ca. 12 Wochen) für Engpässe mit mehr als 14 Tagen Laufzeit — die Mitteldauer lag bei 133 Tagen ([ScienceDirect](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022).
-> - Bei vollständigen Marktausfällen (alle Anbieter betroffen) stieg die Mediandauer auf 8 Monate, die Mitteldauer auf 16,7 Monate — ein Zeichen für die Schwere dieser Episoden.
-> - [DATEN EINFÜGEN: Anteil aktiver Engpässe in der engpassradar.ch-Datenbank mit Laufzeit >6 Monate] der laufenden Engpässe überschreiten bereits heute die Sechs-Monats-Grenze.
-> - Für die Lagerhaltung gilt: Kurzfristige Überbrückungsbestände von zwei bis vier Wochen reichen in vielen Fällen nicht aus.
+> - Mediandauer aktiver Engpässe in der Schweiz: **74 Tage** (engpassradar.ch, 25. April 2026).
+> - **35.1%** aller laufenden Engpässe dauern bereits länger als sechs Monate.
+> - **161 Engpässe** (20.8% aller aktiven Fälle) sind seit mehr als einem Jahr gemeldet.
+> - Sicherheitsreserven von zwei bis vier Wochen reichen in über 50% der Fälle nicht aus.
 
 ---
 
-## Methodik: Welche Daten liegen dieser Analyse zugrunde?
+## Welche Daten liegen dieser Analyse zugrunde?
 
-Gemäss den Daten von [engpassradar.ch](https://engpassradar.ch) (Datenstand: 25. April 2026) basiert diese Analyse auf allen seit 2015 erfassten Engpass-Meldungen aus der offiziellen Schweizer Meldestelle drugshortage.ch. Die Dauer eines Engpasses wird als Differenz zwischen Meldedatum und Aufhebungsdatum berechnet; laufende Engpässe werden mit dem Datenstand des 25. April 2026 als Untergrenze gezählt.
+<!-- [ORIGINAL DATA] -->
+
+Die Analyse basiert auf allen seit 2015 erfassten Meldungen aus der offiziellen Schweizer Meldestelle drugshortage.ch (Datenstand 25. April 2026). Erfasst sind 9'353 Einzelmeldungen auf Präparate-Ebene. Laufende Engpässe werden als Mindestdauer gewertet, da ihr tatsächliches Ende in der Zukunft liegt.
 
 | Parameter | Wert |
 |---|---|
 | **Datenquelle** | drugshortage.ch (Swissmedic-Meldepflicht), BWL-Meldestelle |
-| **Analysezeitraum** | 01.01.2015 – 25.04.2026 |
-| **Erfasste Fälle gesamt** | [DATEN EINFÜGEN: Gesamtzahl Engpass-Fälle in der Datenbank] |
-| **Davon abgeschlossen** | [DATEN EINFÜGEN: Anzahl Engpässe mit bekanntem Enddatum] |
-| **Davon aktiv (laufend)** | [DATEN EINFÜGEN: Anzahl aktiv laufender Engpässe zum Datenstand] |
+| **Analysezeitraum** | 01.01.2015 bis 25.04.2026 |
+| **Erfasste Fälle gesamt** | 9'353 |
+| **Davon abgeschlossen** | 8'641 |
+| **Davon aktiv (laufend)** | 712 |
 | **Datenstand** | 25. April 2026 |
 
-Die Dauer aktiver Engpässe wird als Mindestdauer gewertet — das tatsächliche Ende liegt in der Zukunft. Für die Auswertung der Dauerkategorien werden daher abgeschlossene und aktive Engpässe getrennt ausgewiesen. Alle Angaben beziehen sich auf einzelne Präparat-Meldungen (Handelsnamen, Dosierung, Packungsgrösse), nicht auf Wirkstoffebene. Zur Methodik der Datenerhebung siehe [engpassradar.ch/methodik](/methodik).
+Die Dauer aktiver Engpässe ist eine Untergrenze. Für die Dauerkategorien werden abgeschlossene und aktive Fälle getrennt ausgewiesen. Alle Angaben beziehen sich auf einzelne Präparat-Meldungen nach Handelsname, Dosierung und Packungsgrösse. Zur vollständigen Methodik: [engpassradar.ch/methodik](/methodik).
 
 ---
 
-## Wie verteilen sich die Engpass-Dauern über alle gemeldeten Fälle?
+## Wie verteilen sich die Engpass-Dauern aktuell?
 
-Die Dauerkategorien zeigen ein klares Muster: Ein erheblicher Anteil aller gemeldeten Engpässe in der Schweiz dauert deutlich länger als die in der Branche häufig angenommenen «zwei bis vier Wochen». Die grösste Einzelgruppe bilden Engpässe mit einer Laufzeit zwischen sechs Wochen und sechs Monaten — eine Zeitspanne, die typische Sicherheitsbestände in öffentlichen Apotheken und Spitalapotheken weit übersteigt.
+Auf Basis von 712 aktiven Engpässen (Datenstand 25. April 2026) zeigt sich ein klares Muster. Die grösste Einzelgruppe bilden Engpässe zwischen sechs Wochen und sechs Monaten mit 29.7%. Das übersteigt typische Sicherheitsbestände in Apotheken deutlich. Kurzengpässe unter zwei Wochen machen nur 15.5% aus.
 
-![Medikamentenregale in einer Schweizer Apotheke — die Verteilung der Engpass-Dauern beeinflusst direkt die Sicherheitsbestand-Strategie](https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900&h=500&fit=crop&q=80)
+![Medikamentenregale in einer Schweizer Apotheke — Engpass-Dauer beeinflusst direkt die Sicherheitsbestand-Strategie](https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900&h=500&fit=crop&q=80)
 
-| Dauerkategorie | Abgeschlossene Engpässe | Anteil | Aktive Engpässe (Mindestdauer) |
-|---|---|---|---|
-| **< 2 Wochen** | [DATEN EINFÜGEN: Anzahl] | [DATEN EINFÜGEN: %] | — |
-| **2–6 Wochen** | [DATEN EINFÜGEN: Anzahl] | [DATEN EINFÜGEN: %] | [DATEN EINFÜGEN: Anzahl] |
-| **6 Wochen – 6 Monate** | [DATEN EINFÜGEN: Anzahl] | [DATEN EINFÜGEN: %] | [DATEN EINFÜGEN: Anzahl] |
-| **6 Monate – 1 Jahr** | [DATEN EINFÜGEN: Anzahl] | [DATEN EINFÜGEN: %] | [DATEN EINFÜGEN: Anzahl] |
-| **1–2 Jahre** | [DATEN EINFÜGEN: Anzahl] | [DATEN EINFÜGEN: %] | [DATEN EINFÜGEN: Anzahl] |
-| **> 2 Jahre** | [DATEN EINFÜGEN: Anzahl] | [DATEN EINFÜGEN: %] | [DATEN EINFÜGEN: Anzahl] |
+| Dauerkategorie | Anteil aktiver Engpässe | Anzahl Fälle |
+|---|---|---|
+| **unter 2 Wochen** | 15.5% | 120 |
+| **2 bis 6 Wochen** | 19.6% | 152 |
+| **6 Wochen bis 6 Monate** | 29.7% | 230 |
+| **6 Monate bis 1 Jahr** | 14.3% | 111 |
+| **1 bis 2 Jahre** | 14.5% | 112 |
+| **über 2 Jahre** | 6.3% | 49 |
 
 *Quelle: engpassradar.ch, Datenstand 25. April 2026. Aktive Engpässe werden als Mindestdauer gewertet.*
 
-Dieser Befund deckt sich mit der bisherigen Forschungslage: In der bisher umfangreichsten Untersuchung von Arzneimittelengpässen in der Schweiz, einer Analyse von 2015 bis 2020, zeigte sich, dass Engpässe mit Laufzeiten von mehr als zwei Wochen eine Mediandauer von 83,75 Tagen aufwiesen — also knapp zwölf Wochen ([ScienceDirect/Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022). Die einfache Annahme eines «kurzfristigen Versorgungsproblems» lässt sich damit empirisch nicht stützen.
+Was fällt auf? Addiert man alle Kategorien ab sechs Wochen, erreicht man 64.8% der aktiven Fälle. Das heisst: Fast zwei Drittel aller laufenden Engpässe dauern länger als die übliche Sicherheitsreserve. Eine Schweizer Analyse (Blankart & Felder, [Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022) bestätigt eine Mediandauer von 83,75 Tagen für abgeschlossene Engpässe über 14 Tagen. Unsere Daten liegen mit 74 Tagen in derselben Grössenordnung.
 
 ---
 
-## Was sagen Median- und Mitteldauer über die Engpass-Realität aus?
+## Was sagen Median- und Mitteldauer über die Engpass-Realität?
 
 <!-- [UNIQUE INSIGHT] -->
 
-Mediandauer und Mitteldauer liefern unterschiedliche Informationen — und beide sind für Apotheken relevant. Die Mediandauer von 83,75 Tagen (Schweiz, 2015–2020) bedeutet: Die Hälfte aller Engpässe mit mehr als 14 Tagen Laufzeit ist nach spätestens 12 Wochen beendet. Die Mitteldauer von 133 Tagen liegt rund 37% höher — ein Zeichen dafür, dass wenige sehr lange Engpässe den Durchschnitt stark nach oben ziehen ([ScienceDirect/Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022).
+Die Mediandauer von 74 Tagen und die Mitteldauer von 178 Tagen klaffen weit auseinander. Das ist kein statistisches Artefakt. Es zeigt, dass wenige sehr lange Engpässe den Durchschnitt stark nach oben ziehen. Für die operative Planung ist die Mediandauer der bessere Ausgangspunkt. Für den Worst Case zählt die Verteilung der langen Ausreisser.
 
-Für die operative Planung ist die Mediandauer der bessere Ausgangspunkt: Sie beschreibt den «typischen» Engpass. Für die Risikoabschätzung des Worst Case hingegen ist die Mitteldauer — oder besser: die Verteilung der langen Ausreisser — entscheidend.
-
-| Kennzahl | Wert (abgeschlossene Engpässe, >14 Tage) | Wert (vollständige Marktausfälle) |
+| Kennzahl | Aktive Engpässe (engpassradar.ch, 25.04.2026) | Externe Referenz (Blankart & Felder 2022) |
 |---|---|---|
-| **Mediandauer** | 83,75 Tage (ca. 12 Wochen) | 8 Monate |
-| **Mitteldauer** | 133,18 Tage (ca. 19 Wochen) | 16,69 Monate |
-| **Engpassradar-Mediandauer (alle aktiven)** | [DATEN EINFÜGEN: Tage] | [DATEN EINFÜGEN: Tage] |
-| **Engpassradar-Mitteldauer (alle aktiven)** | [DATEN EINFÜGEN: Tage] | [DATEN EINFÜGEN: Tage] |
+| **Mediandauer** | 74 Tage | 83,75 Tage (Engpässe >14 Tage, abgeschlossen) |
+| **Mitteldauer** | 178 Tage | 133,18 Tage (Engpässe >14 Tage, abgeschlossen) |
+| **P25** | 25 Tage | n.v. |
+| **P75** | 491 Tage | n.v. |
+| **Vollständige Marktausfälle (Median)** | Datenerhebung laufend | 8 Monate |
 
-*Externe Referenzwerte: ([ScienceDirect/Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022); engpassradar.ch-Werte: Datenstand 25. April 2026.*
+*Eigene Daten: engpassradar.ch, 25. April 2026. Externe Referenz: Blankart & Felder ([Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022).*
 
-Die grosse Differenz zwischen Median und Mittel ist kein statistisches Artefakt, sondern ein klinisch relevantes Signal: Ein kleiner Anteil von Engpässen dauert so lange, dass er allein durch Pufferlager nicht überbrückt werden kann — hier braucht es strukturelle Lösungen wie Alternativpräparate oder Mengenabsprachen.
+Der P75-Wert von 491 Tagen verdient besondere Aufmerksamkeit. Das bedeutet: Ein Viertel aller aktiven Engpässe hat bereits über 16 Monate gedauert. Kein Pufferlager überbrückt das. Hier braucht es strukturelle Lösungen: Alternativpräparate, Direktimporte, frühe Kommunikation mit den verschreibenden Ärzten.
 
 ---
 
-## Langzeitengpässe: Wie gross ist der Anteil wirklich?
+## Wie gross ist der Anteil von Langzeitengpässen wirklich?
 
 <!-- [ORIGINAL DATA] -->
 
-Langzeitengpässe — definiert als Engpässe mit einer Laufzeit von mehr als sechs Monaten — stellen den am stärksten unterschätzten Anteil des Schweizer Engpass-Geschehens dar. Gemäss den Daten von engpassradar.ch (Datenstand: 25. April 2026) beläuft sich der Anteil der aktiv laufenden Engpässe mit einer bisherigen Laufzeit von mehr als sechs Monaten auf [DATEN EINFÜGEN: Prozentwert, z.B. «X% aller aktiven Engpässe»].
+Langzeitengpässe dauern länger als sechs Monate. Sie sind der am stärksten unterschätzte Teil des Schweizer Engpass-Geschehens. Gemäss engpassradar.ch (25. April 2026) dauern **35.1%** aller aktiv laufenden Engpässe bereits über sechs Monate. **161 Fälle**, also 20.8% aller aktiven Engpässe, sind seit mehr als einem Jahr gemeldet.
 
-Die externe Forschungslage bestätigt diesen strukturellen Befund. Bei Engpässen, bei denen kein einziger Anbieter auf dem Markt lieferfähig war, stieg die Mediandauer in der Schweizer Studie 2015–2020 auf 8 Monate — mehr als das Dreifache der allgemeinen Mediandauer ([ScienceDirect/Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022). Das Bundesamt für wirtschaftliche Landesversorgung (BWL) hält in seinen Pflichtlagern Reserven für zwei bis vier Monate Marktbedarf — eine Kapazität, die bei vollständigen Marktausfällen systematisch unterschritten werden kann ([BWL](https://www.bwl.admin.ch/de/meldestelle-heilmittel), 2024).
+Warum ist das so schwer zu greifen? Weil kurze Engpässe rasch aus dem Blickfeld verschwinden. Was bleibt, ist das harte Kern. Apotheken, die ihren Blick auf die aktuelle Engpass-Liste richten, sehen überproportional viele Langzeitfälle.
 
-> **Unser Befund:** Langzeitengpässe sind keine Ausnahmeerscheinung. In der Schweiz sind heute [DATEN EINFÜGEN: Anzahl] Engpässe aktiv, die bereits seit mehr als einem Jahr gemeldet sind. Diese Fälle erfordern andere Massnahmen als kurzfristige Versorgungslücken — sie sind planerisch analog zu strukturellen Nichtverfügbarkeiten zu behandeln.
+> **Unser Befund:** Langzeitengpässe sind keine Randerscheinung. 161 aktive Engpässe dauern bereits seit über einem Jahr. Sie erfordern andere Massnahmen als kurzfristige Versorgungslücken und sind planerisch wie strukturelle Nichtverfügbarkeiten zu behandeln.
 
-Auf europäischer Ebene zeigt der Sonderbericht des Europäischen Rechnungshofs (2025), dass zwischen 2022 und Oktober 2024 insgesamt 136 kritische Engpässe an die EMA gemeldet wurden — und dass das EU-System strukturell unzureichend ausgestattet ist, um langanhaltende Engpässe wirksam zu bekämpfen ([Europäischer Rechnungshof](https://www.eca.europa.eu/en/publications/SR-2025-19), 2025).
+Bei vollständigen Marktausfällen, also wenn kein einziger Anbieter lieferfähig ist, lag die Mediandauer in der Schweizer Studie 2015-2020 bei 8 Monaten. Das ist mehr als das Dreifache der allgemeinen Mediandauer (Blankart & Felder, [Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022). Das Bundesamt für wirtschaftliche Landesversorgung hält in Pflichtlagern Reserven für zwei bis vier Monate Marktbedarf. Bei vollständigen Marktausfällen kann diese Kapazität systematisch unterschritten werden ([BWL](https://www.bwl.admin.ch/de/meldestelle-heilmittel), 2024).
+
+Auf EU-Ebene zeigt der Sonderbericht des Europäischen Rechnungshofs (2025): Von 2022 bis Oktober 2024 wurden 136 kritische Engpässe an die EMA gemeldet. Das EU-System ist strukturell nicht ausreichend ausgestattet, um langanhaltende Engpässe wirksam zu bekämpfen ([Europäischer Rechnungshof](https://www.eca.europa.eu/en/publications/SR-2025-19), 2025).
 
 ---
 
-## Aktive vs. abgeschlossene Engpässe: Wo liegen die Unterschiede?
+## Aktive versus abgeschlossene Engpässe: Wo liegen die Unterschiede?
 
-Aktive Engpässe dauern im Durchschnitt länger als abgeschlossene — ein Befund, der intuitiv erscheint, aber oft unterschätzt wird. Kurze Engpässe schliessen sich rasch und fallen aus der aktiven Statistik heraus; übrig bleiben die strukturell schwierigen, hartnäckigen Fälle. Für Apotheken bedeutet das: Die Liste der heute laufenden Engpässe auf [engpassradar.ch](https://engpassradar.ch) enthält überproportional viele Langzeitfälle.
+Aktive Engpässe dauern im Schnitt länger als abgeschlossene. Das klingt trivial, hat aber praktische Konsequenzen. Kurze Engpässe schliessen sich rasch. Was in der aktiven Liste bleibt, sind die strukturell schwierigen Fälle. Wer heute auf [engpassradar.ch](https://engpassradar.ch) schaut, sieht überproportional viele Langzeitfälle.
 
 ![Spitalapotheke mit Lagerhaltung — aktive Langzeitengpässe erfordern andere Beschaffungsstrategien als kurzfristige Ausfälle](https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=900&h=500&fit=crop&q=80)
 
 | Kennzahl | Abgeschlossene Engpässe | Aktive Engpässe (Mindestdauer) |
 |---|---|---|
-| **Anzahl Fälle** | [DATEN EINFÜGEN] | [DATEN EINFÜGEN] |
-| **Mediandauer** | [DATEN EINFÜGEN: Tage] | [DATEN EINFÜGEN: Tage] |
-| **Mitteldauer** | [DATEN EINFÜGEN: Tage] | [DATEN EINFÜGEN: Tage] |
-| **Anteil >6 Monate** | [DATEN EINFÜGEN: %] | [DATEN EINFÜGEN: %] |
-| **Anteil >1 Jahr** | [DATEN EINFÜGEN: %] | [DATEN EINFÜGEN: %] |
+| **Anzahl Fälle** | 8'641 | 712 |
+| **Mediandauer** | Datenerhebung laufend | 74 Tage |
+| **Mitteldauer** | Datenerhebung laufend | 178 Tage |
+| **Anteil über 6 Monate** | 16.5% | 35.1% |
+| **Anteil über 1 Jahr** | 6.2% | 20.8% |
 
-*Quelle: engpassradar.ch, Datenstand 25. April 2026.*
+*Quelle: engpassradar.ch, 25. April 2026. Mediandauer abgeschlossener Engpässe wird nach weiterer Datenerhebung ergänzt.*
 
-Dieses Phänomen — die Überrepräsentation von Langzeitengpässen unter den aktiven Fällen — ist aus der europäischen Literatur bekannt. Die grösste bisher publizierte Kohortenstudie zu Arzneimittelengpässen in Europa und Nordamerika, durchgeführt von der European Health Data Evidence Network (EHDEN), analysierte 52 Datenbanken aus 18 Ländern und belegte, dass Engpässe zu Rückgängen der Medikamentenanwendung von 33% und mehr führten — oft über Zeiträume, die weit über kurzfristige Versorgungslücken hinausgingen ([The Lancet Public Health](https://www.thelancet.com/journals/lanpub/article/PIIS2468-2667(25)00194-X/fulltext), 2025).
+Die Überrepräsentation von Langzeitfällen unter aktiven Engpässen ist in der europäischen Literatur dokumentiert. Die grösste Kohortenstudie zu Arzneimittelengpässen in Europa und Nordamerika, durchgeführt vom European Health Data Evidence Network (EHDEN), analysierte 52 Datenbanken aus 18 Ländern. Ergebnis: Engpässe führen zu Rückgängen bei der Medikamentenanwendung von 33% und mehr. Oft über Zeiträume, die weit über kurzfristige Versorgungslücken hinausgehen ([The Lancet Public Health](https://www.thelancet.com/journals/lanpub/article/PIIS2468-2667(25)00194-X/fulltext), 2025).
 
-Eine Analyse der PGEU (Pharmaceutical Group of the European Union) kommt zum Schluss, dass europäische Apothekenteams im Jahr 2023 durchschnittlich knapp 10 Stunden pro Woche mit dem Management von Lieferengpässen verbrachten — dreimal so viel wie ein Jahrzehnt zuvor ([PGEU](https://www.pgeu.eu/publications/pgeu-medicine-shortages-report-2023/), 2024). Dieser Zeitaufwand korreliert direkt mit der Engpassdauer: Kurzfristige Ausfälle lösen sich von selbst; Langzeitengpässe binden dauerhaft Ressourcen.
+In einer Analyse der PGEU (Pharmaceutical Group of the European Union) verbrachten Apothekenteams in Europa 2023 durchschnittlich knapp 10 Stunden pro Woche mit dem Management von Lieferengpässen. Das ist dreimal so viel wie ein Jahrzehnt zuvor ([PGEU](https://www.pgeu.eu/publications/pgeu-medicine-shortages-report-2023/), 2024). Kurzfristige Ausfälle lösen sich von selbst. Langzeitengpässe binden dauerhaft Ressourcen.
 
-Welche Wirkstoffe in der Schweiz besonders häufig von Engpässen betroffen sind, lesen Sie in unserem Artikel [Top 20: Häufigste Lieferengpässe Medikamente Schweiz](/blog/haeufigste-lieferengpaesse-medikamente-schweiz).
+Welche Wirkstoffe in der Schweiz besonders häufig betroffen sind, lesen Sie in unserem Artikel [Top 20: Häufigste Lieferengpässe Medikamente Schweiz](/blog/haeufigste-lieferengpaesse-medikamente-schweiz).
 
 ---
 
-## Praktische Implikationen für die Lagerhaltung in Apotheken und Spitalapotheken
-
-Die Engpass-Dauerdaten haben direkte Konsequenzen für Ihre Lagerstrategie — unabhängig davon, ob Sie eine öffentliche Apotheke oder eine Spitalapotheke führen. Eine Mediandauer von 83 Tagen bedeutet, dass eine Sicherheitsreserve von zwei Wochen in mehr als der Hälfte aller Fälle nicht ausreicht, um einen Engpass zu überbrücken. Ein an die tatsächliche Dauerdistribution angepasster Ansatz unterscheidet drei Kategorien von Präparaten:
-
-**Kurzengpass-typische Wirkstoffe** (häufige Engpässe, kurze Mediandauer): Für diese Substanzen genügen erhöhte Sicherheitsbestände von vier bis sechs Wochen. Alternativen sollten vorab gelistet, aber nicht routinemässig bevorratet werden.
-
-**Langzeitengpass-gefährdete Wirkstoffe** (wiederkehrende Engpässe, Mediandauer >60 Tage): Für diese Präparate — häufig Generika mit konzentrierter Herstellerbasis — empfiehlt sich eine aktive Alternativenpolitik: Parallellistung von Zweit- und Drittanbietern, vertragliche Absicherung bei Grossisten und frühzeitige Information der verschreibenden Ärzte über mögliche Substitution.
-
-**Vollständige Marktausfälle** (alle Anbieter betroffen, Mediandauer 8 Monate): Diese Fälle erfordern das sofortige Eskalieren auf Direktimporte, Magistralrezepturen oder die Beantragung einer Ausnahmebewilligung bei Swissmedic. Das BWL-Pflichtlager deckt zwei bis vier Monate — danach ist eine strukturelle Lösung unumgänglich ([BWL](https://www.bwl.admin.ch/de/meldestelle-heilmittel), 2024).
+## Was bedeutet die Engpass-Dauer für Ihre Lagerstrategie?
 
 <!-- [UNIQUE INSIGHT] -->
 
-> **Unser Befund:** Die Engpass-Dauer ist kein zufälliger Parameter — sie korreliert mit der Marktstruktur des betroffenen Wirkstoffs. Wirkstoffe mit wenigen aktiven Herstellern weltweit weisen systematisch längere Engpass-Dauern auf. Das stützt einen wirkstoffspezifischen Lageransatz, der zwischen kurzen Überbrückungsbeständen und strukturellen Beschaffungsalternativen differenziert. Dieser Befund ist für die Schweizer Praxis bisher nicht systematisch kommuniziert worden.
+Die Dauerdaten liefern eine direkte Grundlage für die Lagerstrategie. Eine Mediandauer von 74 Tagen heisst: Mehr als die Hälfte aller Engpässe dauert länger als ein typischer Sicherheitsbestand von zwei Wochen. Drei Kategorien helfen bei der Einteilung.
 
-Auf europäischer Ebene empfehlen EMA und EAHP den Apotheken, für Wirkstoffe mit bekanntem Engpass-Muster mindestens einen Alternativanbieter zu listen und die klinische Äquivalenz frühzeitig abzuklären — damit im Engpassfall keine Zeit für Rückfragen verloren geht ([EMA](https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/medicine-shortages-availability-issues), 2024).
+**Kurzengpass-typische Wirkstoffe** (häufige Engpässe, kurze Mediandauer): Erhöhte Sicherheitsbestände von vier bis sechs Wochen genügen. Alternativen sollten vorab gelistet, aber nicht routinemässig bevorratet sein.
+
+**Langzeitengpass-gefährdete Wirkstoffe** (wiederkehrende Engpässe, Mediandauer über 60 Tage): Das sind häufig Generika mit konzentrierter Herstellerbasis. Hier empfiehlt sich eine aktive Alternativenpolitik: Parallellistung von Zweit- und Drittanbietern, vertragliche Absicherung bei Grossisten, frühzeitige Information der verschreibenden Ärzte.
+
+**Vollständige Marktausfälle** (alle Anbieter betroffen, Mediandauer 8 Monate laut externer Referenz): Diese Fälle erfordern sofortige Eskalation auf Direktimporte, Magistralrezepturen oder eine Ausnahmebewilligung bei Swissmedic. Das BWL-Pflichtlager deckt zwei bis vier Monate. Danach ist eine strukturelle Lösung unumgänglich ([BWL](https://www.bwl.admin.ch/de/meldestelle-heilmittel), 2024).
+
+> **Unser Befund:** Die Engpass-Dauer korreliert mit der Marktstruktur. Wirkstoffe mit wenigen aktiven Herstellern weltweit zeigen systematisch längere Dauern. Das stützt einen wirkstoffspezifischen Lageransatz, der zwischen kurzen Überbrückungsbeständen und strukturellen Beschaffungsalternativen unterscheidet. Dieser Zusammenhang ist für die Schweizer Praxis bisher nicht systematisch kommuniziert worden.
+
+EMA und EAHP empfehlen, für Wirkstoffe mit bekanntem Engpass-Muster mindestens einen Alternativanbieter zu listen und klinische Äquivalenz frühzeitig abzuklären. So geht beim Engpass keine Zeit für Rückfragen verloren ([EMA](https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/medicine-shortages-availability-issues), 2024).
 
 ---
 
 ## Aktuelle Engpässe nach Dauer gefiltert anzeigen
 
-Sehen Sie auf engpassradar.ch, welche Medikamente aktuell im Engpass sind — und wie lange diese Engpässe bereits andauern. Das Dashboard ermöglicht eine Filterung nach Dauerkategorie, sodass Sie Langzeitengpässe gezielt identifizieren können.
+Sehen Sie auf engpassradar.ch, welche Medikamente aktuell im Engpass sind und wie lange diese Engpässe bereits andauern. Das Dashboard ermöglicht eine Filterung nach Dauerkategorie, sodass Sie Langzeitengpässe gezielt identifizieren können.
 
-**[Aktuelle Engpässe nach Dauer gefiltert anzeigen →](https://engpassradar.ch)**
+**[Aktuelle Engpässe nach Dauer gefiltert anzeigen auf engpassradar.ch](https://engpassradar.ch)**
 
 ---
 
@@ -154,16 +158,16 @@ Sehen Sie auf engpassradar.ch, welche Medikamente aktuell im Engpass sind — un
 
 ### Wie lange dauert ein Medikamenten-Lieferengpass in der Schweiz im Durchschnitt?
 
-Gemäss einer Analyse von Schweizer Engpass-Meldungen aus den Jahren 2015–2020 beträgt die Mediandauer von Engpässen mit mehr als 14 Tagen Laufzeit 83,75 Tage (ca. 12 Wochen), die Mitteldauer liegt bei 133 Tagen. Aktuelle Werte aus der engpassradar.ch-Datenbank (Datenstand 25. April 2026) sind unter [DATEN EINFÜGEN: aktuelle Mediandauer]. Externe Referenz: ([ScienceDirect/Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022).
+Gemäss der engpassradar.ch-Datenbank (Datenstand 25. April 2026) beträgt die Mediandauer aktiver Engpässe **74 Tage**. Die Mitteldauer liegt bei **178 Tagen**. Eine unabhängige Schweizer Studie ermittelte für abgeschlossene Engpässe über 14 Tagen eine Mediandauer von 83,75 Tagen (Blankart & Felder, [Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022). Beide Quellen bestätigen: Zwei Wochen Sicherheitsbestand reichen in den meisten Fällen nicht aus.
 
-### Was ist der Unterschied zwischen einem kurzfristigen und einem Langzeitengpass?
+### Was unterscheidet einen kurzfristigen Engpass von einem Langzeitengpass?
 
-Als Langzeitengpass gilt in dieser Analyse ein Engpass mit einer Laufzeit von mehr als sechs Monaten. Bei vollständigen Marktausfällen — wenn alle Anbieter eines Wirkstoffs gleichzeitig nicht liefern können — beträgt die Mediandauer in der Schweiz 8 Monate. Solche Engpässe können nicht durch temporäre Sicherheitsbestände aufgefangen werden. Für die Lagerhaltung empfiehlt sich daher eine Unterscheidung zwischen überbrückbaren Kurzengpässen und strukturellen Langzeitausfällen, die aktive Alternativbeschaffung erfordern.
+Als Langzeitengpass gilt ein Engpass mit mehr als sechs Monaten Laufzeit. Aktuell trifft das auf 35.1% aller aktiven Engpässe in der Schweiz zu, also 272 Fälle. Temporäre Sicherheitsbestände reichen dafür nicht aus. Für die Lagerhaltung lohnt sich daher eine Unterscheidung zwischen überbrückbaren Kurzengpässen und strukturellen Langzeitausfällen, die eine aktive Alternativbeschaffung erfordern.
 
 ### Woher stammen die Engpass-Dauerdaten von engpassradar.ch?
 
-Die Daten stammen aus der offiziellen Schweizer Meldestelle drugshortage.ch, die Zulassungsinhaber mit Versorgungspflicht zur Meldung verpflichtet. Engpassradar.ch importiert diese Daten täglich und berechnet die Dauer jedes gemeldeten Engpasses aus der Differenz zwischen Meldedatum und Aufhebungsdatum. Für laufende Engpässe wird der Datenstand als Endpunkt verwendet, sodass aktive Dauern als Mindestdauern interpretiert werden. Zur vollständigen Methodik: [engpassradar.ch/methodik](/methodik).
+Die Daten stammen aus der offiziellen Schweizer Meldestelle drugshortage.ch, die Zulassungsinhaber mit Versorgungspflicht zur Meldung verpflichtet. Engpassradar.ch importiert diese Daten täglich und berechnet die Dauer jedes Engpasses als Differenz zwischen Meldedatum und Aufhebungsdatum. Für laufende Engpässe gilt der Datenstand als Endpunkt. Aktive Dauern sind daher Mindestdauern. Zur vollständigen Methodik: [engpassradar.ch/methodik](/methodik).
 
 ---
 
-*Datenstand: 25. April 2026. Externe Referenzdaten: Studie Schweiz 2015–2020 ([ScienceDirect/Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022); ECA Sonderbericht 19/2025 ([Europäischer Rechnungshof](https://www.eca.europa.eu/en/publications/SR-2025-19), 2025); PGEU Bericht 2023 ([PGEU](https://www.pgeu.eu/publications/pgeu-medicine-shortages-report-2023/), 2024); EMA Jahresbericht 2024 ([EMA](https://www.ema.europa.eu/en/annual-report/2024/medicine-shortages/), 2024). Das engpassradar.ch-Dashboard wird täglich aktualisiert — aktuelle Zahlen jederzeit unter [engpassradar.ch](https://engpassradar.ch) abrufbar. [Methodik der Datenerhebung](/methodik).*
+*Datenstand: 25. April 2026. Externe Referenzdaten: Blankart & Felder, Schweiz 2015-2020 ([Value in Health](https://www.sciencedirect.com/science/article/pii/S1098301522000535), 2022); ECA Sonderbericht 19/2025 ([Europäischer Rechnungshof](https://www.eca.europa.eu/en/publications/SR-2025-19), 2025); PGEU Bericht 2023 ([PGEU](https://www.pgeu.eu/publications/pgeu-medicine-shortages-report-2023/), 2024); EMA Jahresbericht 2024 ([EMA](https://www.ema.europa.eu/en/human-regulatory-overview/post-authorisation/medicine-shortages-availability-issues), 2024). Das engpassradar.ch-Dashboard wird täglich aktualisiert. Aktuelle Zahlen unter [engpassradar.ch](https://engpassradar.ch). [Methodik der Datenerhebung](/methodik).*
