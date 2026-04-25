@@ -15,36 +15,38 @@ ogImage: "https://engpassradar.ch/opengraph-image"
 canonical: "https://engpassradar.ch/blog/bwl-pflichtlager-lieferengpass-schweiz"
 ---
 
-Wenn ein Arzneimittel im Lieferengpass ist, stellt sich für Apotheken und Spitalapotheken unmittelbar eine Folgefrage: Gibt es eine Pflichtlaberreserve — und steht diese Reserve überhaupt zur Verfügung? Das Bundesamt für wirtschaftliche Landesversorgung (BWL) betreibt zu diesem Zweck das Schweizer Pflichtlagersystem für Arzneimittel. Doch selbst Pflichtlager-Präparate können gleichzeitig in der drugshortage.ch-Meldedatenbank als Engpass gelistet sein.
+Wenn ein Arzneimittel im Lieferengpass ist, stellt sich für Apotheken und Spitalapotheken unmittelbar eine Folgefrage: Gibt es eine Pflichtlagerreserve — und steht diese Reserve überhaupt zur Verfügung? Laut den täglich aktualisierten Daten von engpassradar.ch sind per 25. April 2026 **52 BWL-gelistete Arzneimittel gleichzeitig im Lieferengpass** — das entspricht 7,3 % aller aktiven Engpässe in der Schweiz.
 
-Dieser Artikel erklärt, was das BWL-Pflichtlager ist, welche Medikamente pflichtlagerpflichtig sind, was ein gleichzeitiger Engpass bedeutet — und wie [engpassradar.ch](https://engpassradar.ch) den BWL-Status direkt neben den Engpass-Daten anzeigt.
+Dieser Artikel erklärt, was das BWL-Pflichtlager ist, was diese Zahlen für die Versorgung bedeuten — und wo die Daten aktuell noch Lücken haben.
+
+[INTERNAL-LINK: Lieferengpass Schweiz allgemein → /blog/lieferengpass-medikamente-schweiz-uebersicht]
 
 > **Das Wichtigste in Kürze**
-> - Das BWL-Pflichtlager verpflichtet Importeure und Hersteller zur Haltung von Reserven für rund 120 Wirkstoffe (Stand: 2026), die den Bedarf von zwei bis drei Monaten decken.
-> - Rechtsgrundlage: Landesversorgungsgesetz (LVG, SR 531) und die Verordnung über die Pflichtlagerhaltung von Arzneimitteln (SR 531.215.31).
-> - Ein Pflichtlager verhindert keinen Engpass — es puffert ihn. Beide Zustände können gleichzeitig auftreten.
-> - engpassradar.ch kennzeichnet pflichtlagerpflichtige Präparate mit einem BWL-Badge direkt im Dashboard.
-> - Dieser Artikel ist nach aktuellem Kenntnisstand der einzige deutschsprachige Fachbeitrag in der Schweiz, der BWL-Pflichtlagerdaten mit aktuellen Engpassmeldungen verknüpft.
+> - Per 25.04.2026 sind 52 BWL-gelistete Präparate im aktiven Lieferengpass (7,3 % aller 712 aktiven Engpässe).
+> - 27 Präparate tragen zusätzlich den direkten Pflichtlager-Status (3,8 % aller aktiven Engpässe).
+> - 84 WHO-Präparate werden im Engpass-Monitoring separat erfasst.
+> - Ein Pflichtlager verhindert keinen Engpass, es puffert ihn. Beide Zustände treten regelmässig gleichzeitig auf.
+> - Die GTIN-genaue Präparateliste wird nach Aktivierung des BWL-Scrapers ergänzt.
 
 ---
 
 ## 1. Was ist das BWL-Pflichtlager?
 
-Das Pflichtlagersystem der Schweiz geht auf die wirtschaftliche Landesversorgung zurück — einen Pfeiler der staatlichen Krisenvorsorge, der sicherstellt, dass die Bevölkerung auch in Versorgungskrisen, Naturkatastrophen oder geopolitischen Verwerfungen mit lebenswichtigen Gütern versorgt bleibt.
+Das Pflichtlagersystem der Schweiz ist ein zentrales Instrument der staatlichen Krisenvorsorge. Das Bundesamt für wirtschaftliche Landesversorgung (BWL) verpflichtet Importeure und Hersteller, für bestimmte Wirkstoffe Reserven zu halten, die den Bedarf von zwei bis drei Monaten abdecken. Rechtsgrundlage sind das Landesversorgungsgesetz (LVG, SR 531) und die Verordnung über die Pflichtlagerhaltung von Arzneimitteln (SR 531.215.31, [fedlex.admin.ch](https://www.fedlex.admin.ch/eli/cc/2017/432/de)).
 
-**Rechtsgrundlage:** Das Landesversorgungsgesetz (LVG, SR 531) vom 17. Juni 2016 bildet die übergeordnete Gesetzesgrundlage. Es ermächtigt den Bundesrat, bestimmte Güter — darunter Arzneimittel — der Pflichtlagerpflicht zu unterstellen (Art. 7 Abs. 1 LVG). Die konkreten Anforderungen für Arzneimittel sind in der **Verordnung vom 10. Mai 2017 über die Pflichtlagerhaltung von Arzneimitteln (SR 531.215.31)** geregelt.
+**Wer ist pflichtlagerpflichtig?** Gemäss Art. 3 SR 531.215.31 trifft die Pflicht Unternehmen, die pflichtlagerpflichtige Arzneimittel als Erste in der Schweiz in Verkehr bringen. Die Pflicht gilt für die Lieferkette, nicht für Apotheken als Endverteilerinnen.
 
-**Wer ist pflichtlagerpflichtig?** Gemäss Art. 3 der Verordnung (SR 531.215.31) sind Unternehmen, die pflichtlagerpflichtige Arzneimittel als Erste in der Schweiz in Verkehr bringen — also Importeure und Hersteller mit Versorgungspflicht — zur Haltung entsprechender Reserven verpflichtet. Die Pflicht trifft demnach primär die Lieferkette, nicht die Apotheke als Endverteilerin.
+**Helvecura als Vertragspartner:** Das BWL ermöglicht Pflichtlagerhaltern den Abschluss eines Vertrags mit der Genossenschaft Helvecura, die physische Lager zentral verwaltet. Diese Struktur erlaubt flexible Lagerortgestaltung ohne staatliche Zentrallager.
 
-**Wie gross sind die Reserven?** Die Pflichtlager sind auf einen Bedarf von **zwei bis drei Monaten** ausgelegt. Damit soll bei Versorgungsunterbrechungen eine Überbrückungsfrist geschaffen werden, die lang genug ist, um alternative Bezugsquellen zu erschliessen oder die Produktion anzupassen.
+> **Merksatz:** Das Pflichtlager ist ein Puffer, kein Schutzschild. Es überbrückt Versorgungsunterbrechungen — es hebt sie nicht auf.
 
-**Helvecura als Vertragspartner:** Das BWL ermöglicht Pflichtlagerhaltern alternativ den Abschluss eines Pflichtlagervertrags mit der Genossenschaft Helvecura, die die physischen Lager zentral verwaltet. Diese dezentrale Vertragsstruktur erlaubt eine flexible Lagerortverwaltung ohne staatliche Zentrallager.
+[INTERNAL-LINK: Engpass-Monitoring Methodik → https://engpassradar.ch/methodik]
 
 ---
 
 ## 2. Welche Medikamente sind pflichtlagerpflichtig?
 
-Der Anhang der Verordnung SR 531.215.31 listet die konkreten Wirkstoffe und Produktgruppen auf. Per Januar 2026 umfasst das System rund **120 Wirkstoffe**, für die eine Pflichtlagerpflicht besteht. Dieser Kreis wurde mit der Überarbeitung der Verordnung, die ab 15. Januar 2026 gilt, nochmals erweitert: Fünf weitere Wirkstoffe wurden neu aufgenommen, darunter Substanzen aus den Bereichen Blutdrucksenkung und Sedation.
+Die Verordnung SR 531.215.31 listet im Anhang rund **120 Wirkstoffe**, für die eine Pflichtlagerpflicht besteht. Die letzte Erweiterung trat am 15. Januar 2026 in Kraft: Fünf Wirkstoffe aus den Bereichen Blutdrucksenkung und Sedation wurden neu aufgenommen. Die verbindliche, konsolidierte Liste ist auf [fedlex.admin.ch](https://www.fedlex.admin.ch/eli/cc/2017/432/de) abrufbar und wird in der Regel alle drei Jahre überprüft.
 
 Die pflichtlagerpflichtigen Medikamente verteilen sich auf folgende Hauptkategorien:
 
@@ -57,90 +59,97 @@ Die pflichtlagerpflichtigen Medikamente verteilen sich auf folgende Hauptkategor
 | **Kardiovaskuläre Mittel** | Adrenalin, Noradrenalin, Heparin |
 | **Diabetes** | Insulin (verschiedene Typen) |
 | **Blutdruck / Sedation** | Neu aufgenommen ab Januar 2026 |
-| **Infusionslösungen** | NaCl 0,9%, Ringer-Laktat, Glukose |
+| **Infusionslösungen** | NaCl 0,9 %, Ringer-Laktat, Glukose |
 
-Die vollständige und verbindliche Liste findet sich im Anhang der aktuellen Verordnung SR 531.215.31 auf [fedlex.admin.ch](https://www.fedlex.admin.ch/eli/cc/2017/432/de). Die Liste wird periodisch — in der Regel alle drei Jahre — überprüft und angepasst.
+**Wichtig für die Praxis:** Die Pflichtlagerpflicht gilt für den **Wirkstoff**, nicht für jede einzelne Packungsgrösse oder Darreichungsform. Ein Pflichtlager für Morphin deckt damit den Bedarf an Morphin-Zubereitungen allgemein ab.
 
-**Wichtig für die Praxis:** Die Pflichtlagerpflicht gilt für den **Wirkstoff**, nicht für jede einzelne Packungsgrösse oder Darreichungsform. Ein Pflichtlager für Morphin deckt damit generell den Bedarf an Morphin-Zubereitungen ab, soweit die entsprechenden Pakete im Lager gehalten werden.
-
----
-
-## 3. Aktueller Stand: Welche Pflichtlager-Medikamente sind gleichzeitig im Engpass?
-
-Das Pflichtlagersystem ist kein Garant gegen Engpässe — es ist ein Puffer. Ein Arzneimittel kann gleichzeitig im BWL-Pflichtlagersystem erfasst **und** in der offiziellen Schweizer Engpass-Meldestelle drugshortage.ch als Lieferengpass gemeldet sein. Das ist keine systemische Anomalie, sondern ein wichtiger Hinweis für die Praxis: Wenn die Pflichtlaberreserve abgebaut wird, verschwindet der Engpass nicht — er wird überbrückt.
-
-**Aktuell sind 52 pflichtlagerpflichtige Arzneimittel gleichzeitig im gemeldeten Lieferengpass** (davon 27 mit direktem Pflichtlager-Status; Datenstand: 25. April 2026, Quelle: engpassradar.ch).
-
-*Hinweis: Die aktuelle Anzahl von Engpass-Meldungen für pflichtlagerpflichtige Arzneimittel ist täglich aktualisiert unter [engpassradar.ch](https://engpassradar.ch) abrufbar. Das Dashboard zeigt den BWL-Flag direkt neben dem Engpass-Status jedes betroffenen Präparats.*
-
-**Was bedeutet ein gleichzeitiger BWL-Engpass konkret?**
-
-Wenn ein pflichtlagerpflichtiges Arzneimittel im Engpass ist, gibt es drei mögliche Szenarien:
-
-1. **Das Pflichtlager ist intakt und wird gehalten:** Die Pflichtlaberreserve steht zur Verfügung, wird aber noch nicht aktiviert, da der Engpass als überbrückbar gilt. Der normale Beschaffungsweg ist gestört, aber das System funktioniert.
-
-2. **Das BWL hat eine Pflichtlagerfreigabe erteilt:** Das BWL kann im Rahmen von Art. 9 LVG die Freigabe von Pflichtlagerware anordnen. In diesem Fall wird die Reserve aktiv zur Versorgung eingesetzt. Freigaben werden vom BWL kommuniziert — so geschehen etwa für Antibiotika (vgl. SR 531.211.31, Verordnung über die Pflichtlagerfreigabe von Antibiotika).
-
-3. **Das Pflichtlager ist selbst betroffen:** In seltenen Fällen kann die Pflichtlagerpflicht für einen Wirkstoff mit einer breiteren Lieferkettenstörung zusammenfallen, bei der auch die Haltung neuer Pflichtlagermengen erschwert ist.
-
-Für Apotheken und Spitalapotheken ist Szenario 1 der häufigste Fall: Das Präparat ist im Engpass, aber die Pflichtlaberreserve mindert die Kritikalität. Für die operative Beschaffung ändert das wenig — der Engpass muss trotzdem gemanagt werden.
+[CHART: Balkendiagramm - Pflichtlagerpflichtige Wirkstoffe nach Kategorie - Quelle: SR 531.215.31 Anhang, Stand Januar 2026]
 
 ---
 
-## 4. Was bedeutet das für Apotheken praktisch?
+## 3. Wie viele Pflichtlager-Präparate sind aktuell im Engpass?
 
-Das BWL-Pflichtlager entlastet die Lieferkette, aber es ersetzt keine aktive Engpassbewirtschaftung durch die Apotheke. Folgende Konsequenzen sind praxisrelevant:
+[ORIGINAL DATA]
 
-**Kein automatischer Zugang für Apotheken:** Pflichtlager-Reserven werden nicht automatisch an Apotheken ausgeliefert. Die Freigabe erfolgt geordnet über das BWL und die etablierten Grosshandelskanäle. Eine Apotheke, die auf eine Pflichtlagerfreigabe wartet, muss dennoch ihren regulären Beschaffungsweg beschreiten und gegebenenfalls Alternativen prüfen.
+Per 25. April 2026 zeigen die täglich von engpassradar.ch erhobenen Daten folgendes Bild:
 
-**BWL-Flag als Risikoindikator:** Ein Präparat, das pflichtlagerpflichtig ist, gilt per Definition als versorgungskritisch. Die Aufnahme in das Pflichtlagersystem ist bereits ein Signal, dass der Gesetzgeber diesen Wirkstoff als unverzichtbar für die Grundversorgung erachtet. Entsprechend hoch ist das Risiko, wenn genau diese Substanz in den Engpass gerät.
+| Kennzahl | Wert | Kontext |
+|---|---|---|
+| **BWL-gelistete Präparate im Engpass** | 52 | 7,3 % der 712 aktiven Engpässe |
+| **Präparate mit direktem Pflichtlager-Status** | 27 | 3,8 % der 712 aktiven Engpässe |
+| **WHO-Präparate im Engpass-Monitoring** | 84 | separat erfasst |
+| **Kassenpflichtige SL-Präparate im Engpass** | 681 von 9.856 | 6,9 % der SL-Präparate |
 
-**Frühzeitige Alternativenplanung:** Für pflichtlagerpflichtige Wirkstoffe, die gleichzeitig im Engpass sind, empfiehlt sich ein proaktives Alternativenmanagement — auch wenn die Pflichtlaberreserve noch verfügbar ist. Die Reserve deckt zwei bis drei Monate; ein Engpass kann länger dauern.
+Diese Zahlen stammen aus den OverviewStats von engpassradar.ch, die täglich aus drugshortage.ch und den BWL-Quelldaten gespeist werden. Das Dashboard zeigt den aktuellen Stand jederzeit unter [engpassradar.ch](https://engpassradar.ch).
 
-**Meldepflicht beachten:** Seit Mitte 2025 erfolgt die Meldung von Versorgungsstörungen bei lebenswichtigen Humanarzneimitteln über die digitale Arzneimittelplattform des BWL. Für Betriebe mit Meldepflicht (primär Inhaber einer Zulassung mit Versorgungspflicht, nicht Apotheken) ist die korrekte Nutzung dieser Plattform obligatorisch.
+**Transparenzhinweis zur Datenlage:** Die GTIN-genaue Verknüpfung einzelner Handelspräparate mit dem BWL-Status (Tabelle `bwl_shortages`) ist noch nicht vollständig befüllt. Konkrete Präparatenamen auf GTIN-Ebene werden nach Aktivierung des BWL-Scrapers ergänzt. Die aggregierten Zahlen oben sind valide und täglich aktuell; die granulare Listenansicht im Dashboard folgt.
 
----
+[IMAGE: Screenshot engpassradar.ch Dashboard mit BWL-Badge-Ansicht - search terms: pharmacy dashboard medication shortage Switzerland]
 
-## 5. Wo sehe ich BWL-Flags auf engpassradar.ch?
-
-[Engpassradar.ch](https://engpassradar.ch) ist die einzige Schweizer Plattform, die BWL-Pflichtlagerdaten direkt mit den aktuellen Engpassmeldungen aus drugshortage.ch verknüpft. Diese Kombination ist der Kern des Mehrwerts gegenüber der blossen Engpass-Meldestelle.
-
-**Der BWL-Badge im Dashboard:** Jedes Präparat, das im Anhang der Verordnung SR 531.215.31 als pflichtlagerpflichtig gelistet ist, erhält im engpassradar.ch-Dashboard ein farbiges BWL-Badge:
-
-- **Amber / Orange:** Das Präparat ist pflichtlagerpflichtig **und** befindet sich aktuell im Lieferengpass. Höchste Priorität für die Versorgungsplanung.
-- **Grau / Neutral:** Das Präparat ist pflichtlagerpflichtig, aktuell aber kein aktiver Engpass gemeldet.
-
-**Filterfunktion:** Im Dashboard können Sie die Ansicht auf «Nur BWL-Pflichtlager» filtern, um sofort die versorgungskritischen Präparate in Ihrer Übersicht zu isolieren. Dieser Filter ist besonders für Spitalapotheken mit Intensiv- und Notfallversorgungsauftrag relevant, da diese Abteilungen häufig auf Wirkstoffe aus dem Pflichtlagerkatalog angewiesen sind.
-
-**Schnellzugriff auf den Engpass-Detail:** Durch Klick auf ein BWL-markiertes Präparat öffnet sich die Detailansicht mit:
-- Aktuellem Engpass-Status und Zeitverlauf
-- Verfügbaren Alternativen gemäss ODDB-Arzneimitteldatenbank
-- Hersteller-Informationen und erwartetes Versorgungsdatum (soweit bekannt)
-- Direktlink zur Original-Meldung auf drugshortage.ch
+> **Citation Capsule:** Per 25. April 2026 waren laut engpassradar.ch 52 BWL-gelistete Arzneimittel gleichzeitig im aktiven Lieferengpass, darunter 27 Präparate mit direktem Pflichtlager-Status. Das entspricht 7,3 % aller 712 aktiven Engpässe in der Schweiz (Quelle: engpassradar.ch OverviewStats, Datenstand 25.04.2026).
 
 ---
 
-## 6. Wie funktioniert die BWL-Integration auf engpassradar.ch?
+## 4. Was bedeutet ein gleichzeitiger BWL-Engpass konkret?
 
-Die BWL-Integration auf engpassradar.ch basiert auf zwei Datenquellen, die täglich abgeglichen werden:
+[UNIQUE INSIGHT]
 
-**Datenquelle 1 — drugshortage.ch:** Die offizielle Meldestelle von Swissmedic und BAG, auf der Zulassungsinhaber mit Versorgungspflicht Lieferengpässe melden müssen. engpassradar.ch importiert diese Daten täglich und macht sie strukturiert durchsuchbar.
+Ein Pflichtlagerpräparat im Engpass klingt nach einem Widerspruch. Es ist keiner. Die Pflichtlagerreserve steht unabhängig vom regulären Lieferweg und wird nicht automatisch aktiviert, sobald ein Engpass gemeldet wird. In der Praxis ergeben sich drei Szenarien:
 
-**Datenquelle 2 — BWL-Pflichtlagerliste:** Der Anhang der Verordnung SR 531.215.31 wird durch das engpassradar.ch-Team gepflegt und bei jeder Verordnungsrevision aktualisiert. Die rund 120 pflichtlagerpflichtigen Wirkstoffe sind mit den Handelsnamen aus der drugshortage.ch-Datenbank verknüpft.
+**Szenario 1 - Pflichtlager intakt, nicht aktiviert:** Die Reserve steht zur Verfügung, wird aber noch nicht eingesetzt, da der Engpass als überbrückbar gilt. Der normale Beschaffungsweg ist gestört, das System funktioniert aber im Hintergrund. Das ist der häufigste Fall.
 
-**Matching-Logik:** Die Verknüpfung erfolgt auf Wirkstoffebene (ATC-Code). Ein Handelspräparat, das einen pflichtlagerpflichtigen Wirkstoff enthält, erbt automatisch den BWL-Flag — auch wenn die Verordnung nur den Wirkstoff, nicht das spezifische Handelspräparat nennt.
+**Szenario 2 - BWL hat eine Pflichtlagerfreigabe erteilt:** Das BWL kann nach Art. 9 LVG die Freigabe von Pflichtlagerware anordnen. Die Reserve wird dann aktiv zur Versorgung eingesetzt. Solche Freigaben werden vom BWL kommuniziert — so geschehen etwa für Antibiotika.
 
-**Aktualisierungsfrequenz:** Das Dashboard wird täglich aktualisiert. Neue Engpass-Meldungen, die pflichtlagerpflichtige Wirkstoffe betreffen, erscheinen in der Regel innerhalb von 24 Stunden im Dashboard mit dem Amber-Badge.
+**Szenario 3 - Pflichtlager selbst betroffen:** In seltenen Fällen fällt eine Lieferkettenstörung so umfassend aus, dass auch die Haltung neuer Pflichtlagermengen erschwert ist.
 
-Diese Verknüpfung — tagesaktueller Engpassstatus plus statischer Pflichtlagerstatus — ist nach aktuellem Kenntnisstand in der Deutschschweiz einmalig. Die drugshortage.ch-Meldestelle selbst zeigt keinen BWL-Status; das BAG-Dashboard bietet keine Echtzeit-Engpass-Abfrage auf Wirkstoffebene.
+Für Apotheken und Spitalapotheken ist Szenario 1 der Alltag: Das Präparat ist im Engpass, die Pflichtlagerreserve mindert die Kritikalität — aber der Engpass muss trotzdem operativ gemanagt werden.
 
-Aktuelle Daten und die vollständige Liste der betroffenen BWL-Präparate finden Sie unter [engpassradar.ch/dashboard](https://engpassradar.ch). Methodische Details zur Datenerhebung sind auf der [Methodik-Seite](https://engpassradar.ch/methodik) dokumentiert. Einen Überblick über die allgemeine Engpasslage in der Schweiz bietet der Artikel [Lieferengpass Medikamente Schweiz — Übersicht](/blog/lieferengpass-medikamente-schweiz-uebersicht).
+[INTERNAL-LINK: Engpass-Alternativen finden → /blog/alternativen-lieferengpass-schweiz]
+
+---
+
+## 5. Was bedeutet das für Apotheken praktisch?
+
+[PERSONAL EXPERIENCE]
+
+Das BWL-Pflichtlager entlastet die Lieferkette systemisch, aber es ersetzt keine aktive Engpassbewirtschaftung durch die Apotheke. Vier praxisrelevante Konsequenzen:
+
+**Kein automatischer Zugang für Apotheken.** Pflichtlagerreserven werden nicht automatisch ausgeliefert. Die Freigabe läuft über das BWL und die Grosshandelskanäle. Eine Apotheke muss dennoch ihren regulären Beschaffungsweg gehen.
+
+**BWL-Flag als Risikoindikator.** Ein pflichtlagerpflichtiges Präparat ist per Definition versorgungskritisch. Wenn genau diese Substanz in den Engpass gerät, ist das Risiko strukturell höher als bei einem nicht pflichtlagerpflichtigen Präparat.
+
+**Frühzeitige Alternativenplanung.** Für BWL-Präparate im Engpass empfiehlt sich proaktives Alternativenmanagement, auch wenn die Pflichtlagerreserve noch verfügbar ist. Die Reserve deckt zwei bis drei Monate; ein Engpass kann länger dauern.
+
+**Meldepflicht beachten.** Seit Mitte 2025 erfolgt die Meldung von Versorgungsstörungen bei lebenswichtigen Humanarzneimitteln über die digitale Arzneimittelplattform des BWL. Diese Pflicht trifft primär Zulassungsinhaber mit Versorgungspflicht, nicht Apotheken.
+
+---
+
+## 6. Wo sehe ich BWL-Flags auf engpassradar.ch?
+
+[ORIGINAL DATA]
+
+engpassradar.ch verknüpft täglich zwei Datenquellen: die Engpassmeldungen aus drugshortage.ch und den BWL-Pflichtlagerstatus aus SR 531.215.31. Jedes Präparat mit einem pflichtlagerpflichtigen Wirkstoff erhält im Dashboard ein BWL-Badge. Aktuell sind 52 solcher Präparate gleichzeitig als Engpass markiert (Datenstand: 25.04.2026).
+
+**Die Badge-Logik im Dashboard:**
+
+- **Amber / Orange:** Pflichtlagerpflichtig und aktuell im Lieferengpass. Höchste Priorität.
+- **Grau / Neutral:** Pflichtlagerpflichtig, kein aktiver Engpass gemeldet.
+
+**Filterfunktion:** Der Filter "Nur BWL-Pflichtlager" isoliert sofort die versorgungskritischen Präparate. Dieser Filter ist besonders für Spitalapotheken mit Intensiv- und Notfallversorgungsauftrag relevant.
+
+**Detailansicht:** Klick auf ein BWL-markiertes Präparat öffnet Engpass-Status, Zeitverlauf, verfügbare Alternativen, Herstellerinformationen und Direktlink zur Original-Meldung auf drugshortage.ch.
+
+**Matching-Logik:** Die Verknüpfung erfolgt auf Wirkstoffebene (ATC-Code). Ein Handelspräparat, das einen pflichtlagerpflichtigen Wirkstoff enthält, erbt automatisch den BWL-Flag. Die GTIN-genaue Listenansicht wird nach Aktivierung des BWL-Scrapers ergänzt.
+
+> **Citation Capsule:** Das engpassradar.ch-Dashboard verknüpft täglich die Engpassmeldungen von drugshortage.ch mit dem BWL-Pflichtlagerstatus nach SR 531.215.31. Per 25.04.2026 tragen 52 Präparate einen aktiven BWL-Engpass-Badge (engpassradar.ch OverviewStats).
+
+[INTERNAL-LINK: Dashboard direkt aufrufen → https://engpassradar.ch]
 
 ---
 
 ## Jetzt im Dashboard prüfen
 
-Welche pflichtlagerpflichtigen Arzneimittel sind heute im Engpass? Das engpassradar.ch-Dashboard zeigt Ihnen täglich aktualisiert alle BWL-markierten Präparate mit offenem Engpass — gefiltert, sortiert und mit Alternativenansicht.
+Welche pflichtlagerpflichtigen Arzneimittel sind heute im Engpass? Das engpassradar.ch-Dashboard zeigt täglich aktualisiert alle BWL-markierten Präparate mit offenem Engpass, gefiltert, sortiert und mit Alternativenansicht.
 
 [Zum Dashboard — BWL-Engpässe jetzt prüfen](https://engpassradar.ch)
 
@@ -150,15 +159,25 @@ Welche pflichtlagerpflichtigen Arzneimittel sind heute im Engpass? Das engpassra
 
 ### Was ist der Unterschied zwischen Pflichtlager und Lieferengpass?
 
-Ein Pflichtlager ist eine gesetzlich vorgeschriebene Reserve, die Importeure und Hersteller für bestimmte Wirkstoffe halten müssen (Rechtsgrundlage: SR 531.215.31). Ein Lieferengpass ist eine akute Versorgungsstörung, die beim BAG/Swissmedic auf drugshortage.ch gemeldet werden muss. Beide Zustände können gleichzeitig auftreten: Das Pflichtlager ist vorhanden, aber der reguläre Lieferweg ist gestört. Das Pflichtlager puffert den Engpass — es hebt ihn nicht auf.
+Ein Pflichtlager ist eine gesetzlich vorgeschriebene Reserve, die Importeure und Hersteller für bestimmte Wirkstoffe halten müssen (Rechtsgrundlage: SR 531.215.31). Ein Lieferengpass ist eine akute Versorgungsstörung, die auf drugshortage.ch gemeldet wird. Beide Zustände können gleichzeitig auftreten: Das Pflichtlager ist vorhanden, der reguläre Lieferweg aber gestört. Das Pflichtlager puffert den Engpass, es hebt ihn nicht auf.
+
+[INTERNAL-LINK: Was ist ein Lieferengpass? → /blog/lieferengpass-medikamente-schweiz-uebersicht]
+
+### Wie viele BWL-Präparate sind aktuell im Engpass?
+
+Per 25. April 2026 sind 52 BWL-gelistete Präparate gleichzeitig im aktiven Lieferengpass — 7,3 % aller 712 aktiven Engpässe. Davon tragen 27 Präparate den direkten Pflichtlager-Status (3,8 % aller aktiven Engpässe). Diese Zahlen werden täglich aktualisiert und sind unter [engpassradar.ch](https://engpassradar.ch) einsehbar. Eine GTIN-genaue Präparateliste folgt nach Aktivierung des BWL-Scrapers.
 
 ### Können Apotheken direkt auf das Pflichtlager zugreifen?
 
-Nein. Das Pflichtlagersystem richtet sich primär an Importeure und Hersteller (Art. 3 SR 531.215.31). Eine Freigabe von Pflichtlagerware erfolgt durch das BWL und wird über die etablierten Grosshandels- und Grossverteilkanäle abgewickelt. Apotheken erhalten keine direkte Zuteilung aus dem Pflichtlager, sondern beziehen Ware über ihre üblichen Bezugskanäle — auch wenn im Hintergrund Pflichtlagerware zur Versorgung beiträgt.
+Nein. Das Pflichtlagersystem richtet sich an Importeure und Hersteller (Art. 3 SR 531.215.31). Eine Freigabe von Pflichtlagerware erfolgt durch das BWL und wird über Grosshandelskanäle abgewickelt. Apotheken erhalten keine direkte Zuteilung, beziehen Ware aber über ihre üblichen Bezugskanäle, auch wenn im Hintergrund Pflichtlagerware zur Versorgung beiträgt.
 
 ### Wie oft wird die Liste der pflichtlagerpflichtigen Arzneimittel aktualisiert?
 
-Der Anhang der Verordnung SR 531.215.31 wird periodisch überprüft, in der Regel alle drei Jahre. Zusätzliche Anpassungen sind bei akutem Versorgungsbedarf möglich. Die letzte grössere Erweiterung trat am 15. Januar 2026 in Kraft, mit rund 120 pflichtlagerpflichtigen Wirkstoffen und fünf neu aufgenommenen Substanzen aus den Bereichen Blutdrucksenkung und Sedation. Die jeweils aktuelle, konsolidierte Fassung der Verordnung ist auf [fedlex.admin.ch](https://www.fedlex.admin.ch/eli/cc/2017/432/de) abrufbar.
+Der Anhang der Verordnung SR 531.215.31 wird periodisch überprüft, in der Regel alle drei Jahre. Akute Versorgungsbedarfe können auch kurzfristige Anpassungen auslösen. Die letzte Erweiterung trat am 15. Januar 2026 in Kraft, mit rund 120 pflichtlagerpflichtigen Wirkstoffen und fünf neu aufgenommenen Substanzen. Die aktuelle Fassung ist auf [fedlex.admin.ch](https://www.fedlex.admin.ch/eli/cc/2017/432/de) abrufbar.
+
+### Was ist der WHO-Indikator im engpassradar.ch-Dashboard?
+
+engpassradar.ch erfasst separat 84 WHO-Präparate im Engpass-Monitoring (Datenstand: 25.04.2026). Die WHO-Klassifikation basiert auf der Liste unentbehrlicher Arzneimittel (WHO Model List of Essential Medicines). Diese Präparate werden im Dashboard mit einem eigenen Badge gekennzeichnet und können sich mit dem BWL-Status überschneiden.
 
 ---
 

@@ -13,151 +13,183 @@ cta: "newsletter"
 author: "Henrik"
 ogImage: "https://engpassradar.ch/opengraph-image"
 canonical: "https://engpassradar.ch/blog/generika-niedrigpreis-lieferengpass-analyse"
-abstract: "Sind günstige Generika in der Schweiz häufiger von Lieferengpässen betroffen als teurere Originalpräparate? Dieser Artikel verknüpft erstmals ODDB-Preisdaten (PPUB/PEXF) mit der Engpass-Häufigkeit aus 9.195 Engpass-Meldungen von drugshortage.ch und zeigt: Die Daten weisen eine deutliche Korrelation zwischen niedrigem Fabrikabgabepreis und erhöhtem Engpass-Risiko auf. Internationale Studien — unter anderem aus dem NEJM-Umfeld, der USP und der Europäischen Kommission — stützen diesen Befund strukturell. Die Analyse unterscheidet bewusst zwischen Korrelation und Kausalität und zeigt, welche politischen und regulatorischen Konsequenzen sich aus dem Datenbild ergeben könnten."
+abstract: "Sind günstige Generika in der Schweiz häufiger von Lieferengpässen betroffen als teurere Originalpräparate? Dieser Artikel verknüpft ODDB-Preisdaten (PEXF) mit der Engpass-Häufigkeit aus 9.195 Engpass-Meldungen von drugshortage.ch und zeigt: Die These ist empirisch schwächer als oft behauptet. Der Preisunterschied zwischen häufigen Engpass-Wirkstoffen und dem Gesamtmarkt beträgt nur CHF 4.06 — und mehrere Top-Wirkstoffe liegen im mittleren bis hohen Preissegment."
 citation: true
 distributionNote: "Pitch-Ziele: NZZ Gesundheit, Schweizerische Ärztezeitung (SÄZ)"
 ---
 
-Was kostet ein Medikament, das regelmässig im Engpass ist? Diese Frage klingt banal — sie ist es nicht. Wenn die ODDB-Datenbank für Pregabalin-Generika Fabrikabgabepreise von unter 10 Franken ausweist, für Quetiapin-Generika im tiefen zweistelligen Bereich, und gleichzeitig genau diese Wirkstoffe die Spitze jeder Schweizer Engpass-Statistik belegen, dann drängt sich eine Hypothese auf: **Preis und Engpass-Risiko könnten systematisch zusammenhängen.**
+Was kostet ein Medikament, das regelmässig im Engpass ist? Die Antwort ist überraschender, als viele vermuten. Die engpassradar.ch-Datenbank weist für Quetiapin — den Wirkstoff mit den meisten Engpass-Meldungen in der Schweiz — einen PEXF-Medianwert von CHF 97.30 aus. Das ist kein Billigprodukt. Es ist ein Mittelpreisprodukt.
 
-Dieser Artikel unternimmt einen ersten datengestützten Schritt, diese Hypothese zu prüfen. Grundlage ist die Verknüpfung von Preisdaten aus der ODDB-Arzneimitteldatenbank (Publikumspreis PPUB und Fabrikabgabepreis PEXF) mit den 9.195 Engpass-Meldungen, die [engpassradar.ch](https://engpassradar.ch) seit 2015 aus der offiziellen Schweizer Meldestelle drugshortage.ch erfasst hat.
+Diese Beobachtung zwingt zu einer nüchterneren Betrachtung der häufig gehörten These: Niedrigpreise verursachen Engpässe. Die Korrelation existiert, sie ist aber deutlich schwächer als oft dargestellt. Grundlage dieser Analyse sind 9.195 Engpass-Meldungen aus [engpassradar.ch](https://engpassradar.ch) sowie ODDB-Preisdaten (PEXF) — verknüpft auf Wirkstoffebene, Datenstand 25. April 2026.
+
+[INTERNAL-LINK: ODDB-Methodik und Datenquellen → /methodik]
 
 > **Das Wichtigste in Kürze**
-> - Die Daten zeigen eine Korrelation zwischen niedrigem Fabrikabgabepreis (PEXF) und erhöhtem Engpass-Risiko — am deutlichsten bei generischen Wirkstoffen mit hohem Volumen.
-> - Alle zehn häufigsten Engpass-Wirkstoffe in der Schweiz (Pregabalin, Ezetimib, Amlodipin, Pantoprazol u. a.) sind Generika; keines ist ein patentgeschütztes Originalpräparat.
-> - International bestätigen mehrere Studien den strukturellen Zusammenhang: Der durchschnittliche Preis steriler Injektabilia im Engpass war laut USP (2024) rund 8,5-mal tiefer als bei nicht betroffenen Produkten.
-> - Für die Schweiz ist dieser Zusammenhang bisher nicht systematisch publiziert worden. **[UNIQUE INSIGHT]**: Die Kombination von ODDB-PEXF-Daten mit der Engpass-Häufigkeit aus drugshortage.ch eröffnet erstmals eine nationale Korrelationsanalyse.
-> - Korrelation ist nicht Kausalität. Dieser Artikel verzichtet auf kausale Schlussfolgerungen, wo die Datenlage dies nicht trägt.
-> - Quelle: engpassradar.ch, Datenstand 25. April 2026; ODDB-Preisdaten; internationale Fachliteratur.
+> - Der häufigste Engpass-Wirkstoff, Quetiapin (41 Meldungen), hat einen PEXF-Median von CHF 97.30 — kein Niedrigpreis-Produkt.
+> - Häufige Engpass-Wirkstoffe (≥10 Meldungen) liegen im Median bei CHF 25.12 vs. CHF 29.18 im Gesamtmarkt — ein Unterschied von nur CHF 4.06.
+> - 98.9% aller aktiven Engpässe betreffen Produkte mit Generika-Gruppeneintrag (gengrp).
+> - In 136 Wirkstoffgruppen laufen gleichzeitig mehrere Präparate im Engpass — ein Zeichen für strukturelle, nicht preisspezifische Ursachen.
+> - Quelle: engpassradar.ch, Datenstand 25. April 2026; ODDB-Preisdaten.
 
 ---
 
-## Hintergrund: Die negative Preisspirale bei Generika
+## Hintergrund: Die negative Preisspirale — ein plausibler, aber unvollständiger Erklärungsrahmen
 
-Generika sind das Rückgrat der Arzneimittelversorgung. In der Schweiz erreichte der Generikamarkt 2024 erstmals einen Jahresumsatz von über einer Milliarde Franken — und ermöglichte Kosteneinsparungen von 707 Millionen Franken im Gesundheitswesen ([Intergenerika, 2025](https://www.intergenerika.ch/aktuelles/generika-und-biosimilars-senkten-2024-die-kosten-im-schweizer-gesundheitswesen-um-ueber-700-millionen-franken)). Was wie eine Erfolgsbilanz klingt, hat eine Kehrseite: Dieselbe Preispolitik, die Generika erschwinglich macht, untergräbt die wirtschaftlichen Anreize für eine stabile Versorgung.
+Die These ist bekannt: Wenn Generika-Margen schrumpfen, investieren Hersteller weniger in Qualität und Kapazität — Engpässe werden wahrscheinlicher. In der Schweiz erreichte der Generikamarkt 2024 Kosteneinsparungen von 707 Millionen Franken ([Intergenerika, 2025](https://www.intergenerika.ch/aktuelles/generika-und-biosimilars-senkten-2024-die-kosten-im-schweizer-gesundheitswesen-um-ueber-700-millionen-franken)). Dieselbe Preispolitik, die diese Einsparungen ermöglicht, gilt als strukturelles Versorgungsrisiko.
 
-Der Mechanismus ist dokumentiert: Sobald ein Originalpräparat seinen Patentschutz verliert, drängen Generika-Hersteller mit Preissenkungen auf den Markt. Die Margen schrumpfen, der Wettbewerb treibt die Preise weiter nach unten. Regulierungsbehörden wie das Bundesamt für Gesundheit (BAG) oder die Eidgenössische Preisüberwachung setzen zusätzlich periodische Preissenkungen durch. Laut Intergenerika verfügten 10% der Generika des Herstellers Mepha über einen Fabrikabgabepreis von unter 5 Franken, 25% unter 15 Franken ([Presseportal.ch, 2024](https://www.presseportal.ch/de/pm/100004649/100926252)).
+Der Mechanismus ist dokumentiert und plausibel. Was die engpassradar.ch-Daten aber zeigen: Er erklärt nicht alles. Die häufigsten Engpass-Wirkstoffe in der Schweiz sind keine reinen Cent-Produkte. Mehrere liegen im mittleren Preissegment, einer — Quetiapin — im hohen einstelligen zweistelligen CHF-Bereich.
 
-Für Hersteller entsteht so eine Situation, in der Produktions- und Qualitätsinvestitionen nicht mehr vollständig durch Erlöse gedeckt werden können. Die Europäische Kommission identifizierte in ihrer Mitteilung vom Oktober 2023 genau diesen Mechanismus als strukturelles Versorgungsrisiko — eine «negative Preisspirale», die Hersteller dazu zwingt, Produktionsvolumina zu reduzieren oder den Markt ganz zu verlassen ([Europäische Kommission, COM(2023) 672 final](https://commission.europa.eu/system/files/2023-10/Communication_medicines_shortages_EN_0.pdf)).
+Preisdruck ist eine Ursache unter mehreren. Produktionskomplexität, Herstellerkonzentration, Wirkstoffabhängigkeiten und Nachfrageschwankungen spielen gleichermassen eine Rolle. Wer die Niedrigpreis-These zu stark betont, riskiert, die anderen Ursachen zu unterschätzen.
+
+[INTERNAL-LINK: Ursachen von Lieferengpässen in der Schweiz → /blog/ursachen-lieferengpaesse-schweiz]
 
 ---
 
 ## Methodik: ODDB-Preis trifft Engpass-Häufigkeit
 
-Der analytische Kern dieses Artikels basiert auf einer Verknüpfung zweier Datenquellen:
+Der analytische Kern basiert auf einer Verknüpfung zweier Datenquellen:
 
-**Quelle 1 — Engpass-Meldungen:** engpassradar.ch erfasst seit 2015 alle Meldungen aus der Schweizer Meldestelle drugshortage.ch (Zulassungsinhaber mit Versorgungspflicht sind zur Meldung verpflichtet). Datenstand dieser Analyse: 25. April 2026, 9.195 Meldungen.
+**Quelle 1 - Engpass-Meldungen:** engpassradar.ch erfasst seit 2015 alle Meldungen aus der Schweizer Meldestelle drugshortage.ch. Zulassungsinhaber mit Versorgungspflicht sind zur Meldung verpflichtet. Datenstand dieser Analyse: 25. April 2026, 9.195 Meldungen.
 
-**Quelle 2 — ODDB-Preisdaten:** Die Open Drug Database (ODDB) stellt für zugelassene Schweizer Arzneimittel unter anderem den Fabrikabgabepreis (PEXF) und den Publikumspreis (PPUB) zur Verfügung. Diese Preisdaten lassen sich mit den Engpass-Meldungen auf Ebene des Handelsnamens (EAN/GTIN) verknüpfen.
-
-Die Methode: Für jeden Wirkstoff mit mindestens 10 dokumentierten Engpass-Meldungen wird der mittlere PEXF-Wert aller seiner Handelspräparate berechnet und der Engpass-Häufigkeit gegenübergestellt. Parallel werden Originalpräparate (erkennbar an Kategorisierung in ODDB sowie am Fehlen einer Generika-Kennzeichnung) separat ausgewertet.
+**Quelle 2 - ODDB-Preisdaten:** Die Open Drug Database (ODDB) stellt für zugelassene Schweizer Arzneimittel den Fabrikabgabepreis (PEXF) und den Publikumspreis (PPUB) zur Verfügung. Diese Preisdaten sind über ATC-Code mit den Engpass-Meldungen verknüpft.
 
 | Parameter | Wert |
 |---|---|
 | **Primäre Datenquelle** | engpassradar.ch / drugshortage.ch |
-| **Preisquelle** | ODDB (PPUB, PEXF) |
-| **Analysezeitraum** | 01.01.2015 – 25.04.2026 |
+| **Preisquelle** | ODDB (PEXF) |
+| **Analysezeitraum** | 01.01.2015 - 25.04.2026 |
 | **Erfasste Fälle** | 9.195 Engpass-Meldungen |
-| **Verknüpfungsschlüssel** | EAN/GTIN → Wirkstoff → Preisklasse |
+| **Verknüpfungsschlüssel** | ATC-Code - Wirkstoff - PEXF-Medianwert |
 | **Datenstand** | 25. April 2026 |
 
-**Einschränkung:** Die Preisdaten aus ODDB bilden den aktuellen Stand ab — historische Preisentwicklungen sind nicht vollständig rekonstruierbar. Kausalaussagen sind auf Basis dieser Querschnittskorrelation nicht möglich. Alle Befunde sind als Assoziationen zu verstehen.
+**Einschränkung:** ODDB bildet den aktuellen Preisstand ab, keine historischen Verläufe. Alle Befunde sind Querschnittskorrelationen, keine Kausalaussagen. Ein ODDB-Match war für 39.8% der Fälle nicht möglich — diese Fälle sind in Preisklassen-Auswertungen nicht enthalten.
 
 ---
 
-## Befund 1: Korrelationsanalyse Preis / Engpass-Häufigkeit
+## Befund 1: Die Top-10-Wirkstoffe — und was ihr Preis verrät
 
-**Top 10 häufigste Engpass-Wirkstoffe (Datenstand: 25. April 2026) mit PEXF-Medianwert:**
+**[ORIGINAL DATA]** Die folgende Tabelle zeigt die zehn häufigsten Engpass-Wirkstoffe in der Schweiz gemäss engpassradar.ch (Datenstand 25. April 2026) mit dem PEXF-Medianwert aus ODDB:
 
-| Rang | Wirkstoff | ATC | Meldungen gesamt | Aktiv | PEXF Median (CHF) |
-|---|---|---|---|---|---|
-| 1 | Quetiapin | N05AH04 | 41 | 28 | 97.30 |
-| 2 | Venlafaxin | N06AX16 | 35 | 13 | 19.50 |
-| 3 | Methylphenidat | N06BA04 | 22 | 7 | 36.56 |
-| 4 | Pregabalin | N02BF02 | 21 | 9 | 18.62 |
-| 5 | Olanzapin | N05AH03 | 20 | 12 | 56.23 |
-| 6 | Omeprazol | A02BC01 | 19 | 11 | 12.79 |
-| 7 | Esomeprazol | A02BC05 | 17 | 13 | 19.10 |
-| 8 | Eletriptan | N02CC06 | 17 | 2 | 14.20 |
-| 9 | Fentanyl | N02AB03 | 16 | 3 | 44.62 |
-| 10 | Zolmitriptan | N02CC03 | 15 | 15 | 18.13 |
+| Rang | Wirkstoff | ATC | Meldungen gesamt | Aktiv | PEXF Median (CHF) | PEXF Min (CHF) |
+|---|---|---|---|---|---|---|
+| 1 | Quetiapin | N05AH04 | 41 | 28 | 97.30 | 15.80 |
+| 2 | Venlafaxin | N06AX16 | 35 | 13 | 19.50 | 2.12 |
+| 3 | Methylphenidat | N06BA04 | 22 | 7 | 36.56 | 13.21 |
+| 4 | Pregabalin | N02BF02 | 21 | 9 | 18.62 | 3.37 |
+| 5 | Olanzapin | N05AH03 | 20 | 12 | 56.23 | 6.33 |
+| 6 | Omeprazol | A02BC01 | 19 | 11 | 12.79 | 3.46 |
+| 7 | Esomeprazol | A02BC05 | 17 | 13 | 19.10 | 5.50 |
+| 8 | Eletriptan | N02CC06 | 17 | 2 | 14.20 | 10.52 |
+| 9 | Fentanyl | N02AB03 | 16 | 3 | 44.62 | 15.96 |
+| 10 | Zolmitriptan | N02CC03 | 15 | 15 | 18.13 | 5.96 |
 
 *Quelle: engpassradar.ch / drugshortage.ch, ODDB-Preisdaten. Datenstand: 25. April 2026.*
 
-Die vorläufige Analyse der Daten zeigt eine Tendenz: Wirkstoffe, deren Handelspräparate im Median unter einem PEXF-Schwellenwert von CHF 29 (Gesamtmarkt-Median) liegen, erscheinen in der Engpass-Statistik überproportional häufig. Die zehn häufigsten Engpass-Wirkstoffe — Pregabalin (88 Meldungen), Ezetimib (84), Amlodipin (79), Pantoprazol (78), Omeprazol (78), Atorvastatin (77), Olmesartan (70), Quetiapin (69), Venlafaxin (65) und Candesartan (62) — sind allesamt Generika mit vergleichsweise niedrigen Preisniveaus in ODDB.
+[CHART: Balkendiagramm - PEXF-Median der Top-10-Engpass-Wirkstoffe vs. Gesamtmarkt-Median CHF 29.18 - Quelle: engpassradar.ch / ODDB, April 2026]
 
-**[UNIQUE INSIGHT]** Die Verknüpfung von ODDB-PEXF-Daten mit der drugshortage.ch-Häufigkeit ist für die Schweiz nach Kenntnis von engpassradar.ch bisher nicht systematisch publiziert worden. Die Daten zeigen eine Korrelation zwischen Preisniveau und Engpass-Häufigkeit — ob kausale Faktoren dahinterstehen und welche, lässt sich aus dieser Analyse allein nicht ableiten.
+Was fällt sofort auf? Quetiapin (CHF 97.30), Olanzapin (CHF 56.23) und Fentanyl (CHF 44.62) liegen klar über dem Gesamtmarkt-Median von CHF 29.18. Diese Wirkstoffe sind keine Billigprodukte. Trotzdem dominieren sie die Engpass-Statistik.
 
-Auffällig: Innerhalb derselben Wirkstoffklasse (z. B. Sartane: Olmesartan, Candesartan, Valsartan, Losartan) sind diejenigen Wirkstoffe häufiger betroffen, die laut ODDB im Schnitt günstigere Fabrikabgabepreise aufweisen. Ob diese Korrelation statistisch robust ist, würde eine multivariate Regressionsanalyse unter Kontrolle weiterer Variablen (Marktvolumen, Anzahl Hersteller, Produktionskomplexität) erfordern — multivariate Analyse ausstehend; Tendenz bestätigt (Preis-Engpass-Korrelation sichtbar).
+**[UNIQUE INSIGHT]** Das spricht gegen eine einfache Preis-Engpass-Kausalität. Wären niedrige Preise der primäre Treiber, müssten die häufigsten Engpass-Wirkstoffe durchgehend im untersten Preissegment liegen. Das ist nicht der Fall.
 
-Die Daten zeigen eine Korrelation zwischen niedrigem Fabrikabgabepreis und erhöhtem Engpass-Risiko. Sie beweisen nicht, dass niedrige Preise Engpässe verursachen.
+Auffällig ist auch die enorme Preisspanne innerhalb desselben Wirkstoffs. Quetiapin reicht von CHF 15.80 (Min) bis CHF 97.30 (Median) — eine Varianz, die zeigt, dass verschiedene Präparate desselben Wirkstoffs in völlig unterschiedlichen Preissegmenten gehandelt werden, aber gleichermassen im Engpass landen.
 
----
-
-## Befund 2: Generika vs. Originalpräparate — ein systematischer Unterschied
-
-![Blisterpacks verschiedener Medikamente — Generika sind in der Schweiz überproportional häufig von Lieferengpässen betroffen](https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=900&h=500&fit=crop&q=80)
-
-Der Vergleich zwischen Originalpräparaten und Generika in der Engpass-Statistik von engpassradar.ch ist eindeutig: Unter den 10 häufigsten Engpass-Wirkstoffen (nach ATC-Code) sind alle Generika-Substanzen, mit PEXF-Medianwerten zwischen CHF 12 und CHF 97. Alle zehn häufigsten Engpass-Wirkstoffe sind Generika.
-
-| Kategorie | Anteil an Engpass-Meldungen (Top 50) | Anteil im Gesamtmarkt |
-|---|---|---|
-| Generika | 100% (alle 10 häufigsten Engpass-Wirkstoffe; PEXF-Median CHF 12–97) | ca. 30–35% der Packungen* |
-| Originalpräparate | 0% unter Top-10-Engpass-Wirkstoffen | ca. 65–70% der Packungen* |
-
-*Schätzung auf Basis öffentlich verfügbarer Marktdaten; exakte Verknüpfung mit ODDB-Kategorisierung steht aus.
-
-Das Muster spiegelt internationale Befunde: Die US-amerikanische Behörde HHS/ASPE stellte in ihrer Analyse von Engpässen zwischen 2018 und 2023 fest, dass über doppelt so viele Engpässe bei Generika (n = 1.391) wie bei Originalpräparaten (n = 600) begannen — bei einem deutlich tieferen Preisniveau der betroffenen Produkte ([HHS ASPE, 2025](https://www.ncbi.nlm.nih.gov/books/NBK611681/)).
-
-Wichtig: Diese Überrepräsentation von Generika in der Engpass-Statistik erklärt sich nicht zwingend allein durch den Preis. Generika werden in deutlich höherem Volumen produziert, haben mehr Hersteller und unterliegen einem anderen Meldeverhalten. Die Preishypothese ist eine unter mehreren plausiblen Erklärungen.
+[INTERNAL-LINK: Quetiapin-Engpass: aktuelle Meldungen und Alternativen → /wirkstoffe/quetiapin]
 
 ---
 
-## Was die internationale Forschung zeigt
+## Befund 2: Der Preisvergleich — Korrelation schwächer als erwartet
 
-Der Zusammenhang zwischen niedrigen Arzneimittelpreisen und erhöhtem Engpass-Risiko ist in der Fachliteratur mehrfach beschrieben worden.
+**[ORIGINAL DATA]** Der direkte Vergleich zwischen häufig betroffenen Wirkstoffen und dem Gesamtmarkt zeigt eine Korrelation — aber eine schwache.
 
-**USP Drug Shortage Report (2024):** Der erste umfassende Engpass-Bericht der United States Pharmacopeia hält fest: «Drug products with low prices have a higher risk of drug shortage.» Konkret: Der durchschnittliche Preis steriler Injektabilia, die sich im Engpass befanden, lag rund **8,5-mal tiefer** als bei nicht betroffenen Produkten. Mehr als die Hälfte aller neuen Engpässe (53%) betrafen generische sterile Injektabilia ([USP, 2024](https://www.usp.org/news/us-drug-shortages-reach-decade-high-and-last-longer)).
+Wirkstoffe mit zehn oder mehr Engpass-Meldungen weisen einen PEXF-Median von CHF 25.12 auf. Der Gesamtmarkt-Median in ODDB liegt bei CHF 29.18. Die Differenz: CHF 4.06.
 
-**Dave et al. (2018), Value in Health:** Diese retrospektive Kohortenstudie analysierte Prädiktoren für Engpässe im US-amerikanischen Generikamarkt und fand, dass die am niedrigsten bepreisten Generika einem «substantially elevated risk» für Engpässe ausgesetzt sind ([PubMed, 2018](https://pubmed.ncbi.nlm.nih.gov/30442275/)).
+Das ist statistisch wenig. Wer eine starke Niedrigpreis-Korrelation erwartet hatte, findet in den Daten allenfalls eine schwache Tendenz. Die Preis-Engpass-These wird durch die engpassradar.ch-Daten nicht widerlegt — aber deutlich relativiert.
 
-**Globale Studie über 74 Länder (2025):** Eine aktuell publizierte Studie, die Daten aus 74 Ländern von 2011 bis 2022 auswertete, kommt zum Schluss, dass niedrige Preise sowohl das Auftreten als auch die Intensität von Engpässen begünstigen — unter Verwendung einer Zero-inflated Negative Binomial Regression ([PMC, 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12645593/)).
+| Gruppe | PEXF Median (CHF) |
+|---|---|
+| Häufige Engpass-Wirkstoffe (≥10 Meldungen) | 25.12 |
+| Gesamtmarkt ODDB | 29.18 |
+| **Differenz** | **4.06** |
 
-**JAMA Network Open (2024):** Eine Studie zur Komplexität von Engpässen («Drug Shortages — A Study in Complexity») betont, dass ökonomische Fehlanreize — darunter zu niedrige Preise für komplexe Herstellungsprozesse — als systemisc­her Faktor wirken, ohne dass ein einzelner Akteur die Ursache darstellt ([JAMA, 2024](https://jamanetwork.com/journals/jamanetworkopen/fullarticle/2817213)).
+*Quelle: engpassradar.ch / ODDB, Datenstand: 25. April 2026.*
 
-**Europäische Kommission, COM(2023) 672:** Die EU-Mitteilung zu Arzneimittelengpässen identifiziert unter den Hauptursachen ausdrücklich die Abhängigkeit von wenigen Anbietern, fehlende Produktionskapazitäten und wirtschaftliche Margen-Erosion durch Preisdruck — besonders bei älteren Generika ([Europäische Kommission, 2023](https://commission.europa.eu/system/files/2023-10/Communication_medicines_shortages_EN_0.pdf)).
+Zum Vergleich: Die PEXF-Preisklassen-Verteilung über alle Meldungen zeigt, dass 22.7% der Engpass-Fälle auf Präparate in der Klasse CHF 5-20 entfallen, aber auch 5.9% auf Präparate über CHF 100. Die Extrempreise sind also deutlich seltener betroffen, aber vorhanden.
 
-**EFPIA (2024):** Der europäische Pharmaverband formuliert in seinem Positionspapier zu Engpässen (Dezember 2024), dass anhaltende Preiserosion im Generikamarkt zu Marktaustritten führt und damit die Lieferketten fragiler macht ([EFPIA, 2024](https://www.efpia.eu/media/adnjlfjd/medicine-shortages-efpia-proposal-for-action.pdf)).
-
-Alle diese Befunde belegen eine Korrelation. Keiner von ihnen beweist Kausalität in dem Sinne, dass ein bestimmter Preis eine Engpass-Episode direkt auslöst. Die kausalen Pfade verlaufen über intermediäre Faktoren: reduzierte Investitionen in Produktionsqualität, Marktaustritt von Herstellern, geringere Lagerhaltung, eingeschränkte Lieferantendiversifikation.
+[IMAGE: Gestapeltes Balkendiagramm - Verteilung Engpass-Meldungen nach PEXF-Preisklassen - search terms: pharmacy medicine price distribution chart]
 
 ---
 
-## Schweizer Kontext: ODDB-Preise und regulatorischer Rahmen
+## Befund 3: 98.9% aller aktiven Engpässe sind Generika-Markt-Produkte
 
-In der Schweiz werden die Preise für kassenpflichtige Arzneimittel durch das BAG mittels Auslandspreisvergleich (APV) und therapeutischem Quervergleich (TQV) festgesetzt. Seit mehreren Jahren erfolgen periodische Preisüberprüfungen mit dem Ergebnis systematischer Senkungen — ein Mechanismus, der im internationalen Vergleich besonders ausgeprägt ist.
+**[ORIGINAL DATA]** Von 712 aktiven Engpässen (Datenstand 25. April 2026) haben 704 einen Generika-Gruppeneintrag (gengrp) in ODDB. Das entspricht 98.9%. Die Anzahl eindeutiger gengrp-Gruppen beträgt 480.
 
-Das neue Preismodell für Generika und Biosimilars, das am 1. Juli 2024 in Kraft trat, soll den Generika-Einsatz fördern und jährlich rund 60 Millionen Franken einsparen ([pharmaSuisse, 2024](https://pharmasuisse.org/de/medienmitteilung/ab-1-juli-2024-neues-preismodell-foerdert-generika-und-biosimilars-und-bringt)). Die Stärke dieses Modells — die günstigeren Preise — ist zugleich die potenzielle Schwachstelle aus Versorgungssicherheitsperspektive.
+Das ist ein robustes Muster. Fast der gesamte aktive Engpass-Bestand betrifft Produkte, die im Generika-Markt positioniert sind. Das bestätigt, dass Generika strukturell überproportional betroffen sind — unabhängig vom konkreten Preisniveau.
 
-Intergenerika, der Schweizer Branchenverband der Generika-Hersteller, fordert explizit Mindestpreise für lebenswichtige Medikamente und dokumentiert, dass steigende Produktions- und Vertriebskosten von immer mehr Präparaten nicht mehr gedeckt werden ([Intergenerika, 2024](https://www.intergenerika.ch/aktuelles/medikamentenengpass-versorgungssicherheit-vs-preispolitik)). Dieser Befund deckt sich mit dem internationalen Forschungsstand.
+Besonders relevant: In 136 dieser gengrp-Gruppen befinden sich gleichzeitig mehrere Präparate im Engpass. Das bedeutet: Nicht nur einzelne Produkte fehlen, sondern ganze Wirkstoffgruppen sind gleichzeitig eingeschränkt verfügbar. Für Apotheken und Spitalapotheken ist das die kritische Dimension — nicht das Fehlen einer einzelnen Packung, sondern das Fehlen aller verfügbaren Alternativen.
 
-Die ODDB-Daten ermöglichen eine Überprüfung dieser These auf Produktebene: Durch Verknüpfung von PEXF-Preisniveaus mit Engpass-Häufigkeiten aus drugshortage.ch liesse sich identifizieren, unterhalb welcher Preisschwelle das Engpass-Risiko in der Schweizer Praxis messbar ansteigt. Diese Analyse ist ein **[UNIQUE INSIGHT]** — sie liegt für die Schweiz bisher nicht vor und würde eine datengestützte Grundlage für die gesundheitspolitische Debatte liefern.
+> Ein Engpass in einer gengrp-Gruppe mit mehreren betroffenen Präparaten lässt sich nicht durch einen simplen Herstellerwechsel lösen. Hier ist systematisches Alternativmanagement gefragt.
+
+[INTERNAL-LINK: Alternativen-Finder: welche Präparate sind verfügbar? → /alternativen]
+
+---
+
+## Befund 4: Preisklassen-Verteilung — wo konzentrieren sich die Engpässe?
+
+**[ORIGINAL DATA]** Die PEXF-Preisklassen-Analyse über alle 9.195 Meldungen (mit ODDB-Match, 60.2% der Fälle) zeigt folgende Verteilung:
+
+| PEXF-Preisklasse | Fälle | Anteil | Eindeutige ATC-Codes |
+|---|---|---|---|
+| < CHF 5 | 769 | 8.2% | 84 |
+| CHF 5-20 | 2.119 | 22.7% | 197 |
+| CHF 20-50 | 1.401 | 15.0% | 122 |
+| CHF 50-100 | 599 | 6.4% | 66 |
+| CHF 100-500 | 548 | 5.9% | 60 |
+| > CHF 500 | 197 | 2.1% | 19 |
+| Kein ODDB-Match | 3.720 | 39.8% | - |
+
+*Quelle: engpassradar.ch / ODDB, Datenstand: 25. April 2026.*
+
+Das mittlere Preissegment (CHF 5-50) dominiert mit Abstand. Die günstigsten Produkte unter CHF 5 stellen zwar 8.2% der Fälle, aber die grösste Konzentration liegt zwischen CHF 5 und CHF 50. Hochpreisprodukte über CHF 500 sind mit 2.1% selten betroffen — das bestätigt die Richtung der Korrelation.
+
+Was die Tabelle aber auch zeigt: 5.9% der Fälle betreffen Produkte zwischen CHF 100-500. Das sind reale Engpässe bei Mittelhochpreisprodukten — keine Ausreisser, sondern ein messbarer Anteil. Die Niedrigpreis-These erklärt diesen Teil des Engpass-Bildes nicht.
+
+[CHART: Kreisdiagramm - Anteil Engpass-Meldungen nach PEXF-Preisklassen - Quelle: engpassradar.ch / ODDB, April 2026]
+
+---
+
+## Was die internationale Forschung zeigt — und wo sie begrenzt ist
+
+Internationale Studien finden stärkere Preis-Engpass-Korrelationen als die Schweizer Daten. Die Europäische Kommission identifizierte in ihrer Mitteilung COM(2023) 672 Preisdruck, Margen-Erosion und Herstellerkonzentration als Hauptursachen für strukturelle Versorgungsrisiken bei älteren Generika. Dieser Befund ist plausibel — aber er basiert auf einem breiteren Marktgefüge.
+
+Die Schweiz hat gegenüber anderen Märkten besondere Charakteristika. Das BAG-Preissetzungsverfahren (Auslandspreisvergleich, therapeutischer Quervergleich) führt zu einem anderen Preisniveau als in der EU. Schweizer Generika-Preise sind im internationalen Vergleich trotz Senkungen noch relativ hoch. Das kann erklären, warum der gemessene Preisabstand zwischen Engpass-Wirkstoffen und dem Gesamtmarkt in der Schweiz geringer ist als in US-amerikanischen Studien.
+
+Die eigenen Daten sind der primäre Befund. Die internationale Literatur ist Kontext, nicht Bestätigung.
+
+[INTERNAL-LINK: Lieferengpässe in der Schweiz: Übersicht und aktuelle Statistiken → /blog/lieferengpaesse-schweiz-uebersicht]
+
+---
+
+## Schweizer Kontext: Regulierung und ihre Grenzen
+
+In der Schweiz legt das BAG Höchstpreise für kassenpflichtige Arzneimittel fest. Das neue Preismodell für Generika und Biosimilars (in Kraft seit 1. Juli 2024) soll den Generika-Einsatz fördern und jährlich rund 60 Millionen Franken einsparen. Mindestpreise für versorgungskritische Wirkstoffe existieren nicht.
+
+Was die engpassradar.ch-Daten zur regulatorischen Debatte beitragen: Die einfache Gleichung "höhere Preise = weniger Engpässe" ist empirisch nicht belegt. Wirkstoffe wie Quetiapin (Median CHF 97.30) und Olanzapin (CHF 56.23) haben keine niedrigen Preise — und sind trotzdem die am häufigsten gemeldeten Engpass-Wirkstoffe der Schweiz.
+
+Das deutet auf andere strukturelle Faktoren hin: Komplexität der Galenik, begrenzte Anzahl Wirkstofffabriken weltweit, regulatorische Anforderungen an Psychopharmaka, Nachfrageschwankungen. Diese Faktoren wirken unabhängig vom Preisniveau.
+
+**[UNIQUE INSIGHT]** Eine sinnvolle Versorgungspolitik müsste zwischen zwei Gruppen unterscheiden: Wirkstoffe, bei denen Preisdruck tatsächlich Anreize zerstört (Segmente unter CHF 5-10), und Wirkstoffe, bei denen strukturelle Produktionskomplexität oder Marktkonzentration der Haupttreiber sind. Die Daten legen nahe, dass die zweite Gruppe grösser ist als bisher angenommen.
 
 ---
 
 ## Einordnung: Was die Daten zeigen — und was nicht
 
-Die in diesem Artikel beschriebenen Befunde sind Korrelationen, keine Kausalaussagen. Das ist nicht bloss ein akademischer Vorbehalt — es ist für die praktische Interpretation entscheidend.
+Die beschriebenen Befunde sind Querschnittskorrelationen. Das ist für die praktische Interpretation entscheidend.
 
-Die Daten zeigen eine Korrelation zwischen niedrigem Fabrikabgabepreis und erhöhtem Engpass-Risiko. Sie zeigen nicht, dass:
+Die Daten zeigen: Eine schwache Tendenz, dass häufige Engpass-Wirkstoffe etwas günstiger sind als der Gesamtmarkt-Durchschnitt. 98.9% der aktiven Engpässe betreffen den Generika-Markt. In 136 Wirkstoffgruppen sind gleichzeitig mehrere Präparate betroffen.
 
-- ein bestimmter Preisanstieg die Engpass-Häufigkeit um einen bestimmten Betrag reduzieren würde
-- der Preis die einzige oder dominante Ursache für Engpässe ist
-- höhere Preise für Generika die Versorgungssicherheit automatisch verbessern würden
+Die Daten zeigen nicht: Dass niedrige Preise Engpässe verursachen. Dass ein Preisanstieg die Engpass-Häufigkeit messbar reduzieren würde. Dass teure Präparate sicher vor Engpässen sind.
 
-Andere Faktoren — Marktkonzentration auf wenige Hersteller oder Produktionsstätten, Qualitätsprobleme in der Fertigung, Rohstoffabhängigkeiten von Drittstaaten, Nachfrageschwankungen, regulatorische Verzögerungen — tragen ebenfalls zur Erklärung bei. Laut HHS ASPE (2025) lagen dem Gros der US-Engpässe Qualitätsprobleme zugrunde, die ihrerseits auf mangelnde Investitionsanreize zurückgeführt werden — was wiederum mit dem Preisniveau zusammenhängen kann, aber nicht muss.
-
-Die Europäische Kommission beschreibt das Zusammenspiel dieser Faktoren als «complex and interconnected» ([COM(2023) 672](https://commission.europa.eu/system/files/2023-10/Communication_medicines_shortages_EN_0.pdf)). Eine monokausal auf den Preis ausgerichtete Interpretation wäre vereinfachend.
+Andere Faktoren wie Marktkonzentration auf wenige Hersteller, Qualitätsprobleme in der Fertigung, Rohstoffabhängigkeiten und regulatorische Verzögerungen tragen zur Erklärung bei. Viele der aktuell betroffenen Wirkstoffe — Psychopharmaka, Schmerzmittel, Protonenpumpenhemmer — haben eine komplexe globale Lieferkette, unabhängig vom Schweizer Preisniveau.
 
 ---
 
@@ -165,13 +197,15 @@ Die Europäische Kommission beschreibt das Zusammenspiel dieser Faktoren als «c
 
 Unabhängig von der Kausalitätsfrage haben die beschriebenen Muster praktische Konsequenzen.
 
-**Für Apotheken und Spitalapotheken:** Präparate mit niedrigem PEXF und hohem Engpass-Score in der engpassradar.ch-Datenbank sind strukturell risikobehafteter. Ein proaktives Monitoring dieser Wirkstoffe — insbesondere der Top-Engpass-Generika Pregabalin, Ezetimib, Amlodipin, Omeprazol, Pantoprazol — ist empfehlenswert. [Engpassradar.ch](https://engpassradar.ch) zeigt täglich aktualisierte Statusangaben sowie verfügbare Alternativen.
+**Für Apotheken und Spitalapotheken:** Die Top-10-Wirkstoffe nach Meldehäufigkeit — Quetiapin, Venlafaxin, Methylphenidat, Pregabalin, Olanzapin — sollten im proaktiven Monitoring stehen. Bei gengrp-Gruppen mit mehreren gleichzeitig betroffenen Präparaten (136 Gruppen aktiv) ist besondere Aufmerksamkeit geboten. [Engpassradar.ch](https://engpassradar.ch) zeigt täglich aktualisierte Statusangaben sowie verfügbare Alternativen.
 
-**Für Einkauf und Beschaffung:** Bei Wirkstoffen mit hohem Engpass-Score und niedrigem Preisniveau lohnt sich eine Diversifikation der Lieferantenbasis — wenn möglich über mehrere Hersteller und Distributoren.
+**Für Einkauf und Beschaffung:** Die Diversifikation der Lieferantenbasis lohnt sich nicht nur bei Niedrigpreisprodukten. Quetiapin und Olanzapin sind Mittelpreisprodukte mit hohem Engpass-Risiko — ein Segment, das in der Einkaufsstrategie oft unterschätzt wird.
 
-**Für die Gesundheitspolitik:** Die Frage, ob Mindestpreise für versorgungskritische Generika in der Schweiz ein sinnvolles Instrument wären, ist eine gesundheitspolitische Abwägung zwischen Kosteneffizienz und Versorgungssicherheit. Die Daten liefern Argumente für eine sorgfältige Überprüfung dieser Abwägung — sie entscheiden die Frage nicht.
+**Für die Gesundheitspolitik:** Mindestpreise für versorgungskritische Generika sind ein diskutiertes Instrument. Die Daten legen nahe, dass die Preis-Engpass-Korrelation in der Schweiz schwächer ist als international postuliert. Eine rein auf Preiserhöhungen ausgerichtete Versorgungspolitik würde die Engpass-Ursachen im mittleren Preissegment — Quetiapin, Olanzapin, Fentanyl — nicht adressieren.
 
-**Für die Forschung:** Eine systematische Korrelationsanalyse — ODDB-PEXF-Daten vs. Engpass-Häufigkeit, kontrolliert für Marktvolumen, Anzahl Hersteller und Produktionskomplexität — fehlt für die Schweiz. Engpassradar.ch stellt die Engpass-Datengrundlage zur Verfügung; eine Zusammenarbeit mit Forschungseinrichtungen wäre möglich.
+**Für die Forschung:** Eine multivariate Regressionsanalyse, die Preis, Marktvolumen, Anzahl Hersteller und Produktionskomplexität gemeinsam betrachtet, fehlt für die Schweiz. engpassradar.ch stellt die Engpass-Datengrundlage zur Verfügung.
+
+[INTERNAL-LINK: Engpass-Monitoring für Apotheken: Funktionen und API → /api]
 
 ---
 
@@ -185,19 +219,23 @@ Erhalten Sie wöchentlich aktuelle Engpass-Daten, neue kritische Meldungen, mona
 
 ### Sind Generika häufiger im Engpass als Originalpräparate?
 
-Gemäss den Daten von engpassradar.ch (Datenstand: 25. April 2026) sind alle zehn häufigsten Engpass-Wirkstoffe in der Schweiz Generika. Ob dies ausschliesslich auf Preiseffekte zurückzuführen ist oder auch auf höheres Marktvolumen, mehr Marktteilnehmer und andere strukturelle Faktoren, lässt sich aus den vorliegenden Daten nicht abschliessend bestimmen.
+Gemäss engpassradar.ch-Daten (Stand: 25. April 2026) haben 98.9% aller aktiven Engpässe (704 von 712) einen Generika-Gruppeneintrag. Alle zehn häufigsten Engpass-Wirkstoffe sind Generika-Substanzen. Der Preisunterschied zum Gesamtmarkt ist jedoch gering — der PEXF-Median häufiger Engpass-Wirkstoffe liegt bei CHF 25.12 vs. CHF 29.18 im Gesamtmarkt.
+
+### Welcher Wirkstoff hat aktuell die meisten Engpass-Meldungen in der Schweiz?
+
+Quetiapin (ATC: N05AH04) führt die engpassradar.ch-Statistik mit 41 Meldungen total und 28 aktiven Engpässen (Stand 25. April 2026). Der PEXF-Median liegt bei CHF 97.30 — das ist kein Niedrigpreis-Produkt. Auf den Plätzen zwei und drei folgen Venlafaxin (35 Meldungen) und Methylphenidat (22 Meldungen).
 
 ### Was sind PPUB und PEXF in der ODDB?
 
-Die Open Drug Database (ODDB) weist für zugelassene Schweizer Arzneimittel zwei Preiskennzahlen aus: den Fabrikabgabepreis (PEXF, «Prix Ex Factory»), also den Preis, zu dem der Hersteller an Grosshändler oder Apotheken abgibt, sowie den Publikumspreis (PPUB), den Endverkaufspreis an Patient:innen. Für Versorgungsanalysen ist der PEXF der relevantere Indikator, da er die wirtschaftliche Situation der Hersteller besser widerspiegelt.
+Die Open Drug Database (ODDB) weist für zugelassene Schweizer Arzneimittel zwei Preiskennzahlen aus: den Fabrikabgabepreis (PEXF, "Prix Ex Factory"), also den Preis, zu dem der Hersteller an Grosshändler oder Apotheken abgibt, sowie den Publikumspreis (PPUB), den Endverkaufspreis an Patientinnen und Patienten. Für Versorgungsanalysen ist PEXF der relevantere Indikator, da er die wirtschaftliche Situation der Hersteller widerspiegelt.
 
 ### Gibt es in der Schweiz einen Mindestpreis für Generika?
 
-Nein. Stand April 2026 existiert in der Schweiz kein formeller Mindestpreis für Generika. Intergenerika und andere Branchenvertreter fordern eine solche Untergrenze für versorgungskritische Wirkstoffe. Das BAG legt Höchstpreise fest; Mindestpreise sind im geltenden KVG/KLV-Rahmen nicht vorgesehen.
+Nein. Stand April 2026 existiert in der Schweiz kein formeller Mindestpreis für Generika. Das BAG legt Höchstpreise fest; Mindestpreise sind im geltenden KVG/KLV-Rahmen nicht vorgesehen. Branchenvertreter fordern eine solche Untergrenze für versorgungskritische Wirkstoffe. Die engpassradar.ch-Daten zeigen allerdings, dass mehrere der häufigsten Engpass-Wirkstoffe im mittleren Preissegment liegen — Mindestpreise allein würden deren Engpass-Risiko nicht adressieren.
 
 ### Woher stammen die Daten dieser Analyse?
 
-Die Engpass-Häufigkeiten stammen aus engpassradar.ch (Datenstand: 25. April 2026, basierend auf 9.195 Engpass-Meldungen aus drugshortage.ch seit Januar 2015). Die Preisreferenzen beziehen sich auf die ODDB-Datenbank (Fabrikabgabepreise PEXF und Publikumspreise PPUB). Historische Preisdaten sind in ODDB nicht vollständig verfügbar; die Korrelationsaussagen beziehen sich auf aktuelle Preisniveaus, nicht auf Preisentwicklungen über die Zeit.
+Die Engpass-Häufigkeiten stammen aus engpassradar.ch (Datenstand: 25. April 2026, basierend auf 9.195 Engpass-Meldungen aus drugshortage.ch seit Januar 2015). Preisreferenzen beziehen sich auf die ODDB-Datenbank (Fabrikabgabepreise PEXF). Ein ODDB-Match war für 39.8% der Fälle nicht möglich — diese Fälle sind in Preisklassen-Auswertungen nicht enthalten. Historische Preisdaten sind in ODDB nicht vollständig verfügbar; alle Korrelationsaussagen beziehen sich auf aktuelle Preisniveaus.
 
 ---
 
