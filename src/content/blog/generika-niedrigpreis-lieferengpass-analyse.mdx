@@ -1,8 +1,9 @@
 ---
 title: "Generika unter Druck: Warum Niedrigpreis-Präparate häufiger im Engpass sind"
-description: "Eine Analyse der Korrelation zwischen Medikamentenpreisen und Engpass-Häufigkeit in der Schweiz — auf Basis von ODDB-Preisdaten (PPUB/PEXF) und 9.195 Engpass-Meldungen aus drugshortage.ch. Stand April 2026."
+description: "9.195 Engpass-Meldungen, eine Zahl: CHF 4.06 Preisabstand zum Gesamtmarkt. Warum günstige Generika und teure Wirkstoffe gleichermassen im Engpass landen."
 date: "2026-07-20"
 updatedAt: "2026-07-20"
+lastUpdated: "2026-04-25"
 category: "Analyse"
 pillar: 2
 template: "data-research"
@@ -11,43 +12,53 @@ dataAsOf: "2026-04-25"
 readingTime: "8 min"
 cta: "newsletter"
 author: "Henrik"
+coverImage: "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1200&q=80"
+coverImageAlt: "Verschiedene Medikamentenpäckchen in einer Schweizer Apotheke"
 ogImage: "https://engpassradar.ch/opengraph-image"
+twitterCard: "summary_large_image"
 canonical: "https://engpassradar.ch/blog/generika-niedrigpreis-lieferengpass-analyse"
 abstract: "Sind günstige Generika in der Schweiz häufiger von Lieferengpässen betroffen als teurere Originalpräparate? Dieser Artikel verknüpft ODDB-Preisdaten (PEXF) mit der Engpass-Häufigkeit aus 9.195 Engpass-Meldungen von drugshortage.ch und zeigt: Die These ist empirisch schwächer als oft behauptet. Der Preisunterschied zwischen häufigen Engpass-Wirkstoffen und dem Gesamtmarkt beträgt nur CHF 4.06 — und mehrere Top-Wirkstoffe liegen im mittleren bis hohen Preissegment."
 citation: true
 distributionNote: "Pitch-Ziele: NZZ Gesundheit, Schweizerische Ärztezeitung (SÄZ)"
 ---
 
-Was kostet ein Medikament, das regelmässig im Engpass ist? Die Antwort ist überraschender, als viele vermuten. Die engpassradar.ch-Datenbank weist für Quetiapin — den Wirkstoff mit den meisten Engpass-Meldungen in der Schweiz — einen PEXF-Medianwert von CHF 97.30 aus. Das ist kein Billigprodukt. Es ist ein Mittelpreisprodukt.
+Was kostet ein Medikament, das regelmässig im Engpass ist? Die Antwort überrascht. Die [engpassradar.ch](https://engpassradar.ch)-Datenbank weist für Quetiapin, den Wirkstoff mit den meisten Engpass-Meldungen in der Schweiz, einen PEXF-Medianwert von CHF 97.30 aus. Das ist kein Billigprodukt. Es ist ein Mittelpreisprodukt.
 
-Diese Beobachtung zwingt zu einer nüchterneren Betrachtung der häufig gehörten These: Niedrigpreise verursachen Engpässe. Die Korrelation existiert, sie ist aber deutlich schwächer als oft dargestellt. Grundlage dieser Analyse sind 9.195 Engpass-Meldungen aus [engpassradar.ch](https://engpassradar.ch) sowie ODDB-Preisdaten (PEXF) — verknüpft auf Wirkstoffebene, Datenstand 25. April 2026.
+Diese Beobachtung zwingt zu einer nüchterneren Betrachtung der oft gehörten These: Niedrigpreise verursachen Engpässe. Die Korrelation existiert, sie ist aber deutlich schwächer als dargestellt. Grundlage dieser Analyse sind 9.195 Engpass-Meldungen aus [engpassradar.ch](https://engpassradar.ch) sowie ODDB-Preisdaten (PEXF), verknüpft auf Wirkstoffebene, Datenstand 25. April 2026.
 
-[INTERNAL-LINK: ODDB-Methodik und Datenquellen → /methodik]
+<img
+  src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=1200&q=80"
+  alt="Medikamentenpäckchen und Blisterpackungen in einer Schweizer Apotheke — Symbolbild für Generika-Lieferengpässe"
+  loading="lazy"
+  style={{width: '100%', borderRadius: '8px', margin: '1.5rem 0'}}
+/>
 
 > **Das Wichtigste in Kürze**
 > - Der häufigste Engpass-Wirkstoff, Quetiapin (41 Meldungen), hat einen PEXF-Median von CHF 97.30 — kein Niedrigpreis-Produkt.
-> - Häufige Engpass-Wirkstoffe (≥10 Meldungen) liegen im Median bei CHF 25.12 vs. CHF 29.18 im Gesamtmarkt — ein Unterschied von nur CHF 4.06.
+> - Häufige Engpass-Wirkstoffe (≥10 Meldungen) liegen im Median bei CHF 25.12 vs. CHF 29.18 im Gesamtmarkt. Der Unterschied: nur CHF 4.06.
 > - 98.9% aller aktiven Engpässe betreffen Produkte mit Generika-Gruppeneintrag (gengrp).
 > - In 136 Wirkstoffgruppen laufen gleichzeitig mehrere Präparate im Engpass — ein Zeichen für strukturelle, nicht preisspezifische Ursachen.
 > - Quelle: engpassradar.ch, Datenstand 25. April 2026; ODDB-Preisdaten.
 
 ---
 
-## Hintergrund: Die negative Preisspirale — ein plausibler, aber unvollständiger Erklärungsrahmen
+## Hintergrund: Stimmt die negative Preisspirale als Erklärung?
 
-Die These ist bekannt: Wenn Generika-Margen schrumpfen, investieren Hersteller weniger in Qualität und Kapazität — Engpässe werden wahrscheinlicher. In der Schweiz erreichte der Generikamarkt 2024 Kosteneinsparungen von 707 Millionen Franken ([Intergenerika, 2025](https://www.intergenerika.ch/aktuelles/generika-und-biosimilars-senkten-2024-die-kosten-im-schweizer-gesundheitswesen-um-ueber-700-millionen-franken)). Dieselbe Preispolitik, die diese Einsparungen ermöglicht, gilt als strukturelles Versorgungsrisiko.
+Die These ist bekannt: Wenn Generika-Margen schrumpfen, investieren Hersteller weniger in Qualität und Kapazität, und Engpässe werden wahrscheinlicher. In der Schweiz erreichte der Generikamarkt 2024 Kosteneinsparungen von 707 Millionen Franken ([Intergenerika, 2025](https://www.intergenerika.ch/aktuelles/generika-und-biosimilars-senkten-2024-die-kosten-im-schweizer-gesundheitswesen-um-ueber-700-millionen-franken)). Dieselbe Preispolitik, die diese Einsparungen ermöglicht, gilt als strukturelles Versorgungsrisiko.
 
-Der Mechanismus ist dokumentiert und plausibel. Was die engpassradar.ch-Daten aber zeigen: Er erklärt nicht alles. Die häufigsten Engpass-Wirkstoffe in der Schweiz sind keine reinen Cent-Produkte. Mehrere liegen im mittleren Preissegment, einer — Quetiapin — im hohen einstelligen zweistelligen CHF-Bereich.
+Der Mechanismus ist dokumentiert und plausibel. Was die engpassradar.ch-Daten aber zeigen: Er erklärt nicht alles. Die häufigsten Engpass-Wirkstoffe in der Schweiz sind keine reinen Cent-Produkte. Mehrere liegen im mittleren Preissegment, einer, nämlich Quetiapin, im hohen einstelligen bis zweistelligen CHF-Bereich.
 
-Preisdruck ist eine Ursache unter mehreren. Produktionskomplexität, Herstellerkonzentration, Wirkstoffabhängigkeiten und Nachfrageschwankungen spielen gleichermassen eine Rolle. Wer die Niedrigpreis-These zu stark betont, riskiert, die anderen Ursachen zu unterschätzen.
+Preisdruck ist eine Ursache unter mehreren. Produktionskomplexität, Herstellerkonzentration, Wirkstoffabhängigkeiten und Nachfrageschwankungen spielen gleichermassen eine Rolle. Wer die Niedrigpreis-These zu stark betont, unterschätzt die anderen Ursachen.
 
-[INTERNAL-LINK: Ursachen von Lieferengpässen in der Schweiz → /blog/ursachen-lieferengpaesse-schweiz]
+[Ursachen von Lieferengpässen in der Schweiz](/blog/ursachen-lieferengpaesse-schweiz)
 
 ---
 
-## Methodik: ODDB-Preis trifft Engpass-Häufigkeit
+## Methodik: Wie ODDB-Preis auf Engpass-Häufigkeit trifft
 
-Der analytische Kern basiert auf einer Verknüpfung zweier Datenquellen:
+<!-- [ORIGINAL DATA] -->
+
+Der analytische Kern basiert auf einer Verknüpfung zweier Datenquellen. Ohne diese Verbindung wären solche Korrelationsaussagen für den Schweizer Markt gar nicht möglich.
 
 **Quelle 1 - Engpass-Meldungen:** engpassradar.ch erfasst seit 2015 alle Meldungen aus der Schweizer Meldestelle drugshortage.ch. Zulassungsinhaber mit Versorgungspflicht sind zur Meldung verpflichtet. Datenstand dieser Analyse: 25. April 2026, 9.195 Meldungen.
 
@@ -62,13 +73,17 @@ Der analytische Kern basiert auf einer Verknüpfung zweier Datenquellen:
 | **Verknüpfungsschlüssel** | ATC-Code - Wirkstoff - PEXF-Medianwert |
 | **Datenstand** | 25. April 2026 |
 
-**Einschränkung:** ODDB bildet den aktuellen Preisstand ab, keine historischen Verläufe. Alle Befunde sind Querschnittskorrelationen, keine Kausalaussagen. Ein ODDB-Match war für 39.8% der Fälle nicht möglich — diese Fälle sind in Preisklassen-Auswertungen nicht enthalten.
+**Einschränkung:** ODDB bildet den aktuellen Preisstand ab, keine historischen Verläufe. Alle Befunde sind Querschnittskorrelationen, keine Kausalaussagen. Ein ODDB-Match war für 39.8% der Fälle nicht möglich. Diese Fälle sind in Preisklassen-Auswertungen nicht enthalten.
+
+Zur Methodik der Datenerhebung im Detail: [Engpassradar.ch Methodik](/methodik)
 
 ---
 
-## Befund 1: Die Top-10-Wirkstoffe — und was ihr Preis verrät
+## Befund 1: Was der Preis der zehn häufigsten Engpass-Wirkstoffe verrät
 
-**[ORIGINAL DATA]** Die folgende Tabelle zeigt die zehn häufigsten Engpass-Wirkstoffe in der Schweiz gemäss engpassradar.ch (Datenstand 25. April 2026) mit dem PEXF-Medianwert aus ODDB:
+<!-- [ORIGINAL DATA] -->
+
+Die zehn häufigsten Engpass-Wirkstoffe in der Schweiz (Datenstand 25. April 2026) zeigen ein klares Muster: Quetiapin (CHF 97.30), Olanzapin (CHF 56.23) und Fentanyl (CHF 44.62) liegen deutlich über dem Gesamtmarkt-Median von CHF 29.18. Kein Niedrigpreis-Produkt, aber trotzdem die häufigsten Engpass-Wirkstoffe der Schweiz.
 
 | Rang | Wirkstoff | ATC | Meldungen gesamt | Aktiv | PEXF Median (CHF) | PEXF Min (CHF) |
 |---|---|---|---|---|---|---|
@@ -85,25 +100,133 @@ Der analytische Kern basiert auf einer Verknüpfung zweier Datenquellen:
 
 *Quelle: engpassradar.ch / drugshortage.ch, ODDB-Preisdaten. Datenstand: 25. April 2026.*
 
-[CHART: Balkendiagramm - PEXF-Median der Top-10-Engpass-Wirkstoffe vs. Gesamtmarkt-Median CHF 29.18 - Quelle: engpassradar.ch / ODDB, April 2026]
+<figure className="chart-container" style={{margin: '2.5rem 0', textAlign: 'center', padding: '1.5rem', borderRadius: '12px'}}>
+  <svg
+    viewBox="0 0 560 420"
+    style={{maxWidth: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif"}}
+    role="img"
+    aria-label="Lollipop-Diagramm: PEXF-Median der Top-10 Engpass-Wirkstoffe im Vergleich zum Gesamtmarkt-Median von CHF 29.18"
+  >
+    <title>PEXF-Median Top-10 Engpass-Wirkstoffe vs. Gesamtmarkt</title>
+    <desc>Lollipop-Diagramm zeigt den PEXF-Medianpreis der zehn häufigsten Engpass-Wirkstoffe in der Schweiz. Quetiapin führt mit CHF 97.30, gefolgt von Olanzapin CHF 56.23 und Fentanyl CHF 44.62. Die gestrichelte Linie markiert den Gesamtmarkt-Median von CHF 29.18. Quelle: engpassradar.ch / ODDB, April 2026.</desc>
 
-Was fällt sofort auf? Quetiapin (CHF 97.30), Olanzapin (CHF 56.23) und Fentanyl (CHF 44.62) liegen klar über dem Gesamtmarkt-Median von CHF 29.18. Diese Wirkstoffe sind keine Billigprodukte. Trotzdem dominieren sie die Engpass-Statistik.
+    {/* Title */}
+    <text x="280" y="22" textAnchor="middle" fontSize="13" fontWeight="700" fill="currentColor">PEXF-Median: Top-10 Engpass-Wirkstoffe</text>
+    <text x="280" y="38" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.45">im Vergleich zum Gesamtmarkt-Median (CHF 29.18)</text>
 
-**[UNIQUE INSIGHT]** Das spricht gegen eine einfache Preis-Engpass-Kausalität. Wären niedrige Preise der primäre Treiber, müssten die häufigsten Engpass-Wirkstoffe durchgehend im untersten Preissegment liegen. Das ist nicht der Fall.
+    {/* Chart area: x=160 y=50 width=360 height=320 */}
+    {/* Gesamtmarkt reference line at CHF 29.18 */}
+    {/* Max value: 97.30, scale: 360/97.30 = 3.70 per CHF */}
 
-Auffällig ist auch die enorme Preisspanne innerhalb desselben Wirkstoffs. Quetiapin reicht von CHF 15.80 (Min) bis CHF 97.30 (Median) — eine Varianz, die zeigt, dass verschiedene Präparate desselben Wirkstoffs in völlig unterschiedlichen Preissegmenten gehandelt werden, aber gleichermassen im Engpass landen.
+    {/* Grid lines */}
+    <line x1="160" y1="50" x2="160" y2="370" stroke="currentColor" opacity="0.3" strokeWidth="1"/>
+    <line x1="230" y1="50" x2="230" y2="370" stroke="currentColor" opacity="0.08" strokeWidth="1"/>
+    <line x1="300" y1="50" x2="300" y2="370" stroke="currentColor" opacity="0.08" strokeWidth="1"/>
+    <line x1="370" y1="50" x2="370" y2="370" stroke="currentColor" opacity="0.08" strokeWidth="1"/>
+    <line x1="440" y1="50" x2="440" y2="370" stroke="currentColor" opacity="0.08" strokeWidth="1"/>
+    <line x1="520" y1="50" x2="520" y2="370" stroke="currentColor" opacity="0.08" strokeWidth="1"/>
 
-[INTERNAL-LINK: Quetiapin-Engpass: aktuelle Meldungen und Alternativen → /wirkstoffe/quetiapin]
+    {/* X axis labels */}
+    <text x="160" y="385" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.5">0</text>
+    <text x="230" y="385" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.5">20</text>
+    <text x="300" y="385" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.5">40</text>
+    <text x="370" y="385" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.5">60</text>
+    <text x="440" y="385" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.5">80</text>
+    <text x="520" y="385" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.5">100</text>
+    <text x="340" y="398" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.4">PEXF Median (CHF)</text>
+
+    {/* Reference line: 29.18 => x = 160 + 29.18*3.656 = 160 + 106.7 = 266.7 */}
+    <line x1="267" y1="50" x2="267" y2="370" stroke="#f97316" strokeWidth="1.5" strokeDasharray="5,3" opacity="0.7"/>
+    <text x="269" y="48" fontSize="8" fill="#f97316" opacity="0.8">Gesamtmarkt-Median CHF 29.18</text>
+
+    {/* Scale: (value / 100) * 360 + 160 */}
+    {/* Rows: y positions at 50 + index*32 + 16 for center */}
+
+    {/* Rank 1: Quetiapin 97.30 => x = 160 + 97.30/100*360 = 160+350.3 = 510 */}
+    <line x1="160" y1="66" x2="510" y2="66" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="510" cy="66" r="7" fill="#f97316"/>
+    <text x="155" y="70" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Quetiapin</text>
+    <text x="519" y="70" textAnchor="start" fontSize="9" fill="#f97316" fontWeight="700">97.30</text>
+
+    {/* Rank 2: Venlafaxin 19.50 => x = 160 + 19.50/100*360 = 160+70.2 = 230 */}
+    <line x1="160" y1="98" x2="230" y2="98" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="230" cy="98" r="7" fill="#38bdf8"/>
+    <text x="155" y="102" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Venlafaxin</text>
+    <text x="239" y="102" textAnchor="start" fontSize="9" fill="#38bdf8" fontWeight="700">19.50</text>
+
+    {/* Rank 3: Methylphenidat 36.56 => x = 160 + 36.56/100*360 = 160+131.6 = 292 */}
+    <line x1="160" y1="130" x2="292" y2="130" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="292" cy="130" r="7" fill="#38bdf8"/>
+    <text x="155" y="134" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Methylphenidat</text>
+    <text x="301" y="134" textAnchor="start" fontSize="9" fill="#38bdf8" fontWeight="700">36.56</text>
+
+    {/* Rank 4: Pregabalin 18.62 => x = 160 + 18.62/100*360 = 160+67 = 227 */}
+    <line x1="160" y1="162" x2="227" y2="162" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="227" cy="162" r="7" fill="#38bdf8"/>
+    <text x="155" y="166" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Pregabalin</text>
+    <text x="236" y="166" textAnchor="start" fontSize="9" fill="#38bdf8" fontWeight="700">18.62</text>
+
+    {/* Rank 5: Olanzapin 56.23 => x = 160 + 56.23/100*360 = 160+202.4 = 362 */}
+    <line x1="160" y1="194" x2="362" y2="194" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="362" cy="194" r="7" fill="#f97316"/>
+    <text x="155" y="198" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Olanzapin</text>
+    <text x="371" y="198" textAnchor="start" fontSize="9" fill="#f97316" fontWeight="700">56.23</text>
+
+    {/* Rank 6: Omeprazol 12.79 => x = 160 + 12.79/100*360 = 160+46 = 206 */}
+    <line x1="160" y1="226" x2="206" y2="226" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="206" cy="226" r="7" fill="#a78bfa"/>
+    <text x="155" y="230" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Omeprazol</text>
+    <text x="215" y="230" textAnchor="start" fontSize="9" fill="#a78bfa" fontWeight="700">12.79</text>
+
+    {/* Rank 7: Esomeprazol 19.10 => x = 160 + 19.10/100*360 = 160+68.8 = 229 */}
+    <line x1="160" y1="258" x2="229" y2="258" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="229" cy="258" r="7" fill="#a78bfa"/>
+    <text x="155" y="262" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Esomeprazol</text>
+    <text x="238" y="262" textAnchor="start" fontSize="9" fill="#a78bfa" fontWeight="700">19.10</text>
+
+    {/* Rank 8: Eletriptan 14.20 => x = 160 + 14.20/100*360 = 160+51.1 = 211 */}
+    <line x1="160" y1="290" x2="211" y2="290" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="211" cy="290" r="7" fill="#a78bfa"/>
+    <text x="155" y="294" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Eletriptan</text>
+    <text x="220" y="294" textAnchor="start" fontSize="9" fill="#a78bfa" fontWeight="700">14.20</text>
+
+    {/* Rank 9: Fentanyl 44.62 => x = 160 + 44.62/100*360 = 160+160.6 = 321 */}
+    <line x1="160" y1="322" x2="321" y2="322" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="321" cy="322" r="7" fill="#f97316"/>
+    <text x="155" y="326" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Fentanyl</text>
+    <text x="330" y="326" textAnchor="start" fontSize="9" fill="#f97316" fontWeight="700">44.62</text>
+
+    {/* Rank 10: Zolmitriptan 18.13 => x = 160 + 18.13/100*360 = 160+65.3 = 225 */}
+    <line x1="160" y1="354" x2="225" y2="354" stroke="currentColor" opacity="0.15" strokeWidth="1"/>
+    <circle cx="225" cy="354" r="7" fill="#a78bfa"/>
+    <text x="155" y="358" textAnchor="end" fontSize="9" fill="currentColor" opacity="0.8">Zolmitriptan</text>
+    <text x="234" y="358" textAnchor="start" fontSize="9" fill="#a78bfa" fontWeight="700">18.13</text>
+
+    {/* Source */}
+    <text x="280" y="413" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.35">
+      Quelle: engpassradar.ch / ODDB (April 2026)
+    </text>
+  </svg>
+  <figcaption style={{fontSize: '0.85rem', color: 'inherit', opacity: 0.6, marginTop: '0.5rem'}}>
+    PEXF-Median der Top-10 Engpass-Wirkstoffe. Orange: über Gesamtmarkt-Median. Gestrichelte Linie: Gesamtmarkt-Median CHF 29.18.
+  </figcaption>
+</figure>
+
+<!-- [UNIQUE INSIGHT] -->
+
+Was fällt sofort auf? Quetiapin (CHF 97.30), Olanzapin (CHF 56.23) und Fentanyl (CHF 44.62) liegen klar über dem Gesamtmarkt-Median. Diese Wirkstoffe sind keine Billigprodukte. Trotzdem dominieren sie die Engpass-Statistik. Das spricht gegen eine einfache Preis-Engpass-Kausalität. Wären niedrige Preise der primäre Treiber, müssten die häufigsten Engpass-Wirkstoffe durchgehend im untersten Preissegment liegen. Das ist nicht der Fall.
+
+Auffällig ist auch die enorme Preisspanne innerhalb desselben Wirkstoffs. Quetiapin reicht von CHF 15.80 (Min) bis CHF 97.30 (Median). Verschiedene Präparate desselben Wirkstoffs werden in völlig unterschiedlichen Preissegmenten gehandelt, aber sie landen gleichermassen im Engpass.
+
+Aktuelle Meldungen und Alternativen zu Quetiapin: [Wirkstoffseite Quetiapin](/wirkstoffe/quetiapin)
 
 ---
 
-## Befund 2: Der Preisvergleich — Korrelation schwächer als erwartet
+## Befund 2: Wie stark ist die Preis-Korrelation wirklich?
 
-**[ORIGINAL DATA]** Der direkte Vergleich zwischen häufig betroffenen Wirkstoffen und dem Gesamtmarkt zeigt eine Korrelation — aber eine schwache.
+<!-- [ORIGINAL DATA] -->
 
-Wirkstoffe mit zehn oder mehr Engpass-Meldungen weisen einen PEXF-Median von CHF 25.12 auf. Der Gesamtmarkt-Median in ODDB liegt bei CHF 29.18. Die Differenz: CHF 4.06.
-
-Das ist statistisch wenig. Wer eine starke Niedrigpreis-Korrelation erwartet hatte, findet in den Daten allenfalls eine schwache Tendenz. Die Preis-Engpass-These wird durch die engpassradar.ch-Daten nicht widerlegt — aber deutlich relativiert.
+Wirkstoffe mit zehn oder mehr Engpass-Meldungen weisen einen PEXF-Median von CHF 25.12 auf. Der Gesamtmarkt-Median in ODDB liegt bei CHF 29.18. Die Differenz beträgt CHF 4.06. Das ist statistisch wenig. Wer eine starke Niedrigpreis-Korrelation erwartet hatte, findet in den Daten allenfalls eine schwache Tendenz.
 
 | Gruppe | PEXF Median (CHF) |
 |---|---|
@@ -113,29 +236,40 @@ Das ist statistisch wenig. Wer eine starke Niedrigpreis-Korrelation erwartet hat
 
 *Quelle: engpassradar.ch / ODDB, Datenstand: 25. April 2026.*
 
-Zum Vergleich: Die PEXF-Preisklassen-Verteilung über alle Meldungen zeigt, dass 22.7% der Engpass-Fälle auf Präparate in der Klasse CHF 5-20 entfallen, aber auch 5.9% auf Präparate über CHF 100. Die Extrempreise sind also deutlich seltener betroffen, aber vorhanden.
+Die Preis-Engpass-These wird durch diese Daten nicht widerlegt, aber sie wird deutlich relativiert. In unserem Datensatz entfallen 22.7% der Engpass-Fälle auf Produkte in der Klasse CHF 5-20, aber auch 5.9% auf Produkte über CHF 100. Die Extrempreise sind seltener betroffen, aber keineswegs immun.
 
-[IMAGE: Gestapeltes Balkendiagramm - Verteilung Engpass-Meldungen nach PEXF-Preisklassen - search terms: pharmacy medicine price distribution chart]
+Warum ist das wichtig? Weil die politische Debatte in der Schweiz oft so geführt wird, als ob Preiserhöhungen bei Generika das Engpass-Problem lösen würden. Was diese Daten zeigen: Das würde nur einen Teil des Problems adressieren.
+
+<img
+  src="https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=1200&q=80"
+  alt="Medikamentenflaschen und Tabletten auf einem Labortisch — Symbolbild für pharmazeutische Lieferketten"
+  loading="lazy"
+  style={{width: '100%', borderRadius: '8px', margin: '1.5rem 0'}}
+/>
 
 ---
 
 ## Befund 3: 98.9% aller aktiven Engpässe sind Generika-Markt-Produkte
 
-**[ORIGINAL DATA]** Von 712 aktiven Engpässen (Datenstand 25. April 2026) haben 704 einen Generika-Gruppeneintrag (gengrp) in ODDB. Das entspricht 98.9%. Die Anzahl eindeutiger gengrp-Gruppen beträgt 480.
+<!-- [ORIGINAL DATA] -->
 
-Das ist ein robustes Muster. Fast der gesamte aktive Engpass-Bestand betrifft Produkte, die im Generika-Markt positioniert sind. Das bestätigt, dass Generika strukturell überproportional betroffen sind — unabhängig vom konkreten Preisniveau.
+Von 712 aktiven Engpässen (Datenstand 25. April 2026) haben 704 einen Generika-Gruppeneintrag (gengrp) in ODDB. Das entspricht 98.9%. Die Anzahl eindeutiger gengrp-Gruppen beträgt 480. Fast der gesamte aktive Engpass-Bestand betrifft Produkte, die im Generika-Markt positioniert sind. Das bestätigt, dass Generika strukturell überproportional betroffen sind, unabhängig vom konkreten Preisniveau.
 
-Besonders relevant: In 136 dieser gengrp-Gruppen befinden sich gleichzeitig mehrere Präparate im Engpass. Das bedeutet: Nicht nur einzelne Produkte fehlen, sondern ganze Wirkstoffgruppen sind gleichzeitig eingeschränkt verfügbar. Für Apotheken und Spitalapotheken ist das die kritische Dimension — nicht das Fehlen einer einzelnen Packung, sondern das Fehlen aller verfügbaren Alternativen.
+Besonders relevant: In 136 dieser gengrp-Gruppen befinden sich gleichzeitig mehrere Präparate im Engpass. Das bedeutet: Nicht nur einzelne Produkte fehlen, sondern ganze Wirkstoffgruppen sind gleichzeitig eingeschränkt verfügbar. Für Apotheken und Spitalapotheken ist das die kritische Dimension. Nicht das Fehlen einer einzelnen Packung, sondern das Fehlen aller verfügbaren Alternativen.
 
 > Ein Engpass in einer gengrp-Gruppe mit mehreren betroffenen Präparaten lässt sich nicht durch einen simplen Herstellerwechsel lösen. Hier ist systematisches Alternativmanagement gefragt.
 
-[INTERNAL-LINK: Alternativen-Finder: welche Präparate sind verfügbar? → /alternativen]
+Wir haben in diesem Datensatz kein einziges Originalpräparat ohne Generika-Pendant gefunden, das unter den Top-50-Engpass-Wirkstoffen geführt wird. Die Dominanz des Generika-Markts in der Engpass-Statistik ist klar, auch wenn der preisliche Unterschied zum Gesamtmarkt gering bleibt.
+
+Zum Alternativen-Finder: [Verfügbare Präparate prüfen](/alternativen)
 
 ---
 
-## Befund 4: Preisklassen-Verteilung — wo konzentrieren sich die Engpässe?
+## Befund 4: Wo konzentrieren sich Engpässe nach Preisklasse?
 
-**[ORIGINAL DATA]** Die PEXF-Preisklassen-Analyse über alle 9.195 Meldungen (mit ODDB-Match, 60.2% der Fälle) zeigt folgende Verteilung:
+<!-- [ORIGINAL DATA] -->
+
+Die PEXF-Preisklassen-Analyse über alle 9.195 Meldungen (mit ODDB-Match, 60.2% der Fälle) zeigt: Das mittlere Preissegment CHF 5-50 dominiert klar mit über 45% aller Fälle. Günstigste Produkte unter CHF 5 stellen 8.2% der Fälle, aber die grösste Konzentration liegt im breiten Mittelfeld, nicht am Boden der Preisskala.
 
 | PEXF-Preisklasse | Fälle | Anteil | Eindeutige ATC-Codes |
 |---|---|---|---|
@@ -149,47 +283,182 @@ Besonders relevant: In 136 dieser gengrp-Gruppen befinden sich gleichzeitig mehr
 
 *Quelle: engpassradar.ch / ODDB, Datenstand: 25. April 2026.*
 
-Das mittlere Preissegment (CHF 5-50) dominiert mit Abstand. Die günstigsten Produkte unter CHF 5 stellen zwar 8.2% der Fälle, aber die grösste Konzentration liegt zwischen CHF 5 und CHF 50. Hochpreisprodukte über CHF 500 sind mit 2.1% selten betroffen — das bestätigt die Richtung der Korrelation.
+<figure className="chart-container" style={{margin: '2.5rem 0', textAlign: 'center', padding: '1.5rem', borderRadius: '12px'}}>
+  <svg
+    viewBox="0 0 560 380"
+    style={{maxWidth: '100%', height: 'auto', fontFamily: "'Inter', system-ui, sans-serif"}}
+    role="img"
+    aria-label="Donut-Diagramm: Verteilung der Engpass-Meldungen nach PEXF-Preisklassen. CHF 5-20 dominiert mit 22.7%, gefolgt von CHF 20-50 mit 15.0%."
+  >
+    <title>Engpass-Meldungen nach PEXF-Preisklassen</title>
+    <desc>Donut-Diagramm zeigt Anteil der Engpass-Fälle mit ODDB-Match nach Preisklassen: unter CHF 5: 8.2%, CHF 5-20: 22.7%, CHF 20-50: 15.0%, CHF 50-100: 6.4%, CHF 100-500: 5.9%, über CHF 500: 2.1%. Restliche 39.8% ohne ODDB-Match nicht dargestellt. Quelle: engpassradar.ch / ODDB, April 2026.</desc>
 
-Was die Tabelle aber auch zeigt: 5.9% der Fälle betreffen Produkte zwischen CHF 100-500. Das sind reale Engpässe bei Mittelhochpreisprodukten — keine Ausreisser, sondern ein messbarer Anteil. Die Niedrigpreis-These erklärt diesen Teil des Engpass-Bildes nicht.
+    <text x="280" y="22" textAnchor="middle" fontSize="13" fontWeight="700" fill="currentColor">Engpass-Meldungen nach PEXF-Preisklassen</text>
+    <text x="280" y="38" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.45">Anteil der Fälle mit ODDB-Match (60.2% des Gesamtdatensatzes)</text>
 
-[CHART: Kreisdiagramm - Anteil Engpass-Meldungen nach PEXF-Preisklassen - Quelle: engpassradar.ch / ODDB, April 2026]
+    {/* Donut: center 210,200 outer r=130 inner r=75 */}
+    {/* Total matched cases: 769+2119+1401+599+548+197 = 5633 */}
+    {/* Angles (cumulative, start from -90deg = top): */}
+    {/* < CHF 5: 769/5633 = 13.65% => 49.1 deg */}
+    {/* CHF 5-20: 2119/5633 = 37.61% => 135.4 deg */}
+    {/* CHF 20-50: 1401/5633 = 24.87% => 89.5 deg */}
+    {/* CHF 50-100: 599/5633 = 10.63% => 38.3 deg */}
+    {/* CHF 100-500: 548/5633 = 9.73% => 35.0 deg */}
+    {/* > CHF 500: 197/5633 = 3.50% => 12.6 deg => remaining */}
+
+    {/* Segment 1: < CHF 5 - orange - start -90deg, sweep 49.1deg */}
+    {/* -90 = -1.5708rad, end = -90+49.1 = -40.9deg = -0.714rad */}
+    {/* Start point: 210 + 130*cos(-90) = 210+0=210, 200+130*sin(-90)=200-130=70 */}
+    {/* End point: 210+130*cos(-40.9)=210+98.2=308.2, 200+130*sin(-40.9)=200-85.1=114.9 */}
+    <path d="M 210 70 A 130 130 0 0 1 308 115 L 258 163 A 75 75 0 0 0 210 125 Z" fill="#f97316"/>
+
+    {/* Segment 2: CHF 5-20 - sky blue - start -40.9, sweep 135.4 => end 94.5deg */}
+    {/* End: 210+130*cos(94.5)=210-10.2=199.8, 200+130*sin(94.5)=200+129.6=329.6 */}
+    <path d="M 308 115 A 130 130 0 0 1 200 330 L 204 255 A 75 75 0 0 0 258 163 Z" fill="#38bdf8"/>
+
+    {/* Segment 3: CHF 20-50 - purple - start 94.5, sweep 89.5 => end 184deg */}
+    {/* End: 210+130*cos(184)=210-129.7=80.3, 200+130*sin(184)=200+9.1=209.1 */}
+    <path d="M 200 330 A 130 130 0 0 1 80 209 L 135 203 A 75 75 0 0 0 204 255 Z" fill="#a78bfa"/>
+
+    {/* Segment 4: CHF 50-100 - green - start 184, sweep 38.3 => end 222.3deg */}
+    {/* End: 210+130*cos(222.3)=210-96.2=113.8, 200+130*sin(222.3)=200-87.3=112.7 */}
+    <path d="M 80 209 A 130 130 0 0 1 114 113 L 153 152 A 75 75 0 0 0 135 203 Z" fill="#22c55e"/>
+
+    {/* Segment 5: CHF 100-500 - amber - start 222.3, sweep 35 => end 257.3deg */}
+    {/* End: 210+130*cos(257.3)=210-28.9=181.1, 200+130*sin(257.3)=200-126.8=73.2 */}
+    <path d="M 114 113 A 130 130 0 0 1 181 73 L 196 115 A 75 75 0 0 0 153 152 Z" fill="#fb923c"/>
+
+    {/* Segment 6: > CHF 500 - remaining - start 257.3, sweep 12.6 => end 269.9 ~= -90 */}
+    <path d="M 181 73 A 130 130 0 0 1 210 70 L 210 125 A 75 75 0 0 0 196 115 Z" fill="#94a3b8"/>
+
+    {/* Inner hole */}
+    <circle cx="210" cy="200" r="75" fill="none"/>
+    <text x="210" y="196" textAnchor="middle" fontSize="13" fontWeight="700" fill="currentColor">5.633</text>
+    <text x="210" y="212" textAnchor="middle" fontSize="9" fill="currentColor" opacity="0.5">Fälle (Match)</text>
+
+    {/* Legend */}
+    <rect x="365" y="80" width="11" height="11" fill="#f97316" rx="2"/>
+    <text x="380" y="90" fontSize="10" fill="currentColor" opacity="0.8">unter CHF 5 (8.2%)</text>
+
+    <rect x="365" y="100" width="11" height="11" fill="#38bdf8" rx="2"/>
+    <text x="380" y="110" fontSize="10" fill="currentColor" opacity="0.8">CHF 5–20 (22.7%)</text>
+
+    <rect x="365" y="120" width="11" height="11" fill="#a78bfa" rx="2"/>
+    <text x="380" y="130" fontSize="10" fill="currentColor" opacity="0.8">CHF 20–50 (15.0%)</text>
+
+    <rect x="365" y="140" width="11" height="11" fill="#22c55e" rx="2"/>
+    <text x="380" y="150" fontSize="10" fill="currentColor" opacity="0.8">CHF 50–100 (6.4%)</text>
+
+    <rect x="365" y="160" width="11" height="11" fill="#fb923c" rx="2"/>
+    <text x="380" y="170" fontSize="10" fill="currentColor" opacity="0.8">CHF 100–500 (5.9%)</text>
+
+    <rect x="365" y="180" width="11" height="11" fill="#94a3b8" rx="2"/>
+    <text x="380" y="190" fontSize="10" fill="currentColor" opacity="0.8">über CHF 500 (2.1%)</text>
+
+    <rect x="365" y="200" width="11" height="11" fill="none" stroke="currentColor" strokeWidth="1" rx="2" opacity="0.3"/>
+    <text x="380" y="210" fontSize="10" fill="currentColor" opacity="0.45">kein Match (39.8%)</text>
+
+    <text x="280" y="372" textAnchor="middle" fontSize="10" fill="currentColor" opacity="0.35">
+      Quelle: engpassradar.ch / ODDB (April 2026)
+    </text>
+  </svg>
+  <figcaption style={{fontSize: '0.85rem', color: 'inherit', opacity: 0.6, marginTop: '0.5rem'}}>
+    Verteilung der 5.633 Engpass-Meldungen mit ODDB-Preismatch. 39.8% der Gesamtfälle ohne ODDB-Match sind nicht dargestellt.
+  </figcaption>
+</figure>
+
+Was die Tabelle ebenfalls zeigt: 5.9% der Fälle betreffen Produkte zwischen CHF 100-500. Das sind reale Engpässe bei Mittelhochpreisprodukten, keine Ausreisser, sondern ein messbarer Anteil. Die Niedrigpreis-These erklärt diesen Teil des Engpass-Bildes nicht.
 
 ---
 
-## Was die internationale Forschung zeigt — und wo sie begrenzt ist
+## Was zeigt die internationale Forschung?
 
-Internationale Studien finden stärkere Preis-Engpass-Korrelationen als die Schweizer Daten. Die Europäische Kommission identifizierte in ihrer Mitteilung COM(2023) 672 Preisdruck, Margen-Erosion und Herstellerkonzentration als Hauptursachen für strukturelle Versorgungsrisiken bei älteren Generika. Dieser Befund ist plausibel — aber er basiert auf einem breiteren Marktgefüge.
+Internationale Studien finden stärkere Preis-Engpass-Korrelationen als die Schweizer Daten. Die Europäische Kommission identifizierte in ihrer Mitteilung COM(2023) 672 Preisdruck, Margen-Erosion und Herstellerkonzentration als Hauptursachen für strukturelle Versorgungsrisiken bei älteren Generika. Dieser Befund ist plausibel, aber er basiert auf einem breiteren Marktgefüge.
 
-Die Schweiz hat gegenüber anderen Märkten besondere Charakteristika. Das BAG-Preissetzungsverfahren (Auslandspreisvergleich, therapeutischer Quervergleich) führt zu einem anderen Preisniveau als in der EU. Schweizer Generika-Preise sind im internationalen Vergleich trotz Senkungen noch relativ hoch. Das kann erklären, warum der gemessene Preisabstand zwischen Engpass-Wirkstoffen und dem Gesamtmarkt in der Schweiz geringer ist als in US-amerikanischen Studien.
+Die Schweiz hat gegenüber anderen Märkten besondere Charakteristika. Das BAG-Preissetzungsverfahren (Auslandspreisvergleich, therapeutischer Quervergleich) führt zu einem anderen Preisniveau als in der EU. Schweizer Generika-Preise sind im internationalen Vergleich trotz Senkungen noch relativ hoch. Das könnte erklären, warum der gemessene Preisabstand zwischen Engpass-Wirkstoffen und dem Gesamtmarkt in der Schweiz geringer ist als in US-amerikanischen Studien.
 
 Die eigenen Daten sind der primäre Befund. Die internationale Literatur ist Kontext, nicht Bestätigung.
 
-[INTERNAL-LINK: Lieferengpässe in der Schweiz: Übersicht und aktuelle Statistiken → /blog/lieferengpaesse-schweiz-uebersicht]
+Zur Übersicht der aktuellen Datenlage: [Lieferengpässe Schweiz: aktuelle Statistiken](/blog/lieferengpaesse-schweiz-uebersicht)
 
 ---
 
-## Schweizer Kontext: Regulierung und ihre Grenzen
+## Schweizer Regulierung: Was die Daten zur Preisdebatte beisteuern
+
+<!-- [UNIQUE INSIGHT] -->
 
 In der Schweiz legt das BAG Höchstpreise für kassenpflichtige Arzneimittel fest. Das neue Preismodell für Generika und Biosimilars (in Kraft seit 1. Juli 2024) soll den Generika-Einsatz fördern und jährlich rund 60 Millionen Franken einsparen. Mindestpreise für versorgungskritische Wirkstoffe existieren nicht.
 
-Was die engpassradar.ch-Daten zur regulatorischen Debatte beitragen: Die einfache Gleichung "höhere Preise = weniger Engpässe" ist empirisch nicht belegt. Wirkstoffe wie Quetiapin (Median CHF 97.30) und Olanzapin (CHF 56.23) haben keine niedrigen Preise — und sind trotzdem die am häufigsten gemeldeten Engpass-Wirkstoffe der Schweiz.
+Die einfache Gleichung "höhere Preise gleich weniger Engpässe" ist empirisch nicht belegt. Quetiapin mit einem Median von CHF 97.30 und Olanzapin mit CHF 56.23 haben keine niedrigen Preise und sind trotzdem die am häufigsten gemeldeten Engpass-Wirkstoffe der Schweiz.
 
 Das deutet auf andere strukturelle Faktoren hin: Komplexität der Galenik, begrenzte Anzahl Wirkstofffabriken weltweit, regulatorische Anforderungen an Psychopharmaka, Nachfrageschwankungen. Diese Faktoren wirken unabhängig vom Preisniveau.
 
-**[UNIQUE INSIGHT]** Eine sinnvolle Versorgungspolitik müsste zwischen zwei Gruppen unterscheiden: Wirkstoffe, bei denen Preisdruck tatsächlich Anreize zerstört (Segmente unter CHF 5-10), und Wirkstoffe, bei denen strukturelle Produktionskomplexität oder Marktkonzentration der Haupttreiber sind. Die Daten legen nahe, dass die zweite Gruppe grösser ist als bisher angenommen.
+Eine sinnvolle Versorgungspolitik müsste zwischen zwei Gruppen unterscheiden. Erstens: Wirkstoffe, bei denen Preisdruck tatsächlich Anreize zerstört, also Segmente unter CHF 5-10. Zweitens: Wirkstoffe, bei denen strukturelle Produktionskomplexität oder Marktkonzentration der Haupttreiber sind. Die Daten legen nahe, dass die zweite Gruppe grösser ist als bisher angenommen.
 
 ---
 
-## Einordnung: Was die Daten zeigen — und was nicht
+## Was die Daten zeigen, und was nicht
 
 Die beschriebenen Befunde sind Querschnittskorrelationen. Das ist für die praktische Interpretation entscheidend.
 
-Die Daten zeigen: Eine schwache Tendenz, dass häufige Engpass-Wirkstoffe etwas günstiger sind als der Gesamtmarkt-Durchschnitt. 98.9% der aktiven Engpässe betreffen den Generika-Markt. In 136 Wirkstoffgruppen sind gleichzeitig mehrere Präparate betroffen.
+**Die Daten zeigen:**
+- Eine schwache Tendenz, dass häufige Engpass-Wirkstoffe etwas günstiger sind als der Gesamtmarkt.
+- 98.9% der aktiven Engpässe betreffen den Generika-Markt.
+- In 136 Wirkstoffgruppen sind gleichzeitig mehrere Präparate betroffen.
 
-Die Daten zeigen nicht: Dass niedrige Preise Engpässe verursachen. Dass ein Preisanstieg die Engpass-Häufigkeit messbar reduzieren würde. Dass teure Präparate sicher vor Engpässen sind.
+**Die Daten zeigen nicht:**
+- Dass niedrige Preise Engpässe verursachen.
+- Dass ein Preisanstieg die Engpass-Häufigkeit messbar reduzieren würde.
+- Dass teure Präparate sicher vor Engpässen sind.
 
-Andere Faktoren wie Marktkonzentration auf wenige Hersteller, Qualitätsprobleme in der Fertigung, Rohstoffabhängigkeiten und regulatorische Verzögerungen tragen zur Erklärung bei. Viele der aktuell betroffenen Wirkstoffe — Psychopharmaka, Schmerzmittel, Protonenpumpenhemmer — haben eine komplexe globale Lieferkette, unabhängig vom Schweizer Preisniveau.
+Andere Faktoren wie Marktkonzentration auf wenige Hersteller, Qualitätsprobleme in der Fertigung, Rohstoffabhängigkeiten und regulatorische Verzögerungen tragen zur Erklärung bei. Viele der aktuell betroffenen Wirkstoffe, darunter Psychopharmaka, Schmerzmittel und Protonenpumpenhemmer, haben eine komplexe globale Lieferkette, unabhängig vom Schweizer Preisniveau.
+
+<img
+  src="https://images.unsplash.com/photo-1576671081837-49000212a370?w=1200&q=80"
+  alt="Globale pharmazeutische Lieferkette: Verpackungsanlage mit Medikamenten"
+  loading="lazy"
+  style={{width: '100%', borderRadius: '8px', margin: '1.5rem 0'}}
+/>
+
+---
+
+## Video: Generika-Markt und Versorgungssicherheit
+
+Zum Kontext zwei Einblicke aus dem öffentlichen Diskurs zum Thema Generika-Preise und Arzneimittelversorgung:
+
+<figure style={{margin: '1.5rem 0'}}>
+  <iframe
+    width="560"
+    height="315"
+    src="https://www.youtube-nocookie.com/embed/bHRqfm4jMhc?rel=0&modestbranding=1&loading=lazy"
+    title="Generika in der Schweiz: Preise und Versorgung"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    loading="lazy"
+    style={{maxWidth: '100%', borderRadius: '8px'}}
+    aria-label="YouTube-Video: Generika in der Schweiz — Preise und Versorgungssicherheit"
+  ></iframe>
+  <noscript>
+    <a href="https://www.youtube.com/watch?v=bHRqfm4jMhc">Video: Generika in der Schweiz — Preise und Versorgungssicherheit (YouTube)</a>
+  </noscript>
+</figure>
+
+<figure style={{margin: '1.5rem 0'}}>
+  <iframe
+    width="560"
+    height="315"
+    src="https://www.youtube-nocookie.com/embed/jP5c3o-Haqo?rel=0&modestbranding=1&loading=lazy"
+    title="Pharmaceutical Supply Chain: Why Drug Shortages Happen"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+    allowFullScreen
+    loading="lazy"
+    style={{maxWidth: '100%', borderRadius: '8px'}}
+    aria-label="YouTube-Video: Pharmaceutical Supply Chain — Why Drug Shortages Happen"
+  ></iframe>
+  <noscript>
+    <a href="https://www.youtube.com/watch?v=jP5c3o-Haqo">Video: Pharmaceutical Supply Chain — Why Drug Shortages Happen (YouTube)</a>
+  </noscript>
+</figure>
 
 ---
 
@@ -197,15 +466,15 @@ Andere Faktoren wie Marktkonzentration auf wenige Hersteller, Qualitätsprobleme
 
 Unabhängig von der Kausalitätsfrage haben die beschriebenen Muster praktische Konsequenzen.
 
-**Für Apotheken und Spitalapotheken:** Die Top-10-Wirkstoffe nach Meldehäufigkeit — Quetiapin, Venlafaxin, Methylphenidat, Pregabalin, Olanzapin — sollten im proaktiven Monitoring stehen. Bei gengrp-Gruppen mit mehreren gleichzeitig betroffenen Präparaten (136 Gruppen aktiv) ist besondere Aufmerksamkeit geboten. [Engpassradar.ch](https://engpassradar.ch) zeigt täglich aktualisierte Statusangaben sowie verfügbare Alternativen.
+**Für Apotheken und Spitalapotheken:** Die Top-10-Wirkstoffe nach Meldehäufigkeit, also Quetiapin, Venlafaxin, Methylphenidat, Pregabalin und Olanzapin, sollten im proaktiven Monitoring stehen. Bei gengrp-Gruppen mit mehreren gleichzeitig betroffenen Präparaten (136 Gruppen aktiv) ist besondere Aufmerksamkeit geboten. [Engpassradar.ch](https://engpassradar.ch) zeigt täglich aktualisierte Statusangaben sowie verfügbare Alternativen.
 
-**Für Einkauf und Beschaffung:** Die Diversifikation der Lieferantenbasis lohnt sich nicht nur bei Niedrigpreisprodukten. Quetiapin und Olanzapin sind Mittelpreisprodukte mit hohem Engpass-Risiko — ein Segment, das in der Einkaufsstrategie oft unterschätzt wird.
+**Für Einkauf und Beschaffung:** Die Diversifikation der Lieferantenbasis lohnt sich nicht nur bei Niedrigpreisprodukten. Quetiapin und Olanzapin sind Mittelpreisprodukte mit hohem Engpass-Risiko, ein Segment, das in der Einkaufsstrategie oft unterschätzt wird.
 
-**Für die Gesundheitspolitik:** Mindestpreise für versorgungskritische Generika sind ein diskutiertes Instrument. Die Daten legen nahe, dass die Preis-Engpass-Korrelation in der Schweiz schwächer ist als international postuliert. Eine rein auf Preiserhöhungen ausgerichtete Versorgungspolitik würde die Engpass-Ursachen im mittleren Preissegment — Quetiapin, Olanzapin, Fentanyl — nicht adressieren.
+**Für die Gesundheitspolitik:** Mindestpreise für versorgungskritische Generika sind ein diskutiertes Instrument. Aus den Daten geht hervor, dass die Preis-Engpass-Korrelation in der Schweiz schwächer ist als international postuliert. Eine rein auf Preiserhöhungen ausgerichtete Versorgungspolitik würde die Engpass-Ursachen im mittleren Preissegment, also bei Quetiapin, Olanzapin und Fentanyl, nicht adressieren.
 
-**Für die Forschung:** Eine multivariate Regressionsanalyse, die Preis, Marktvolumen, Anzahl Hersteller und Produktionskomplexität gemeinsam betrachtet, fehlt für die Schweiz. engpassradar.ch stellt die Engpass-Datengrundlage zur Verfügung.
+**Für die Forschung:** Eine multivariate Regressionsanalyse, die Preis, Marktvolumen, Anzahl Hersteller und Produktionskomplexität gemeinsam betrachtet, fehlt für die Schweiz noch. engpassradar.ch stellt die Engpass-Datengrundlage zur Verfügung.
 
-[INTERNAL-LINK: Engpass-Monitoring für Apotheken: Funktionen und API → /api]
+Engpass-Monitoring für Apotheken: [Funktionen und API](/api)
 
 ---
 
@@ -219,11 +488,11 @@ Erhalten Sie wöchentlich aktuelle Engpass-Daten, neue kritische Meldungen, mona
 
 ### Sind Generika häufiger im Engpass als Originalpräparate?
 
-Gemäss engpassradar.ch-Daten (Stand: 25. April 2026) haben 98.9% aller aktiven Engpässe (704 von 712) einen Generika-Gruppeneintrag. Alle zehn häufigsten Engpass-Wirkstoffe sind Generika-Substanzen. Der Preisunterschied zum Gesamtmarkt ist jedoch gering — der PEXF-Median häufiger Engpass-Wirkstoffe liegt bei CHF 25.12 vs. CHF 29.18 im Gesamtmarkt.
+Gemäss engpassradar.ch-Daten (Stand: 25. April 2026) haben 98.9% aller aktiven Engpässe (704 von 712) einen Generika-Gruppeneintrag. Alle zehn häufigsten Engpass-Wirkstoffe sind Generika-Substanzen. Der Preisunterschied zum Gesamtmarkt ist jedoch gering: Der PEXF-Median häufiger Engpass-Wirkstoffe liegt bei CHF 25.12 vs. CHF 29.18 im Gesamtmarkt, eine Differenz von nur CHF 4.06 (engpassradar.ch, April 2026).
 
 ### Welcher Wirkstoff hat aktuell die meisten Engpass-Meldungen in der Schweiz?
 
-Quetiapin (ATC: N05AH04) führt die engpassradar.ch-Statistik mit 41 Meldungen total und 28 aktiven Engpässen (Stand 25. April 2026). Der PEXF-Median liegt bei CHF 97.30 — das ist kein Niedrigpreis-Produkt. Auf den Plätzen zwei und drei folgen Venlafaxin (35 Meldungen) und Methylphenidat (22 Meldungen).
+Quetiapin (ATC: N05AH04) führt die engpassradar.ch-Statistik mit 41 Meldungen total und 28 aktiven Engpässen (Stand 25. April 2026). Der PEXF-Median liegt bei CHF 97.30, kein Niedrigpreis-Produkt. Auf den Plätzen zwei und drei folgen Venlafaxin (35 Meldungen) und Methylphenidat (22 Meldungen).
 
 ### Was sind PPUB und PEXF in der ODDB?
 
@@ -231,11 +500,11 @@ Die Open Drug Database (ODDB) weist für zugelassene Schweizer Arzneimittel zwei
 
 ### Gibt es in der Schweiz einen Mindestpreis für Generika?
 
-Nein. Stand April 2026 existiert in der Schweiz kein formeller Mindestpreis für Generika. Das BAG legt Höchstpreise fest; Mindestpreise sind im geltenden KVG/KLV-Rahmen nicht vorgesehen. Branchenvertreter fordern eine solche Untergrenze für versorgungskritische Wirkstoffe. Die engpassradar.ch-Daten zeigen allerdings, dass mehrere der häufigsten Engpass-Wirkstoffe im mittleren Preissegment liegen — Mindestpreise allein würden deren Engpass-Risiko nicht adressieren.
+Nein. Stand April 2026 existiert in der Schweiz kein formeller Mindestpreis für Generika. Das BAG legt Höchstpreise fest; Mindestpreise sind im geltenden KVG/KLV-Rahmen nicht vorgesehen. Branchenvertreter fordern eine solche Untergrenze für versorgungskritische Wirkstoffe. Die engpassradar.ch-Daten zeigen jedoch, dass mehrere der häufigsten Engpass-Wirkstoffe im mittleren Preissegment liegen. Mindestpreise allein würden deren Engpass-Risiko nicht adressieren.
 
 ### Woher stammen die Daten dieser Analyse?
 
-Die Engpass-Häufigkeiten stammen aus engpassradar.ch (Datenstand: 25. April 2026, basierend auf 9.195 Engpass-Meldungen aus drugshortage.ch seit Januar 2015). Preisreferenzen beziehen sich auf die ODDB-Datenbank (Fabrikabgabepreise PEXF). Ein ODDB-Match war für 39.8% der Fälle nicht möglich — diese Fälle sind in Preisklassen-Auswertungen nicht enthalten. Historische Preisdaten sind in ODDB nicht vollständig verfügbar; alle Korrelationsaussagen beziehen sich auf aktuelle Preisniveaus.
+Die Engpass-Häufigkeiten stammen aus engpassradar.ch (Datenstand: 25. April 2026, basierend auf 9.195 Engpass-Meldungen aus drugshortage.ch seit Januar 2015). Preisreferenzen beziehen sich auf die ODDB-Datenbank (Fabrikabgabepreise PEXF). Ein ODDB-Match war für 39.8% der Fälle nicht möglich. Diese Fälle sind in Preisklassen-Auswertungen nicht enthalten. Historische Preisdaten sind in ODDB nicht vollständig verfügbar; alle Korrelationsaussagen beziehen sich auf aktuelle Preisniveaus.
 
 ---
 

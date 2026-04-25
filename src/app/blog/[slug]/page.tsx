@@ -4,6 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { getAllPosts, getPostBySlug } from "@/lib/blog";
 import { ArrowLeft } from "lucide-react";
 
@@ -139,9 +140,8 @@ function sanitizeForMarkdown(raw: string): string {
   return raw
     // Remove HTML comments (<!-- ... -->)
     .replace(/<!--[\s\S]*?-->/g, "")
-    // Remove JSX figure/svg blocks (chart placeholders)
-    .replace(/<figure[\s\S]*?<\/figure>/g, "")
-    // Remove remaining JSX-style opening/closing tags with curlybrace props
+    // Remove JSX-style tags with curlybrace props (e.g. <Component {{...}}>...</Component>)
+    // but preserve plain HTML like <figure>, <svg>, <iframe>
     .replace(/<\w+[^>]*\{\{[\s\S]*?\}\}[^>]*>[\s\S]*?<\/\w+>/g, "")
     // Remove [INTERNAL-LINK: ...] placeholders (render as nothing)
     .replace(/\[INTERNAL-LINK:[^\]]+\]/g, "")
@@ -244,6 +244,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           <article className="prose prose-neutral dark:prose-invert max-w-none blog-content">
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
               components={{
                 a: ({ href, children, ...props }) => {
                   const isExternal = href?.startsWith("http");
