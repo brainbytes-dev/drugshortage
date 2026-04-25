@@ -41,7 +41,7 @@ async function main() {
     LIMIT 10
   `)
 
-  const top10Total = top10.reduce((s, r) => s + Number(r.total), 0n)
+  const top10Total = top10.reduce((s, r) => s + Number(r.total), 0)
   const allTotal = Number(base[0].total)
   const top10Pct = ((Number(top10Total) / allTotal) * 100).toFixed(1)
 
