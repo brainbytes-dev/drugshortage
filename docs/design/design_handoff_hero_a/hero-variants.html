@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hero-Varianten A–D — engpass.radar</title>
+<style>
+  html,body{margin:0;padding:0;background:#f0eee9;overflow:hidden}
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="hero-shared.jsx"></script>
+<script type="text/babel" src="hero-a.jsx"></script>
+<script type="text/babel" src="hero-b.jsx"></script>
+<script type="text/babel" src="hero-c.jsx"></script>
+<script type="text/babel" src="hero-d.jsx"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+  const W = 1440, H = 900;
+  function App() {
+    return (
+      <DesignCanvas>
+        <DCSection id="heroes" title="Hero-Varianten" subtitle="Vier Richtungen · engpassradar.ch · Desktop 1440×900 · Klick für Vollbild">
+          <DCArtboard id="a" label="A · Live-Zahl" width={W} height={H}><HeroA/></DCArtboard>
+          <DCArtboard id="b" label="B · Methodik-First" width={W} height={H}><HeroB/></DCArtboard>
+          <DCArtboard id="c" label="C · Redaktionell" width={W} height={H}><HeroC/></DCArtboard>
+          <DCArtboard id="d" label="D · Dashboard-Prepend" width={W} height={H}><HeroD/></DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>
