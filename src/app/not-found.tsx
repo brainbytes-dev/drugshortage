@@ -1,81 +1,140 @@
 import Link from 'next/link'
-import { ArrowLeft, Search } from 'lucide-react'
+import { ErEyebrow } from '@/components/er-primitives'
+
+const MONO = 'var(--font-mono, "JetBrains Mono", ui-monospace, monospace)'
+const BORDER = 'oklch(0.91 0.005 240)'
+const MUTED = 'oklch(0.45 0.01 240)'
+const FG = 'oklch(0.18 0.01 240)'
+const BG_ALT = 'oklch(0.985 0.002 240)'
+const BG_INVERSE = 'oklch(0.18 0.01 240)'
+const FG_ON_DARK = 'oklch(0.97 0.005 240)'
+const PRIMARY = 'oklch(0.52 0.09 200)'
+
+const REASONS = [
+  {
+    n: '01',
+    t: 'Tippfehler in der URL',
+    d: 'Wir korrigieren keine Slugs automatisch. Kleiner Unterschied — andere Seite.',
+    a: 'Suche nutzen',
+  },
+  {
+    n: '02',
+    t: 'Engpass wurde aufgelöst',
+    d: 'Sobald drugshortage.ch ein Produkt entfernt, verschwindet auch unsere Seite — damit nichts Veraltetes herumsteht.',
+    a: 'Übersicht ansehen',
+  },
+  {
+    n: '03',
+    t: 'Produkt war nie im Engpass',
+    d: 'Wir tracken nur Schweizer Lieferengpässe. Stammdaten zu allen Produkten finden Sie bei Swissmedic / ODDB.',
+    a: 'Zu swissmedicinfo.ch',
+  },
+]
 
 export default function NotFound() {
   return (
-    <main className="relative flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] text-center px-4 overflow-hidden">
+    <main className="min-h-screen bg-background">
+      {/* ─── Hero ────────────────────────────────────────────────── */}
+      <section style={{ padding: '64px 0 48px', borderBottom: `1px solid ${BORDER}`, position: 'relative', overflow: 'hidden' }}>
+        {/* Background 404 */}
+        <div aria-hidden style={{
+          position: 'absolute', right: 48, top: 24,
+          fontFamily: MONO, fontSize: 280, fontWeight: 600,
+          color: BG_ALT, letterSpacing: '-0.06em', lineHeight: 1,
+          fontVariantNumeric: 'tabular-nums',
+          userSelect: 'none', pointerEvents: 'none',
+        }}>404</div>
 
-      {/* Gradient blob — matches hero */}
-      <div
-        aria-hidden
-        className="hero-blob pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[400px] rounded-full opacity-[0.06] blur-3xl"
-        style={{ background: 'radial-gradient(ellipse, oklch(0.52 0.09 200), oklch(0.62 0.14 225) 60%, transparent)' }}
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute bottom-0 right-0 w-[350px] h-[250px] rounded-full opacity-[0.03] blur-3xl"
-        style={{ background: 'radial-gradient(ellipse, oklch(0.62 0.14 225), transparent)' }}
-      />
-
-      <div className="relative z-10 max-w-lg mx-auto space-y-8">
-
-        {/* 404 ghost number */}
-        <div className="hero-animate hero-animate-1 relative select-none">
-          <span
-            aria-hidden
-            className="block text-[clamp(7rem,20vw,12rem)] font-black leading-none tabular-nums text-foreground/[0.04] pointer-events-none"
-          >
-            404
-          </span>
-          {/* Overlaid label */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-muted/50 px-3.5 py-1.5 text-xs text-muted-foreground backdrop-blur-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-destructive/70" />
-              Seite nicht gefunden
-            </span>
+        <div className="max-w-7xl mx-auto" style={{ paddingLeft: 48, paddingRight: 48, position: 'relative' }}>
+          <ErEyebrow>Eintrag nicht gefunden</ErEyebrow>
+          <h1 style={{ margin: '20px 0 16px', fontSize: 72, lineHeight: 0.98, fontWeight: 500, letterSpacing: '-0.04em', maxWidth: 720 }}>
+            Diesen Engpass<br />
+            <span style={{ color: MUTED }}>kennen wir nicht.</span>
+          </h1>
+          <div style={{ fontSize: 19, color: MUTED, lineHeight: 1.55, maxWidth: 580 }}>
+            Drei mögliche Gründe — und was Sie als Nächstes tun können.
           </div>
         </div>
+      </section>
 
-        {/* Headline */}
-        <div className="hero-animate hero-animate-2 space-y-3">
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight leading-tight">
-            Diese Seite{' '}
-            <span className="gradient-text">fehlt.</span>
-          </h1>
-          <p className="text-base text-muted-foreground leading-relaxed max-w-sm mx-auto">
-            Das Präparat oder die URL existiert nicht mehr —
-            vielleicht wurde der Engpass aufgelöst oder der Link ist veraltet.
-          </p>
+      {/* ─── Three reasons ───────────────────────────────────────── */}
+      <section style={{ borderBottom: `1px solid ${BORDER}` }}>
+        <div className="max-w-7xl mx-auto" style={{ padding: '40px 48px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 0, border: `1px solid ${BORDER}` }}>
+            {REASONS.map((r, i) => (
+              <div key={r.n} style={{
+                padding: 28, borderRight: i < 2 ? `1px solid ${BORDER}` : 'none',
+                display: 'flex', flexDirection: 'column', gap: 12, minHeight: 220,
+              }}>
+                <div style={{ fontFamily: MONO, fontSize: 13, color: MUTED, fontVariantNumeric: 'tabular-nums', letterSpacing: '0.04em' }}>
+                  {r.n}
+                </div>
+                <div style={{ fontSize: 22, fontWeight: 500, letterSpacing: '-0.015em' }}>{r.t}</div>
+                <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.55, flex: 1 }}>{r.d}</div>
+                <div style={{
+                  fontFamily: MONO, fontSize: 12.5, color: FG,
+                  letterSpacing: '0.04em', textTransform: 'uppercase',
+                  paddingTop: 12, borderTop: `1px solid ${BORDER}`,
+                }}>
+                  {r.a} →
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
+      </section>
 
-        {/* Actions */}
-        <div className="hero-animate hero-animate-3 flex flex-col sm:flex-row items-center justify-center gap-3">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:shadow-[0_0_0_4px_oklch(0.52_0.09_200/0.2)] hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 ease-out"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden />
-            Zur Übersicht
-          </Link>
-          <Link
-            href="/?neu=1"
-            className="inline-flex items-center gap-2 rounded-lg border border-border/60 bg-muted/30 px-5 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-all duration-150"
-          >
-            <Search className="h-4 w-4" aria-hidden />
-            Neue Meldungen
-          </Link>
+      {/* ─── Search + Report ─────────────────────────────────────── */}
+      <section>
+        <div className="max-w-7xl mx-auto" style={{ padding: '40px 48px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+            {/* Search — dark */}
+            <div style={{ padding: 28, background: BG_INVERSE, color: FG_ON_DARK }}>
+              <div style={{ fontFamily: MONO, fontSize: 11, color: 'oklch(0.75 0.01 240)', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                Suchen
+              </div>
+              <div style={{ fontSize: 24, fontWeight: 500, letterSpacing: '-0.02em', margin: '12px 0 18px' }}>
+                Direkt im Register suchen
+              </div>
+              <Link href="/" style={{
+                display: 'inline-flex', alignItems: 'center', gap: 0,
+                border: '1px solid oklch(1 0 0 / 0.2)',
+                textDecoration: 'none', width: '100%',
+              }}>
+                <span style={{
+                  flex: 1, padding: '14px 18px',
+                  fontSize: 15, color: 'oklch(0.65 0.01 240)',
+                  fontFamily: 'inherit',
+                }}>
+                  Wirkstoff, Marke oder ATC-Code
+                </span>
+                <span style={{
+                  padding: '14px 22px', background: PRIMARY, color: FG_ON_DARK,
+                  fontSize: 14, fontWeight: 500,
+                }}>Suchen →</span>
+              </Link>
+              <div style={{ fontSize: 13, color: 'oklch(0.65 0.01 240)', marginTop: 14, lineHeight: 1.5 }}>
+                Täglich aktualisiertes Register aller gemeldeten Engpässe.
+              </div>
+            </div>
+
+            {/* Report */}
+            <div style={{ padding: 28, border: `1px solid ${BORDER}` }}>
+              <ErEyebrow>Etwas gemeldet, das fehlt?</ErEyebrow>
+              <div style={{ fontSize: 24, fontWeight: 500, letterSpacing: '-0.02em', margin: '12px 0 12px' }}>
+                Datenlücke melden
+              </div>
+              <div style={{ fontSize: 14, color: MUTED, lineHeight: 1.55, marginBottom: 18 }}>
+                Sie wissen von einem Engpass, der hier fehlt? Eine Mail genügt —
+                wir prüfen es manuell und ergänzen die Quelle.
+              </div>
+              <div style={{ fontFamily: MONO, fontSize: 14, color: PRIMARY, padding: '12px 16px', border: `1px solid ${BORDER}`, background: BG_ALT }}>
+                kontakt@engpassradar.ch
+              </div>
+            </div>
+          </div>
         </div>
-
-        {/* Hint */}
-        <p className="hero-animate hero-animate-4 text-xs text-muted-foreground">
-          Engpässe werden täglich aktualisiert —{' '}
-          <Link href="/" className="underline underline-offset-2 hover:text-foreground transition-colors">
-            alle aktiven Meldungen
-          </Link>{' '}
-          findest du auf der Startseite.
-        </p>
-
-      </div>
+      </section>
     </main>
   )
 }

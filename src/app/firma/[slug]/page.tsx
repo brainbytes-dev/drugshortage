@@ -1,29 +1,25 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
-import {
-  getFirmaBySlug,
-  getFirmaActiveShortages,
-  getFirmaHistoricalCount,
-  getBwlGtins,
-  getAllFirmaSlugs,
-} from '@/lib/db'
+import { getFirmaBySlug, getFirmaActiveShortages, getFirmaHistoricalCount, getBwlGtins, getAllFirmaSlugs } from '@/lib/db'
 import { toSlug } from '@/lib/slug'
-import { calculateScore, scoreLabel } from '@/lib/score'
+import { calculateScore } from '@/lib/score'
+import { StatusPill, ErEyebrow, ErCrumbs, erScoreColor } from '@/components/er-primitives'
 
 export const revalidate = 3600
+
+const MONO = 'var(--font-mono, "JetBrains Mono", ui-monospace, monospace)'
+const BORDER = 'oklch(0.91 0.005 240)'
+const MUTED = 'oklch(0.45 0.01 240)'
+const FG = 'oklch(0.18 0.01 240)'
+const BG_ALT = 'oklch(0.985 0.002 240)'
 
 export async function generateStaticParams() {
   const firms = await getAllFirmaSlugs()
   return firms.map(f => ({ slug: f.slug }))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params
   const firma = await getFirmaBySlug(slug)
   if (!firma) return { title: 'Firma nicht gefunden | engpass.radar' }
@@ -33,42 +29,18 @@ export async function generateMetadata({
   }
 }
 
-const STATUS_LABELS: Record<number, string> = {
-  1: 'Direkt gemeldet',
-  2: 'Gemeldet',
-  3: 'Sporadisch',
-  4: 'Keine Info',
-  5: 'Verhandlung',
+const STATUS_LABELS: Record<number, string> = { 1: 'Direkt gemeldet', 2: 'Gemeldet', 3: 'Sporadisch', 4: 'Keine Information', 5: 'Verhandlung' }
+const STATUS_COLORS: Record<number, string> = {
+  1: 'oklch(0.58 0.13 150)',
+  2: 'oklch(0.65 0.14 130)',
+  3: 'oklch(0.72 0.15 75)',
+  4: 'oklch(0.58 0.21 27)',
+  5: 'oklch(0.65 0.16 60)',
 }
 
-const STATUS_DOT_COLORS: Record<number, string> = {
-  1: 'bg-emerald-500',
-  2: 'bg-lime-500',
-  3: 'bg-amber-500',
-  4: 'bg-red-500',
-  5: 'bg-yellow-500',
-}
-
-const STATUS_TEXT_COLORS: Record<number, string> = {
-  1: 'text-emerald-600 dark:text-emerald-400',
-  2: 'text-lime-600 dark:text-lime-400',
-  3: 'text-amber-600 dark:text-amber-400',
-  4: 'text-red-600 dark:text-red-400',
-  5: 'text-yellow-600 dark:text-yellow-400',
-}
-
-export default async function FirmaPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
+export default async function FirmaPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
-
-  const [firma, bwlGtins] = await Promise.all([
-    getFirmaBySlug(slug),
-    getBwlGtins(),
-  ])
-
+  const [firma, bwlGtins] = await Promise.all([getFirmaBySlug(slug), getBwlGtins()])
   if (!firma) notFound()
 
   const [shortages, historicalCount] = await Promise.all([
@@ -77,206 +49,210 @@ export default async function FirmaPage({
   ])
 
   const bwlSet = new Set(bwlGtins)
-
   const statusBreakdown = shortages.reduce<Record<number, number>>((acc, s) => {
     acc[s.statusCode] = (acc[s.statusCode] ?? 0) + 1
     return acc
   }, {})
 
   const scores = shortages.map(s => calculateScore(s, bwlSet.has(s.gtin)).total)
-  const avgScore = scores.length > 0
-    ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-    : 0
-
+  const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0
   const noInfoCount = statusBreakdown[4] ?? 0
-  const noInfoPct = shortages.length > 0
-    ? Math.round((noInfoCount / shortages.length) * 100)
-    : 0
+  const noInfoPct = shortages.length > 0 ? Math.round((noInfoCount / shortages.length) * 100) : 0
 
-  const { label: avgLabel, color: avgColor } = scoreLabel(avgScore)
+  const trackRecord = avgScore >= 70 ? 'Hoch-Risiko-Profil' : avgScore >= 50 ? 'Erhöhtes Risiko' : avgScore >= 30 ? 'Mittleres Profil' : 'Niedriges Risiko'
+  const trackColor = avgScore >= 70 ? 'oklch(0.58 0.21 27)' : avgScore >= 50 ? 'oklch(0.72 0.15 75)' : avgScore >= 30 ? 'oklch(0.65 0.14 130)' : 'oklch(0.58 0.13 150)'
 
   return (
     <main className="min-h-screen bg-background">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@graph': [
-              {
-                '@type': 'WebPage',
-                '@id': `https://www.engpassradar.ch/firma/${slug}`,
-                url: `https://www.engpassradar.ch/firma/${slug}`,
-                name: `${firma} | engpass.radar`,
-                description: `Lieferengpass-Profil von ${firma}: aktuelle Engpässe und Severity Score.`,
-                isPartOf: { '@id': 'https://www.engpassradar.ch' },
-              },
-              {
-                '@type': 'BreadcrumbList',
-                itemListElement: [
-                  { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.engpassradar.ch' },
-                  { '@type': 'ListItem', position: 2, name: firma, item: `https://www.engpassradar.ch/firma/${slug}` },
-                ],
-              },
-            ],
-          }).replace(/</g, '<'),
-        }}
-      />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@graph': [
+            { '@type': 'WebPage', '@id': `https://www.engpassradar.ch/firma/${slug}`, url: `https://www.engpassradar.ch/firma/${slug}`, name: `${firma} | engpass.radar`, isPartOf: { '@id': 'https://www.engpassradar.ch' } },
+            { '@type': 'BreadcrumbList', itemListElement: [{ '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.engpassradar.ch' }, { '@type': 'ListItem', position: 2, name: firma, item: `https://www.engpassradar.ch/firma/${slug}` }] },
+          ],
+        }).replace(/</g, '<'),
+      }} />
 
-      {/* Page header */}
-      <section className="border-b border-border/40">
-        <div className="max-w-5xl mx-auto px-4 py-10 sm:py-14">
-          <Link
-            href={`/?firma=${encodeURIComponent(firma)}`}
-            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors group mb-8"
-          >
-            <ArrowLeft className="h-3 w-3 group-hover:-translate-x-0.5 transition-transform duration-150" />
-            Zur Übersicht
-          </Link>
+      {/* ─── Hero ────────────────────────────────────────────────── */}
+      <section style={{ borderBottom: `1px solid ${BORDER}` }}>
+        <div className="max-w-7xl mx-auto" style={{ padding: '36px 48px 32px' }}>
+          <ErCrumbs items={['DASHBOARD', 'FIRMEN', firma.toUpperCase()]} />
 
-          <div className="space-y-4">
-            {/* Eyebrow */}
-            <div className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Firma</span>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 56, alignItems: 'flex-end' }}>
+            <div>
+              <ErEyebrow>Hersteller-Profil</ErEyebrow>
+              <h1 style={{ margin: '14px 0 10px', fontSize: 56, lineHeight: 1.02, fontWeight: 500, letterSpacing: '-0.03em' }}>
+                {firma}
+              </h1>
+              <div style={{ fontSize: 16, color: MUTED, lineHeight: 1.5 }}>
+                <span style={{ fontFamily: MONO, color: FG }}>{shortages.length}</span> aktive Engpässe ·{' '}
+                <span style={{ fontFamily: MONO, color: FG }}>{historicalCount}</span> historische
+              </div>
             </div>
 
-            {/* Title */}
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight leading-snug">{firma}</h1>
-
-            {/* KPI strip */}
-            <div className="flex flex-wrap items-center gap-6 pt-2">
-              <div>
-                <p className="text-3xl font-black tabular-nums leading-none">{shortages.length}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Aktive Engpässe</p>
+            {/* Track record panel */}
+            <div style={{
+              padding: '20px 24px', border: `1px solid ${trackColor}`,
+              background: `color-mix(in oklch, ${trackColor} 6%, transparent)`,
+              display: 'flex', flexDirection: 'column', gap: 6,
+            }}>
+              <ErEyebrow>Track-Record-Einstufung</ErEyebrow>
+              <div style={{ fontSize: 28, fontWeight: 500, letterSpacing: '-0.02em', color: trackColor }}>
+                {trackRecord}
               </div>
-              <div className="w-px h-8 bg-border/60 hidden sm:block" />
-              <div>
-                <p className="text-3xl font-black tabular-nums leading-none">{historicalCount}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Historisch</p>
-              </div>
-              <div className="w-px h-8 bg-border/60 hidden sm:block" />
-              <div>
-                <p className={`text-3xl font-black tabular-nums leading-none ${avgColor}`}>{avgScore}</p>
-                <p className={`text-[11px] mt-0.5 ${avgColor}`}>{avgLabel}</p>
-              </div>
-              <div className="w-px h-8 bg-border/60 hidden sm:block" />
-              <div>
-                <p className={`text-3xl font-black tabular-nums leading-none ${noInfoPct >= 50 ? 'text-red-600 dark:text-red-400' : noInfoPct >= 25 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
-                  {noInfoPct}%
-                </p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Keine Info</p>
+              <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.5 }}>
+                Ø Score {avgScore} · {noInfoPct}% ohne Update. Algorithmische Einstufung — keine Bewertung.
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Body */}
-      <div className="max-w-5xl mx-auto px-4 py-10 space-y-10">
+      {/* ─── KPIs ────────────────────────────────────────────────── */}
+      <section style={{ borderBottom: `1px solid ${BORDER}`, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        {[
+          { l: 'Aktive Engpässe',   v: String(shortages.length), s: 'aktuell gemeldet',   red: true },
+          { l: 'Historisch',         v: String(historicalCount),  s: 'seit 2021' },
+          { l: 'Ø Severity Score',   v: String(avgScore),         s: 'von 100', red: avgScore >= 60 },
+          { l: 'Keine-Info-Anteil',  v: `${noInfoPct}%`,          s: 'Status 4', red: noInfoPct >= 40 },
+        ].map((k, i) => (
+          <div key={i} style={{
+            padding: '28px 32px',
+            borderRight: i < 3 ? `1px solid ${BORDER}` : 'none',
+          }}>
+            <div style={{ fontFamily: MONO, fontSize: 10.5, color: MUTED, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{k.l}</div>
+            <div style={{ fontFamily: MONO, fontSize: 48, fontWeight: 600, letterSpacing: '-0.03em', marginTop: 8, lineHeight: 1, fontVariantNumeric: 'tabular-nums', color: k.red ? 'oklch(0.58 0.21 27)' : FG }}>{k.v}</div>
+            <div style={{ fontSize: 12.5, color: MUTED, marginTop: 8 }}>{k.s}</div>
+          </div>
+        ))}
+      </section>
 
-        {/* Meldeverhalten */}
-        {shortages.length > 0 && (
-          <section className="space-y-4">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">Meldeverhalten</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {([1, 2, 3, 4, 5] as const).map(code => {
-                const count = statusBreakdown[code] ?? 0
-                if (count === 0) return null
-                const pct = Math.round((count / shortages.length) * 100)
-                return (
-                  <div key={code} className="rounded-lg border border-border/60 bg-card p-4 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <div className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT_COLORS[code]}`} />
-                      <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                        Status {code} · {STATUS_LABELS[code]}
-                      </span>
-                    </div>
-                    <div className="flex items-end justify-between gap-2">
-                      <span className={`text-2xl font-black tabular-nums ${STATUS_TEXT_COLORS[code]}`}>{count}</span>
-                      <span className="text-sm text-muted-foreground tabular-nums mb-0.5">{pct}%</span>
-                    </div>
-                    <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
-                      <div className={`h-full rounded-full ${STATUS_DOT_COLORS[code]}/60`} style={{ width: `${pct}%` }} />
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              Status 1 = Firma kommuniziert proaktiv · Status 4 = keine Information.
-              Hoher Status-4-Anteil erhöht den Severity Score.
-            </p>
-          </section>
-        )}
-
-        {/* Active shortages table */}
-        <section className="space-y-3">
-          <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
-            Aktive Engpässe
-            <span className="ml-2 text-muted-foreground/60 font-normal normal-case tracking-normal">({shortages.length})</span>
-          </h2>
-          {shortages.length === 0 ? (
-            <p className="text-sm text-muted-foreground py-8 text-center">Keine aktiven Engpässe für diese Firma.</p>
-          ) : (
-            <div className="rounded-lg border border-border/60 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-muted/40 border-b border-border/60">
-                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground text-xs">Bezeichnung</th>
-                    <th className="px-4 py-2.5 text-center font-medium text-muted-foreground text-xs">Status</th>
-                    <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs tabular-nums">Tage</th>
-                    <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs">Score</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/40">
-                  {shortages.map(s => {
-                    const sc = calculateScore(s, bwlSet.has(s.gtin))
-                    const { color } = scoreLabel(sc.total)
+      {/* ─── Meldeverhalten ──────────────────────────────────────── */}
+      {shortages.length > 0 && (
+        <section style={{ borderBottom: `1px solid ${BORDER}` }}>
+          <div className="max-w-7xl mx-auto" style={{ padding: '40px 48px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: 56 }}>
+              <div>
+                <ErEyebrow>Meldeverhalten · {shortages.length} aktive Engpässe</ErEyebrow>
+                <h2 style={{ margin: '8px 0 18px', fontSize: 26, fontWeight: 500, letterSpacing: '-0.02em' }}>
+                  {noInfoPct >= 40 ? 'Fast die Hälfte ohne Update.' : noInfoPct >= 20 ? 'Mässige Transparenz.' : 'Gute Kommunikation.'}
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {([1, 2, 3, 4, 5] as const).map(code => {
+                    const n = statusBreakdown[code] ?? 0
+                    if (n === 0) return null
+                    const pct = Math.round((n / shortages.length) * 100)
                     return (
-                      <tr key={s.gtin} className="hover:bg-muted/30 transition-colors">
-                        <td className="px-4 py-2.5 max-w-[300px]">
-                          <span className="flex items-center gap-1.5 min-w-0">
-                            <Link
-                              href={`/medikament/${toSlug(s.bezeichnung)}`}
-                              className="truncate hover:text-primary hover:underline transition-colors"
-                            >
-                              {s.bezeichnung}
-                            </Link>
-                            {bwlSet.has(s.gtin) && (
-                              <span className="shrink-0 text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">
-                                BWL
-                              </span>
-                            )}
+                      <div key={code}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', fontSize: 13.5, marginBottom: 6 }}>
+                          <span>
+                            <span style={{ fontFamily: MONO, fontSize: 11, color: MUTED, marginRight: 8, letterSpacing: '0.04em' }}>STATUS {code}</span>
+                            {STATUS_LABELS[code]}
                           </span>
-                        </td>
-                        <td className="px-4 py-2.5 text-center">
-                          <span className={`text-xs font-semibold ${STATUS_TEXT_COLORS[s.statusCode] ?? 'text-muted-foreground'}`}>
-                            {s.statusCode}
+                          <span style={{ fontFamily: MONO, color: MUTED }}>
+                            {n} · <span style={{ color: FG }}>{pct}%</span>
                           </span>
-                        </td>
-                        <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
-                          {s.tageSeitMeldung}
-                        </td>
-                        <td className={`px-4 py-2.5 text-right tabular-nums font-semibold text-xs ${color}`}>
-                          {sc.total}
-                        </td>
-                      </tr>
+                        </div>
+                        <div style={{ height: 6, background: BORDER }}>
+                          <div style={{ width: pct + '%', height: '100%', background: STATUS_COLORS[code] ?? FG }} />
+                        </div>
+                      </div>
                     )
                   })}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </section>
+                </div>
+              </div>
 
-        <p className="text-xs text-muted-foreground border-t border-border/40 pt-5">
-          Daten aus{' '}
-          <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
-            drugshortage.ch
-          </a>
+              {/* Rechts: Kurz-Info */}
+              <div>
+                <ErEyebrow>Profil</ErEyebrow>
+                <h2 style={{ margin: '8px 0 18px', fontSize: 26, fontWeight: 500, letterSpacing: '-0.02em' }}>
+                  Kurzprofil
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+                  {[
+                    ['Aktive Engpässe', String(shortages.length)],
+                    ['Historische Fälle', String(historicalCount)],
+                    ['Ø Score aktiv', String(avgScore) + ' / 100'],
+                    ['Status-4-Anteil', noInfoPct + '%'],
+                  ].map(([l, v], i) => (
+                    <div key={l} style={{
+                      display: 'grid', gridTemplateColumns: '200px 1fr', padding: '12px 0',
+                      borderBottom: `1px solid ${BORDER}`,
+                      borderTop: i === 0 ? `1px solid ${BORDER}` : 'none',
+                    }}>
+                      <dt style={{ fontFamily: MONO, fontSize: 11, color: MUTED, letterSpacing: '0.06em', textTransform: 'uppercase' }}>{l}</dt>
+                      <dd style={{ margin: 0, fontFamily: MONO, fontSize: 14, color: FG, fontVariantNumeric: 'tabular-nums' }}>{v}</dd>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ─── Active shortages table ──────────────────────────────── */}
+      <section style={{ borderBottom: `1px solid ${BORDER}` }}>
+        <div className="max-w-7xl mx-auto" style={{ padding: '40px 48px 0' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 18 }}>
+            <div>
+              <ErEyebrow>Top-{Math.min(shortages.length, 20)} nach Score · von {shortages.length} aktiven</ErEyebrow>
+              <h2 style={{ margin: '8px 0 0', fontSize: 26, fontWeight: 500, letterSpacing: '-0.02em' }}>Aktive Engpässe</h2>
+            </div>
+          </div>
+
+          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
+            <thead>
+              <tr>
+                {[['Bezeichnung', 'left'], ['ATC', 'left'], ['Status', 'left'], ['Tage', 'right'], ['Score', 'right']].map(([l, a]) => (
+                  <th key={l} style={{
+                    padding: '12px 12px', textAlign: a as 'left' | 'right',
+                    borderBottom: `1px solid ${FG}`,
+                    fontFamily: MONO, fontSize: 10.5, color: MUTED,
+                    letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 500,
+                  }}>{l}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {shortages.slice(0, 20).map((s, i) => {
+                const sc = calculateScore(s, bwlSet.has(s.gtin))
+                const col = erScoreColor(sc.total)
+                return (
+                  <tr key={s.gtin} style={{ borderBottom: `1px solid ${BORDER}` }}>
+                    <td style={{ padding: '14px 12px', fontWeight: 500 }}>
+                      <Link href={`/medikament/${s.slug ?? toSlug(s.bezeichnung)}`} style={{ color: FG, textDecoration: 'none' }} className="hover:underline">
+                        {s.bezeichnung}
+                      </Link>
+                      {bwlSet.has(s.gtin) && (
+                        <span style={{ marginLeft: 8, fontFamily: MONO, fontSize: 9.5, padding: '2px 5px', background: 'oklch(0.72 0.15 75 / 0.12)', color: 'oklch(0.45 0.12 75)', letterSpacing: '0.06em' }}>BWL</span>
+                      )}
+                    </td>
+                    <td style={{ padding: '14px 12px', fontFamily: MONO, fontSize: 13, color: FG }}>
+                      {s.atcCode ? (
+                        <Link href={`/wirkstoff/${s.atcCode}`} style={{ color: FG, textDecoration: 'none' }} className="hover:underline">
+                          {s.atcCode}
+                        </Link>
+                      ) : '—'}
+                    </td>
+                    <td style={{ padding: '14px 12px' }}><StatusPill code={s.statusCode} /></td>
+                    <td style={{ padding: '14px 12px', textAlign: 'right', fontFamily: MONO, fontVariantNumeric: 'tabular-nums', color: FG }}>{s.tageSeitMeldung}</td>
+                    <td style={{ padding: '14px 12px', textAlign: 'right', fontFamily: MONO, fontVariantNumeric: 'tabular-nums', fontWeight: 600, color: col }}>{sc.total}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* ─── Footer ──────────────────────────────────────────────── */}
+      <div className="max-w-7xl mx-auto" style={{ padding: '24px 48px' }}>
+        <p style={{ fontSize: 12, color: MUTED, fontFamily: MONO }}>
+          Daten aus <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" style={{ textDecoration: 'underline', color: FG }}>drugshortage.ch</a>
           {' · '}
-          <Link href="/methodik" className="underline hover:text-foreground">Score-Methodik</Link>
+          <Link href="/methodik" style={{ textDecoration: 'underline', color: FG }}>Score-Methodik</Link>
         </p>
       </div>
     </main>
