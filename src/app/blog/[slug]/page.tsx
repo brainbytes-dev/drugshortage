@@ -136,6 +136,39 @@ function buildJsonLd(post: ReturnType<typeof getPostBySlug>, slug: string): stri
   return JSON.stringify(schema);
 }
 
+/** Convert a JSX style object string like `width:'100%',height:'auto'` to a CSS string */
+function jsxStyleToString(inner: string): string {
+  const result: string[] = [];
+  let i = 0;
+  const s = inner.trim();
+  while (i < s.length) {
+    while (i < s.length && (s[i] === " " || s[i] === "," || s[i] === "\n")) i++;
+    if (i >= s.length) break;
+    const keyStart = i;
+    while (i < s.length && s[i] !== ":") i++;
+    const key = s.slice(keyStart, i).trim();
+    i++;
+    while (i < s.length && s[i] === " ") i++;
+    let val = "";
+    if (s[i] === '"' || s[i] === "'") {
+      const q = s[i++];
+      const vs = i;
+      while (i < s.length && s[i] !== q) i++;
+      val = s.slice(vs, i);
+      i++;
+    } else {
+      const vs = i;
+      while (i < s.length && s[i] !== "," && s[i] !== " " && s[i] !== "\n") i++;
+      val = s.slice(vs, i).trim();
+    }
+    if (key) {
+      const cssKey = key.replace(/([A-Z])/g, (c) => `-${c.toLowerCase()}`);
+      result.push(`${cssKey}:${val}`);
+    }
+  }
+  return result.join(";");
+}
+
 /** Strip MDX-specific JSX blocks and HTML comments that react-markdown can't handle */
 function sanitizeForMarkdown(raw: string): string {
   return raw
@@ -143,9 +176,12 @@ function sanitizeForMarkdown(raw: string): string {
     .replace(/<!--[\s\S]*?-->/g, "")
     // Remove <script> blocks — JSON-LD is already injected by buildJsonLd() in the page component
     .replace(/<script[\s\S]*?<\/script>/gi, "")
-    // Remove JSX-style tags with curlybrace props (e.g. <Component {{...}}>...</Component>)
-    // but preserve plain HTML like <figure>, <svg>, <iframe>
-    .replace(/<\w+[^>]*\{\{[\s\S]*?\}\}[^>]*>[\s\S]*?<\/\w+>/g, "")
+    // Convert JSX style={{ }} props to HTML style="" so rehype-raw can render them
+    .replace(/style=\{\{((?:[^{}]|\{[^{}]*\})*)\}\}/g, (_, inner) => `style="${jsxStyleToString(inner)}"`)
+    // Convert JSX className= to HTML class=
+    .replace(/\bclassName=/g, "class=")
+    // Remove remaining uppercase JSX components (e.g. <FAQSchema>, <CodeBlock>)
+    .replace(/<[A-Z]\w*[^>]*>[\s\S]*?<\/[A-Z]\w*>/g, "")
     // Remove [INTERNAL-LINK: ...] placeholders (render as nothing)
     .replace(/\[INTERNAL-LINK:[^\]]+\]/g, "")
     // Clean up excess blank lines left by removals
