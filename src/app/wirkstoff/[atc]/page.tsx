@@ -45,7 +45,7 @@ const STATUS_LABEL: Record<string, { label: string; dot: string; text: string }>
 
 export default async function WirkstoffPage({ params, searchParams }: PageProps) {
   const [{ atc }, { filter: rawFilter }] = await Promise.all([params, searchParams])
-  const activeFilter: FilterKey = (FILTERS.find(f => f.key === rawFilter)?.key) ?? 'all'
+  const activeFilter: FilterKey = (FILTERS.find(f => f.key === rawFilter)?.key) ?? 'in_shortage'
 
   const [shortages, substanz, allProducts] = await Promise.all([
     getShortagesByAtc(atc),
@@ -178,7 +178,7 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
               const count = filterCounts[f.key]
               if (count === 0 && f.key !== 'all') return null
               const isActive = activeFilter === f.key
-              const href = f.key === 'all' ? `/wirkstoff/${atc}` : `/wirkstoff/${atc}?filter=${f.key}`
+              const href = `/wirkstoff/${atc}?filter=${f.key}`
               return (
                 <Link
                   key={f.key}
