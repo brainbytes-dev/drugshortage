@@ -124,7 +124,7 @@ export default async function MedikamentPage({ params }: PageProps) {
                 <>
                   <span className="text-muted-foreground/40 text-xs">—</span>
                   <Link
-                    href={`/?atc=${shortage.atcCode}`}
+                    href={`/wirkstoff/${shortage.atcCode}`}
                     className="font-mono text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {shortage.atcCode}
@@ -189,7 +189,7 @@ export default async function MedikamentPage({ params }: PageProps) {
 
                 {shortage.atcCode && (
                   <InfoRow label="ATC-Code">
-                    <Link href={`/?atc=${shortage.atcCode}`} className="font-mono hover:text-muted-foreground transition-colors">
+                    <Link href={`/wirkstoff/${shortage.atcCode}`} className="font-mono hover:text-muted-foreground transition-colors">
                       {shortage.atcCode}
                     </Link>
                   </InfoRow>

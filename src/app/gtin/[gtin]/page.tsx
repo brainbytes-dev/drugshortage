@@ -156,7 +156,7 @@ export default async function GtinPage({ params }: PageProps) {
               <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
                 <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">ATC-Code</dt>
                 <dd className="text-sm sm:text-right">
-                  <Link href={`/?atc=${atcCode}`} className="font-mono hover:text-muted-foreground transition-colors underline">
+                  <Link href={`/wirkstoff/${atcCode}`} className="font-mono hover:text-muted-foreground transition-colors underline">
                     {atcCode}
                   </Link>
                 </dd>
