@@ -244,7 +244,9 @@ function ProductRow({
             {st.label}
           </span>
         </div>
-        {p.firma && <p className="text-xs text-muted-foreground">{p.firma}</p>}
+        <p className="text-xs text-muted-foreground">
+          {p.firma ?? <span className="opacity-40">Hersteller n. v.</span>}
+        </p>
       </div>
       {p.shortage && (
         <div className="flex items-center gap-4 sm:shrink-0">
