@@ -85,7 +85,7 @@ export const TIERS: Tier[] = [
       'SLA 99.9 % Verfügbarkeit',
       'Webhooks & DPA-Vertrag inkludiert',
       'Bis 5 Nutzer-Seats',
-      'Monatlicher Shortage Report Schweiz (inkl.)',
+      'Monatlicher Shortage Report PDF — exklusiv für Klinik-System',
       '30-Min-Onboarding-Call (inkl.)',
       'Prioritäts-Support',
     ],

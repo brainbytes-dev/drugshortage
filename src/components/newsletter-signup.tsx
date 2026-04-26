@@ -67,7 +67,7 @@ export function NewsletterSignup() {
           Shortage Report Schweiz — kostenlos
         </p>
         <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-          Jeden Dienstag: Die 5 relevantesten Engpässe der Woche in 90 Sekunden — kuratiert für Apotheken und Spitalfachpersonal. Dazu der monatliche Shortage Report als PDF.
+          Jeden Dienstag: Die 5 relevantesten Engpässe der Woche in 90 Sekunden — kuratiert für Apotheken und Spitalfachpersonal. Kostenlos, jederzeit abmeldbar.
         </p>
       </div>
 
