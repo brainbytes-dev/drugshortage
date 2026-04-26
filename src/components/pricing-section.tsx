@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { CheckCircle2, ArrowRight, Zap, X } from 'lucide-react'
+import { CheckCircle2, ArrowRight, Zap, X, ShieldCheck } from 'lucide-react'
 import { TIERS, type Tier } from '@/lib/pricing'
+import { RoiCalculator } from '@/components/roi-calculator'
 
 function yearlyMonthlyEquivalent(yearlyAmount: number) {
   return Math.floor(yearlyAmount / 12)
@@ -438,12 +439,39 @@ export function PricingSection() {
           ))}
         </div>
 
-        <p className="mt-10 text-[12px] text-muted-foreground">
+        {/* Guarantee */}
+        <div className="mt-10 flex items-start gap-3 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/60 dark:bg-emerald-950/20 px-5 py-4">
+          <ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+          <div>
+            <p className="text-[12px] font-semibold text-emerald-800 dark:text-emerald-300">
+              30-Tage-Garantie — kein Kleingedrucktes
+            </p>
+            <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400/80 mt-0.5 leading-relaxed">
+              Falls unser System ausfällt und Sie einen Engpass verpassen, der auf unserer Plattform nicht aktuell war, erhalten Sie den Monat kostenfrei. Volle Rückerstattung innert 30 Tagen auf Anfrage, ohne Begründung.
+            </p>
+          </div>
+        </div>
+
+        <p className="mt-6 text-[12px] text-muted-foreground">
           Alle Tarife beinhalten GTIN, Pharmacode, ATC-Code, Severity Score und tagesaktuelle Engpass-Daten.{' '}
           <Link href="/api-docs" className="underline hover:text-foreground">
             Vollständige Endpunkte →
           </Link>
         </p>
+
+        {/* ROI Calculator — für Klinik-System */}
+        <div className="mt-16 max-w-2xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-4">
+            Kalkulator
+          </p>
+          <h3 className="text-[18px] font-semibold tracking-tight text-foreground mb-2">
+            Lohnt sich das Klinik-System für Ihre Institution?
+          </h3>
+          <p className="text-[13px] text-muted-foreground mb-6 leading-relaxed">
+            Der manuelle Check auf drugshortage.ch kostet jeden Tag Personalzeit. Rechnen Sie nach.
+          </p>
+          <RoiCalculator />
+        </div>
 
       </div>
     </section>

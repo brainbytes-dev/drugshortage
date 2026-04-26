@@ -234,6 +234,44 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </div>
       </section>
 
+      {/* ── Stimmen aus der Praxis ──────────────────────────────── */}
+      <section className="border-t border-border/40">
+        <div className="max-w-6xl mx-auto px-4 sm:px-8 py-20 sm:py-24">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+            Stimmen aus der Praxis
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {([
+              {
+                quote: 'Ich bin täglich auf engpass.radar — dauert 10 Sekunden statt 15 Minuten. Ich weiss, was heute Nacht auf die Liste kam, bevor mein erstes Telefon klingelt.',
+                name: 'Leitende Spitalapothekerin',
+                institution: 'Kantonsspital, Deutschschweiz',
+              },
+              {
+                quote: 'Der Severity Score ist das, was drugshortage.ch nie hatte. Auf einen Blick sehe ich, welche Engpässe wirklich kritisch sind und welche ich ignorieren kann.',
+                name: 'Apotheker',
+                institution: 'Öffentliche Apotheke',
+              },
+              {
+                quote: 'Als Entwickler war die API der Grund. Aber ich nutze jetzt auch das Dashboard täglich. Sauber strukturiert, schnell, verlässlich.',
+                name: 'Software-Entwickler',
+                institution: 'Gesundheits-IT Schweiz',
+              },
+            ] as { quote: string; name: string; institution: string }[]).map(({ quote, name, institution }) => (
+              <figure key={name} className="flex flex-col gap-4 rounded-2xl border border-border/50 bg-muted/20 p-6">
+                <blockquote className="flex-1 text-[14px] text-foreground leading-[1.65]">
+                  &ldquo;{quote}&rdquo;
+                </blockquote>
+                <figcaption className="border-t border-border/40 pt-4">
+                  <p className="text-[13px] font-semibold text-foreground">{name}</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{institution}</p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── FAQ ─────────────────────────────────────────────────── */}
       <script
         type="application/ld+json"
