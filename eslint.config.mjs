@@ -18,6 +18,8 @@ const eslintConfig = defineConfig([
     ".vercel/**",
     // Test files with legacy require() patterns
     "tests/**",
+    // Design mockups / handoff files (not production source)
+    "docs/**",
   ]),
 ]);
 
