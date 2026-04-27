@@ -28,8 +28,7 @@ const PAIN_POINTS = [
 const INCLUDES = [
   'Engpass-Score für alle aktiven Meldungen (proprietäre Metrik)',
   'Webhook-Alerts bei neuen Engpässen Ihrer ATC-Klassen',
-  'Bis 5 Nutzer-Seats im selben Abo',
-  'DPA-Vertrag für DSGVO/DSG-Compliance — inkludiert',
+  '100 000 API-Anfragen pro Tag',
   'Monatlicher Shortage Report Schweiz als PDF — exklusiv',
   '30-Min-Onboarding-Call: Watchlist gemeinsam einrichten',
   'SLA 99.9 % · Prioritäts-Support',

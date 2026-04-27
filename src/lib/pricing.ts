@@ -83,8 +83,7 @@ export const TIERS: Tier[] = [
     features: [
       'Für Spitalapotheken & Softwarehersteller',
       'SLA 99.9 % Verfügbarkeit',
-      'Webhooks & DPA-Vertrag inkludiert',
-      'Bis 5 Nutzer-Seats',
+      'Webhooks bei neuen Engpässen',
       'Monatlicher Shortage Report PDF — exklusiv für Klinik-System',
       '30-Min-Onboarding-Call (inkl.)',
       'Prioritäts-Support',
@@ -108,7 +107,7 @@ export const TIERS: Tier[] = [
       'Vollständiger Datensatz',
       'Täglicher Bulk-Export',
       'White-Label & Redistribution',
-      'Dedizierter Account Manager',
+      'Individuell vereinbarte SLA',
     ],
     cta: 'Kontakt aufnehmen',
     ctaHref: 'mailto:api@engpassradar.ch',
