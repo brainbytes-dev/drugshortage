@@ -30,13 +30,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Ungültiger ATC-Code' }, { status: 400 })
   }
 
-  // Upsert: create if not exists, ignore if already confirmed
+  // Check upgrade gate: max 3 free confirmed alerts per email
+  const FREE_LIMIT = 3
   const existing = await prisma.watchlistSubscription.findUnique({
     where: { email_atcCode: { email, atcCode } },
   })
 
   if (existing?.confirmed) {
     return NextResponse.json({ success: true, alreadyConfirmed: true })
+  }
+
+  if (!existing) {
+    const confirmedCount = await prisma.watchlistSubscription.count({
+      where: { email, confirmed: true },
+    })
+    if (confirmedCount >= FREE_LIMIT) {
+      return NextResponse.json(
+        { error: 'upgradeRequired', confirmedCount, limit: FREE_LIMIT },
+        { status: 402 }
+      )
+    }
   }
 
   const sub = existing
