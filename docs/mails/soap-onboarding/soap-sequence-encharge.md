@@ -65,20 +65,20 @@ engpass.radar
 
 ### E-Mail 2 — Tag 2
 **Betreff:** `Warum ich engpassradar.ch gebaut habe`  
-**Preview-Text:** `Es begann mit 20 Minuten täglich auf einer HTML-Tabelle aus dem Jahr 2010…`
+**Preview-Text:** `Die offiziellen Daten existieren — ich habe ein Werkzeug gebaut, das sie für den Alltag aufbereitet.`
 
 ```
 Guten Tag,
 
 darf ich Ihnen kurz erklären, wie engpassradar.ch entstanden ist?
 
-Als Neurologe in der Schweiz habe ich beobachtet, wie Apotheken täglich 
-20 Minuten damit verbringen, die offizielle Engpassliste zu prüfen — 
-auf einer Website die sich seit 15 Jahren kaum verändert hat. Keine 
-Suche. Keine Filter. Kein Alerting.
+Als Neurologe in der Schweiz habe ich beobachtet, wie viel Zeit Apotheken 
+täglich damit verbringen, die offiziellen Engpassquellen manuell zu prüfen 
+und die Daten zusammenzuführen — Suche, Filterung, Wirkstoff-Zuordnung, 
+Alternativencheck.
 
-Das Ergebnis: Informationslücken. Eskalationen. Und das Gefühl, nie 
-ganz sicher zu sein, ob man alles sieht.
+Die Daten sind vorhanden und zuverlässig. Was fehlte: ein Werkzeug, das 
+sie für den Apotheken-Alltag aufbereitet.
 
 engpassradar.ch aggregiert täglich alle offiziellen Schweizer 
 Engpass-Quellen, reichert jede Meldung automatisch mit Wirkstoff-Daten 

@@ -109,7 +109,7 @@ export function KlinikSystemForm() {
             required
             value={problem}
             onChange={e => setProblem(e.target.value)}
-            placeholder="z.B. täglicher manueller Check kostet viel Zeit, kein Alerting, fehlende Integration ins PMS…"
+            placeholder="z.B. täglicher Aufwand beim Monitoring, Alerting, Integration ins PMS…"
             rows={3}
             className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
           />

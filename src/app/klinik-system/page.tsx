@@ -10,18 +10,18 @@ export const metadata: Metadata = {
 const PAIN_POINTS = [
   {
     icon: Clock,
-    title: '15–20 Minuten täglich',
-    body: 'So lange dauert der manuelle Check auf drugshortage.ch — bei einer Spitalapotheke mit 200–500 Wirkstoffen im Sortiment.',
+    title: 'Manueller Aufwand täglich',
+    body: 'Engpassquellen prüfen, Daten zusammenführen, Wirkstoff-Zuordnungen abgleichen — das kostet Apothekenpersonal täglich wertvolle Zeit.',
   },
   {
     icon: BarChart3,
-    title: 'Kein Score, kein Kontext',
-    body: 'Die offizielle Liste sagt, was gemeldet ist. Nicht wie ernst. Nicht wie lange. Nicht ob Alternativen existieren.',
+    title: 'Rohdaten ohne Bewertung',
+    body: 'Die offiziellen Meldungen liefern verlässliche Daten. Für die tägliche Priorisierung braucht es zusätzlich: Schweregrad, Dauer, Alternativen.',
   },
   {
     icon: ShieldCheck,
-    title: 'Kein Alerting',
-    body: 'Wer heute Nacht ein kritisches Medikament gemeldet wird, wissen Sie morgen früh — falls Sie daran denken nachzuschauen.',
+    title: 'Kein proaktives Alerting',
+    body: 'Neue Meldungen werden erst beim nächsten manuellen Check sichtbar — ohne Alerting ist proaktives Handeln kaum möglich.',
   },
 ]
 
