@@ -468,7 +468,7 @@ export function PricingSection() {
             Lohnt sich das Klinik-System für Ihre Institution?
           </h3>
           <p className="text-[13px] text-muted-foreground mb-6 leading-relaxed">
-            Der manuelle Check auf drugshortage.ch kostet jeden Tag Personalzeit. Rechnen Sie nach.
+            Tägliches Engpass-Monitoring kostet Personalzeit. Rechnen Sie nach, ab wann sich das Klinik-System amortisiert.
           </p>
           <RoiCalculator />
         </div>
