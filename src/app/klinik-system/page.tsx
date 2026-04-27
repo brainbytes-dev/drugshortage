@@ -99,9 +99,12 @@ export default function KlinikSystemPage() {
                     </li>
                   ))}
                 </ul>
-                <div className="mt-8 rounded-xl border border-border/50 bg-muted/30 px-4 py-3">
+                <div className="mt-8 rounded-xl border border-border/50 bg-muted/30 px-4 py-3 space-y-2">
                   <p className="text-[12px] text-muted-foreground">
                     <strong className="text-foreground">Zum Vergleich:</strong> 3 Mitarbeitende · 15 Min./Tag · CHF 90/h = CHF 297/Monat Personalaufwand allein für den manuellen Check. Das Klinik-System kostet CHF 199.
+                  </p>
+                  <p className="text-[12px] text-muted-foreground">
+                    <strong className="text-foreground">Was Sie kaufen:</strong> nicht die Software — die läuft täglich zuverlässig, ohne dass Sie Scraper, Datenbank oder Infrastruktur selbst betreiben müssen.
                   </p>
                 </div>
               </div>
