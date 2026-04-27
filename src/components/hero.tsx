@@ -225,13 +225,13 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
               {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
 
               {/* CSV + filter reset — desktop only, far right */}
-              <div className="hidden sm:flex items-stretch gap-[3px] ml-auto">
+              <div className="hidden sm:flex flex-col self-stretch shrink-0 gap-[3px] ml-auto">
                 {hasActiveFilter && (
                   <Tip label="Filter zurücksetzen">
                     <button
                       onClick={clearFilters}
                       aria-label="Filter zurücksetzen"
-                      className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      className="flex flex-1 items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -242,6 +242,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
                     onClick={exportCsv}
                     aria-label="CSV exportieren"
                     className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    style={{ flex: hasActiveFilter ? '1' : undefined, height: hasActiveFilter ? undefined : '100%' }}
                   >
                     <Download className="h-3.5 w-3.5" />
                   </button>
