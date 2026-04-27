@@ -136,6 +136,44 @@ export function alertEmail(opts: {
   return emailWrapper(content, footerLinks)
 }
 
+// ── Institutional onboarding email ───────────────────────────────────────────
+
+export function institutionalOnboardingEmail(opts: {
+  email: string
+  dashboardUrl: string
+}): string {
+  const { dashboardUrl } = opts
+
+  const content = `
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6">
+      Guten Tag,
+    </p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6">
+      vielen Dank — Ihr Klinik-System-Abo ist aktiv. Sie erhalten Ihren API-Key und Dashboard-Link in einer separaten E-Mail.
+    </p>
+    <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6">
+      Ich richte gerne gemeinsam mit Ihnen die Watchlist für Ihre ATC-Klassen ein — das dauert 30 Minuten und stellt sicher, dass Sie genau die Alerts erhalten, die für Ihre Institution relevant sind.
+    </p>
+    <p style="margin:0 0 24px;color:#374151;font-size:15px;line-height:1.6">
+      Eine Frage vorab: <strong>Was ist Ihre grösste aktuelle Herausforderung beim Thema Medikamenten-Engpässe?</strong> Ihre Antwort hilft mir, den Onboarding-Call optimal vorzubereiten.
+    </p>
+
+    ${ctaButton(dashboardUrl, 'Zum API-Dashboard →')}
+
+    <p style="margin:24px 0 0;color:#374151;font-size:14px;line-height:1.6">
+      Mit freundlichen Grüssen<br>
+      Henrik Rühe<br>
+      <span style="color:#9ca3af;font-size:12px;">engpass.radar — <a href="${SITE_URL}" style="color:#9ca3af;">${SITE_URL}</a></span>
+    </p>
+  `
+
+  return emailWrapper(content, '')
+}
+
+export function institutionalOnboardingSubject(): string {
+  return 'Ihr Klinik-System ist aktiv — und eine Frage'
+}
+
 // ── Subject line helper ───────────────────────────────────────────────────────
 
 export function alertSubject(atcName: string, newCount: number, resolvedCount: number): string {

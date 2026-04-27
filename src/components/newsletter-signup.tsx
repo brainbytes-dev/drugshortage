@@ -50,8 +50,7 @@ export function NewsletterSignup() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
           </svg>
           <p className="text-sm text-muted-foreground">
-            Bitte prüfen Sie Ihr Postfach und bestätigen Sie Ihre Anmeldung.{' '}
-            Falls Sie keine E-Mail erhalten, prüfen Sie bitte Ihren Spam-Ordner.
+            Sie erhalten den aktuellen Shortage Report per E-Mail — bitte prüfen Sie Ihr Postfach und bestätigen Sie Ihre Anmeldung.
           </p>
         </div>
       </div>
@@ -62,17 +61,19 @@ export function NewsletterSignup() {
     <div className="flex flex-col items-center gap-5">
       <div className="space-y-2">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">
-          Engpass-Signal Newsletter
+          Engpass-Signal
         </p>
-        <p className="text-lg font-bold tracking-tight">Immer informiert. Nie überrascht.</p>
+        <p className="text-lg font-bold tracking-tight">
+          Shortage Report Schweiz — kostenlos
+        </p>
         <p className="text-sm text-muted-foreground max-w-sm mx-auto">
-          Neue kritische Engpässe und der monatliche Shortage Report — direkt in Ihr Postfach.
+          Jeden Dienstag: Die 5 relevantesten Engpässe der Woche in 90 Sekunden — kuratiert für Apotheken und Spitalfachpersonal. Kostenlos, jederzeit abmeldbar.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="w-full max-w-md">
         <div className="flex flex-col sm:flex-row gap-2">
-          <label htmlFor="newsletter-email" className="sr-only">E-Mail-Adresse für Newsletter</label>
+          <label htmlFor="newsletter-email" className="sr-only">E-Mail-Adresse für Shortage Report</label>
           <input
             id="newsletter-email"
             type="email"
@@ -86,7 +87,7 @@ export function NewsletterSignup() {
           <button
             type="submit"
             disabled={status === 'loading'}
-            aria-label="Newsletter abonnieren"
+            aria-label="Shortage Report abonnieren"
             className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 active:scale-[0.98] transition-all duration-150 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {status === 'loading' ? (
@@ -103,10 +104,13 @@ export function NewsletterSignup() {
                 Wird angemeldet…
               </>
             ) : (
-              'Kostenlos abonnieren'
+              'Report erhalten'
             )}
           </button>
         </div>
+        <p className="mt-2 text-[11px] text-muted-foreground text-center">
+          Kein Spam. Jederzeit abmeldbar.
+        </p>
 
         {status === 'error' && (
           <p className="mt-2 text-sm text-red-500">

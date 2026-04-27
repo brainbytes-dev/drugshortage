@@ -3,6 +3,7 @@ import Stripe from 'stripe'
 import { prisma } from "@/lib/prisma"
 import { generateApiKey, signMagicToken, tierDailyLimit, encryptApiKeyValue } from '@/lib/api-keys'
 import { getResend, FROM_ADDRESS, SITE_URL } from '@/lib/resend'
+import { institutionalOnboardingEmail, institutionalOnboardingSubject } from '@/lib/email-templates'
 
 export const dynamic = 'force-dynamic'
 
@@ -64,6 +65,18 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session) {
   })
 
   await sendApiKeyMail(email, plaintext, tier, apiKey.id)
+
+  if (tier === 'institutional') {
+    const token = await signMagicToken(apiKey.id, email)
+    const dashboardUrl = `${SITE_URL}/api-keys?token=${token}`
+    const resend = getResend()
+    await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: email,
+      subject: institutionalOnboardingSubject(),
+      html: institutionalOnboardingEmail({ email, dashboardUrl }),
+    })
+  }
 }
 
 async function handleSubscriptionUpdated(sub: Stripe.Subscription) {

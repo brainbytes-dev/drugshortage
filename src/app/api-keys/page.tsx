@@ -166,10 +166,36 @@ function Dashboard({ token }: { token: string }) {
           </div>
         )}
 
+        {/* Upgrade wall: show when >= 80% of free/research limit used */}
+        {(data.tier === 'free' || data.tier === 'research') && pct >= 80 && (
+          <div className={`rounded-lg border px-4 py-3 space-y-2 ${
+            pct >= 100
+              ? 'border-destructive/40 bg-destructive/5'
+              : 'border-amber-300/60 dark:border-amber-700/40 bg-amber-50/60 dark:bg-amber-950/20'
+          }`}>
+            <p className={`text-[12px] font-semibold ${pct >= 100 ? 'text-destructive' : 'text-amber-800 dark:text-amber-300'}`}>
+              {pct >= 100
+                ? 'Tages-Limit erreicht — weitere Anfragen werden abgewiesen.'
+                : `${pct} % des Tages-Limits genutzt.`}
+            </p>
+            <p className="text-[11px] text-muted-foreground">
+              {data.tier === 'free'
+                ? 'Engpassradar Pro (CHF 39/Monat) gibt Ihnen 10 000 Anfragen/Tag und einen eigenen API-Key.'
+                : 'Engpassradar Pro (CHF 39/Monat) gibt Ihnen 10 000 Anfragen/Tag.'}
+            </p>
+            <a
+              href="/#pricing"
+              className="inline-flex items-center gap-1 rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-xs font-semibold hover:bg-primary/90 transition-colors"
+            >
+              Auf Pro upgraden →
+            </a>
+          </div>
+        )}
+
         <div className="flex gap-2 flex-wrap">
           {data.tier === 'free' || data.tier === 'research' ? (
             <a
-              href="/api#pricing"
+              href="/#pricing"
               className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium hover:bg-primary/90 transition-colors"
             >
               Upgrade →
