@@ -131,10 +131,10 @@ export default function KlinikSystemPage() {
           <div className="max-w-5xl mx-auto px-4 sm:px-8 py-14 sm:py-16">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
               {[
-                { value: '700+', label: 'Aktive Engpässe täglich' },
-                { value: '8 600+', label: 'Historische Fälle seit 2018' },
-                { value: '99.2 %', label: 'ODDB-Matching-Quote' },
-                { value: '24 h', label: 'Max. Reaktionszeit' },
+                { value: '700+', label: 'Aktive Engpässe täglich überwacht' },
+                { value: '99.2 %', label: 'ODDB-Anreicherung (ATC, GTIN, Wirkstoff)' },
+                { value: '0–100', label: 'Proprietärer Engpass-Score pro Meldung' },
+                { value: '24 h', label: 'Persönliche Reaktionszeit' },
               ].map(({ value, label }) => (
                 <div key={label}>
                   <p className="text-[28px] font-bold tracking-tight text-foreground tabular-nums">{value}</p>

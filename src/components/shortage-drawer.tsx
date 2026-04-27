@@ -3,13 +3,7 @@
 import { useEffect, useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from '@/components/ui/sheet'
+import { X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { StatusBadge } from './status-badge'
 import type { Shortage } from '@/lib/types'
@@ -128,34 +122,79 @@ function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (beze
 export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
   const router = useRouter()
 
+  useEffect(() => {
+    if (!shortage) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [shortage, onClose])
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (shortage) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [shortage])
+
   function handleAlternativeSelect(bezeichnung: string) {
     onClose()
     router.push(`/?search=${encodeURIComponent(bezeichnung)}`, { scroll: false })
   }
 
-  return (
-    <Sheet open={!!shortage} onOpenChange={open => !open && onClose()}>
-      <SheetContent className="w-full sm:max-w-md overflow-y-auto px-6 py-6">
-        {shortage && (
-          <>
-            <SheetHeader className="mb-4">
-              <SheetTitle className="text-base leading-tight">
-                <Link
-                  href={`/medikament/${shortage.slug ?? shortage.gtin}`}
-                  onClick={onClose}
-                  className="hover:text-primary hover:underline underline-offset-2 transition-colors"
-                >
-                  {shortage.bezeichnung}
-                </Link>
-              </SheetTitle>
-              <SheetDescription>{shortage.firma}</SheetDescription>
-            </SheetHeader>
+  if (!shortage) return null
 
-            <div className="flex gap-2 mb-4 flex-wrap">
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+        onClick={onClose}
+        aria-hidden
+      />
+
+      {/* Modal */}
+      <div className="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border bg-card shadow-xl">
+
+        {/* Header */}
+        <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b bg-card px-6 py-4">
+          <div className="min-w-0">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-0.5">
+              {shortage.firma}
+            </p>
+            <h2 className="text-[16px] font-semibold leading-tight text-foreground">
+              <Link
+                href={`/medikament/${shortage.slug ?? shortage.gtin}`}
+                onClick={onClose}
+                className="hover:text-primary hover:underline underline-offset-2 transition-colors"
+              >
+                {shortage.bezeichnung}
+              </Link>
+            </h2>
+            <div className="flex gap-2 mt-2 flex-wrap">
               <StatusBadge code={shortage.statusCode} showText />
               <Badge variant="outline">{shortage.atcCode}</Badge>
             </div>
+          </div>
+          <button
+            onClick={onClose}
+            aria-label="Schliessen"
+            className="shrink-0 rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
 
+        {/* Body — two columns on sm+ */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-0 divide-y sm:divide-y-0 sm:divide-x">
+
+          {/* Left: details */}
+          <div className="px-6 py-4">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+              Details
+            </p>
             <div className="divide-y">
               <DetailRow label="GTIN" value={shortage.gtin} />
               <DetailRow label="Pharmacode" value={shortage.pharmacode} />
@@ -186,15 +225,7 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
                 value={new Date(shortage.firstSeenAt).toLocaleDateString('de-CH')}
               />
             </div>
-
-            {/* Alternativen */}
-            <div className="mt-6">
-              <h3 className="text-sm font-semibold mb-3">Mögliche Alternativen</h3>
-              <AlternativesSection gtin={shortage.gtin} onSelect={handleAlternativeSelect} />
-            </div>
-
-            {/* Quelle */}
-            <p className="mt-6 pt-4 border-t text-xs text-muted-foreground">
+            <p className="mt-4 pt-3 border-t text-xs text-muted-foreground">
               Quelle:{' '}
               <a
                 href="https://www.drugshortage.ch"
@@ -205,9 +236,18 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
                 drugshortage.ch
               </a>
             </p>
-          </>
-        )}
-      </SheetContent>
-    </Sheet>
+          </div>
+
+          {/* Right: alternatives */}
+          <div className="px-6 py-4">
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
+              Mögliche Alternativen
+            </p>
+            <AlternativesSection gtin={shortage.gtin} onSelect={handleAlternativeSelect} />
+          </div>
+
+        </div>
+      </div>
+    </div>
   )
 }
