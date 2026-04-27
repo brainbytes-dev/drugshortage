@@ -1,16 +1,9 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet'
 import { Badge } from '@/components/ui/badge'
-import { Building2 } from 'lucide-react'
+import { Building2, X } from 'lucide-react'
 import type { FirmaRanking } from '@/lib/types'
 
 const BEWERTUNG_LABEL: Record<number, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; description: string }> = {
@@ -30,15 +23,22 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
   const [open, setOpen] = useState(false)
   const router = useRouter()
 
-  // ✅ Memoize the filtered results - only recompute when inputs change
   const filtered = useMemo(() => {
     if (!search.trim()) return firmenRanking
-
-    const searchLower = search.toLowerCase() // ✅ Compute once, not N times
-    return firmenRanking.filter(f =>
-      f.firma.toLowerCase().includes(searchLower)
-    )
+    const searchLower = search.toLowerCase()
+    return firmenRanking.filter(f => f.firma.toLowerCase().includes(searchLower))
   }, [firmenRanking, search])
+
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setOpen(false) }
+    document.addEventListener('keydown', onKey)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+    }
+  }, [open])
 
   function handleFirmaClick(firma: string) {
     setOpen(false)
@@ -46,78 +46,93 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger
-        render={<button className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors whitespace-nowrap" />}
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors whitespace-nowrap"
       >
         <Building2 className="h-4 w-4 text-primary" />
         Firmen-Ranking
         <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary font-semibold">
           {firmenRanking.length}
         </span>
-      </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md overflow-y-auto px-6 py-6">
-        <SheetHeader className="mb-4">
-          <SheetTitle>Firmen-Ranking</SheetTitle>
-          <p className="text-xs text-muted-foreground">
-            Hersteller nach Anzahl aktiver Lieferengpässe, sortiert nach Bewertung von{' '}
-            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
-              className="underline hover:text-foreground">drugshortage.ch</a>.
-          </p>
-        </SheetHeader>
+      </button>
 
-        {/* Bewertungs-Legende */}
-        <div className="mb-4 rounded-md border bg-muted/40 px-3 py-2.5">
-          <p className="text-xs font-medium mb-2">Bewertung = Melde-Transparenz (Quelle: drugshortage.ch)</p>
-          <div className="flex flex-col gap-1.5">
-            {Object.entries(BEWERTUNG_LABEL).map(([key, { label, variant, description }]) => (
-              <div key={key} className="flex items-start gap-2 text-xs text-muted-foreground">
-                <Badge variant={variant} className="text-[10px] px-1.5 py-0 shrink-0 mt-px">{label}</Badge>
-                <span>{description}</span>
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setOpen(false)} aria-hidden />
+
+          <div className="relative z-10 w-full max-w-lg max-h-[90vh] flex flex-col rounded-2xl border bg-card shadow-xl">
+
+            {/* Header */}
+            <div className="flex items-start justify-between gap-4 border-b px-6 py-4 shrink-0">
+              <div>
+                <h2 className="text-[15px] font-semibold text-foreground">Firmen-Ranking</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  Hersteller nach Anzahl aktiver Lieferengpässe, sortiert nach Bewertung von{' '}
+                  <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
+                    className="underline hover:text-foreground">drugshortage.ch</a>.
+                </p>
               </div>
-            ))}
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Schliessen"
+                className="shrink-0 rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* Search + legend */}
+            <div className="px-6 pt-4 pb-2 shrink-0 space-y-3">
+              <div className="rounded-md border bg-muted/40 px-3 py-2.5">
+                <p className="text-xs font-medium mb-2">Bewertung = Melde-Transparenz (Quelle: drugshortage.ch)</p>
+                <div className="flex flex-col gap-1.5">
+                  {Object.entries(BEWERTUNG_LABEL).map(([key, { label, variant, description }]) => (
+                    <div key={key} className="flex items-start gap-2 text-xs text-muted-foreground">
+                      <Badge variant={variant} className="text-[10px] px-1.5 py-0 shrink-0 mt-px">{label}</Badge>
+                      <span>{description}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <input
+                type="search"
+                placeholder="Firma suchen…"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-full rounded-md border bg-background px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring"
+              />
+            </div>
+
+            {/* List */}
+            <div className="overflow-y-auto px-6 pb-4 divide-y">
+              {filtered.map((f, i) => {
+                const bew = BEWERTUNG_LABEL[f.bewertung]
+                return (
+                  <button
+                    key={f.firma}
+                    onClick={() => handleFirmaClick(f.firma)}
+                    className="w-full flex items-center gap-3 py-2.5 -mx-2 px-2 rounded-md text-left hover:bg-muted/50 transition-colors"
+                  >
+                    <span className="w-6 text-xs text-muted-foreground text-right shrink-0">{i + 1}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium truncate">{f.firma}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {f.anzahlOffeneEngpaesse} offen · {f.anzahlProdukteTotal} total
+                      </p>
+                    </div>
+                    {bew && <Badge variant={bew.variant} className="shrink-0 text-xs">{bew.label}</Badge>}
+                  </button>
+                )
+              })}
+              {filtered.length === 0 && (
+                <p className="py-8 text-center text-sm text-muted-foreground">Keine Treffer</p>
+              )}
+            </div>
           </div>
         </div>
-
-        <input
-          type="search"
-          placeholder="Firma suchen…"
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="w-full mb-4 rounded-md border bg-background px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring"
-        />
-
-        <div className="divide-y">
-          {filtered.map((f, i) => {
-            const bew = BEWERTUNG_LABEL[f.bewertung]
-            return (
-              <button
-                key={f.firma}
-                onClick={() => handleFirmaClick(f.firma)}
-                className="w-full flex items-center gap-3 py-2.5 -mx-2 px-2 rounded-md text-left hover:bg-muted/50 transition-colors"
-              >
-                <span className="w-6 text-xs text-muted-foreground text-right shrink-0">
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{f.firma}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {f.anzahlOffeneEngpaesse} offen · {f.anzahlProdukteTotal} total
-                  </p>
-                </div>
-                {bew && (
-                  <Badge variant={bew.variant} className="shrink-0 text-xs">
-                    {bew.label}
-                  </Badge>
-                )}
-              </button>
-            )
-          })}
-          {filtered.length === 0 && (
-            <p className="py-8 text-center text-sm text-muted-foreground">Keine Treffer</p>
-          )}
-        </div>
-      </SheetContent>
-    </Sheet>
+      )}
+    </>
   )
 }
