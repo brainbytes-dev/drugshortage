@@ -201,7 +201,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 cat: 'Suche & Filter',
                 items: [
                   { label: 'Volltextsuche', desc: 'Wirkstoff, Produkt, Firma' },
-                  { label: 'ATC-Filter', desc: '148+ Wirkstoffgruppen' },
+                  { label: 'ATC-Filter', desc: 'Alle betroffenen ATC-Gruppen' },
                   { label: 'Status- & Firmenfilter', desc: 'Kombinierbar, ohne Reload' },
                   { label: 'Alternativen-Vorschläge', desc: 'Wirkstoffgleiche Präparate' },
                 ],

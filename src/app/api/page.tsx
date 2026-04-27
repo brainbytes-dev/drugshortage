@@ -128,7 +128,7 @@ export default function ApiLandingPage() {
             <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
               {[
                 '≤ 24 h Datenverzug',
-                '148+ ATC-Gruppen',
+                'Alle ATC-Gruppen',
                 'Free-Tier ohne Key',
                 'JSON · CSV · Webhooks',
               ].map((fact, i, arr) => (
