@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { CheckCircle2, ArrowRight, Clock, ShieldCheck, BarChart3 } from 'lucide-react'
 import { KlinikSystemForm } from '@/components/klinik-system-form'
 
@@ -148,15 +147,15 @@ export default function KlinikSystemPage() {
         <section className="border-t border-border/40">
           <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-[13px] text-muted-foreground">
-              Entwickler oder Softwarehersteller? Alle Tarife auf der API-Seite.
+              Entwickler oder Softwarehersteller? API-Tarife mit Rate Limits und technischer Dokumentation.
             </p>
-            <Link
+            <a
               href="/api#pricing"
               className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-primary hover:underline"
             >
-              Alle Tarife ansehen
+              API-Tarife ansehen
               <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
+            </a>
           </div>
         </section>
 
