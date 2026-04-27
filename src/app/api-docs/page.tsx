@@ -440,8 +440,8 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
             {[
               { tier: 'Free', limit: '100 Req/Stunde', key: 'Kein Key nötig', price: 'CHF 0' },
               { tier: 'Research', limit: '2\'000 Req/Tag', key: 'Kostenlos, E-Mail-Bestätigung', price: 'CHF 0' },
-              { tier: 'Professional', limit: '10\'000 Req/Tag', key: 'API-Key via Stripe', price: 'CHF 39/Mo' },
-              { tier: 'Institutional', limit: '100\'000 Req/Tag', key: 'API-Key, Batch-Endpoints, Webhooks', price: 'CHF 199/Mo' },
+              { tier: 'Engpassradar Pro', limit: '10\'000 Req/Tag', key: 'API-Key via Stripe', price: 'CHF 39/Mo' },
+              { tier: 'Klinik-System', limit: '100\'000 Req/Tag', key: 'API-Key, Batch-Endpoints, Webhooks', price: 'CHF 199/Mo' },
               { tier: 'Data License', limit: 'Unlimitiert', key: 'Bulk-Dump, White-Label, SLA', price: 'ab CHF 499/Mo' },
             ].map(r => (
               <div key={r.tier} className="grid grid-cols-4 gap-2 px-4 py-2.5 bg-card items-center">
@@ -476,6 +476,42 @@ X-RateLimit-Limit: 10000
 X-RateLimit-Remaining: 9847
 X-RateLimit-Reset: 1746057600
 X-Api-Tier: professional`}</Code>
+        </section>
+
+        {/* Webhooks */}
+        <section className="space-y-4">
+          <h2 className="font-semibold text-base">Webhooks</h2>
+          <p className="text-sm text-muted-foreground">
+            Webhooks senden eine HTTP-POST-Anfrage an Ihre URL, sobald ein neuer Engpass gemeldet oder ein bestehender aufgelöst wird — ohne Polling, in Echtzeit.
+          </p>
+          <div className="rounded-lg border overflow-hidden divide-y text-xs">
+            {[
+              { event: 'shortage.created', desc: 'Neuer Engpass auf der Swissmedic-Liste' },
+              { event: 'shortage.resolved', desc: 'Engpass als aufgelöst markiert' },
+              { event: 'shortage.updated', desc: 'Änderung an bestehendem Engpass (Datum, Status)' },
+            ].map(r => (
+              <div key={r.event} className="flex items-center gap-4 px-4 py-2.5 bg-card">
+                <code className="font-mono font-semibold text-primary shrink-0">{r.event}</code>
+                <span className="text-muted-foreground">{r.desc}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Upgrade prompt */}
+          <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-foreground">Webhooks sind im Klinik-System verfügbar</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Engpassradar Pro erhält Daten via API-Polling. Das Klinik-System (CHF&nbsp;199/Mo) sendet Push-Events direkt an Ihre Infrastruktur.
+              </p>
+            </div>
+            <a
+              href="/klinik-system"
+              className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Klinik-System anfragen →
+            </a>
+          </div>
         </section>
 
         {/* RSS */}

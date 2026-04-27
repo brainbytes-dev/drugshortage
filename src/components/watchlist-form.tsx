@@ -79,6 +79,14 @@ export function WatchlistForm({ atcCode, atcName }: WatchlistFormProps) {
       {state === 'error' && (
         <p className="text-xs text-destructive mt-2">{errorMsg}</p>
       )}
+
+      {/* Upsell: Pro for API access */}
+      <p className="text-[11px] text-muted-foreground mt-3 pt-3 border-t border-border/40">
+        Für API-Zugang und höhere Limits:{' '}
+        <a href="/#pricing" className="underline hover:text-foreground font-medium">
+          Engpassradar Pro ab CHF&nbsp;39/Mo →
+        </a>
+      </p>
     </div>
   )
 }
