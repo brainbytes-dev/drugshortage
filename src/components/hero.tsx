@@ -181,8 +181,8 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
                 </button>
               </div>
 
-              {/* Stacked icon column — always next to the search input */}
-              <div className="flex flex-col shrink-0 self-stretch gap-[3px]">
+              {/* Stacked icon column — mobile only */}
+              <div className="sm:hidden flex flex-col shrink-0 self-stretch gap-[3px]">
                 {hasActiveFilter && (
                   <Tip label="Filter zurücksetzen">
                     <button
@@ -223,6 +223,30 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
               </button>
               {firmenRanking.length > 0 && <FirmaRankingSheet firmenRanking={firmenRanking} />}
               {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
+
+              {/* CSV + filter reset — desktop only, far right */}
+              <div className="hidden sm:flex items-stretch gap-[3px] ml-auto">
+                {hasActiveFilter && (
+                  <Tip label="Filter zurücksetzen">
+                    <button
+                      onClick={clearFilters}
+                      aria-label="Filter zurücksetzen"
+                      className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </Tip>
+                )}
+                <Tip label="Aktuelle Ansicht als CSV exportieren">
+                  <button
+                    onClick={exportCsv}
+                    aria-label="CSV exportieren"
+                    className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                  </button>
+                </Tip>
+              </div>
             </div>
 
           </div>
