@@ -605,11 +605,10 @@ export async function getFirmaHistoricalCount(firma: string): Promise<number> {
   return prisma.shortage.count({ where: { isActive: false, firma } })
 }
 
-export async function getFirmaHistoricalShortages(firma: string, limit = 50): Promise<Shortage[]> {
+export async function getFirmaHistoricalShortages(firma: string): Promise<Shortage[]> {
   const rows = await prisma.shortage.findMany({
     where: { isActive: false, firma },
     orderBy: { tageSeitMeldung: 'desc' },
-    take: limit,
   })
   return rows.map(mapShortage)
 }
