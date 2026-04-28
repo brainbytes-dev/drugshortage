@@ -75,7 +75,7 @@ export default async function FirmaPage({
 
   const [shortages, historicalShortages, historicalCount] = await Promise.all([
     getFirmaActiveShortages(firma),
-    getFirmaHistoricalShortages(firma),
+    getFirmaHistoricalShortages(firma).catch(() => []),
     getFirmaHistoricalCount(firma),
   ])
 
@@ -274,62 +274,68 @@ export default async function FirmaPage({
         </section>
 
         {/* Historical shortages table */}
-        {historicalShortages.length > 0 && (
+        {historicalCount > 0 && (
           <section className="space-y-3">
             <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">
               Historische Engpässe
               <span className="ml-2 text-muted-foreground/60 font-normal normal-case tracking-normal">
-                ({historicalCount}{historicalShortages.length < historicalCount ? `, ${historicalShortages.length} angezeigt` : ''})
+                ({historicalCount}{historicalShortages.length > 0 && historicalShortages.length < historicalCount ? `, ${historicalShortages.length} angezeigt` : ''})
               </span>
             </h2>
-            <div className="rounded-lg border border-border/60 overflow-hidden">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-muted/40 border-b border-border/60">
-                    <th className="px-4 py-2.5 text-left font-medium text-muted-foreground text-xs">Bezeichnung</th>
-                    <th className="px-4 py-2.5 text-center font-medium text-muted-foreground text-xs">Status</th>
-                    <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs tabular-nums">Tage</th>
-                    <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs">Score</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-border/40">
-                  {historicalShortages.map(s => {
-                    const sc = calculateScore(s, bwlSet.has(s.gtin))
-                    const { color } = scoreLabel(sc.total)
-                    return (
-                      <tr key={s.gtin} className="hover:bg-muted/30 transition-colors opacity-70">
-                        <td className="px-4 py-2.5 max-w-[300px]">
-                          <span className="flex items-center gap-1.5 min-w-0">
-                            <Link
-                              href={`/medikament/${toSlug(s.bezeichnung)}`}
-                              className="truncate hover:text-primary hover:underline transition-colors"
-                            >
-                              {s.bezeichnung}
-                            </Link>
-                            {bwlSet.has(s.gtin) && (
-                              <span className="shrink-0 text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">
-                                BWL
-                              </span>
-                            )}
-                          </span>
-                        </td>
-                        <td className="px-4 py-2.5 text-center">
-                          <span className={`text-xs font-semibold ${STATUS_TEXT_COLORS[s.statusCode] ?? 'text-muted-foreground'}`}>
-                            {s.statusCode}
-                          </span>
-                        </td>
-                        <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
-                          {s.tageSeitMeldung}
-                        </td>
-                        <td className={`px-4 py-2.5 text-right tabular-nums font-semibold text-xs ${color}`}>
-                          {sc.total}
-                        </td>
-                      </tr>
-                    )
-                  })}
-                </tbody>
-              </table>
-            </div>
+            {historicalShortages.length > 0 ? (
+              <div className="rounded-lg border border-border/60 overflow-hidden">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="bg-muted/40 border-b border-border/60">
+                      <th className="px-4 py-2.5 text-left font-medium text-muted-foreground text-xs">Bezeichnung</th>
+                      <th className="px-4 py-2.5 text-center font-medium text-muted-foreground text-xs">Status</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs tabular-nums">Tage</th>
+                      <th className="px-4 py-2.5 text-right font-medium text-muted-foreground text-xs">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-border/40">
+                    {historicalShortages.map(s => {
+                      const sc = calculateScore(s, bwlSet.has(s.gtin))
+                      const { color } = scoreLabel(sc.total)
+                      return (
+                        <tr key={s.gtin} className="hover:bg-muted/30 transition-colors opacity-70">
+                          <td className="px-4 py-2.5 max-w-[300px]">
+                            <span className="flex items-center gap-1.5 min-w-0">
+                              <Link
+                                href={`/medikament/${toSlug(s.bezeichnung)}`}
+                                className="truncate hover:text-primary hover:underline transition-colors"
+                              >
+                                {s.bezeichnung}
+                              </Link>
+                              {bwlSet.has(s.gtin) && (
+                                <span className="shrink-0 text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">
+                                  BWL
+                                </span>
+                              )}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2.5 text-center">
+                            <span className={`text-xs font-semibold ${STATUS_TEXT_COLORS[s.statusCode] ?? 'text-muted-foreground'}`}>
+                              {s.statusCode}
+                            </span>
+                          </td>
+                          <td className="px-4 py-2.5 text-right tabular-nums text-muted-foreground">
+                            {s.tageSeitMeldung}
+                          </td>
+                          <td className={`px-4 py-2.5 text-right tabular-nums font-semibold text-xs ${color}`}>
+                            {sc.total}
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <p className="text-sm text-muted-foreground py-4 text-center border border-border/60 rounded-lg">
+                Verlaufsdaten werden beim nächsten Rebuild geladen.
+              </p>
+            )}
           </section>
         )}
 
