@@ -175,38 +175,36 @@ Henrik
 ---
 
 ### E-Mail 5 — Tag 7 (Conversion)
-**Betreff:** `Für Sie: 14 Tage Engpassradar Pro — kostenlos`  
-**Preview-Text:** `10'000 API-Anfragen täglich, Engpass-Score API, kein Limit auf Ihre Watchlist`
+**Betreff:** `Die API — und wann es sich lohnt, mehr zu holen`  
+**Preview-Text:** `10'000 API-Anfragen täglich, Engpass-Score API, Batch-Abfragen — CHF 39/Monat`
 
 ```
-Guten Tag,
+Guten Tag
 
-eine Woche Engpass-Signal liegt hinter Ihnen. Ich hoffe, die wöchentlichen 
-Updates sind hilfreich.
+Eine Woche Engpass-Signal liegt hinter Ihnen. Ich hoffe, die Updates sind nützlich.
 
-Falls Sie engpassradar.ch in Ihre bestehenden Prozesse oder Systeme 
-einbinden möchten, habe ich ein Angebot für Sie:
+Die öffentliche API ist kostenlos — bis 100 Anfragen pro Stunde. Das reicht 
+für manuelle Abfragen und erste Tests. Falls Sie engpassradar.ch produktiv in 
+Ihre Prozesse einbinden möchten, gibt es dafür den Pro-Plan:
 
-14 Tage Engpassradar Pro — kostenlos, ohne Kreditkarte:
+Engpassradar Pro — CHF 39/Monat, monatlich kündbar:
 
-✓ 10'000 API-Anfragen pro Tag (statt 100/Stunde)
+✓ 10'000 API-Anfragen pro Tag
 ✓ Engpass-Score-API für automatisierte Bewertung
 ✓ Batch-Abfragen bis 50 Präparate gleichzeitig
-✓ Voller API-Key-Zugang
+✓ Persönlicher API-Key mit Nutzungsstatistiken
 
-Nach 14 Tagen CHF 39/Monat — oder einfach nicht fortfahren.
-
-→ [Trial starten]
+→ https://engpassradar.ch/api-keys
 
 Für Spitalapotheken mit spezifischen Anforderungen (Webhooks, 
 persönlicher Onboarding-Call, monatlicher Shortage Report als PDF):
 → https://engpassradar.ch/klinik-system
 
-Henrik
+Mit freundlichen Grüssen
+Henrik Rühe
 ```
 
-**CTA-Button:** `14 Tage Pro starten →` → `https://engpassradar.ch/api-keys`  
-*(Trial-Link: bis Stripe Trial-Produkt konfiguriert ist, direkt zu api-keys)*
+**CTA-Button:** `Pro freischalten →` → `https://engpassradar.ch/api-keys`
 
 ---
 
@@ -214,11 +212,11 @@ Henrik
 
 ### Tags & Segmente
 - Beim Opt-in automatisch Tag `newsletter-subscriber` setzen
-- Nach Klick auf E-Mail 5 CTA: Tag `pro-trial-intent` setzen (für Follow-up)
+- Nach Klick auf E-Mail 5 CTA: Tag `pro-upgrade-intent` setzen (für Follow-up)
 
 ### A/B-Test (optional, später)
-- E-Mail 5 Betreff A: `14 Tage Engpassradar Pro — kostenlos`
-- E-Mail 5 Betreff B: `Haben Sie die API schon getestet?`
+- E-Mail 5 Betreff A: `Die API — und wann es sich lohnt, mehr zu holen`
+- E-Mail 5 Betreff B: `Haben Sie die API schon produktiv getestet?`
 
 ### Abbruchbedingungen
 Flow beenden wenn:

@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next'
-import { getAllDrugSlugs, getAllAtcCodes } from '@/lib/db'
+import { getAllDrugSlugs, getAllAtcCodes, getAllFirmaSlugs, getAllGtinSlugsForSitemap } from '@/lib/db'
 import { getCachedLRU } from '@/lib/cache-lru'
 
 // ✅ Enable ISR - regenerate sitemap every 24 hours
@@ -17,18 +17,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date() // ✅ Create once, reuse for all entries
 
   // ✅ Cache sitemap data for 1 hour (only changes during scrapes)
-  const [drugSlugs, atcCodes] = await getCachedLRU(
+  const [drugSlugs, atcCodes, firmaSlugs, gtinSlugs] = await getCachedLRU(
     'sitemap-data',
     async () => Promise.all([
       getAllDrugSlugs(),
       getAllAtcCodes(),
+      getAllFirmaSlugs(),
+      getAllGtinSlugsForSitemap(),
     ]),
     3600 // 1 hour cache
   )
 
   // ✅ Pre-allocate array with exact size
   const result: MetadataRoute.Sitemap = new Array(
-    1 + STATIC_PAGES.length + drugSlugs.length + atcCodes.length
+    1 + STATIC_PAGES.length + drugSlugs.length + atcCodes.length + firmaSlugs.length + gtinSlugs.length
   )
   let i = 0
 
@@ -67,6 +69,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: lastSeenAt ?? now,
       changeFrequency: 'daily' as const,
       priority: 0.7,
+    }
+  }
+
+  // Firma pages
+  for (const { slug } of firmaSlugs) {
+    result[i++] = {
+      url: `${baseUrl}/firma/${slug}`,
+      lastModified: now,
+      changeFrequency: 'daily' as const,
+      priority: 0.6,
+    }
+  }
+
+  // GTIN pages (off-market products)
+  for (const { gtin, fetchedAt } of gtinSlugs) {
+    result[i++] = {
+      url: `${baseUrl}/gtin/${gtin}`,
+      lastModified: fetchedAt,
+      changeFrequency: 'weekly' as const,
+      priority: 0.5,
     }
   }
 

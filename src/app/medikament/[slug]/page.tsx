@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${shortage.bezeichnung} Lieferengpass Schweiz${substanz} | engpass.radar`,
     description: `${shortage.bezeichnung} Lieferengpass Schweiz${oddb?.substanz ? ` (${oddb.substanz})` : ''} von ${shortage.firma}. Aktueller Status, Alternativen und Verlauf auf engpassradar.ch.`,
+    alternates: { canonical: `https://engpassradar.ch/medikament/${slug}` },
   }
 }
 

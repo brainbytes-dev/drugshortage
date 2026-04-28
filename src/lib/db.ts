@@ -605,6 +605,15 @@ export async function getFirmaHistoricalCount(firma: string): Promise<number> {
   return prisma.shortage.count({ where: { isActive: false, firma } })
 }
 
+export async function getFirmaHistoricalShortages(firma: string, limit = 50): Promise<Shortage[]> {
+  const rows = await prisma.shortage.findMany({
+    where: { isActive: false, firma },
+    orderBy: { tageSeitMeldung: 'desc' },
+    take: limit,
+  })
+  return rows.map(mapShortage)
+}
+
 export async function getAllFirmaSlugs(): Promise<Array<{ slug: string; firma: string }>> {
   const rows = await prisma.shortage.findMany({
     where: { isActive: true, statusCode: { gte: 1, lte: 5 } },
@@ -951,6 +960,14 @@ export async function queryOffMarketDrugs(query: OffMarketQuery): Promise<{
   ])
 
   return { data, total, page, perPage }
+}
+
+export async function getAllGtinSlugsForSitemap(): Promise<Array<{ gtin: string; fetchedAt: Date }>> {
+  const rows = await prisma.offMarketDrug.groupBy({
+    by: ['gtin'],
+    _max: { fetchedAt: true },
+  })
+  return rows.map(r => ({ gtin: r.gtin, fetchedAt: r._max.fetchedAt ?? new Date() }))
 }
 
 export async function getOffMarketGtins(): Promise<Set<string>> {

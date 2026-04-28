@@ -29,9 +29,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     getOddbByGtin(gtin).catch(() => null),
   ])
   const name = oddb?.bezeichnungDe ?? offMarket[0]?.bezeichnung ?? `GTIN ${gtin}`
+  const offMarketLabels = offMarket.map(e =>
+    e.category === 'AUSSER_HANDEL' ? 'ausser Handel' :
+    e.category === 'VERTRIEBSEINSTELLUNG' ? 'Vertriebseinstellung' : 'Zulassung erloschen'
+  )
+  const statusText = offMarketLabels.length > 0 ? ` · ${offMarketLabels.join(', ')}` : ''
+  const substanzText = oddb?.substanz ? ` (${oddb.substanz})` : ''
   return {
     title: `${name} — Produktdetail | engpass.radar`,
-    description: `Produktinformationen zu ${name} (GTIN ${gtin}).`,
+    description: `${name}${substanzText} — GTIN ${gtin}${statusText}. Swissmedic-Produktdaten, Preis und Zulassungsstatus auf engpassradar.ch.`,
+    alternates: { canonical: `https://engpassradar.ch/gtin/${gtin}` },
   }
 }
 

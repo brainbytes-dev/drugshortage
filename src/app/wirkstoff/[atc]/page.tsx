@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: count > 0
       ? `Alle Lieferengpässe für ${substanz ?? atc} in der Schweiz. ATC-Code ${atc}. Täglich aktualisiert.`
       : undefined,
+    alternates: { canonical: `https://engpassradar.ch/wirkstoff/${atc}` },
   }
 }
 
