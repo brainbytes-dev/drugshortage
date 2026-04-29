@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useState } from 'react'
 import { ArrowRight, Zap } from 'lucide-react'
 
@@ -65,13 +66,13 @@ export function WatchlistForm({ atcCode, atcName }: WatchlistFormProps) {
             </p>
           </div>
         </div>
-        <a
+        <Link
           href="/#pricing"
           className="flex items-center justify-center gap-1.5 w-full rounded-lg bg-primary px-3 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
         >
           Engpassradar Pro — CHF 39/Mo
           <ArrowRight className="h-3 w-3" />
-        </a>
+        </Link>
         <p className="text-[11px] text-muted-foreground text-center">
           Oder:{' '}
           <a href="/klinik-system" className="underline hover:text-foreground">
@@ -116,9 +117,9 @@ export function WatchlistForm({ atcCode, atcName }: WatchlistFormProps) {
       )}
       <p className="text-[11px] text-muted-foreground mt-3 pt-3 border-t border-border/40">
         Unbegrenzte Alerts + API-Zugang:{' '}
-        <a href="/#pricing" className="underline hover:text-foreground font-medium">
+        <Link href="/#pricing" className="underline hover:text-foreground font-medium">
           Engpassradar Pro ab CHF&nbsp;39/Mo →
-        </a>
+        </Link>
       </p>
     </div>
   )

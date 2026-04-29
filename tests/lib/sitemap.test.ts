@@ -1,214 +1,111 @@
-/**
- * Test: Sitemap Generation
- * Coverage: Dynamic sitemap with ISR caching
- */
-
-import sitemap from '@/app/sitemap'
-import { getAllDrugSlugs, getAllAtcCodes } from '@/lib/db'
+import {
+  buildSitemapIndexXml,
+  buildSitemapPage,
+  generateSitemapIds,
+  getSitemapPartUrl,
+} from '@/lib/sitemap'
 import { getCachedLRU } from '@/lib/cache-lru'
+import { prisma } from '@/lib/prisma-optimized'
 
-jest.mock('@/lib/db')
-jest.mock('@/lib/cache-lru')
+jest.mock('@/lib/cache-lru', () => ({
+  getCachedLRU: jest.fn(),
+}))
 
-const mockGetAllDrugSlugs = getAllDrugSlugs as jest.MockedFunction<typeof getAllDrugSlugs>
-const mockGetAllAtcCodes = getAllAtcCodes as jest.MockedFunction<typeof getAllAtcCodes>
-const mockGetCachedLRU = getCachedLRU as jest.MockedFunction<typeof getCachedLRU>
+jest.mock('@/lib/prisma-optimized', () => ({
+  prisma: {
+    shortage: {
+      count: jest.fn(),
+      groupBy: jest.fn(),
+      findMany: jest.fn(),
+    },
+    offMarketDrug: {
+      groupBy: jest.fn(),
+    },
+  },
+}))
 
-describe('Sitemap Generation', () => {
+describe('lib/sitemap', () => {
+  const mockGetCachedLRU = getCachedLRU as jest.MockedFunction<typeof getCachedLRU>
+  const mockShortageCount = prisma.shortage.count as jest.Mock
+  const mockShortageGroupBy = prisma.shortage.groupBy as jest.Mock
+  const mockShortageFindMany = prisma.shortage.findMany as jest.Mock
+  const mockOffMarketGroupBy = prisma.offMarketDrug.groupBy as jest.Mock
+
   beforeEach(() => {
     jest.clearAllMocks()
+    mockGetCachedLRU.mockImplementation(async (_key, fetcher) => fetcher())
+    mockShortageGroupBy.mockResolvedValue([])
+    mockShortageFindMany.mockResolvedValue([])
+    mockOffMarketGroupBy.mockResolvedValue([])
   })
 
-  describe('Basic Structure', () => {
-    it('should include homepage with highest priority', async () => {
-      mockGetCachedLRU.mockResolvedValue([[], []])
+  it('should split sitemap ids once the 50k URL limit is exceeded', async () => {
+    mockShortageCount.mockResolvedValue(50010)
 
-      const result = await sitemap()
-
-      const homepage = result.find(entry => entry.url === 'https://engpassradar.ch')
-      expect(homepage).toBeDefined()
-      expect(homepage?.priority).toBe(1.0)
-      expect(homepage?.changeFrequency).toBe('hourly')
-    })
-
-    it('should include all drug pages', async () => {
-      mockGetCachedLRU.mockResolvedValue([
-        [{ slug: 'acetalgin-supp-125mg' }, { slug: 'ibuprofen-200mg' }],
-        [],
-      ])
-
-      const result = await sitemap()
-
-      const drugPages = result.filter(entry => entry.url.includes('/medikament/'))
-      expect(drugPages).toHaveLength(2)
-      expect(drugPages[0].url).toBe('https://engpassradar.ch/medikament/acetalgin-supp-125mg')
-      expect(drugPages[1].url).toBe('https://engpassradar.ch/medikament/ibuprofen-200mg')
-    })
-
-    it('should include all ATC pages', async () => {
-      mockGetCachedLRU.mockResolvedValue([
-        [],
-        [{ atc: 'N02BE01' }, { atc: 'J01CA04' }],
-      ])
-
-      const result = await sitemap()
-
-      const atcPages = result.filter(entry => entry.url.includes('/wirkstoff/'))
-      expect(atcPages).toHaveLength(2)
-      expect(atcPages[0].url).toBe('https://engpassradar.ch/wirkstoff/N02BE01')
-      expect(atcPages[1].url).toBe('https://engpassradar.ch/wirkstoff/J01CA04')
-    })
+    await expect(generateSitemapIds()).resolves.toEqual([{ id: 0 }, { id: 1 }])
   })
 
-  describe('Priority and Change Frequency', () => {
-    it('should set drug pages to priority 0.8', async () => {
-      mockGetCachedLRU.mockResolvedValue([[{ slug: 'test' }], []])
+  it('should keep homepage and static pages in the first sitemap chunk', async () => {
+    const lastSeenAt = new Date('2026-04-29T10:00:00.000Z')
+    mockShortageCount.mockResolvedValue(2)
+    mockShortageFindMany.mockImplementation(async (args?: { select?: Record<string, unknown> }) => {
+      if (args?.select?.slug) {
+        return [
+          { slug: 'aspirin-500mg', lastSeenAt },
+          { slug: 'ibuprofen-400mg', lastSeenAt },
+        ]
+      }
 
-      const result = await sitemap()
-      const drugPage = result.find(entry => entry.url.includes('/medikament/'))
-
-      expect(drugPage?.priority).toBe(0.8)
-      expect(drugPage?.changeFrequency).toBe('daily')
+      return []
     })
 
-    it('should set ATC pages to priority 0.7', async () => {
-      mockGetCachedLRU.mockResolvedValue([[], [{ atc: 'N02BE01' }]])
+    const page = await buildSitemapPage(0)
 
-      const result = await sitemap()
-      const atcPage = result.find(entry => entry.url.includes('/wirkstoff/'))
-
-      expect(atcPage?.priority).toBe(0.7)
-      expect(atcPage?.changeFrequency).toBe('daily')
+    expect(page).toHaveLength(7)
+    expect(page[0]).toMatchObject({
+      url: 'https://engpassradar.ch',
+      priority: 1,
+      changeFrequency: 'hourly',
     })
-  })
-
-  describe('Caching', () => {
-    it('should use LRU cache with 1 hour TTL', async () => {
-      mockGetCachedLRU.mockResolvedValue([[], []])
-
-      await sitemap()
-
-      expect(mockGetCachedLRU).toHaveBeenCalledWith(
-        'sitemap-data',
-        expect.any(Function),
-        3600
-      )
-    })
-
-    it('should fetch slugs and ATC codes in parallel', async () => {
-      const mockFetcher = jest.fn().mockResolvedValue([[], []])
-      mockGetCachedLRU.mockImplementation(async (key, fetcher) => {
-        return await fetcher()
+    expect(page).toContainEqual(
+      expect.objectContaining({
+        url: 'https://engpassradar.ch/medikament/aspirin-500mg',
+        priority: 0.8,
+        changeFrequency: 'daily',
       })
-
-      mockGetAllDrugSlugs.mockResolvedValue([])
-      mockGetAllAtcCodes.mockResolvedValue([])
-
-      await sitemap()
-
-      expect(mockGetAllDrugSlugs).toHaveBeenCalled()
-      expect(mockGetAllAtcCodes).toHaveBeenCalled()
-    })
+    )
   })
 
-  describe('Performance Optimization', () => {
-    it('should pre-allocate array with exact size', async () => {
-      mockGetCachedLRU.mockResolvedValue([
-        [{ slug: 'drug1' }, { slug: 'drug2' }],
-        [{ atc: 'A01' }],
-      ])
+  it('should continue drug URLs on later sitemap chunks without repeating static pages', async () => {
+    mockShortageCount.mockResolvedValue(50010)
+    mockShortageFindMany.mockImplementation(async (args?: { select?: Record<string, unknown>; skip?: number; take?: number }) => {
+      if (args?.select?.slug) {
+        expect(args.skip).toBe(49995)
+        expect(args.take).toBe(15)
 
-      const result = await sitemap()
+        return Array.from({ length: 15 }, (_, index) => ({
+          slug: `drug-${49995 + index}`,
+          lastSeenAt: new Date('2026-04-29T10:00:00.000Z'),
+        }))
+      }
 
-      // 1 homepage + 2 drugs + 1 ATC = 4 entries
-      expect(result).toHaveLength(4)
+      return []
     })
 
-    it('should handle large datasets (10k+ entries)', async () => {
-      const drugSlugs = Array.from({ length: 5000 }, (_, i) => ({ slug: `drug-${i}` }))
-      const atcCodes = Array.from({ length: 5000 }, (_, i) => ({ atc: `A${i}` }))
-      mockGetCachedLRU.mockResolvedValue([drugSlugs, atcCodes])
+    const page = await buildSitemapPage(1)
 
-      const result = await sitemap()
-
-      expect(result).toHaveLength(10001) // 1 homepage + 5000 drugs + 5000 ATC
-    })
-
-    it('should reuse single Date object for all entries', async () => {
-      mockGetCachedLRU.mockResolvedValue([
-        [{ slug: 'drug1' }, { slug: 'drug2' }],
-        [],
-      ])
-
-      const result = await sitemap()
-
-      // All lastModified timestamps should be the same
-      const timestamps = result.map(entry => entry.lastModified?.getTime())
-      expect(new Set(timestamps).size).toBe(1)
-    })
+    expect(page).toHaveLength(15)
+    expect(page[0].url).toBe('https://engpassradar.ch/medikament/drug-49995')
+    expect(page.some((entry) => entry.url === 'https://engpassradar.ch')).toBe(false)
   })
 
-  describe('Edge Cases', () => {
-    it('should handle empty database', async () => {
-      mockGetCachedLRU.mockResolvedValue([[], []])
+  it('should render a sitemap index that points to each child sitemap', async () => {
+    mockShortageCount.mockResolvedValue(50010)
 
-      const result = await sitemap()
+    const xml = await buildSitemapIndexXml()
 
-      expect(result).toHaveLength(1) // Only homepage
-    })
-
-    it('should handle special characters in slugs', async () => {
-      mockGetCachedLRU.mockResolvedValue([
-        [{ slug: 'acetalgin-125-mg' }, { slug: 'aspirin-c-500-mg' }],
-        [],
-      ])
-
-      const result = await sitemap()
-
-      const drugPages = result.filter(entry => entry.url.includes('/medikament/'))
-      expect(drugPages[0].url).toBe('https://engpassradar.ch/medikament/acetalgin-125-mg')
-      expect(drugPages[1].url).toBe('https://engpassradar.ch/medikament/aspirin-c-500-mg')
-    })
-
-    it('should handle ATC codes with mixed case', async () => {
-      mockGetCachedLRU.mockResolvedValue([[], [{ atc: 'n02BE01' }]])
-
-      const result = await sitemap()
-
-      const atcPage = result.find(entry => entry.url.includes('/wirkstoff/'))
-      expect(atcPage?.url).toBe('https://engpassradar.ch/wirkstoff/n02BE01')
-    })
-  })
-
-  describe('ISR Configuration', () => {
-    it('should have revalidate set to 86400 (24 hours)', () => {
-      // This would be tested via module exports, not the function itself
-      // The test would verify the export constant exists
-    })
-
-    it('should have dynamic set to force-static', () => {
-      // Same as above - module-level configuration
-    })
-  })
-
-  describe('Error Handling', () => {
-    it('should propagate database errors', async () => {
-      mockGetCachedLRU.mockRejectedValue(new Error('Database connection failed'))
-
-      await expect(sitemap()).rejects.toThrow('Database connection failed')
-    })
-
-    it('should handle cache failures gracefully', async () => {
-      mockGetCachedLRU.mockImplementation(async (key, fetcher) => {
-        // Bypass cache, call fetcher directly
-        return await fetcher()
-      })
-      mockGetAllDrugSlugs.mockResolvedValue([])
-      mockGetAllAtcCodes.mockResolvedValue([])
-
-      const result = await sitemap()
-
-      expect(result).toHaveLength(1) // Homepage only
-    })
+    expect(xml).toContain('<sitemapindex')
+    expect(xml).toContain(getSitemapPartUrl(0))
+    expect(xml).toContain(getSitemapPartUrl(1))
   })
 })

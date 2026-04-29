@@ -183,23 +183,23 @@ function Dashboard({ token }: { token: string }) {
                 ? 'Engpassradar Pro (CHF 39/Monat) gibt Ihnen 10 000 Anfragen/Tag und einen eigenen API-Key.'
                 : 'Engpassradar Pro (CHF 39/Monat) gibt Ihnen 10 000 Anfragen/Tag.'}
             </p>
-            <a
+            <Link
               href="/#pricing"
               className="inline-flex items-center gap-1 rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-xs font-semibold hover:bg-primary/90 transition-colors"
             >
               Auf Pro upgraden →
-            </a>
+            </Link>
           </div>
         )}
 
         <div className="flex gap-2 flex-wrap">
           {data.tier === 'free' || data.tier === 'research' ? (
-            <a
+            <Link
               href="/#pricing"
               className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium hover:bg-primary/90 transition-colors"
             >
               Upgrade →
-            </a>
+            </Link>
           ) : (
             <a
               href={`/api/api-keys/portal?token=${encodeURIComponent(token)}`}
