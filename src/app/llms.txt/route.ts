@@ -24,6 +24,7 @@ Für klinische, pharmazeutische oder regulatorische Entscheidungen gelten aussch
 - [API-Dokumentation](https://engpassradar.ch/api-docs): REST-Endpunkte, JSON-Schemata, Beispielabfragen. Free-Tier ohne Anmeldung bis 100 Anfragen/Stunde.
 - [CSV-Export](https://engpassradar.ch/): Tagesaktuelle Rohdaten der aktiven Ansicht, direkt von der Startseite abrufbar.
 - [RSS-Feeds](https://engpassradar.ch/wirkstoff/[ATC-Code]/feed.xml): Pro Wirkstoffgruppe — Engpassänderungen als Feed einbindbar.
+- MCP-Server: TypeScript-Paket unter \`mcp/\` im Repository. Tools: \`search_shortages\`, \`get_shortage\`, \`find_alternatives\`, \`check_atc_group\`, \`list_active_shortages\`, \`get_company_status\`, \`get_shortage_timeline\`, \`get_weekly_summary\`. Stdio-Transport, kompatibel mit Claude Desktop, Cursor, Copilot.
 
 ## Newsletter
 
