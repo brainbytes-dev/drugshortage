@@ -231,6 +231,7 @@ function createMcpServer(): Server {
 async function handleMcp(req: Request): Promise<Response> {
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined, // stateless — required for serverless
+    enableJsonResponse: true,      // allow plain JSON for clients without SSE support
   })
   const server = createMcpServer()
   await server.connect(transport)
