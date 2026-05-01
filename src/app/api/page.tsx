@@ -130,7 +130,7 @@ export default function ApiLandingPage() {
                 '≤ 24 h Datenverzug',
                 'Alle ATC-Gruppen',
                 'Free-Tier ohne Key',
-                'JSON · CSV · Webhooks',
+                'JSON · CSV · Webhooks · MCP',
               ].map((fact, i, arr) => (
                 <span key={fact} className="flex items-center gap-2 text-[12px] text-muted-foreground">
                   {fact}
@@ -226,6 +226,25 @@ export default function ApiLandingPage() {
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* ── MCP HINT ── */}
+      <section className="border-t border-border/40">
+        <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col sm:flex-row sm:items-center gap-4">
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-foreground">MCP-Server für Claude, Copilot & Cursor</p>
+            <p className="text-sm text-muted-foreground mt-0.5">
+              Engpassradar-Daten als native Agent-Tools — direkt im AI-Workflow, ohne Scraping.
+              Tools: <code className="text-xs font-mono">find_alternatives</code>, <code className="text-xs font-mono">check_atc_group</code>, <code className="text-xs font-mono">get_company_status</code> u. a.
+            </p>
+          </div>
+          <Link
+            href="/api-docs#mcp"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-muted/40 px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+          >
+            Setup-Anleitung →
+          </Link>
         </div>
       </section>
 
