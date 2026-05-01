@@ -82,11 +82,46 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Organization",
-            "name": "engpass.radar",
-            "url": "https://engpassradar.ch",
-            "description": "Schweizer Medikamenten-Lieferengpass Dashboard",
-            "sameAs": ["https://github.com/brainbytes-dev/engpassradar"]
+            "@graph": [
+              {
+                "@type": "Organization",
+                "@id": "https://engpassradar.ch/#organization",
+                "name": "engpass.radar",
+                "url": "https://engpassradar.ch",
+                "description": "Aggregierte Übersicht aller gemeldeten Medikamenten-Lieferengpässe in der Schweiz — täglich aktualisiert.",
+                "sameAs": ["https://github.com/brainbytes-dev/engpassradar"],
+                "founder": { "@type": "Person", "name": "Henrik Rühe", "jobTitle": "Neurologe" }
+              },
+              {
+                "@type": "Dataset",
+                "@id": "https://engpassradar.ch/#dataset",
+                "name": "Schweizer Medikamenten-Lieferengpässe",
+                "description": "Tägliche Aggregation aller offiziell gemeldeten Medikamenten-Lieferengpässe in der Schweiz. Quellen: drugshortage.ch, BWL-Pflichtlager, Spitalpharmazie USB. Angereichert mit Wirkstoff (ATC), GTIN, Swissmedic-Nummer und Severity-Score.",
+                "url": "https://engpassradar.ch",
+                "publisher": { "@id": "https://engpassradar.ch/#organization" },
+                "license": "https://engpassradar.ch/nutzungsbedingungen",
+                "inLanguage": "de-CH",
+                "temporalCoverage": "2023/..",
+                "spatialCoverage": { "@type": "Place", "name": "Schweiz", "geo": { "@type": "GeoShape", "addressCountry": "CH" } },
+                "distribution": [
+                  { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://engpassradar.ch/api/export/csv" },
+                  { "@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://engpassradar.ch/api/v1/shortages" }
+                ],
+                "keywords": ["Medikamenten-Engpass", "Lieferengpass Schweiz", "Arzneimittel", "drugshortage", "ATC", "Swissmedic", "Spitalapotheke"]
+              },
+              {
+                "@type": "WebSite",
+                "@id": "https://engpassradar.ch/#website",
+                "url": "https://engpassradar.ch",
+                "name": "engpass.radar",
+                "publisher": { "@id": "https://engpassradar.ch/#organization" },
+                "potentialAction": {
+                  "@type": "SearchAction",
+                  "target": "https://engpassradar.ch/?search={search_term_string}",
+                  "query-input": "required name=search_term_string"
+                }
+              }
+            ]
           }).replace(/</g, '\u003c')
         }}
       />
