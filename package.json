@@ -15,6 +15,7 @@
   "dependencies": {
     "@base-ui/react": "^1.4.0",
     "@mdx-js/react": "^3.1.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@next/mdx": "^16.2.4",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
