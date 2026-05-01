@@ -559,30 +559,76 @@ X-Api-Tier: professional`}</Code>
             ))}
           </div>
 
-          {/* Setup */}
-          <div className="space-y-2">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Setup</p>
-            <Code>{`# 1. Repository klonen und MCP bauen
-git clone https://github.com/brainbytes-dev/engpassradar.git
-cd engpassradar/mcp && npm run build
+          {/* How it works */}
+          <div className="rounded-lg border border-border/60 bg-muted/20 px-4 py-3 text-xs text-muted-foreground space-y-1">
+            <p className="font-semibold text-foreground text-xs">Wie das funktioniert</p>
+            <p>Der MCP-Server läuft <strong>lokal auf Ihrem Rechner</strong> — er ist kein gehosteter Dienst. Er verbindet sich mit Claude Desktop oder Cursor via stdio und ruft die engpassradar.ch API im Hintergrund ab. Node.js muss installiert sein.</p>
+          </div>
 
-# 2. claude_desktop_config.json (macOS: ~/Library/Application Support/Claude/)
+          {/* Setup steps */}
+          <div className="space-y-4">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Schritt-für-Schritt Setup</p>
+
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-foreground">1 — Server bauen</p>
+              <Code>{`git clone https://github.com/brainbytes-dev/engpassradar.git
+cd engpassradar/mcp
+npm install
+npm run build
+# → erstellt mcp/dist/index.js`}</Code>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-foreground">2 — Claude Desktop konfigurieren</p>
+              <p className="text-xs text-muted-foreground mb-1.5">Datei öffnen: <code className="font-mono">~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS) bzw. <code className="font-mono">%APPDATA%\Claude\claude_desktop_config.json</code> (Windows)</p>
+              <Code>{`{
+  "mcpServers": {
+    "engpassradar": {
+      "command": "node",
+      "args": ["/absoluter/pfad/zu/engpassradar/mcp/dist/index.js"]
+    }
+  }
+}`}</Code>
+              <p className="text-xs text-muted-foreground mt-1">Absoluten Pfad verwenden, z. B. <code className="font-mono">/Users/IhrName/engpassradar/mcp/dist/index.js</code></p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-foreground">3 — Claude Desktop neu starten</p>
+              <p className="text-xs text-muted-foreground">Claude Desktop komplett beenden und neu öffnen. Im Textfeld erscheint dann das Hammer-Icon — engpassradar-Tools sind aktiv.</p>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-foreground">Optional: Cursor / VS Code</p>
+              <Code>{`# .cursor/mcp.json im Projektordner
 {
   "mcpServers": {
     "engpassradar": {
       "command": "node",
-      "args": ["/pfad/zu/engpassradar/mcp/dist/index.js"],
+      "args": ["/absoluter/pfad/zu/engpassradar/mcp/dist/index.js"]
+    }
+  }
+}`}</Code>
+            </div>
+
+            <div className="space-y-1">
+              <p className="text-xs font-semibold text-foreground">Optional: Mit API-Key (höhere Rate Limits)</p>
+              <Code>{`{
+  "mcpServers": {
+    "engpassradar": {
+      "command": "node",
+      "args": ["/absoluter/pfad/zu/engpassradar/mcp/dist/index.js"],
       "env": {
-        "ENGPASS_API_KEY": "ihr-api-key"  // optional, Free-Tier ohne Key
+        "ENGPASS_API_KEY": "ihr-api-key"
       }
     }
   }
 }`}</Code>
+            </div>
           </div>
 
           <p className="text-xs text-muted-foreground">
             Free-Tier (100 Req/h) funktioniert ohne API-Key. Pro-Key (10&apos;000 Req/Tag) über{' '}
-            <Link href="/api-keys" className="underline underline-offset-2 hover:text-foreground">API-Keys</Link>.
+            <Link href="/api-keys" className="underline underline-offset-2 hover:text-foreground">API-Keys</Link>.{' '}
             Quellcode:{' '}
             <a
               href="https://github.com/brainbytes-dev/engpassradar/tree/main/mcp"
