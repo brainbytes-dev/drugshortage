@@ -530,6 +530,71 @@ X-Api-Tier: professional`}</Code>
           </div>
         </section>
 
+        {/* MCP Server */}
+        <section className="space-y-4">
+          <h2 className="font-semibold text-base">MCP-Server (Claude / Copilot / Cursor)</h2>
+          <p className="text-sm text-muted-foreground">
+            Der MCP-Server stellt engpassradar-Daten als native Agent-Tools bereit — ohne Scraping, direkt im
+            Workflow von Claude Desktop, GitHub Copilot oder Cursor. Fragen wie{' '}
+            <span className="italic">„Inhibace ist nicht lieferbar — was gibt es stattdessen für C09AA?"</span>{' '}
+            werden damit zum direkten Datenbankaufruf.
+          </p>
+
+          {/* Tools */}
+          <div className="rounded-lg border overflow-hidden divide-y text-xs">
+            {[
+              { tool: 'search_shortages', desc: 'Volltext-Suche nach Produkt, Wirkstoff oder Firma' },
+              { tool: 'get_shortage', desc: 'Einzelprodukt per GTIN — inkl. Score, Preis, BWL-Status' },
+              { tool: 'find_alternatives', desc: 'Alternativen für ein Produkt im Engpass — mit eigenem Engpass-Status' },
+              { tool: 'check_atc_group', desc: 'Wie viele Produkte in einer ATC-Klasse sind betroffen? (C09, C09AA, …)' },
+              { tool: 'list_active_shortages', desc: 'Bulk-Liste aktiver Engpässe mit Filtern' },
+              { tool: 'get_company_status', desc: 'Firmenprofil: aktive Engpässe + Transparenz-Score' },
+              { tool: 'get_shortage_timeline', desc: 'Wochenweise Trendlinie der Engpass-Anzahl' },
+              { tool: 'get_weekly_summary', desc: 'KPI-Snapshot: total aktiv, kritisch, BWL-betroffen' },
+            ].map(r => (
+              <div key={r.tool} className="flex items-start gap-4 px-4 py-2.5 bg-card">
+                <code className="font-mono font-semibold text-primary shrink-0 w-52">{r.tool}</code>
+                <span className="text-muted-foreground">{r.desc}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Setup */}
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Setup</p>
+            <Code>{`# 1. Repository klonen und MCP bauen
+git clone https://github.com/brainbytes-dev/engpassradar.git
+cd engpassradar/mcp && npm run build
+
+# 2. claude_desktop_config.json (macOS: ~/Library/Application Support/Claude/)
+{
+  "mcpServers": {
+    "engpassradar": {
+      "command": "node",
+      "args": ["/pfad/zu/engpassradar/mcp/dist/index.js"],
+      "env": {
+        "ENGPASS_API_KEY": "ihr-api-key"  // optional, Free-Tier ohne Key
+      }
+    }
+  }
+}`}</Code>
+          </div>
+
+          <p className="text-xs text-muted-foreground">
+            Free-Tier (100 Req/h) funktioniert ohne API-Key. Pro-Key (10&apos;000 Req/Tag) über{' '}
+            <Link href="/api-keys" className="underline underline-offset-2 hover:text-foreground">API-Keys</Link>.
+            Quellcode:{' '}
+            <a
+              href="https://github.com/brainbytes-dev/engpassradar/tree/main/mcp"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:text-foreground"
+            >
+              github.com/brainbytes-dev/engpassradar/tree/main/mcp
+            </a>
+          </p>
+        </section>
+
       </div>
     </main>
   )
