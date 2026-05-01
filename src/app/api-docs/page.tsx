@@ -570,12 +570,26 @@ X-Api-Tier: professional`}</Code>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Schritt-für-Schritt Setup</p>
 
             <div className="space-y-1">
-              <p className="text-xs font-semibold text-foreground">1 — Server bauen</p>
-              <Code>{`git clone https://github.com/brainbytes-dev/engpassradar.git
-cd engpassradar/mcp
-npm install
-npm run build
-# → erstellt mcp/dist/index.js`}</Code>
+              <p className="text-xs font-semibold text-foreground">1 — Server herunterladen</p>
+              <p className="text-xs text-muted-foreground mb-1.5">
+                Datei direkt herunterladen (kein Build nötig) — Node.js muss installiert sein:
+              </p>
+              <Code>{`# macOS / Linux
+curl -o engpassradar-mcp.js https://raw.githubusercontent.com/brainbytes-dev/engpassradar/main/mcp/dist/index.js
+
+# Windows (PowerShell)
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/brainbytes-dev/engpassradar/main/mcp/dist/index.js" -OutFile "engpassradar-mcp.js"`}</Code>
+              <p className="text-xs text-muted-foreground mt-1">
+                Oder manuell:{' '}
+                <a
+                  href="https://raw.githubusercontent.com/brainbytes-dev/engpassradar/main/mcp/dist/index.js"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-foreground"
+                >
+                  index.js direkt öffnen → Rechtsklick → Speichern unter
+                </a>
+              </p>
             </div>
 
             <div className="space-y-1">
@@ -585,11 +599,11 @@ npm run build
   "mcpServers": {
     "engpassradar": {
       "command": "node",
-      "args": ["/absoluter/pfad/zu/engpassradar/mcp/dist/index.js"]
+      "args": ["/absoluter/pfad/zu/engpassradar-mcp.js"]
     }
   }
 }`}</Code>
-              <p className="text-xs text-muted-foreground mt-1">Absoluten Pfad verwenden, z. B. <code className="font-mono">/Users/IhrName/engpassradar/mcp/dist/index.js</code></p>
+              <p className="text-xs text-muted-foreground mt-1">Absoluten Pfad zur heruntergeladenen Datei verwenden, z. B. <code className="font-mono">/Users/IhrName/Downloads/engpassradar-mcp.js</code></p>
             </div>
 
             <div className="space-y-1">
