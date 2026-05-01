@@ -9,7 +9,6 @@ import { prisma } from '@/lib/prisma'
 
 // ATC-Codes der Antidiabetika: A10 = Antidiabetika
 // A10A = Insuline, A10B = orale Antidiabetika (inkl. GLP-1, SGLT-2, DPP-4, Metformin)
-const TARGET_ATC = 'A10'
 
 async function main() {
   const datenstand = new Date().toISOString().split('T')[0]

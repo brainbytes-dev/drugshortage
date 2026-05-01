@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { CheckCircle2, ArrowRight, Clock, BarChart3, Bell, MessageSquare } from 'lucide-react'
+import { CheckCircle2, ArrowRight, Clock, BarChart3, Bell } from 'lucide-react'
 import { KlinikSystemForm } from '@/components/klinik-system-form'
 
 export const metadata: Metadata = {

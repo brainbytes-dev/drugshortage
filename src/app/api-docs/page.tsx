@@ -536,7 +536,7 @@ X-Api-Tier: professional`}</Code>
           <p className="text-sm text-muted-foreground">
             Der MCP-Server stellt engpassradar-Daten als native Agent-Tools bereit — ohne Scraping, direkt im
             Workflow von Claude Desktop, GitHub Copilot oder Cursor. Fragen wie{' '}
-            <span className="italic">„Inhibace ist nicht lieferbar — was gibt es stattdessen für C09AA?"</span>{' '}
+            <span className="italic">&bdquo;Inhibace ist nicht lieferbar — was gibt es stattdessen für C09AA?&ldquo;</span>{' '}
             werden damit zum direkten Datenbankaufruf.
           </p>
 

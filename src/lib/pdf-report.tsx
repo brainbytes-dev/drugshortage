@@ -1,5 +1,4 @@
 import { Document, Page, View, Text, StyleSheet, Font } from '@react-pdf/renderer'
-import { calculateScore, scoreLabel } from './score'
 import type { Shortage } from './types'
 
 // Register a system font that's available in Node
