@@ -19,7 +19,7 @@ function extractApiKey(req: Request): string | undefined {
   if (xKey) return xKey.trim()
   // Also accept as query param for flexibility
   const url = new URL(req.url)
-  return url.searchParams.get('apiKey') ?? undefined
+  return url.searchParams.get('ENGPASS_API_KEY') ?? undefined
 }
 
 async function apiGet(
