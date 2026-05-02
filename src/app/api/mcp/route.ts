@@ -12,12 +12,10 @@ export const dynamic = 'force-dynamic'
 const BASE = 'https://engpassradar.ch'
 
 function extractApiKey(req: Request): string | undefined {
-  // Smithery passes user-configured params as Authorization header or X-Api-Key
   const auth = req.headers.get('authorization')
   if (auth?.startsWith('Bearer ')) return auth.slice(7).trim()
   const xKey = req.headers.get('x-api-key')
   if (xKey) return xKey.trim()
-  // Also accept as query param for flexibility
   const url = new URL(req.url)
   return url.searchParams.get('ENGPASS_API_KEY') ?? undefined
 }
@@ -41,18 +39,42 @@ async function apiGet(
   return res.json()
 }
 
+// Reusable output schema shapes
+const shortageShape = {
+  gtin: z.string(),
+  bezeichnung: z.string(),
+  firma: z.string(),
+  atcCode: z.string(),
+  statusCode: z.number(),
+  statusText: z.string().optional(),
+  tageSeitMeldung: z.number(),
+  isActive: z.boolean(),
+}
+
+const paginatedOutput = {
+  data: z.array(z.object(shortageShape)),
+  total: z.number(),
+  page: z.number(),
+  perPage: z.number(),
+}
+
 function createMcpServer(apiKey?: string): McpServer {
   const server = new McpServer({ name: 'engpassradar', version: '0.1.0' })
   const get = (path: string, params?: Record<string, string | number | boolean | undefined>) => apiGet(path, params, apiKey)
 
-  server.tool(
+  server.registerTool(
     'search_shortages',
-    'Full-text search of current Swiss medication shortages. Searches product name, active ingredient (Wirkstoff), and company. Use for: "Ibuprofen Engpass", "was ist N02BE01 betroffen", "Novartis aktuelle Probleme".',
     {
-      query: z.string().describe('Search term'),
-      atc: z.string().optional().describe('ATC code prefix, e.g. "C09" or "C09AA"'),
-      firma: z.string().optional().describe('Manufacturer name (partial match)'),
-      limit: z.number().optional().default(20).describe('Max results (default 20)'),
+      title: 'Search Shortages',
+      description: 'Full-text search of current Swiss medication shortages. Searches product name, active ingredient (Wirkstoff), and company. Use for: "Ibuprofen Engpass", "was ist N02BE01 betroffen", "Novartis aktuelle Probleme".',
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+      inputSchema: {
+        query: z.string().describe('Search term — product name, Wirkstoff, or company'),
+        atc: z.string().optional().describe('ATC code prefix, e.g. "C09" or "C09AA"'),
+        firma: z.string().optional().describe('Manufacturer name (partial match)'),
+        limit: z.number().optional().default(20).describe('Max results (default 20, max 100)'),
+      },
+      outputSchema: { data: z.array(z.object(shortageShape)), total: z.number() },
     },
     async ({ query, atc, firma, limit }) => {
       const data = await get('/api/v1/shortages', { search: query, atc, firma, perPage: Math.min(100, limit ?? 20) })
@@ -60,32 +82,65 @@ function createMcpServer(apiKey?: string): McpServer {
     }
   )
 
-  server.tool(
+  server.registerTool(
     'get_shortage',
-    'Fetch full details for a single shortage by GTIN. Returns product name, company, ATC, status, expected return date, severity score, and BWL flag.',
-    { gtin: z.string().describe('GTIN (7–14 digits), e.g. "7680555710014"') },
+    {
+      title: 'Get Shortage Details',
+      description: 'Fetch full details for a single shortage by GTIN. Returns product name, company, ATC, status, expected return date, severity score (0–100), and BWL mandatory stock flag.',
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+      inputSchema: {
+        gtin: z.string().describe('GTIN (7–14 digits), e.g. "7680555710014"'),
+      },
+      outputSchema: {
+        data: z.object({
+          ...shortageShape,
+          isBwl: z.boolean(),
+          score: z.object({ total: z.number(), label: z.string() }),
+        }),
+      },
+    },
     async ({ gtin }) => {
       const data = await get(`/api/v1/shortages/${encodeURIComponent(gtin)}`)
       return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] }
     }
   )
 
-  server.tool(
+  server.registerTool(
     'find_alternatives',
-    'Find alternative products for a medication in shortage. Returns same-substance and same-class alternatives, each with their own current shortage status. THIS IS THE HIGHEST-VALUE TOOL — use it whenever asked "Was kann ich statt X verwenden?", "Welche Alternativen gibt es für Y?", "substitute for [product]".',
-    { gtin: z.string().describe('GTIN of the product in shortage') },
+    {
+      title: 'Find Alternatives',
+      description: 'Find alternative products for a medication in shortage. Returns same-substance and same-class alternatives, each with their own current shortage status. THIS IS THE HIGHEST-VALUE TOOL — use it whenever asked "Was kann ich statt X verwenden?", "Welche Alternativen gibt es für Y?", "substitute for [product]".',
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+      inputSchema: {
+        gtin: z.string().describe('GTIN of the product in shortage'),
+      },
+      outputSchema: {
+        gleicheFirma: z.array(z.object({ bezeichnung: z.string(), firma: z.string(), gtin: z.string() })),
+        alleAlternativen: z.array(z.object({ bezeichnung: z.string(), firma: z.string(), gtin: z.string(), typ: z.string().optional() })),
+      },
+    },
     async ({ gtin }) => {
       const data = await get('/api/alternatives', { gtin })
       return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] }
     }
   )
 
-  server.tool(
+  server.registerTool(
     'check_atc_group',
-    'Check how many products in a given ATC therapeutic class are currently in shortage. Accepts any ATC depth (C09, C09AA, C09AA08). Use for: "Wie viele ACE-Hemmer sind betroffen?", "is anything in C09 affected?".',
     {
-      atc: z.string().describe('ATC code or prefix, e.g. "C09", "C09AA"'),
-      limit: z.number().optional().default(50).describe('Max products (default 50)'),
+      title: 'Check ATC Group',
+      description: 'Check how many products in a given ATC therapeutic class are currently in shortage. Accepts any ATC depth (C09, C09AA, C09AA08). Use for: "Wie viele ACE-Hemmer sind betroffen?", "is anything in C09 affected?".',
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+      inputSchema: {
+        atc: z.string().describe('ATC code or prefix, e.g. "C09", "C09AA"'),
+        limit: z.number().optional().default(50).describe('Max products to return (default 50)'),
+      },
+      outputSchema: {
+        atc: z.string(),
+        affectedCount: z.number(),
+        shown: z.number(),
+        shortages: z.array(z.object(shortageShape)),
+      },
     },
     async ({ atc, limit }) => {
       const data = await get('/api/v1/shortages', { atc, perPage: Math.min(200, limit ?? 50) }) as { data: unknown[]; total: number }
@@ -94,14 +149,19 @@ function createMcpServer(apiKey?: string): McpServer {
     }
   )
 
-  server.tool(
+  server.registerTool(
     'list_active_shortages',
-    'List currently active medication shortages with optional filters. Use for dashboards, "was ist gerade betroffen", bulk monitoring.',
     {
-      atc: z.string().optional().describe('Filter by ATC prefix'),
-      firma: z.string().optional().describe('Filter by manufacturer'),
-      limit: z.number().optional().default(50).describe('Max results (default 50)'),
-      page: z.number().optional().default(1).describe('Page number'),
+      title: 'List Active Shortages',
+      description: 'List currently active medication shortages with optional filters. Use for dashboards, "was ist gerade betroffen", bulk monitoring.',
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+      inputSchema: {
+        atc: z.string().optional().describe('Filter by ATC prefix'),
+        firma: z.string().optional().describe('Filter by manufacturer'),
+        limit: z.number().optional().default(50).describe('Max results (default 50, max 200)'),
+        page: z.number().optional().default(1).describe('Page number (default 1)'),
+      },
+      outputSchema: paginatedOutput,
     },
     async ({ atc, firma, limit, page }) => {
       const data = await get('/api/v1/shortages', { atc, firma, perPage: Math.min(200, limit ?? 50), page: page ?? 1, sort: 'tageSeitMeldung:desc' })
@@ -109,10 +169,25 @@ function createMcpServer(apiKey?: string): McpServer {
     }
   )
 
-  server.tool(
+  server.registerTool(
     'get_company_status',
-    'All current shortages for a manufacturer, plus communication transparency metrics. Use for: "Wie transparent kommuniziert Novartis?", "aktuelle Probleme bei Sandoz".',
-    { firma: z.string().describe('Manufacturer name (partial match)') },
+    {
+      title: 'Get Company Status',
+      description: 'All current shortages for a manufacturer, plus communication transparency metrics. Use for: "Wie transparent kommuniziert Novartis?", "aktuelle Probleme bei Sandoz", procurement decisions.',
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+      inputSchema: {
+        firma: z.string().describe('Manufacturer name (partial match)'),
+      },
+      outputSchema: {
+        firma: z.string(),
+        activeShortages: z.number(),
+        avgDaysActive: z.number(),
+        noInfoPercent: z.number(),
+        communicationNote: z.string(),
+        statusBreakdown: z.record(z.string(), z.number()),
+        currentShortages: z.array(z.object(shortageShape)),
+      },
+    },
     async ({ firma }) => {
       const data = await get('/api/v1/shortages', { firma, perPage: 200 }) as {
         data: Array<{ statusCode: number; tageSeitMeldung: number; bezeichnung: string; gtin: string }>
@@ -125,16 +200,26 @@ function createMcpServer(apiKey?: string): McpServer {
       const result = {
         firma, activeShortages: data.total, avgDaysActive: avgDays, noInfoPercent: noInfoPct,
         communicationNote: noInfoPct >= 50 ? 'Schlechte Transparenz' : noInfoPct >= 25 ? 'Mittlere Transparenz' : 'Gute Transparenz',
-        statusBreakdown, currentShortages: shortages.slice(0, 20), meta: { source: 'engpassradar.ch' },
+        statusBreakdown, currentShortages: shortages.slice(0, 20),
       }
       return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
     }
   )
 
-  server.tool(
+  server.registerTool(
     'get_shortage_timeline',
-    'Week-by-week history of total active shortages in Switzerland. Use for: "wird es besser oder schlechter?", trend questions.',
-    { weeks: z.number().optional().default(12).describe('Number of past weeks (default 12, max 52)') },
+    {
+      title: 'Get Shortage Timeline',
+      description: 'Week-by-week history of total active shortages in Switzerland. Use for: "wird es besser oder schlechter?", trend questions.',
+      annotations: { readOnlyHint: true, idempotentHint: true, openWorldHint: false },
+      inputSchema: {
+        weeks: z.number().optional().default(12).describe('Number of past weeks (default 12, max 52)'),
+      },
+      outputSchema: {
+        data: z.array(z.object({ week: z.string(), active: z.number() })),
+        meta: z.object({ weeks: z.number(), source: z.string() }),
+      },
+    },
     async ({ weeks }) => {
       const n = Math.min(52, weeks ?? 12)
       const data = await get('/api/v1/timeline', { weeks: n }) as { data: unknown[] }
@@ -143,10 +228,19 @@ function createMcpServer(apiKey?: string): McpServer {
     }
   )
 
-  server.tool(
+  server.registerTool(
     'get_weekly_summary',
-    'Summary statistics: total active shortages, critical count, BWL affected. Quick situational overview.',
-    {},
+    {
+      title: 'Get Weekly Summary',
+      description: 'Summary statistics: total active shortages, critical count, BWL affected. Quick situational overview — same data as the engpassradar.ch dashboard KPIs.',
+      annotations: { readOnlyHint: true, idempotentHint: false, openWorldHint: false },
+      inputSchema: {},
+      outputSchema: {
+        activeShortages: z.number(),
+        criticalShortages: z.number().optional(),
+        bwlAffected: z.number().optional(),
+      },
+    },
     async () => {
       const data = await get('/api/v1/stats')
       return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] }
@@ -159,26 +253,25 @@ function createMcpServer(apiKey?: string): McpServer {
 async function handleMcp(req: Request): Promise<Response> {
   const apiKey = extractApiKey(req)
   const transport = new WebStandardStreamableHTTPServerTransport({
-    sessionIdGenerator: undefined, // stateless — required for serverless/Vercel
-    enableJsonResponse: true,      // allow plain JSON for clients without SSE
+    sessionIdGenerator: undefined,
+    enableJsonResponse: true,
   })
   const server = createMcpServer(apiKey)
   await server.connect(transport)
-  // Pass parsedBody for POST to avoid reading the stream twice
   const parsedBody = req.method === 'POST' ? await req.json().catch(() => undefined) : undefined
   return transport.handleRequest(req, { parsedBody })
 }
 
 export async function GET(req: Request): Promise<Response> {
-  // SSE GET requires Accept: text/event-stream — return info JSON for other clients (e.g. Smithery probe)
   const accept = req.headers.get('accept') ?? ''
   if (!accept.includes('text/event-stream')) {
     return new Response(JSON.stringify({
       name: 'engpassradar',
       version: '0.1.0',
-      description: 'Swiss medication shortage MCP server — 8 tools for drug shortage data',
+      description: 'Swiss medication shortage MCP server — 8 tools for drug shortage data from engpassradar.ch',
       transport: 'streamable-http',
       endpoint: 'https://engpassradar.ch/api/mcp',
+      smithery: 'https://smithery.ai/server/engpassradar',
     }), { headers: { 'Content-Type': 'application/json' } })
   }
   return handleMcp(req)
