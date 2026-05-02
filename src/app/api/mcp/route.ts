@@ -239,6 +239,19 @@ async function handleMcp(req: Request): Promise<Response> {
 }
 
 export async function GET(req: Request): Promise<Response> {
+  // SSE GET requires explicit Accept: text/event-stream header.
+  // Clients that don't support SSE (e.g. Smithery validator) get a 200 info response
+  // so they fall back to POST-only flow.
+  const accept = req.headers.get('accept') ?? ''
+  if (!accept.includes('text/event-stream')) {
+    return new Response(JSON.stringify({
+      name: 'engpassradar',
+      version: '0.1.0',
+      description: 'Swiss medication shortage MCP server',
+      transport: 'streamable-http',
+      endpoint: 'https://engpassradar.ch/api/mcp',
+    }), { headers: { 'Content-Type': 'application/json' } })
+  }
   return handleMcp(req)
 }
 

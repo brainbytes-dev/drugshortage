@@ -47,6 +47,15 @@ function tooMany(tier: string, limit: number, resetSec: number) {
 }
 
 export async function proxy(req: NextRequest) {
+  const host = req.headers.get('host') ?? ''
+
+  // mcp.engpassradar.ch → /api/mcp (all methods)
+  if (host.startsWith('mcp.')) {
+    const url = req.nextUrl.clone()
+    url.pathname = '/api/mcp'
+    return NextResponse.rewrite(url)
+  }
+
   const { pathname } = req.nextUrl
   const isProtected = pathname.startsWith('/api/v1/') || pathname.startsWith('/api/export/')
   if (!isProtected) return NextResponse.next()
@@ -115,5 +124,5 @@ export async function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/api/v1/:path*', '/api/export/:path*'],
+  matcher: ['/api/v1/:path*', '/api/export/:path*', '/((?!_next/static|_next/image|favicon).*)'],
 }
