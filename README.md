@@ -15,7 +15,7 @@
 
 Real-time tracking of drug shortages across Switzerland. Data is automatically collected daily from multiple official sources — processed, enriched, and made searchable for healthcare professionals, pharmacists, and the public.
 
-> Built by Henrik Rühe · Not affiliated with or endorsed by drugshortage.ch or any official authority.
+> Not affiliated with or endorsed by drugshortage.ch or any official authority.
 
 ---
 
@@ -216,4 +216,4 @@ Found a vulnerability? See [SECURITY.md](SECURITY.md) for responsible disclosure
 
 ## License
 
-[Elastic License 2.0](LICENSE) — © 2026 Henrik Rühe
+[Elastic License 2.0](LICENSE)
