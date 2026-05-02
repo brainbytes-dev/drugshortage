@@ -7,7 +7,7 @@
 [![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase&logoColor=white)](https://supabase.com)
 [![Prisma](https://img.shields.io/badge/Prisma-7-2D3748?logo=prisma&logoColor=white)](https://www.prisma.io)
 [![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000000?logo=vercel&logoColor=white)](https://vercel.com)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: Elastic-2.0](https://img.shields.io/badge/License-Elastic%202.0-blue.svg)](LICENSE)
 [![Last Commit](https://img.shields.io/github/last-commit/brainbytes-dev/engpassradar)](https://github.com/brainbytes-dev/engpassradar/commits/main)
 [![Issues](https://img.shields.io/github/issues/brainbytes-dev/engpassradar)](https://github.com/brainbytes-dev/engpassradar/issues)
 
@@ -15,7 +15,7 @@
 
 Real-time tracking of drug shortages across Switzerland. Data is automatically collected daily from multiple official sources — processed, enriched, and made searchable for healthcare professionals, pharmacists, and the public.
 
-> Built by [HM Consulting Rühe](https://engpass.radar) · Not affiliated with or endorsed by drugshortage.ch or any official authority.
+> Built by Henrik Rühe · Not affiliated with or endorsed by drugshortage.ch or any official authority.
 
 ---
 
@@ -216,4 +216,4 @@ Found a vulnerability? See [SECURITY.md](SECURITY.md) for responsible disclosure
 
 ## License
 
-[MIT](LICENSE) — © 2026 [HM Consulting Rühe](https://engpass.radar)
+[Elastic License 2.0](LICENSE) — © 2026 Henrik Rühe
