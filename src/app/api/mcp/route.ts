@@ -271,7 +271,7 @@ export async function GET(req: Request): Promise<Response> {
       description: 'Swiss medication shortage MCP server — 8 tools for drug shortage data from engpassradar.ch',
       transport: 'streamable-http',
       endpoint: 'https://engpassradar.ch/api/mcp',
-      smithery: 'https://smithery.ai/server/engpassradar',
+      smithery: 'https://smithery.ai/servers/info-re81/engpassradar',
     }), { headers: { 'Content-Type': 'application/json' } })
   }
   return handleMcp(req)

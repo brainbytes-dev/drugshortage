@@ -567,7 +567,7 @@ X-Api-Tier: professional`}</Code>
               <code className="font-mono">mcp.engpassradar.ch</code> — Smithery verbindet Ihren AI-Client direkt damit.
             </p>
             <a
-              href="https://smithery.ai/server/engpassradar"
+              href="https://smithery.ai/servers/info-re81/engpassradar"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
