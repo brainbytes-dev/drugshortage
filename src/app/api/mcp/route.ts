@@ -63,7 +63,7 @@ function createMcpServer(apiKey?: string): McpServer {
   const get = (path: string, params?: Record<string, string | number | boolean | undefined>) => apiGet(path, params, apiKey)
 
   server.registerTool(
-    'search_shortages',
+    'shortage.search',
     {
       title: 'Search Shortages',
       description: 'Full-text search of current Swiss medication shortages. Searches product name, active ingredient (Wirkstoff), and company. Use for: "Ibuprofen Engpass", "was ist N02BE01 betroffen", "Novartis aktuelle Probleme".',
@@ -83,7 +83,7 @@ function createMcpServer(apiKey?: string): McpServer {
   )
 
   server.registerTool(
-    'get_shortage',
+    'shortage.get',
     {
       title: 'Get Shortage Details',
       description: 'Fetch full details for a single shortage by GTIN. Returns product name, company, ATC, status, expected return date, severity score (0–100), and BWL mandatory stock flag.',
@@ -106,7 +106,7 @@ function createMcpServer(apiKey?: string): McpServer {
   )
 
   server.registerTool(
-    'find_alternatives',
+    'shortage.alternatives',
     {
       title: 'Find Alternatives',
       description: 'Find alternative products for a medication in shortage. Returns same-substance and same-class alternatives, each with their own current shortage status. THIS IS THE HIGHEST-VALUE TOOL — use it whenever asked "Was kann ich statt X verwenden?", "Welche Alternativen gibt es für Y?", "substitute for [product]".',
@@ -126,7 +126,7 @@ function createMcpServer(apiKey?: string): McpServer {
   )
 
   server.registerTool(
-    'check_atc_group',
+    'atc.check',
     {
       title: 'Check ATC Group',
       description: 'Check how many products in a given ATC therapeutic class are currently in shortage. Accepts any ATC depth (C09, C09AA, C09AA08). Use for: "Wie viele ACE-Hemmer sind betroffen?", "is anything in C09 affected?".',
@@ -150,7 +150,7 @@ function createMcpServer(apiKey?: string): McpServer {
   )
 
   server.registerTool(
-    'list_active_shortages',
+    'shortage.list',
     {
       title: 'List Active Shortages',
       description: 'List currently active medication shortages with optional filters. Use for dashboards, "was ist gerade betroffen", bulk monitoring.',
@@ -170,7 +170,7 @@ function createMcpServer(apiKey?: string): McpServer {
   )
 
   server.registerTool(
-    'get_company_status',
+    'company.status',
     {
       title: 'Get Company Status',
       description: 'All current shortages for a manufacturer, plus communication transparency metrics. Use for: "Wie transparent kommuniziert Novartis?", "aktuelle Probleme bei Sandoz", procurement decisions.',
@@ -207,7 +207,7 @@ function createMcpServer(apiKey?: string): McpServer {
   )
 
   server.registerTool(
-    'get_shortage_timeline',
+    'shortage.timeline',
     {
       title: 'Get Shortage Timeline',
       description: 'Week-by-week history of total active shortages in Switzerland. Use for: "wird es besser oder schlechter?", trend questions.',
@@ -229,7 +229,7 @@ function createMcpServer(apiKey?: string): McpServer {
   )
 
   server.registerTool(
-    'get_weekly_summary',
+    'stats.weekly',
     {
       title: 'Get Weekly Summary',
       description: 'Summary statistics: total active shortages, critical count, BWL affected. Quick situational overview — same data as the engpassradar.ch dashboard KPIs.',
