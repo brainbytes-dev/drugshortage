@@ -559,89 +559,54 @@ X-Api-Tier: professional`}</Code>
             ))}
           </div>
 
-          {/* How it works */}
-          <div className="rounded-lg border border-border/60 bg-muted/20 px-4 py-3 text-xs text-muted-foreground space-y-1">
-            <p className="font-semibold text-foreground text-xs">Wie das funktioniert</p>
-            <p>Der MCP-Server läuft <strong>lokal auf Ihrem Rechner</strong> — er ist kein gehosteter Dienst. Er verbindet sich mit Claude Desktop oder Cursor via stdio und ruft die engpassradar.ch API im Hintergrund ab. Node.js muss installiert sein.</p>
+          {/* Smithery — primary setup */}
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Setup via Smithery (empfohlen)</p>
+            <p className="text-xs text-muted-foreground">
+              Kein Download, kein Build. Der Server läuft gehostet auf{' '}
+              <code className="font-mono">mcp.engpassradar.ch</code> — Smithery verbindet Ihren AI-Client direkt damit.
+            </p>
+            <a
+              href="https://smithery.ai/server/engpassradar"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
+            >
+              Auf Smithery installieren →
+            </a>
           </div>
 
-          {/* Setup steps */}
-          <div className="space-y-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Schritt-für-Schritt Setup</p>
-
-            <div className="space-y-1">
-              <p className="text-xs font-semibold text-foreground">1 — Server herunterladen</p>
-              <p className="text-xs text-muted-foreground mb-1.5">
-                Datei direkt herunterladen (kein Build nötig) — Node.js muss installiert sein:
-              </p>
-              <Code>{`# macOS / Linux
-curl -o engpassradar-mcp.js https://raw.githubusercontent.com/brainbytes-dev/engpassradar/main/mcp/dist/index.js
-
-# Windows (PowerShell)
-Invoke-WebRequest -Uri "https://raw.githubusercontent.com/brainbytes-dev/engpassradar/main/mcp/dist/index.js" -OutFile "engpassradar-mcp.js"`}</Code>
-              <p className="text-xs text-muted-foreground mt-1">
-                Oder manuell:{' '}
-                <a
-                  href="https://raw.githubusercontent.com/brainbytes-dev/engpassradar/main/mcp/dist/index.js"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline underline-offset-2 hover:text-foreground"
-                >
-                  index.js direkt öffnen → Rechtsklick → Speichern unter
-                </a>
-              </p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-xs font-semibold text-foreground">2 — Claude Desktop konfigurieren</p>
-              <p className="text-xs text-muted-foreground mb-1.5">Datei öffnen: <code className="font-mono">~/Library/Application Support/Claude/claude_desktop_config.json</code> (macOS) bzw. <code className="font-mono">%APPDATA%\Claude\claude_desktop_config.json</code> (Windows)</p>
-              <Code>{`{
+          {/* Manual config */}
+          <div className="space-y-3">
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Manuelle Konfiguration (Claude Desktop / Cursor)</p>
+            <p className="text-xs text-muted-foreground">
+              Für direkte HTTP-Verbindung ohne Smithery — in{' '}
+              <code className="font-mono">claude_desktop_config.json</code> (macOS:{' '}
+              <code className="font-mono">~/Library/Application Support/Claude/</code>) eintragen:
+            </p>
+            <Code>{`{
   "mcpServers": {
     "engpassradar": {
-      "command": "node",
-      "args": ["/absoluter/pfad/zu/engpassradar-mcp.js"]
+      "type": "http",
+      "url": "https://mcp.engpassradar.ch"
     }
   }
 }`}</Code>
-              <p className="text-xs text-muted-foreground mt-1">Absoluten Pfad zur heruntergeladenen Datei verwenden, z. B. <code className="font-mono">/Users/IhrName/Downloads/engpassradar-mcp.js</code></p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-xs font-semibold text-foreground">3 — Claude Desktop neu starten</p>
-              <p className="text-xs text-muted-foreground">Claude Desktop komplett beenden und neu öffnen. Im Textfeld erscheint dann das Hammer-Icon — engpassradar-Tools sind aktiv.</p>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-xs font-semibold text-foreground">Optional: Cursor / VS Code</p>
-              <Code>{`# .cursor/mcp.json im Projektordner
-{
+            <p className="text-xs text-muted-foreground">
+              Mit Pro API-Key (10&apos;000 Req/Tag):
+            </p>
+            <Code>{`{
   "mcpServers": {
     "engpassradar": {
-      "command": "node",
-      "args": ["/absoluter/pfad/zu/engpassradar/mcp/dist/index.js"]
+      "type": "http",
+      "url": "https://mcp.engpassradar.ch?ENGPASS_API_KEY=ihr-api-key"
     }
   }
 }`}</Code>
-            </div>
-
-            <div className="space-y-1">
-              <p className="text-xs font-semibold text-foreground">Optional: Mit API-Key (höhere Rate Limits)</p>
-              <Code>{`{
-  "mcpServers": {
-    "engpassradar": {
-      "command": "node",
-      "args": ["/absoluter/pfad/zu/engpassradar/mcp/dist/index.js"],
-      "env": {
-        "ENGPASS_API_KEY": "ihr-api-key"
-      }
-    }
-  }
-}`}</Code>
-            </div>
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Free-Tier (100 Req/h) funktioniert ohne API-Key. Pro-Key (10&apos;000 Req/Tag) über{' '}
+            Free-Tier (100 Req/h) ohne Key. Pro-Key (10&apos;000 Req/Tag) über{' '}
             <Link href="/api-keys" className="underline underline-offset-2 hover:text-foreground">API-Keys</Link>.{' '}
             Quellcode:{' '}
             <a
@@ -650,7 +615,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/brainbytes-dev/engpass
               rel="noopener noreferrer"
               className="underline underline-offset-2 hover:text-foreground"
             >
-              github.com/brainbytes-dev/engpassradar/tree/main/mcp
+              github.com/…/mcp
             </a>
           </p>
         </section>
