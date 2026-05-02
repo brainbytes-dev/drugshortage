@@ -11,20 +11,39 @@ export const dynamic = 'force-dynamic'
 
 const BASE = 'https://engpassradar.ch'
 
-async function apiGet(path: string, params: Record<string, string | number | boolean | undefined> = {}): Promise<unknown> {
+function extractApiKey(req: Request): string | undefined {
+  // Smithery passes user-configured params as Authorization header or X-Api-Key
+  const auth = req.headers.get('authorization')
+  if (auth?.startsWith('Bearer ')) return auth.slice(7).trim()
+  const xKey = req.headers.get('x-api-key')
+  if (xKey) return xKey.trim()
+  // Also accept as query param for flexibility
+  const url = new URL(req.url)
+  return url.searchParams.get('apiKey') ?? undefined
+}
+
+async function apiGet(
+  path: string,
+  params: Record<string, string | number | boolean | undefined> = {},
+  apiKey?: string,
+): Promise<unknown> {
   const url = new URL(`${BASE}${path}`)
   for (const [k, v] of Object.entries(params)) {
     if (v !== undefined) url.searchParams.set(k, String(v))
   }
-  const res = await fetch(url.toString(), {
-    headers: { 'Accept': 'application/json', 'User-Agent': 'engpassradar-mcp/0.1' },
-  })
+  const headers: Record<string, string> = {
+    'Accept': 'application/json',
+    'User-Agent': 'engpassradar-mcp/0.1',
+  }
+  if (apiKey) headers['Authorization'] = `Bearer ${apiKey}`
+  const res = await fetch(url.toString(), { headers })
   if (!res.ok) throw new Error(`API ${res.status}: ${path}`)
   return res.json()
 }
 
-function createMcpServer(): McpServer {
+function createMcpServer(apiKey?: string): McpServer {
   const server = new McpServer({ name: 'engpassradar', version: '0.1.0' })
+  const get = (path: string, params?: Record<string, string | number | boolean | undefined>) => apiGet(path, params, apiKey)
 
   server.tool(
     'search_shortages',
@@ -36,7 +55,7 @@ function createMcpServer(): McpServer {
       limit: z.number().optional().default(20).describe('Max results (default 20)'),
     },
     async ({ query, atc, firma, limit }) => {
-      const data = await apiGet('/api/v1/shortages', { search: query, atc, firma, perPage: Math.min(100, limit ?? 20) })
+      const data = await get('/api/v1/shortages', { search: query, atc, firma, perPage: Math.min(100, limit ?? 20) })
       return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] }
     }
   )
@@ -46,7 +65,7 @@ function createMcpServer(): McpServer {
     'Fetch full details for a single shortage by GTIN. Returns product name, company, ATC, status, expected return date, severity score, and BWL flag.',
     { gtin: z.string().describe('GTIN (7–14 digits), e.g. "7680555710014"') },
     async ({ gtin }) => {
-      const data = await apiGet(`/api/v1/shortages/${encodeURIComponent(gtin)}`)
+      const data = await get(`/api/v1/shortages/${encodeURIComponent(gtin)}`)
       return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] }
     }
   )
@@ -56,7 +75,7 @@ function createMcpServer(): McpServer {
     'Find alternative products for a medication in shortage. Returns same-substance and same-class alternatives, each with their own current shortage status. THIS IS THE HIGHEST-VALUE TOOL — use it whenever asked "Was kann ich statt X verwenden?", "Welche Alternativen gibt es für Y?", "substitute for [product]".',
     { gtin: z.string().describe('GTIN of the product in shortage') },
     async ({ gtin }) => {
-      const data = await apiGet('/api/alternatives', { gtin })
+      const data = await get('/api/alternatives', { gtin })
       return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] }
     }
   )
@@ -69,7 +88,7 @@ function createMcpServer(): McpServer {
       limit: z.number().optional().default(50).describe('Max products (default 50)'),
     },
     async ({ atc, limit }) => {
-      const data = await apiGet('/api/v1/shortages', { atc, perPage: Math.min(200, limit ?? 50) }) as { data: unknown[]; total: number }
+      const data = await get('/api/v1/shortages', { atc, perPage: Math.min(200, limit ?? 50) }) as { data: unknown[]; total: number }
       const result = { atc, affectedCount: data.total, shown: data.data.length, shortages: data.data, meta: { source: 'engpassradar.ch' } }
       return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
     }
@@ -85,7 +104,7 @@ function createMcpServer(): McpServer {
       page: z.number().optional().default(1).describe('Page number'),
     },
     async ({ atc, firma, limit, page }) => {
-      const data = await apiGet('/api/v1/shortages', { atc, firma, perPage: Math.min(200, limit ?? 50), page: page ?? 1, sort: 'tageSeitMeldung:desc' })
+      const data = await get('/api/v1/shortages', { atc, firma, perPage: Math.min(200, limit ?? 50), page: page ?? 1, sort: 'tageSeitMeldung:desc' })
       return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] }
     }
   )
@@ -95,7 +114,7 @@ function createMcpServer(): McpServer {
     'All current shortages for a manufacturer, plus communication transparency metrics. Use for: "Wie transparent kommuniziert Novartis?", "aktuelle Probleme bei Sandoz".',
     { firma: z.string().describe('Manufacturer name (partial match)') },
     async ({ firma }) => {
-      const data = await apiGet('/api/v1/shortages', { firma, perPage: 200 }) as {
+      const data = await get('/api/v1/shortages', { firma, perPage: 200 }) as {
         data: Array<{ statusCode: number; tageSeitMeldung: number; bezeichnung: string; gtin: string }>
         total: number
       }
@@ -118,7 +137,7 @@ function createMcpServer(): McpServer {
     { weeks: z.number().optional().default(12).describe('Number of past weeks (default 12, max 52)') },
     async ({ weeks }) => {
       const n = Math.min(52, weeks ?? 12)
-      const data = await apiGet('/api/v1/timeline', { weeks: n }) as { data: unknown[] }
+      const data = await get('/api/v1/timeline', { weeks: n }) as { data: unknown[] }
       const result = { data: data.data.slice(-n), meta: { weeks: n, source: 'engpassradar.ch' } }
       return { content: [{ type: 'text', text: JSON.stringify(result, null, 2) }] }
     }
@@ -129,7 +148,7 @@ function createMcpServer(): McpServer {
     'Summary statistics: total active shortages, critical count, BWL affected. Quick situational overview.',
     {},
     async () => {
-      const data = await apiGet('/api/v1/stats')
+      const data = await get('/api/v1/stats')
       return { content: [{ type: 'text', text: JSON.stringify(data, null, 2) }] }
     }
   )
@@ -138,11 +157,12 @@ function createMcpServer(): McpServer {
 }
 
 async function handleMcp(req: Request): Promise<Response> {
+  const apiKey = extractApiKey(req)
   const transport = new WebStandardStreamableHTTPServerTransport({
     sessionIdGenerator: undefined, // stateless — required for serverless/Vercel
     enableJsonResponse: true,      // allow plain JSON for clients without SSE
   })
-  const server = createMcpServer()
+  const server = createMcpServer(apiKey)
   await server.connect(transport)
   // Pass parsedBody for POST to avoid reading the stream twice
   const parsedBody = req.method === 'POST' ? await req.json().catch(() => undefined) : undefined
