@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { buildPageAlternates } from '@/lib/i18n-meta'
 import type { Locale } from '@/i18n/routing'
-import Script from 'next/script'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft } from 'lucide-react'
@@ -95,10 +94,9 @@ export default async function ApiDocsPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <Script
-        id="ld-api-docs"
+      <script
         type="application/ld+json"
-        strategy="beforeInteractive"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
@@ -141,7 +139,7 @@ export default async function ApiDocsPage() {
           <Code>https://engpassradar.ch/api/v1</Code>
           <p className="text-xs text-muted-foreground">
             {t.rich('baseUrlNote', {
-              header: () => <code className="font-mono bg-muted px-1 rounded">Access-Control-Allow-Origin: *</code>,
+              header: (chunks) => <code className="font-mono bg-muted px-1 rounded">{chunks}</code>,
             })}
           </p>
         </section>
@@ -375,7 +373,7 @@ export default async function ApiDocsPage() {
           </Code>
           <p className="text-xs text-muted-foreground">
             {t.rich('alternativesBatchNote', {
-              code: () => <code className="font-mono bg-muted px-1 rounded">data: null</code>,
+              code: (chunks) => <code className="font-mono bg-muted px-1 rounded">{chunks}</code>,
             })}
           </p>
         </section>
@@ -418,8 +416,8 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
           </div>
           <p className="text-sm text-muted-foreground">
             {t.rich('healthIntro', {
-              ok: () => <code className="font-mono bg-muted px-1 rounded">200</code>,
-              fail: () => <code className="font-mono bg-muted px-1 rounded">503</code>,
+              ok: (chunks) => <code className="font-mono bg-muted px-1 rounded">{chunks}</code>,
+              fail: (chunks) => <code className="font-mono bg-muted px-1 rounded">{chunks}</code>,
             })}
           </p>
           <Code>{`curl "https://engpassradar.ch/api/health"
@@ -605,7 +603,7 @@ X-Api-Tier: professional`}</Code>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('mcpSmitheryEyebrow')}</p>
             <p className="text-xs text-muted-foreground">
               {t.rich('mcpSmitheryBody', {
-                server: () => <code className="font-mono">mcp.engpassradar.ch</code>,
+                server: (chunks) => <code className="font-mono">{chunks}</code>,
               })}
             </p>
             <a
@@ -623,8 +621,8 @@ X-Api-Tier: professional`}</Code>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('mcpManualEyebrow')}</p>
             <p className="text-xs text-muted-foreground">
               {t.rich('mcpManualBody', {
-                file: () => <code className="font-mono">claude_desktop_config.json</code>,
-                path: () => <code className="font-mono">~/Library/Application Support/Claude/</code>,
+                file: (chunks) => <code className="font-mono">{chunks}</code>,
+                path: (chunks) => <code className="font-mono">{chunks}</code>,
               })}
             </p>
             <Code>{`{

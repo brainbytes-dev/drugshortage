@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { buildPageAlternates } from '@/lib/i18n-meta'
 import type { Locale } from '@/i18n/routing'
-import Script from 'next/script'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
@@ -125,11 +124,10 @@ export default async function MetodikPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <Script
-        id="ld-methodik"
+      <script
         type="application/ld+json"
-        strategy="beforeInteractive"
         suppressHydrationWarning
+        
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 

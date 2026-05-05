@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { buildPageAlternates } from '@/lib/i18n-meta'
 import type { Locale } from '@/i18n/routing'
-import Script from 'next/script'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
@@ -165,10 +164,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <Script
-        id="ld-home-graph"
+      <script
         type="application/ld+json"
-        strategy="beforeInteractive"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -324,10 +322,9 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────── */}
-      <Script
-        id="ld-home-faq"
+      <script
         type="application/ld+json"
-        strategy="beforeInteractive"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')
         }}

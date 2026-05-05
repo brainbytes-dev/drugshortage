@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import { getTranslations } from 'next-intl/server'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -29,10 +28,9 @@ export default async function DatenschutzPage() {
 
   return (
     <main className="bg-background">
-      <Script
-        id="ld-datenschutz"
+      <script
         type="application/ld+json"
-        strategy="beforeInteractive"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <div className="max-w-3xl mx-auto px-6 py-16">

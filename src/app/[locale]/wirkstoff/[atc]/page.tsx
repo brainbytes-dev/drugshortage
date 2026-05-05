@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
@@ -116,7 +115,9 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
 
   return (
     <main className="min-h-screen bg-background">
-      <Script id="ld-wirkstoff" type="application/ld+json" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
 
       {/* ─── Header ──────────────────────────────────────────────────── */}
       <section className="border-b border-border/40">

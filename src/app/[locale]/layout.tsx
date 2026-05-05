@@ -107,10 +107,9 @@ export default async function LocaleLayout({
         )}
       </head>
       <body className={`${inter.className} antialiased overflow-x-hidden`}>
-        <Script
-          id="ld-website"
-          type="application/ld+json"
-          strategy="beforeInteractive"
+        <script
+        type="application/ld+json"
+        suppressHydrationWarning
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',

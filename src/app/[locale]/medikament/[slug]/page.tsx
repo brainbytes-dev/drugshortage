@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
@@ -89,10 +88,9 @@ export default async function MedikamentPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background">
-      <Script
-        id="ld-medikament"
+      <script
         type="application/ld+json"
-        strategy="beforeInteractive"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',

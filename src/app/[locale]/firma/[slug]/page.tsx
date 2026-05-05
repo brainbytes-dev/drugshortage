@@ -1,5 +1,4 @@
 import type { Metadata } from 'next'
-import Script from 'next/script'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -115,10 +114,9 @@ export default async function FirmaPage({
 
   return (
     <main className="min-h-screen bg-background">
-      <Script
-        id="ld-firma"
+      <script
         type="application/ld+json"
-        strategy="beforeInteractive"
+        suppressHydrationWarning
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
