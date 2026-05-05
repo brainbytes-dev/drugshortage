@@ -1,8 +1,9 @@
 'use client'
 
 import { useRef, useEffect, useTransition } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { useRouter, usePathname, Link } from '@/i18n/navigation'
+import { useTranslations, useLocale } from 'next-intl'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table'
@@ -18,19 +19,20 @@ interface HistoricalTableProps {
   perPage: number
 }
 
-const SORT_COLS = [
-  { key: 'bezeichnung', label: 'Bezeichnung' },
-  { key: 'firma',       label: 'Firma' },
-  { key: 'lastSeenAt',  label: 'Zuletzt aktiv' },
-  { key: 'firstSeenAt', label: 'Erste Meldung' },
-  { key: 'occurrenceCount', label: 'Anz.' },
-] as const
+const SORT_KEYS = ['bezeichnung', 'firma', 'lastSeenAt', 'firstSeenAt', 'occurrenceCount'] as const
+type SortKey = typeof SORT_KEYS[number]
 
-function formatDate(iso: string) {
-  return new Date(iso).toLocaleDateString('de-CH', { day: '2-digit', month: '2-digit', year: 'numeric' })
+const LOCALE_TO_BCP47: Record<string, string> = {
+  de: 'de-CH',
+  en: 'en-GB',
+  fr: 'fr-CH',
+  it: 'it-CH',
 }
 
 export function HistoricalTable({ data, total, page, perPage }: HistoricalTableProps) {
+  const t = useTranslations('HistoricalTable')
+  const locale = useLocale()
+  const dateLocale = LOCALE_TO_BCP47[locale] ?? 'de-CH'
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -38,6 +40,10 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
   const tableRef = useRef<HTMLDivElement>(null)
   const scrollToTable = useRef(false)
   const totalPages = Math.max(1, Math.ceil(total / perPage))
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString(dateLocale, { day: '2-digit', month: '2-digit', year: 'numeric' })
+  }
 
   useEffect(() => {
     if (scrollToTable.current) {
@@ -56,8 +62,12 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
       if (v === null) p.delete(k); else p.set(k, v)
     }
     scrollToTable.current = scroll
+    const query = Object.fromEntries(p.entries())
     startTransition(() => {
-      router.replace(`${pathname}?${p.toString()}`, { scroll: false })
+      router.replace(
+        { pathname, query } as Parameters<typeof router.replace>[0],
+        { scroll: false }
+      )
     })
   }
 
@@ -72,42 +82,50 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
   const start = (page - 1) * perPage + 1
   const end   = Math.min(page * perPage, total)
 
+  const colLabel: Record<SortKey, string> = {
+    bezeichnung: t('colBezeichnung'),
+    firma: t('colFirma'),
+    lastSeenAt: t('colLastSeen'),
+    firstSeenAt: t('colFirstSeen'),
+    occurrenceCount: t('colOccurrences'),
+  }
+
   return (
     <div ref={tableRef} className="space-y-3">
       <div className="rounded-xl border border-border/60 bg-card overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent border-border/40">
-              {SORT_COLS.map(col => (
+              {SORT_KEYS.map(key => (
                 <TableHead
-                  key={col.key}
+                  key={key}
                   className={[
                     'font-semibold text-foreground',
-                    col.key === 'bezeichnung' ? 'pl-4' : '',
-                    col.key === 'occurrenceCount' ? 'text-right pr-4' : '',
+                    key === 'bezeichnung' ? 'pl-4' : '',
+                    key === 'occurrenceCount' ? 'text-right pr-4' : '',
                   ].join(' ')}
                 >
                   <button
-                    onClick={() => toggleSort(col.key)}
+                    onClick={() => toggleSort(key)}
                     className="inline-flex items-center gap-1 hover:text-primary transition-colors"
                   >
-                    {col.label}
+                    {colLabel[key]}
                     <ArrowUpDown className={[
                       'h-3 w-3',
-                      sortField === col.key ? 'text-primary' : 'text-muted-foreground/50',
+                      sortField === key ? 'text-primary' : 'text-muted-foreground/50',
                     ].join(' ')} />
                   </button>
                 </TableHead>
               ))}
-              <TableHead className="font-semibold text-foreground">Dauer</TableHead>
-              <TableHead className="font-semibold text-foreground pr-4">ATC</TableHead>
+              <TableHead className="font-semibold text-foreground">{t('colDuration')}</TableHead>
+              <TableHead className="font-semibold text-foreground pr-4">{t('colAtc')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center text-muted-foreground py-12">
-                  Keine historischen Einträge gefunden.
+                  {t('emptyState')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -115,7 +133,7 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
                 <TableRow key={row.id} className="border-border/30 hover:bg-muted/30 transition-colors">
                   <TableCell className="pl-4 font-medium text-sm max-w-xs">
                     {row.slug ? (
-                      <Link href={`/medikament/${row.slug}`} className="hover:text-primary hover:underline underline-offset-2">
+                      <Link href={{ pathname: '/medikament/[slug]', params: { slug: row.slug } }} className="hover:text-primary hover:underline underline-offset-2">
                         <span className="line-clamp-2 leading-snug">{row.bezeichnung}</span>
                       </Link>
                     ) : (
@@ -123,7 +141,7 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
                     )}
                   </TableCell>
                   <TableCell className="text-sm">
-                    <Link href={`/firma/${toSlug(row.firma)}`} className="text-primary hover:underline underline-offset-2">
+                    <Link href={{ pathname: '/firma/[slug]', params: { slug: toSlug(row.firma) } }} className="text-primary hover:underline underline-offset-2">
                       {row.firma}
                     </Link>
                   </TableCell>
@@ -143,7 +161,7 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
                     )}
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground tabular-nums">
-                    {row.durationDays !== null ? `${row.durationDays} T` : '—'}
+                    {row.durationDays !== null ? t('durationDays', { days: row.durationDays }) : '—'}
                   </TableCell>
                   <TableCell className="text-sm font-mono text-muted-foreground pr-4">
                     {row.atcCode}
@@ -158,24 +176,24 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-1">
           <p className="text-sm text-muted-foreground tabular-nums">
-            {start}–{end} von {total}
+            {t('rangeOfTotal', { start, end, total })}
           </p>
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="icon" className="h-8 w-8" disabled={page <= 1}
-              onClick={() => navigate({ page: '1' }, true)} aria-label="Erste Seite">
+              onClick={() => navigate({ page: '1' }, true)} aria-label={t('firstPage')}>
               <ChevronsLeft className="h-4 w-4" />
             </Button>
             <Button variant="ghost" size="icon" className="h-8 w-8" disabled={page <= 1}
-              onClick={() => navigate({ page: String(page - 1) }, true)} aria-label="Vorherige Seite">
+              onClick={() => navigate({ page: String(page - 1) }, true)} aria-label={t('previousPage')}>
               <ChevronLeft className="h-4 w-4" />
             </Button>
             <span className="text-sm text-muted-foreground px-2 tabular-nums">{page} / {totalPages}</span>
             <Button variant="ghost" size="icon" className="h-8 w-8" disabled={page >= totalPages}
-              onClick={() => navigate({ page: String(page + 1) }, true)} aria-label="Nächste Seite">
+              onClick={() => navigate({ page: String(page + 1) }, true)} aria-label={t('nextPage')}>
               <ChevronRight className="h-4 w-4" />
             </Button>
             <Button variant="ghost" size="icon" className="h-8 w-8" disabled={page >= totalPages}
-              onClick={() => navigate({ page: String(totalPages) }, true)} aria-label="Letzte Seite">
+              onClick={() => navigate({ page: String(totalPages) }, true)} aria-label={t('lastPage')}>
               <ChevronsRight className="h-4 w-4" />
             </Button>
           </div>

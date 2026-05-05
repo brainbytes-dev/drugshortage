@@ -1,8 +1,8 @@
 'use client'
 
 import { useEffect, useState, useTransition } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useRouter, Link } from '@/i18n/navigation'
+import { useTranslations, useLocale } from 'next-intl'
 import { X } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { StatusBadge } from './status-badge'
@@ -12,6 +12,13 @@ import type { AlternativesResponse, Alternative } from '@/app/api/alternatives/r
 interface ShortageDrawerProps {
   shortage: Shortage | null
   onClose: () => void
+}
+
+const LOCALE_TO_BCP47: Record<string, string> = {
+  de: 'de-CH',
+  en: 'en-GB',
+  fr: 'fr-CH',
+  it: 'it-CH',
 }
 
 function DetailRow({ label, value }: { label: string; value: React.ReactNode }) {
@@ -24,6 +31,12 @@ function DetailRow({ label, value }: { label: string; value: React.ReactNode }) 
 }
 
 function AlternativeRow({ alt, onClick }: { alt: Alternative; onClick: () => void }) {
+  const t = useTranslations('ShortageDrawer')
+  const typeLabel = alt.typ === 'O'
+    ? t('typeOriginal')
+    : alt.typ === 'G'
+      ? t('typeGeneric')
+      : alt.typ
   return (
     <button
       onClick={onClick}
@@ -34,7 +47,7 @@ function AlternativeRow({ alt, onClick }: { alt: Alternative; onClick: () => voi
         <span className="text-xs text-muted-foreground">{alt.firma}</span>
         {alt.typ && (
           <Badge variant="outline" className="text-[10px] px-1.5 py-0">
-            {alt.typ === 'O' ? 'Original' : alt.typ === 'G' ? 'Generikum' : alt.typ}
+            {typeLabel}
           </Badge>
         )}
       </div>
@@ -43,6 +56,7 @@ function AlternativeRow({ alt, onClick }: { alt: Alternative; onClick: () => voi
 }
 
 function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (bezeichnung: string) => void }) {
+  const t = useTranslations('ShortageDrawer')
   const [data, setData] = useState<AlternativesResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
@@ -72,8 +86,8 @@ function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (beze
       .finally(() => setLoading(false))
   }, [gtin])
 
-  if (loading) return <p className="text-xs text-muted-foreground py-3">Alternativen werden geladen…</p>
-  if (error) return <p className="text-xs text-muted-foreground py-3">Keine Alternativen verfügbar.</p>
+  if (loading) return <p className="text-xs text-muted-foreground py-3">{t('alternativesLoading')}</p>
+  if (error) return <p className="text-xs text-muted-foreground py-3">{t('alternativesUnavailable')}</p>
 
   const hasAny = data && (
     data.alleAlternativen.length > 0 ||
@@ -81,14 +95,14 @@ function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (beze
     data.gleicheFirma.length > 0
   )
 
-  if (!hasAny) return <p className="text-xs text-muted-foreground py-3">Keine Alternativen erfasst.</p>
+  if (!hasAny) return <p className="text-xs text-muted-foreground py-3">{t('alternativesNone')}</p>
 
   return (
     <div className="space-y-4">
       {data!.alleAlternativen.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
-            Alternativpräparate ({data!.alleAlternativen.length})
+            {t('alternativesAllHeading', { count: data!.alleAlternativen.length })}
           </p>
           <div className="divide-y">
             {data!.alleAlternativen.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} onClick={() => onSelect(a.bezeichnung)} />)}
@@ -98,7 +112,7 @@ function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (beze
       {data!.coMarketing.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
-            Co-Marketing (identisch)
+            {t('coMarketingHeading')}
           </p>
           <div className="divide-y">
             {data!.coMarketing.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} onClick={() => onSelect(a.bezeichnung)} />)}
@@ -108,7 +122,7 @@ function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (beze
       {data!.gleicheFirma.length > 0 && (
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">
-            Gleiche Firma (andere Packung)
+            {t('sameFirmaHeading')}
           </p>
           <div className="divide-y">
             {data!.gleicheFirma.map(a => <AlternativeRow key={a.gtin || a.bezeichnung} alt={a} onClick={() => onSelect(a.bezeichnung)} />)}
@@ -120,6 +134,9 @@ function AlternativesSection({ gtin, onSelect }: { gtin: string; onSelect: (beze
 }
 
 export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
+  const t = useTranslations('ShortageDrawer')
+  const locale = useLocale()
+  const dateLocale = LOCALE_TO_BCP47[locale] ?? 'de-CH'
   const router = useRouter()
 
   useEffect(() => {
@@ -141,7 +158,7 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
 
   function handleAlternativeSelect(bezeichnung: string) {
     onClose()
-    router.push(`/?search=${encodeURIComponent(bezeichnung)}`, { scroll: false })
+    router.push({ pathname: '/', query: { search: bezeichnung } }, { scroll: false })
   }
 
   if (!shortage) return null
@@ -166,7 +183,7 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
             </p>
             <h2 className="text-[16px] font-semibold leading-tight text-foreground">
               <Link
-                href={`/medikament/${shortage.slug ?? shortage.gtin}`}
+                href={{ pathname: '/medikament/[slug]', params: { slug: shortage.slug ?? shortage.gtin } }}
                 onClick={onClose}
                 className="hover:text-primary hover:underline underline-offset-2 transition-colors"
               >
@@ -180,7 +197,7 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
           </div>
           <button
             onClick={onClose}
-            aria-label="Schliessen"
+            aria-label={t('closeAria')}
             className="shrink-0 rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           >
             <X className="h-4 w-4" />
@@ -193,55 +210,58 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
           {/* Left: details */}
           <div className="px-6 py-4">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-              Details
+              {t('detailsHeading')}
             </p>
             <div className="divide-y">
-              <DetailRow label="GTIN" value={shortage.gtin} />
-              <DetailRow label="Pharmacode" value={shortage.pharmacode} />
-              <DetailRow label="Voraussichtlich lieferbar" value={shortage.datumLieferfahigkeit} />
+              <DetailRow label={t('detailGtin')} value={shortage.gtin} />
+              <DetailRow label={t('detailPharmacode')} value={shortage.pharmacode} />
+              <DetailRow label={t('detailAvailableFrom')} value={shortage.datumLieferfahigkeit} />
               {shortage.voraussichtlicheDauer && (
-                <DetailRow label="Voraussichtliche Dauer" value={shortage.voraussichtlicheDauer} />
+                <DetailRow label={t('detailExpectedDuration')} value={shortage.voraussichtlicheDauer} />
               )}
-              <DetailRow label="Letzte Mutation" value={shortage.datumLetzteMutation} />
+              <DetailRow label={t('detailLastMutation')} value={shortage.datumLetzteMutation} />
               {shortage.ersteMeldung && (
-                <DetailRow label="Erste Meldung" value={shortage.ersteMeldung} />
+                <DetailRow label={t('detailFirstReport')} value={shortage.ersteMeldung} />
               )}
               {shortage.ersteMeldungDurch && (
-                <DetailRow label="Gemeldet durch" value={shortage.ersteMeldungDurch} />
+                <DetailRow label={t('detailReportedBy')} value={shortage.ersteMeldungDurch} />
               )}
               {shortage.ersteInfoDurchFirma && (
-                <DetailRow label="Info durch Firma" value={shortage.ersteInfoDurchFirma} />
+                <DetailRow label={t('detailFirmaInfo')} value={shortage.ersteInfoDurchFirma} />
               )}
               {shortage.artDerInfoDurchFirma && (
-                <DetailRow label="Art der Info" value={shortage.artDerInfoDurchFirma} />
+                <DetailRow label={t('detailInfoType')} value={shortage.artDerInfoDurchFirma} />
               )}
               {shortage.bemerkungen && (
-                <DetailRow label="Bemerkungen" value={shortage.bemerkungen} />
+                <DetailRow label={t('detailRemarks')} value={shortage.bemerkungen} />
               )}
-              <DetailRow label="Tage seit erster Meldung" value={shortage.tageSeitMeldung} />
-              <DetailRow label="Generic Group" value={shortage.gengrp} />
+              <DetailRow label={t('detailDaysSinceReport')} value={shortage.tageSeitMeldung} />
+              <DetailRow label={t('detailGenericGroup')} value={shortage.gengrp} />
               <DetailRow
-                label="Erste Erfassung (unser System)"
-                value={new Date(shortage.firstSeenAt).toLocaleDateString('de-CH')}
+                label={t('detailFirstSeen')}
+                value={new Date(shortage.firstSeenAt).toLocaleDateString(dateLocale)}
               />
             </div>
             <p className="mt-4 pt-3 border-t text-xs text-muted-foreground">
-              Quelle:{' '}
-              <a
-                href="https://www.drugshortage.ch"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="underline hover:text-foreground"
-              >
-                drugshortage.ch
-              </a>
+              {t.rich('sourceLine', {
+                link: (chunks) => (
+                  <a
+                    href="https://www.drugshortage.ch"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-foreground"
+                  >
+                    {chunks}
+                  </a>
+                ),
+              })}
             </p>
           </div>
 
           {/* Right: alternatives */}
           <div className="px-6 py-4">
             <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground mb-2">
-              Mögliche Alternativen
+              {t('alternativesHeading')}
             </p>
             <AlternativesSection gtin={shortage.gtin} onSelect={handleAlternativeSelect} />
           </div>

@@ -1,19 +1,20 @@
 'use client'
 
 import { useEffect, useState, Suspense } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { useSearchParams } from 'next/navigation'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 
-const TIER_LABELS: Record<string, string> = {
-  free: 'Free',
-  research: 'Research',
-  professional: 'Professional',
-  institutional: 'Institutional',
-  data_license: 'Data License',
+const TIER_LABEL_KEYS: Record<string, 'tierFree' | 'tierResearch' | 'tierProfessional' | 'tierInstitutional' | 'tierDataLicense'> = {
+  free: 'tierFree',
+  research: 'tierResearch',
+  professional: 'tierProfessional',
+  institutional: 'tierInstitutional',
+  data_license: 'tierDataLicense',
 }
 
 const TIER_COLORS: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
@@ -34,12 +35,13 @@ type KeyData = {
 }
 
 function ApiKeyDisplay({ value }: { value: string }) {
+  const t = useTranslations('ApiKeys')
   const [revealed, setRevealed] = useState(false)
   const [copied, setCopied] = useState(false)
   const masked = value.slice(0, 8) + '•'.repeat(24) + value.slice(-4)
   return (
     <div className="rounded-md border bg-muted/40 p-3 space-y-2">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">API-Key</p>
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('apiKeyLabel')}</p>
       <div className="flex items-center gap-2 flex-wrap">
         <code className="text-sm font-mono break-all flex-1">{revealed ? value : masked}</code>
         <div className="flex gap-1.5 shrink-0">
@@ -47,13 +49,13 @@ function ApiKeyDisplay({ value }: { value: string }) {
             onClick={() => setRevealed((r) => !r)}
             className="rounded px-2 py-1 text-xs border hover:bg-muted transition-colors"
           >
-            {revealed ? 'Verbergen' : 'Anzeigen'}
+            {revealed ? t('hide') : t('reveal')}
           </button>
           <button
             onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 2000) }}
             className="rounded px-2 py-1 text-xs border hover:bg-muted transition-colors"
           >
-            {copied ? 'Kopiert!' : 'Kopieren'}
+            {copied ? t('copied') : t('copy')}
           </button>
         </div>
       </div>
@@ -62,19 +64,21 @@ function ApiKeyDisplay({ value }: { value: string }) {
 }
 
 function CopyButton({ value }: { value: string }) {
+  const t = useTranslations('ApiKeys')
   const [copied, setCopied] = useState(false)
   return (
     <button
       onClick={() => { navigator.clipboard.writeText(value); setCopied(true); setTimeout(() => setCopied(false), 2000) }}
       className="ml-2 rounded px-2 py-0.5 text-xs border hover:bg-muted transition-colors"
     >
-      {copied ? 'Kopiert!' : 'Kopieren'}
+      {copied ? t('copied') : t('copy')}
     </button>
   )
 }
 
 
 function Dashboard({ token }: { token: string }) {
+  const t = useTranslations('ApiKeys')
   const [data, setData] = useState<KeyData | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [confirmRegen, setConfirmRegen] = useState(false)
@@ -88,8 +92,8 @@ function Dashboard({ token }: { token: string }) {
         if (d.error) setError(d.error)
         else setData(d)
       })
-      .catch(() => setError('Fehler beim Laden'))
-  }, [token])
+      .catch(() => setError(t('loadError')))
+  }, [token, t])
 
   async function handleRegenerate() {
     setRegenLoading(true)
@@ -99,7 +103,7 @@ function Dashboard({ token }: { token: string }) {
       setNewKey(d.plaintext)
       setConfirmRegen(false)
     } else {
-      setError(d.error ?? 'Fehler beim Regenerieren')
+      setError(d.error ?? t('regenerateError'))
     }
     setRegenLoading(false)
   }
@@ -109,28 +113,30 @@ function Dashboard({ token }: { token: string }) {
       <Card>
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">
-            Link ungültig oder abgelaufen.{' '}
-            <a href="/api-keys" className="underline">Neuen Link anfordern</a>
+            {t('linkInvalid')}{' '}
+            <a href="/api-keys" className="underline">{t('requestNewLink')}</a>
           </p>
         </CardContent>
       </Card>
     )
   }
-  if (!data) return <p className="text-sm text-muted-foreground">Lädt…</p>
+  if (!data) return <p className="text-sm text-muted-foreground">{t('loading')}</p>
 
   const pct = Math.min(100, Math.round((data.dailyCount / data.dailyLimit) * 100))
+  const tierKey = TIER_LABEL_KEYS[data.tier]
+  const tierLabel = tierKey ? t(tierKey) : data.tier
 
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          API-Dashboard
-          <Badge variant={TIER_COLORS[data.tier] ?? 'outline'}>{TIER_LABELS[data.tier] ?? data.tier}</Badge>
+          {t('dashboardTitle')}
+          <Badge variant={TIER_COLORS[data.tier] ?? 'outline'}>{tierLabel}</Badge>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
         <div>
-          <p className="text-sm font-medium mb-1">Nutzung heute</p>
+          <p className="text-sm font-medium mb-1">{t('usageToday')}</p>
           <div className="flex items-center gap-3">
             <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
               <div className="h-full bg-primary transition-all" style={{ width: `${pct}%` }} />
@@ -145,24 +151,24 @@ function Dashboard({ token }: { token: string }) {
           ? <ApiKeyDisplay value={data.plaintext} />
           : (
             <div className="rounded-md border bg-muted/40 p-3">
-              <p className="text-xs text-muted-foreground">Key nicht verfügbar — bitte unten neu generieren.</p>
+              <p className="text-xs text-muted-foreground">{t('keyUnavailable')}</p>
             </div>
           )
         }
 
         <div className="text-sm text-muted-foreground space-y-1">
-          <p>Key erstellt: {new Date(data.createdAt).toLocaleDateString('de-CH')}</p>
-          <p>Status: {data.active ? 'aktiv' : 'inaktiv'}</p>
+          <p>{t('keyCreated', { date: new Date(data.createdAt).toLocaleDateString('de-CH') })}</p>
+          <p>{t('statusLabel')} {data.active ? t('statusActive') : t('statusInactive')}</p>
         </div>
 
         {newKey && (
           <div className="rounded-md border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 dark:border-emerald-800 p-3 space-y-1">
-            <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">Neuer API-Key (wird nur einmal angezeigt):</p>
+            <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">{t('newKeyTitle')}</p>
             <div className="flex items-center gap-1">
               <code className="text-xs font-mono break-all">{newKey}</code>
               <CopyButton value={newKey} />
             </div>
-            <p className="text-[11px] text-muted-foreground">Der Key wurde auch per E-Mail versandt.</p>
+            <p className="text-[11px] text-muted-foreground">{t('newKeyEmailNote')}</p>
           </div>
         )}
 
@@ -175,19 +181,19 @@ function Dashboard({ token }: { token: string }) {
           }`}>
             <p className={`text-[12px] font-semibold ${pct >= 100 ? 'text-destructive' : 'text-amber-800 dark:text-amber-300'}`}>
               {pct >= 100
-                ? 'Tages-Limit erreicht — weitere Anfragen werden abgewiesen.'
-                : `${pct} % des Tages-Limits genutzt.`}
+                ? t('limitReached')
+                : t('limitNearing', { percent: pct })}
             </p>
             <p className="text-[11px] text-muted-foreground">
               {data.tier === 'free'
-                ? 'Engpassradar Pro (CHF 39/Monat) gibt Ihnen 10 000 Anfragen/Tag und einen eigenen API-Key.'
-                : 'Engpassradar Pro (CHF 39/Monat) gibt Ihnen 10 000 Anfragen/Tag.'}
+                ? t('upgradeFreeBody')
+                : t('upgradeResearchBody')}
             </p>
             <Link
-              href="/#pricing"
+              href={{ pathname: '/', hash: 'pricing' }}
               className="inline-flex items-center gap-1 rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-xs font-semibold hover:bg-primary/90 transition-colors"
             >
-              Auf Pro upgraden →
+              {t('upgradeCta')}
             </Link>
           </div>
         )}
@@ -195,17 +201,17 @@ function Dashboard({ token }: { token: string }) {
         <div className="flex gap-2 flex-wrap">
           {data.tier === 'free' || data.tier === 'research' ? (
             <Link
-              href="/#pricing"
+              href={{ pathname: '/', hash: 'pricing' }}
               className="inline-flex items-center justify-center rounded-md bg-primary text-primary-foreground px-3 py-1.5 text-sm font-medium hover:bg-primary/90 transition-colors"
             >
-              Upgrade →
+              {t('upgradeShort')}
             </Link>
           ) : (
             <a
               href={`/api/api-keys/portal?token=${encodeURIComponent(token)}`}
               className="inline-flex items-center justify-center rounded-md border border-input px-3 py-1.5 text-sm font-medium hover:bg-accent transition-colors"
             >
-              Abo verwalten →
+              {t('manageSubscription')}
             </a>
           )}
           {!newKey && !confirmRegen && (
@@ -213,18 +219,18 @@ function Dashboard({ token }: { token: string }) {
               onClick={() => setConfirmRegen(true)}
               className="inline-flex items-center justify-center rounded-md border border-input px-3 py-1.5 text-sm font-medium hover:bg-accent transition-colors text-destructive"
             >
-              Key neu generieren
+              {t('regenerateKey')}
             </button>
           )}
           {confirmRegen && (
             <div className="w-full rounded-md border border-destructive/30 bg-destructive/5 p-3 space-y-2">
-              <p className="text-sm text-destructive font-medium">Der alte Key wird sofort ungültig. Fortfahren?</p>
+              <p className="text-sm text-destructive font-medium">{t('regenerateConfirm')}</p>
               <div className="flex gap-2">
                 <Button size="sm" variant="destructive" onClick={handleRegenerate} disabled={regenLoading}>
-                  {regenLoading ? 'Generiere…' : 'Ja, neu generieren'}
+                  {regenLoading ? t('regenerating') : t('regenerateConfirmYes')}
                 </Button>
                 <Button size="sm" variant="outline" onClick={() => setConfirmRegen(false)} disabled={regenLoading}>
-                  Abbrechen
+                  {t('regenerateCancel')}
                 </Button>
               </div>
             </div>
@@ -245,6 +251,7 @@ function Dashboard({ token }: { token: string }) {
 type AccessTab = 'lost' | 'research'
 
 function AccessForm({ initialTab }: { initialTab: AccessTab }) {
+  const t = useTranslations('ApiKeys')
   const [tab, setTab] = useState<AccessTab>(initialTab)
   const [loading, setLoading] = useState(false)
   // lost key
@@ -277,7 +284,7 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
       body: JSON.stringify({ email: researchEmail, reason }),
     })
     const d = await res.json()
-    if (!res.ok) setResearchError(d.error ?? 'Fehler')
+    if (!res.ok) setResearchError(d.error ?? t('researchErrorFallback'))
     else setResearchSent(true)
     setLoading(false)
   }
@@ -285,7 +292,7 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
   return (
     <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="text-base">Zugang</CardTitle>
+        <CardTitle className="text-base">{t('accessTitle')}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex rounded-lg border bg-muted/40 p-0.5 gap-0.5">
@@ -295,7 +302,7 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
               tab === 'lost' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Dashboard-Link anfordern
+            {t('tabLost')}
           </button>
           <button
             onClick={() => setTab('research')}
@@ -303,7 +310,7 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
               tab === 'research' ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            Research-Zugang
+            {t('tabResearch')}
           </button>
         </div>
 
@@ -311,21 +318,21 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
           <div className="space-y-3">
             {magicSent ? (
               <p className="text-sm text-muted-foreground">
-                Falls ein Konto mit dieser E-Mail existiert, erhalten Sie den Dashboard-Link per E-Mail.
+                {t('magicSent')}
               </p>
             ) : (
               <>
                 <p className="text-xs text-muted-foreground">
-                  Engpassradar verwendet passwortlose Anmeldung via Magic-Link. Geben Sie Ihre registrierte E-Mail ein — Sie erhalten einen 30-Tage-gültigen Dashboard-Link.
+                  {t('magicIntro')}
                 </p>
                 <Input
                   type="email"
-                  placeholder="Registrierte E-Mail"
+                  placeholder={t('magicEmailPlaceholder')}
                   value={magicEmail}
                   onChange={(e) => setMagicEmail(e.target.value)}
                 />
                 <Button onClick={handleMagicLink} disabled={loading || !magicEmail} className="w-full">
-                  {loading ? 'Wird gesendet…' : 'Dashboard-Link zusenden'}
+                  {loading ? t('magicSending') : t('magicSubmit')}
                 </Button>
               </>
             )}
@@ -336,37 +343,37 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
           <div className="space-y-3">
             {researchSent ? (
               <p className="text-sm text-muted-foreground">
-                Falls Ihre Angaben einer Berechtigung entsprechen, erhalten Sie den Key per E-Mail.
+                {t('researchSent')}
               </p>
             ) : (
               <>
                 <p className="text-sm text-muted-foreground">
-                  Kostenloser Key für Forschung und akademische Institutionen (2&apos;000 Anfragen/Tag).
+                  {t('researchIntro')}
                 </p>
                 <div>
-                  <label className="text-sm font-medium mb-1 block">Institutionelle E-Mail</label>
+                  <label className="text-sm font-medium mb-1 block">{t('researchEmailLabel')}</label>
                   <Input
                     type="email"
-                    placeholder="name@unibas.ch"
+                    placeholder={t('researchEmailPlaceholder')}
                     value={researchEmail}
                     onChange={(e) => setResearchEmail(e.target.value)}
                   />
-                  <p className="text-xs text-muted-foreground mt-1">Automatisch akzeptiert: .edu, .ac.*, Schweizer Uni- und Forschungsdomains</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t('researchEmailHint')}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium mb-1 block">
-                    Verwendungszweck <span className="font-normal text-muted-foreground">(bei privater E-Mail obligatorisch)</span>
+                    {t('researchReasonLabel')} <span className="font-normal text-muted-foreground">{t('researchReasonNote')}</span>
                   </label>
                   <textarea
                     className="w-full border rounded-md px-3 py-2 text-sm min-h-[72px] resize-none bg-background"
-                    placeholder="Kurze Beschreibung des Forschungsprojekts…"
+                    placeholder={t('researchReasonPlaceholder')}
                     value={reason}
                     onChange={(e) => setReason(e.target.value)}
                   />
                 </div>
                 {researchError && <p className="text-sm text-destructive">{researchError}</p>}
                 <Button onClick={handleResearch} disabled={loading || !researchEmail} className="w-full">
-                  {loading ? 'Wird geprüft…' : 'Key beantragen'}
+                  {loading ? t('researchSubmitting') : t('researchSubmit')}
                 </Button>
               </>
             )}
@@ -374,8 +381,8 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
         )}
 
         <p className="text-xs text-muted-foreground text-center pt-1">
-          Noch kein Key?{' '}
-          <Link href="/api#pricing" className="underline hover:text-foreground">Tarife ansehen →</Link>
+          {t('noKeyHint')}{' '}
+          <Link href={{ pathname: '/api', hash: 'pricing' }} className="underline hover:text-foreground">{t('noKeyHintLink')}</Link>
         </p>
       </CardContent>
     </Card>
@@ -383,6 +390,7 @@ function AccessForm({ initialTab }: { initialTab: AccessTab }) {
 }
 
 function ApiKeysContent() {
+  const t = useTranslations('ApiKeys')
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
   const tabParam = searchParams.get('tab') as AccessTab | null
@@ -390,14 +398,14 @@ function ApiKeysContent() {
   return (
     <main className="max-w-lg mx-auto px-4 py-12 space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold">API-Dashboard</h1>
+        <h1 className="text-2xl font-semibold">{t('h1')}</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Engpassradar-API für automatisierte Abfragen und Systemintegrationen.
+          {t('subtitle')}
         </p>
       </div>
       {!token && (
         <div className="rounded-md border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
-          Neu hier? API-Keys erhalten Sie auf der <a href="/api#pricing" className="underline hover:text-foreground">API-Seite</a>. Bestehende Kunden: Dashboard-Link per E-Mail anfordern.
+          {t('newHereHint')} <a href="/api#pricing" className="underline hover:text-foreground">{t('newHereHintLink')}</a>{t('newHereHintSuffix')}
         </div>
       )}
       {token
@@ -410,8 +418,17 @@ function ApiKeysContent() {
 
 export default function ApiKeysPage() {
   return (
-    <Suspense fallback={<div className="max-w-lg mx-auto px-4 py-12"><p className="text-sm text-muted-foreground">Lädt…</p></div>}>
+    <Suspense fallback={<ApiKeysFallback />}>
       <ApiKeysContent />
     </Suspense>
+  )
+}
+
+function ApiKeysFallback() {
+  const t = useTranslations('ApiKeys')
+  return (
+    <div className="max-w-lg mx-auto px-4 py-12">
+      <p className="text-sm text-muted-foreground">{t('loading')}</p>
+    </div>
   )
 }

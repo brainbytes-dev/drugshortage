@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useMemo } from 'react'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import {
   Sheet,
   SheetContent,
@@ -13,11 +14,11 @@ import { Badge } from '@/components/ui/badge'
 import { Building2 } from 'lucide-react'
 import type { FirmaRanking } from '@/lib/types'
 
-const BEWERTUNG_LABEL: Record<number, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
-  1: { label: 'Gut', variant: 'default' },
-  2: { label: 'Mittel', variant: 'secondary' },
-  3: { label: 'Schlecht', variant: 'outline' },
-  4: { label: 'Kritisch', variant: 'destructive' },
+const BEWERTUNG_VARIANT: Record<number, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+  1: 'default',
+  2: 'secondary',
+  3: 'outline',
+  4: 'destructive',
 }
 
 interface FirmaRankingSheetProps {
@@ -25,6 +26,7 @@ interface FirmaRankingSheetProps {
 }
 
 export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
+  const t = useTranslations('FirmaRanking')
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
   const router = useRouter()
@@ -33,9 +35,19 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
     f.firma.toLowerCase().includes(search.toLowerCase())
   )
 
+  const bewertungLabel = useMemo<Record<number, string>>(
+    () => ({
+      1: t('ratingGood'),
+      2: t('ratingMedium'),
+      3: t('ratingPoor'),
+      4: t('ratingCritical'),
+    }),
+    [t]
+  )
+
   function handleFirmaClick(firma: string) {
     setOpen(false)
-    router.push(`/?firma=${encodeURIComponent(firma)}`, { scroll: false })
+    router.push({ pathname: '/', query: { firma } }, { scroll: false })
   }
 
   return (
@@ -44,47 +56,50 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
         render={<button className="flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors" />}
       >
         <Building2 className="h-4 w-4 text-primary" />
-        Firmen-Ranking
+        {t('title')}
         <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary font-semibold">
           {firmenRanking.length}
         </span>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md overflow-y-auto px-6 py-6">
         <SheetHeader className="mb-4">
-          <SheetTitle>Firmen-Ranking</SheetTitle>
+          <SheetTitle>{t('title')}</SheetTitle>
           <p className="text-xs text-muted-foreground">
-            Hersteller nach Anzahl aktiver Lieferengpässe, sortiert nach Bewertung von{' '}
-            <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
-              className="underline hover:text-foreground">drugshortage.ch</a>.
+            {t.rich('descriptionRich', {
+              link: (chunks) => (
+                <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer"
+                  className="underline hover:text-foreground">{chunks}</a>
+              ),
+            })}
           </p>
         </SheetHeader>
 
         {/* Bewertungs-Legende */}
         <div className="mb-4 rounded-md border bg-muted/40 px-3 py-2.5">
-          <p className="text-xs font-medium mb-2">Bewertung (Quelle: drugshortage.ch)</p>
+          <p className="text-xs font-medium mb-2">{t('legendTitle')}</p>
           <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Badge variant="default" className="text-[10px] px-1.5 py-0">Gut</Badge>
-              <span>&lt; 5 % Produkte betroffen</span>
+              <Badge variant="default" className="text-[10px] px-1.5 py-0">{t('ratingGood')}</Badge>
+              <span>{t('ratingGoodDesc')}</span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">Mittel</Badge>
-              <span>5–15 % Produkte betroffen</span>
+              <Badge variant="secondary" className="text-[10px] px-1.5 py-0">{t('ratingMedium')}</Badge>
+              <span>{t('ratingMediumDesc')}</span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0">Schlecht</Badge>
-              <span>15–30 % Produkte betroffen</span>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0">{t('ratingPoor')}</Badge>
+              <span>{t('ratingPoorDesc')}</span>
             </div>
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <Badge variant="destructive" className="text-[10px] px-1.5 py-0">Kritisch</Badge>
-              <span>&gt; 30 % Produkte betroffen</span>
+              <Badge variant="destructive" className="text-[10px] px-1.5 py-0">{t('ratingCritical')}</Badge>
+              <span>{t('ratingCriticalDesc')}</span>
             </div>
           </div>
         </div>
 
         <input
           type="search"
-          placeholder="Firma suchen…"
+          placeholder={t('searchPlaceholder')}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="w-full mb-4 rounded-md border bg-background px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring"
@@ -92,7 +107,8 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
 
         <div className="divide-y">
           {filtered.map((f, i) => {
-            const bew = BEWERTUNG_LABEL[f.bewertung]
+            const variant = BEWERTUNG_VARIANT[f.bewertung]
+            const label = bewertungLabel[f.bewertung]
             return (
               <button
                 key={f.firma}
@@ -105,19 +121,19 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium truncate">{f.firma}</p>
                   <p className="text-xs text-muted-foreground">
-                    {f.anzahlOffeneEngpaesse} offen · {f.anzahlProdukteTotal} total
+                    {t('firmaCounts', { open: f.anzahlOffeneEngpaesse, total: f.anzahlProdukteTotal })}
                   </p>
                 </div>
-                {bew && (
-                  <Badge variant={bew.variant} className="shrink-0 text-xs">
-                    {bew.label}
+                {variant && label && (
+                  <Badge variant={variant} className="shrink-0 text-xs">
+                    {label}
                   </Badge>
                 )}
               </button>
             )
           })}
           {filtered.length === 0 && (
-            <p className="py-8 text-center text-sm text-muted-foreground">Keine Treffer</p>
+            <p className="py-8 text-center text-sm text-muted-foreground">{t('emptyState')}</p>
           )}
         </div>
       </SheetContent>

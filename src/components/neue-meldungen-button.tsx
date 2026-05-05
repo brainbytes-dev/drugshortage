@@ -1,9 +1,12 @@
 'use client'
 
-import { useSearchParams, useRouter, usePathname } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { Sparkles } from 'lucide-react'
 
 export function NeueMeldungenButton() {
+  const t = useTranslations('NeueMeldungen')
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
@@ -18,7 +21,11 @@ export function NeueMeldungenButton() {
       p.set('neu', '1')
       p.delete('page') // reset pagination
     }
-    router.replace(`${pathname}?${p.toString()}`, { scroll: false })
+    const query = Object.fromEntries(p.entries())
+    router.replace(
+      { pathname, query } as Parameters<typeof router.replace>[0],
+      { scroll: false }
+    )
   }
 
   return (
@@ -32,7 +39,7 @@ export function NeueMeldungenButton() {
       ].join(' ')}
     >
       <Sparkles className="h-3.5 w-3.5" />
-      Neue Meldungen
+      {t('label')}
     </button>
   )
 }

@@ -1,23 +1,26 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import {
   getFirmaBySlug,
   getFirmaActiveShortages,
   getFirmaHistoricalShortages,
   getFirmaHistoricalCount,
   getBwlGtins,
-  getAllFirmaSlugs,
 } from '@/lib/db'
 import { calculateScore, scoreLabel } from '@/lib/score'
 import { FirmaShortagesToggle } from '@/components/firma-shortages-toggle'
 
 export const revalidate = 3600
 
+// ISR on-demand: with 4 locales, prerendering every firm × locale at build
+// time exhausts the Supabase connection pool. Pages still cache for 1h via
+// `revalidate`, and `dynamicParams = true` (default) lets Next.js render any
+// firm slug on first request.
 export async function generateStaticParams() {
-  const firms = await getAllFirmaSlugs()
-  return firms.map(f => ({ slug: f.slug }))
+  return []
 }
 
 export async function generateMetadata({
@@ -26,21 +29,16 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>
 }): Promise<Metadata> {
   const { slug } = await params
-  const firma = await getFirmaBySlug(slug)
-  if (!firma) return { title: 'Firma nicht gefunden | engpass.radar' }
+  const [firma, t] = await Promise.all([
+    getFirmaBySlug(slug),
+    getTranslations('Firma'),
+  ])
+  if (!firma) return { title: t('metaTitleNotFound') }
   return {
-    title: `${firma} Lieferengpässe Schweiz | engpass.radar`,
-    description: `Lieferengpass-Profil von ${firma}: aktuelle Engpässe, Meldeverhalten (Status 1–5) und Severity Score. Täglich aktualisiert aus drugshortage.ch.`,
+    title: t('metaTitle', { firma }),
+    description: t('metaDescription', { firma }),
     alternates: { canonical: `https://engpassradar.ch/firma/${slug}` },
   }
-}
-
-const STATUS_LABELS: Record<number, string> = {
-  1: 'Direkt gemeldet',
-  2: 'Gemeldet',
-  3: 'Sporadisch',
-  4: 'Keine Info',
-  5: 'Verhandlung',
 }
 
 const STATUS_DOT_COLORS: Record<number, string> = {
@@ -66,12 +64,21 @@ export default async function FirmaPage({
 }) {
   const { slug } = await params
 
-  const [firma, bwlGtins] = await Promise.all([
+  const [firma, bwlGtins, t] = await Promise.all([
     getFirmaBySlug(slug),
     getBwlGtins(),
+    getTranslations('Firma'),
   ])
 
   if (!firma) notFound()
+
+  const STATUS_LABELS: Record<number, string> = {
+    1: t('statusLabel1'),
+    2: t('statusLabel2'),
+    3: t('statusLabel3'),
+    4: t('statusLabel4'),
+    5: t('statusLabel5'),
+  }
 
   const [shortages, historicalShortages, historicalCount] = await Promise.all([
     getFirmaActiveShortages(firma),
@@ -110,14 +117,14 @@ export default async function FirmaPage({
                 '@type': 'WebPage',
                 '@id': `https://www.engpassradar.ch/firma/${slug}`,
                 url: `https://www.engpassradar.ch/firma/${slug}`,
-                name: `${firma} | engpass.radar`,
-                description: `Lieferengpass-Profil von ${firma}: aktuelle Engpässe und Severity Score.`,
+                name: t('jsonLdName', { firma }),
+                description: t('jsonLdDescription', { firma }),
                 isPartOf: { '@id': 'https://www.engpassradar.ch' },
               },
               {
                 '@type': 'BreadcrumbList',
                 itemListElement: [
-                  { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.engpassradar.ch' },
+                  { '@type': 'ListItem', position: 1, name: t('breadcrumbHome'), item: 'https://www.engpassradar.ch' },
                   { '@type': 'ListItem', position: 2, name: firma, item: `https://www.engpassradar.ch/firma/${slug}` },
                 ],
               },
@@ -130,18 +137,18 @@ export default async function FirmaPage({
       <section className="border-b border-border/40">
         <div className="max-w-5xl mx-auto px-4 py-10 sm:py-14">
           <Link
-            href={`/?firma=${encodeURIComponent(firma)}`}
+            href={{ pathname: '/', query: { firma } }}
             className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors group mb-8"
           >
             <ArrowLeft className="h-3 w-3 group-hover:-translate-x-0.5 transition-transform duration-150" />
-            Zur Übersicht
+            {t('backLink')}
           </Link>
 
           <div className="space-y-4">
             {/* Eyebrow */}
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Firma</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">{t('eyebrow')}</span>
             </div>
 
             {/* Title */}
@@ -151,12 +158,12 @@ export default async function FirmaPage({
             <div className="flex flex-wrap items-center gap-6 pt-2">
               <div>
                 <p className="text-3xl font-black tabular-nums leading-none">{shortages.length}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Aktive Engpässe</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiActiveShortages')}</p>
               </div>
               <div className="w-px h-8 bg-border/60 hidden sm:block" />
               <div>
                 <p className="text-3xl font-black tabular-nums leading-none">{historicalCount}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Historisch</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiHistorical')}</p>
               </div>
               <div className="w-px h-8 bg-border/60 hidden sm:block" />
               <div>
@@ -168,7 +175,7 @@ export default async function FirmaPage({
                 <p className={`text-3xl font-black tabular-nums leading-none ${noInfoPct >= 50 ? 'text-red-600 dark:text-red-400' : noInfoPct >= 25 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
                   {noInfoPct}%
                 </p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Keine Info</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiNoInfo')}</p>
               </div>
             </div>
           </div>
@@ -181,7 +188,7 @@ export default async function FirmaPage({
         {/* Meldeverhalten */}
         {shortages.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">Meldeverhalten</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">{t('sectionReportingBehaviour')}</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {([1, 2, 3, 4, 5] as const).map(code => {
                 const count = statusBreakdown[code] ?? 0
@@ -192,7 +199,7 @@ export default async function FirmaPage({
                     <div className="flex items-center gap-2">
                       <div className={`h-1.5 w-1.5 rounded-full ${STATUS_DOT_COLORS[code]}`} />
                       <span className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                        Status {code} · {STATUS_LABELS[code]}
+                        {t('statusPrefix', { code, label: STATUS_LABELS[code] })}
                       </span>
                     </div>
                     <div className="flex items-end justify-between gap-2">
@@ -207,8 +214,7 @@ export default async function FirmaPage({
               })}
             </div>
             <p className="text-xs text-muted-foreground">
-              Status 1 = Firma kommuniziert proaktiv · Status 4 = keine Information.
-              Hoher Status-4-Anteil erhöht den Severity Score.
+              {t('reportingFootnote')}
             </p>
           </section>
         )}
@@ -221,12 +227,12 @@ export default async function FirmaPage({
         />
 
         <p className="text-xs text-muted-foreground border-t border-border/40 pt-5">
-          Daten aus{' '}
+          {t('footerSourcePrefix')}{' '}
           <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
             drugshortage.ch
           </a>
           {' · '}
-          <Link href="/methodik" className="underline hover:text-foreground">Score-Methodik</Link>
+          <Link href="/methodik" className="underline hover:text-foreground">{t('footerMethodology')}</Link>
         </p>
       </div>
     </main>

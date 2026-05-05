@@ -1,3 +1,4 @@
+import { useTranslations, useFormatter } from 'next-intl'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import type { KPIStats } from '@/lib/types'
 
@@ -7,26 +8,29 @@ interface KPICardsProps {
 }
 
 export function KPICards({ stats, historicalCount }: KPICardsProps) {
+  const t = useTranslations('Kpi')
+  const format = useFormatter()
+
   const cards = [
     {
-      title: 'Aktive Engpässe',
-      value: stats.totalActive.toLocaleString('de-CH'),
-      sub: 'aktuell gemeldet',
+      title: t('activeShortages'),
+      value: format.number(stats.totalActive),
+      sub: t('activeShortagesSub'),
     },
     {
-      title: 'Historische Engpässe',
-      value: historicalCount.toLocaleString('de-CH'),
-      sub: 'abgeschlossen / gelöst',
+      title: t('historicalShortages'),
+      value: format.number(historicalCount),
+      sub: t('historicalShortagesSub'),
     },
     {
-      title: 'Betroffene Wirkstoffe',
-      value: stats.uniqueAtcGroups.toLocaleString('de-CH'),
-      sub: 'gemäss ATC-Klassifikation',
+      title: t('affectedSubstances'),
+      value: format.number(stats.uniqueAtcGroups),
+      sub: t('affectedSubstancesSub'),
     },
     {
-      title: 'Ø Dauer',
-      value: `${stats.avgDaysSinceMeldung} Tage`,
-      sub: 'seit erster Meldung',
+      title: t('avgDuration'),
+      value: t('avgDurationValue', { days: stats.avgDaysSinceMeldung }),
+      sub: t('avgDurationSub'),
     },
   ]
 

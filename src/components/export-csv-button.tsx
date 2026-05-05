@@ -1,9 +1,11 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Download } from 'lucide-react'
 
 export function ExportCsvButton() {
+  const t = useTranslations('ExportCsv')
   const searchParams = useSearchParams()
 
   function handleExport() {
@@ -22,7 +24,7 @@ export function ExportCsvButton() {
       className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border px-3 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shrink-0"
     >
       <Download className="h-3.5 w-3.5" />
-      CSV Export
+      {t('label')}
     </button>
   )
 }

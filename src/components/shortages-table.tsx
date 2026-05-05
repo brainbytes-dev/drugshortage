@@ -1,8 +1,9 @@
 'use client'
 
 import { useState, useMemo, useRef, useEffect, useTransition } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { useRouter, usePathname, Link } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table'
@@ -22,19 +23,21 @@ interface ShortagesTableProps {
   bwlGtins?: string[]
 }
 
-// ✅ Moved outside component to prevent recreation on every render
-const COLUMNS: { key: keyof Shortage; label: string; sortable?: boolean }[] = [
-  { key: 'bezeichnung', label: 'Bezeichnung', sortable: true },
-  { key: 'firma', label: 'Firma', sortable: true },
-  { key: 'statusCode', label: 'Status', sortable: true },
-  { key: 'datumLieferfahigkeit', label: 'Lieferbar ab' },
-  { key: 'tageSeitMeldung', label: 'Tage', sortable: true },
-  { key: 'atcCode', label: 'ATC' },
-] as const // ✅ Make readonly to prevent accidental mutations
+const COLUMN_KEYS = ['bezeichnung', 'firma', 'statusCode', 'datumLieferfahigkeit', 'tageSeitMeldung', 'atcCode'] as const
+type ColumnKey = typeof COLUMN_KEYS[number]
+const SORTABLE: Record<ColumnKey, boolean> = {
+  bezeichnung: true,
+  firma: true,
+  statusCode: true,
+  datumLieferfahigkeit: false,
+  tageSeitMeldung: true,
+  atcCode: false,
+}
 
 const NEU_THRESHOLD_DAYS = 7
 
 export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: ShortagesTableProps) {
+  const t = useTranslations('ShortagesTable')
   const [selected, setSelected] = useState<Shortage | null>(null)
   const pageInputRef = useRef<HTMLInputElement>(null)
   const tableRef = useRef<HTMLDivElement>(null)
@@ -68,8 +71,12 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
       if (v) p.set(k, v)
       else p.delete(k)
     }
+    const query = Object.fromEntries(p.entries())
     startTransition(() => {
-      router.replace(`${pathname}?${p.toString()}`, { scroll: false })
+      router.replace(
+        { pathname, query } as Parameters<typeof router.replace>[0],
+        { scroll: false }
+      )
     })
   }
 
@@ -80,33 +87,42 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
     navigate({ sort: `${key}:${newDir}` })
   }
 
+  const columnLabel: Record<ColumnKey, string> = {
+    bezeichnung: t('colBezeichnung'),
+    firma: t('colFirma'),
+    statusCode: t('colStatus'),
+    datumLieferfahigkeit: t('colAvailableFrom'),
+    tageSeitMeldung: t('colDays'),
+    atcCode: t('colAtc'),
+  }
+
   return (
     <>
       <div ref={tableRef} className="rounded-lg border overflow-hidden">
         <Table>
           <TableHeader>
             <TableRow className="bg-muted/50">
-              {COLUMNS.map(col => (
-                <TableHead key={col.key} className="whitespace-nowrap">
-                  {col.sortable ? (
+              {COLUMN_KEYS.map(key => (
+                <TableHead key={key} className="whitespace-nowrap">
+                  {SORTABLE[key] ? (
                     <button
-                      onClick={() => handleSort(col.key)}
+                      onClick={() => handleSort(key)}
                       className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
                     >
-                      {col.label}
+                      {columnLabel[key]}
                       <ArrowUpDown className="h-3 w-3" />
                     </button>
-                  ) : col.label}
+                  ) : columnLabel[key]}
                 </TableHead>
               ))}
-              <TableHead className="px-4 py-3 text-right text-xs font-medium text-muted-foreground">Score</TableHead>
+              <TableHead className="px-4 py-3 text-right text-xs font-medium text-muted-foreground">{t('colScore')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {shortages.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={COLUMNS.length + 1} className="text-center text-muted-foreground py-12">
-                  Keine Engpässe gefunden
+                <TableCell colSpan={COLUMN_KEYS.length + 1} className="text-center text-muted-foreground py-12">
+                  {t('emptyState')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -121,19 +137,19 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
                       <span className="truncate">{s.bezeichnung}</span>
                       {s.tageSeitMeldung <= NEU_THRESHOLD_DAYS && (
                         <span className="shrink-0 text-[10px] font-bold tracking-wide text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-1 py-0.5 rounded">
-                          NEU
+                          {t('badgeNew')}
                         </span>
                       )}
                       {bwlSet.has(s.gtin) && (
                         <span className="shrink-0 text-[10px] font-bold tracking-wide text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">
-                          BWL
+                          {t('badgeBwl')}
                         </span>
                       )}
                     </span>
                   </TableCell>
                   <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                     <Link
-                      href={`/firma/${toSlug(s.firma)}`}
+                      href={{ pathname: '/firma/[slug]', params: { slug: toSlug(s.firma) } }}
                       onClick={e => e.stopPropagation()}
                       className="hover:underline hover:text-foreground"
                     >
@@ -163,7 +179,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
       {totalPages > 1 && (
         <div className="flex flex-col sm:flex-row items-center justify-between mt-3 gap-2">
           <p className="text-sm text-muted-foreground text-center sm:text-left">
-            {total} Einträge · Seite {page} / {totalPages}
+            {t('paginationSummary', { total, page, totalPages })}
           </p>
           <div className="flex items-center gap-1">
             {/* First page */}
@@ -172,7 +188,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               size="sm"
               disabled={page <= 1}
               onClick={() => navigate({ page: '1' }, 'table')}
-              aria-label="Erste Seite"
+              aria-label={t('firstPage')}
             >
               <ChevronsLeft className="h-4 w-4" aria-hidden="true" />
             </Button>
@@ -182,7 +198,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               size="sm"
               disabled={page <= 1}
               onClick={() => navigate({ page: String(page - 1) }, 'table')}
-              aria-label="Vorherige Seite"
+              aria-label={t('previousPage')}
             >
               <ChevronLeft className="h-4 w-4" aria-hidden="true" />
             </Button>
@@ -194,7 +210,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               min={1}
               max={totalPages}
               defaultValue={String(page)}
-              aria-label={`Seite, von ${totalPages}`}
+              aria-label={t('pageOfTotalAria', { totalPages })}
               onBlur={() => {
                 const n = parseInt(pageInputRef.current?.value ?? '', 10)
                 if (!isNaN(n) && n >= 1 && n <= totalPages && n !== page) {
@@ -215,7 +231,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               size="sm"
               disabled={page >= totalPages}
               onClick={() => navigate({ page: String(page + 1) }, 'table')}
-              aria-label="Nächste Seite"
+              aria-label={t('nextPage')}
             >
               <ChevronRight className="h-4 w-4" aria-hidden="true" />
             </Button>
@@ -225,7 +241,7 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
               size="sm"
               disabled={page >= totalPages}
               onClick={() => navigate({ page: String(totalPages) }, 'table')}
-              aria-label="Letzte Seite"
+              aria-label={t('lastPage')}
             >
               <ChevronsRight className="h-4 w-4" aria-hidden="true" />
             </Button>

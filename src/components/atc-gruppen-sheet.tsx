@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import {
   Sheet,
   SheetContent,
@@ -17,6 +18,7 @@ interface AtcGruppenSheetProps {
 }
 
 export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
+  const t = useTranslations('AtcGruppen')
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
   const router = useRouter()
@@ -31,7 +33,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
 
   function handleAtcClick(atcCode: string) {
     setOpen(false)
-    router.push(`/?atc=${encodeURIComponent(atcCode)}`, { scroll: false })
+    router.push({ pathname: '/', query: { atc: atcCode } }, { scroll: false })
   }
 
   return (
@@ -40,22 +42,22 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
         render={<button className="flex items-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors" />}
       >
         <FlaskConical className="h-4 w-4 text-primary" />
-        ATC-Gruppen
+        {t('title')}
         <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary font-semibold">
           {atcGruppen.length}
         </span>
       </SheetTrigger>
       <SheetContent className="w-full sm:max-w-md overflow-y-auto px-6 py-6">
         <SheetHeader className="mb-4">
-          <SheetTitle>ATC-Gruppen</SheetTitle>
+          <SheetTitle>{t('title')}</SheetTitle>
           <p className="text-xs text-muted-foreground">
-            Betroffene Wirkstoffgruppen nach Anzahl aktiver Engpässe. Gruppe anklicken zum Filtern.
+            {t('description')}
           </p>
         </SheetHeader>
 
         <input
           type="search"
-          placeholder="ATC-Code oder Bezeichnung…"
+          placeholder={t('searchPlaceholder')}
           value={search}
           onChange={e => setSearch(e.target.value)}
           className="w-full mb-4 rounded-md border bg-background px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring"
@@ -87,7 +89,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
             )
           })}
           {filtered.length === 0 && (
-            <p className="py-8 text-center text-sm text-muted-foreground">Keine Treffer</p>
+            <p className="py-8 text-center text-sm text-muted-foreground">{t('emptyState')}</p>
           )}
         </div>
       </SheetContent>

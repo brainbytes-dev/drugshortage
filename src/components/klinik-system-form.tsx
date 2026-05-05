@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useTranslations } from 'next-intl'
 import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react'
 
 export function KlinikSystemForm() {
+  const t = useTranslations('KlinikSystemForm')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [institution, setInstitution] = useState('')
@@ -31,13 +33,13 @@ export function KlinikSystemForm() {
       })
       const d = await res.json()
       if (!res.ok) {
-        setErrorMsg(d.error ?? 'Fehler beim Absenden.')
+        setErrorMsg(d.error ?? t('errorFallback'))
         setStatus('error')
       } else {
         setStatus('success')
       }
     } catch {
-      setErrorMsg('Netzwerkfehler — bitte erneut versuchen.')
+      setErrorMsg(t('networkError'))
       setStatus('error')
     }
   }
@@ -49,13 +51,13 @@ export function KlinikSystemForm() {
           <CheckCircle2 className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
         </div>
         <div>
-          <p className="text-[18px] font-semibold text-foreground">Anfrage erhalten.</p>
+          <p className="text-[18px] font-semibold text-foreground">{t('successTitle')}</p>
           <p className="text-sm text-muted-foreground mt-2 max-w-xs mx-auto leading-relaxed">
-            Wir erstellen innerhalb von 24&nbsp;Stunden einen personalisierten Shortage Report für Ihre Institution und melden uns per E-Mail.
+            {t('successBody')}
           </p>
         </div>
         <p className="text-[11px] text-muted-foreground border-t border-border/40 pt-4 w-full text-center">
-          Keine Antwort erhalten? Schreiben Sie uns: <a href="mailto:api@engpassradar.ch" className="underline hover:text-foreground">api@engpassradar.ch</a>
+          {t('successContact')} <a href="mailto:api@engpassradar.ch" className="underline hover:text-foreground">api@engpassradar.ch</a>
         </p>
       </div>
     )
@@ -71,45 +73,45 @@ export function KlinikSystemForm() {
       )}
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1">
-          <label className="text-xs font-semibold text-foreground">Ihr Name</label>
+          <label className="text-xs font-semibold text-foreground">{t('nameLabel')}</label>
           <input
             type="text"
             required
             value={name}
             onChange={e => setName(e.target.value)}
-            placeholder="Dr. Maria Müller"
+            placeholder={t('namePlaceholder')}
             className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-semibold text-foreground">E-Mail-Adresse</label>
+          <label className="text-xs font-semibold text-foreground">{t('emailLabel')}</label>
           <input
             type="email"
             required
             value={email}
             onChange={e => setEmail(e.target.value)}
-            placeholder="maria.mueller@spital.ch"
+            placeholder={t('emailPlaceholder')}
             className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-semibold text-foreground">Institution</label>
+          <label className="text-xs font-semibold text-foreground">{t('institutionLabel')}</label>
           <input
             type="text"
             required
             value={institution}
             onChange={e => setInstitution(e.target.value)}
-            placeholder="Kantonsspital Winterthur"
+            placeholder={t('institutionPlaceholder')}
             className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
           />
         </div>
         <div className="space-y-1">
-          <label className="text-xs font-semibold text-foreground">Hauptproblem im Engpass-Management</label>
+          <label className="text-xs font-semibold text-foreground">{t('problemLabel')}</label>
           <textarea
             required
             value={problem}
             onChange={e => setProblem(e.target.value)}
-            placeholder="z.B. täglicher Aufwand beim Monitoring, Alerting, Integration ins PMS…"
+            placeholder={t('problemPlaceholder')}
             rows={3}
             className="w-full rounded-lg border bg-background px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
           />
@@ -119,11 +121,11 @@ export function KlinikSystemForm() {
           disabled={status === 'loading'}
           className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
         >
-          {status === 'loading' ? 'Wird gesendet…' : 'Anfrage absenden'}
+          {status === 'loading' ? t('submitting') : t('submit')}
           {status !== 'loading' && <ArrowRight className="h-4 w-4" />}
         </button>
         <p className="text-[11px] text-muted-foreground text-center">
-          Kein Automatismus — wir melden uns persönlich innert 24&nbsp;h.
+          {t('footnote')}
         </p>
       </form>
     </div>

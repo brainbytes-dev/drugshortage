@@ -1,59 +1,60 @@
 import type { Metadata } from 'next'
+import { getTranslations } from 'next-intl/server'
 import { CheckCircle2, ArrowRight, Clock, BarChart3, Bell } from 'lucide-react'
 import { KlinikSystemForm } from '@/components/klinik-system-form'
 
-export const metadata: Metadata = {
-  title: 'Engpassradar Klinik-System — Für Spitalapotheken',
-  description: 'Engpass-Monitoring für Schweizer Spitalapotheken: Score, Alerting, API — integriert in Ihren Workflow. Kostenlosen Shortage Report für Ihre Institution anfordern.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('KlinikSystem')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
-const PAIN_POINTS = [
-  {
-    icon: Clock,
-    title: 'Bis ein Engpass sichtbar wird, ist oft Zeit vergangen',
-    body: 'Wer täglich manuell prüft, sieht Änderungen erst beim nächsten Check. Proaktives Handeln erfordert proaktive Information.',
-  },
-  {
-    icon: BarChart3,
-    title: 'Nicht jeder Engpass ist gleich kritisch',
-    body: 'Ohne Bewertung sieht alles gleich dringend aus. Welcher Engpass betrifft Ihr Sortiment wirklich? Wie lange dauert er typischerweise? Gibt es Alternativen?',
-  },
-  {
-    icon: Bell,
-    title: 'Integration kostet mehr als ein Abo',
-    body: 'Einen eigenen Scraper, eine eigene Datenbank und eigene Alerts aufzubauen bindet Entwicklungszeit. Engpassradar liefert das als fertige API.',
-  },
-]
+export default async function KlinikSystemPage() {
+  const t = await getTranslations('KlinikSystem')
 
-const INCLUDES = [
-  'Engpass-Score 0–100 für jede aktive Meldung (proprietäre Metrik)',
-  'Webhook-Alerts bei neuen Engpässen Ihrer ATC-Klassen',
-  '100 000 API-Anfragen pro Tag',
-  'Monatlicher Shortage Report Schweiz als PDF — exklusiv',
-  '30-Min-Onboarding-Call: Watchlist gemeinsam einrichten',
-  'SLA 99.9 % · Prioritäts-Support',
-]
+  const PAIN_POINTS = [
+    {
+      icon: Clock,
+      title: t('pain1Title'),
+      body: t('pain1Body'),
+    },
+    {
+      icon: BarChart3,
+      title: t('pain2Title'),
+      body: t('pain2Body'),
+    },
+    {
+      icon: Bell,
+      title: t('pain3Title'),
+      body: t('pain3Body'),
+    },
+  ]
 
-const OBJECTIONS = [
-  {
-    q: 'Wir haben bereits eigene Prozesse.',
-    a: 'Engpassradar ersetzt nichts — es reduziert den manuellen Aufwand und fügt Score und Alerting hinzu, die intern kaum zu replizieren sind.',
-  },
-  {
-    q: 'CHF 199 muss intern beantragt werden.',
-    a: 'Für Spitalapotheken liegt dieser Betrag typischerweise unter der Schwelle, die eine formelle Ausschreibung erfordert. Der Onboarding-Call hilft Ihnen, den internen Business Case zu formulieren.',
-  },
-  {
-    q: 'Was wenn der Dienst ausfällt?',
-    a: 'SLA 99.9 % vertraglich. 30-Tage-Geld-zurück-Garantie ohne Begründung. Die offiziellen Quellen bleiben Ihre Primärquelle — wir ergänzen, wir ersetzen nicht.',
-  },
-  {
-    q: 'Wir sind eine kleine Apotheke, keine Klinik.',
-    a: 'Das Klinik-System ist für Institutionen ab ca. 100 überwachten Wirkstoffen sinnvoll. Für kleinere Apotheken empfehlen wir Engpassradar Pro (CHF 39/Mo) oder den kostenlosen Zugang.',
-  },
-]
+  const INCLUDES = [
+    t('include1'),
+    t('include2'),
+    t('include3'),
+    t('include4'),
+    t('include5'),
+    t('include6'),
+  ]
 
-export default function KlinikSystemPage() {
+  const OBJECTIONS = [
+    { q: t('objection1Q'), a: t('objection1A') },
+    { q: t('objection2Q'), a: t('objection2A') },
+    { q: t('objection3Q'), a: t('objection3A') },
+    { q: t('objection4Q'), a: t('objection4A') },
+  ]
+
+  const STATS = [
+    { value: t('stat1Value'), label: t('stat1Label') },
+    { value: t('stat2Value'), label: t('stat2Label') },
+    { value: t('stat3Value'), label: t('stat3Label') },
+    { value: t('stat4Value'), label: t('stat4Label') },
+  ]
+
   return (
     <>
       <main className="bg-background">
@@ -61,23 +62,23 @@ export default function KlinikSystemPage() {
         {/* Hero */}
         <section className="max-w-5xl mx-auto px-4 sm:px-8 pt-20 pb-16 sm:pt-28 sm:pb-20">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-5">
-            Engpassradar Klinik-System
+            {t('heroEyebrow')}
           </p>
           <h1 className="text-[clamp(28px,4vw,52px)] font-semibold tracking-[-0.025em] text-foreground leading-[1.1] max-w-3xl mb-6">
-            Wissen Sie morgen früh, was heute Nacht auf die Liste kam — bevor Ihr erstes Telefon klingelt.
+            {t('heroH1')}
           </h1>
           <p className="text-[15px] text-muted-foreground leading-[1.65] max-w-xl mb-10">
-            Engpassradar Klinik-System integriert tagesaktuelle Engpass-Daten mit Score, Alerting und API in Ihren Apotheken-Workflow — ohne eigene Infrastruktur, ohne manuelle Aggregation.
+            {t('heroSubtitle')}
           </p>
           <a
             href="#anfrage"
             className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
           >
-            Kostenlosen Shortage Report anfordern
+            {t('heroCta')}
             <ArrowRight className="h-4 w-4" />
           </a>
           <p className="mt-3 text-[12px] text-muted-foreground">
-            Kein Abo. Kein Pitch. Wir erstellen einen personalisierten Report für Ihre Institution — innert 24 h.
+            {t('heroCtaNote')}
           </p>
         </section>
 
@@ -85,7 +86,7 @@ export default function KlinikSystemPage() {
         <section className="border-t border-border/40 bg-muted/[0.15]">
           <div className="max-w-5xl mx-auto px-4 sm:px-8 py-16 sm:py-20">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground mb-10">
-              Warum Engpassradar Klinik-System
+              {t('painPointsEyebrow')}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {PAIN_POINTS.map(({ icon: Icon, title, body }) => (
@@ -105,13 +106,13 @@ export default function KlinikSystemPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
               <div>
                 <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-5">
-                  Klinik-System — CHF 199 / Monat
+                  {t('includesEyebrow')}
                 </p>
                 <h2 className="text-[22px] font-semibold tracking-tight text-foreground mb-2 leading-snug">
-                  Was Sie ab dem ersten Tag haben.
+                  {t('includesH2')}
                 </h2>
                 <p className="text-[13px] text-muted-foreground mb-6 leading-relaxed">
-                  Konfiguriert in einem 30-minütigen Onboarding-Call. Kein internes IT-Projekt.
+                  {t('includesSubtitle')}
                 </p>
                 <ul className="space-y-3">
                   {INCLUDES.map(item => (
@@ -123,10 +124,10 @@ export default function KlinikSystemPage() {
                 </ul>
                 <div className="mt-8 rounded-xl border border-border/50 bg-muted/30 px-4 py-3 space-y-2">
                   <p className="text-[12px] text-muted-foreground">
-                    <strong className="text-foreground">Zum Vergleich:</strong> 3 Mitarbeitende · 15 Min./Tag · CHF 90/h = CHF 297/Monat Personalaufwand für manuelles Monitoring. Das Klinik-System kostet CHF 199.
+                    <strong className="text-foreground">{t('comparisonLabel')}</strong> {t('comparisonBody')}
                   </p>
                   <p className="text-[12px] text-muted-foreground">
-                    <strong className="text-foreground">Was Sie kaufen:</strong> nicht die Software — die täglich zuverlässig laufende Infrastruktur, ohne dass Sie Scraper, Datenbank oder Alerts selbst betreiben müssen.
+                    <strong className="text-foreground">{t('purchaseLabel')}</strong> {t('purchaseBody')}
                   </p>
                 </div>
               </div>
@@ -134,13 +135,13 @@ export default function KlinikSystemPage() {
               {/* Application form */}
               <div id="anfrage" className="rounded-2xl border bg-card shadow-sm p-6 scroll-mt-20">
                 <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground mb-1">
-                  Anfrage
+                  {t('formEyebrow')}
                 </p>
                 <p className="text-[17px] font-semibold text-foreground mb-1">
-                  Kostenlosen Shortage Report erhalten
+                  {t('formTitle')}
                 </p>
                 <p className="text-[12px] text-muted-foreground mb-5 leading-relaxed">
-                  Wir erstellen einen personalisierten Report für Ihre Institution und melden uns persönlich — kein Autoresponder.
+                  {t('formSubtitle')}
                 </p>
                 <KlinikSystemForm />
               </div>
@@ -152,12 +153,7 @@ export default function KlinikSystemPage() {
         <section className="border-t border-border/40 bg-muted/[0.15]">
           <div className="max-w-5xl mx-auto px-4 sm:px-8 py-14 sm:py-16">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 text-center">
-              {[
-                { value: '700+', label: 'Aktive Engpässe täglich überwacht' },
-                { value: '99.2 %', label: 'Automatische ODDB-Anreicherung (ATC, GTIN, Wirkstoff)' },
-                { value: '< 2 h', label: 'Ø Zeit bis neue Meldung im System sichtbar ist' },
-                { value: '24 h', label: 'Persönliche Reaktionszeit bei Support-Anfragen' },
-              ].map(({ value, label }) => (
+              {STATS.map(({ value, label }) => (
                 <div key={label}>
                   <p className="text-[28px] font-bold tracking-tight text-foreground tabular-nums">{value}</p>
                   <p className="text-[11px] text-muted-foreground mt-1 leading-snug">{label}</p>
@@ -171,7 +167,7 @@ export default function KlinikSystemPage() {
         <section className="border-t border-border/40">
           <div className="max-w-5xl mx-auto px-4 sm:px-8 py-16 sm:py-20">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground mb-10">
-              Häufige Fragen
+              {t('objectionsEyebrow')}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-8">
               {OBJECTIONS.map(({ q, a }) => (
@@ -188,22 +184,22 @@ export default function KlinikSystemPage() {
         <section className="border-t border-border/40 bg-muted/[0.15]">
           <div className="max-w-5xl mx-auto px-4 sm:px-8 py-16 sm:py-20 text-center">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-5">
-              Nächster Schritt
+              {t('finalEyebrow')}
             </p>
             <h2 className="text-[clamp(22px,3vw,36px)] font-semibold tracking-tight text-foreground mb-4">
-              Sehen Sie, welche Engpässe Ihre Institution heute betreffen.
+              {t('finalH2')}
             </h2>
             <p className="text-[14px] text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
-              Anfrage stellen — wir erstellen Ihnen kostenfrei einen personalisierten Shortage Report und melden uns persönlich.
+              {t('finalSubtitle')}
             </p>
             <a
               href="#anfrage"
               className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm"
             >
-              Jetzt Anfrage stellen
+              {t('finalCta')}
               <ArrowRight className="h-4 w-4" />
             </a>
-            <p className="mt-3 text-[12px] text-muted-foreground">Kein Abo. Kostenlos. Innert 24 h.</p>
+            <p className="mt-3 text-[12px] text-muted-foreground">{t('finalCtaNote')}</p>
           </div>
         </section>
 
@@ -211,13 +207,13 @@ export default function KlinikSystemPage() {
         <section className="border-t border-border/40">
           <div className="max-w-5xl mx-auto px-4 sm:px-8 py-10 flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-[13px] text-muted-foreground">
-              Entwickler oder Softwarehersteller? API-Tarife mit Rate Limits und technischer Dokumentation.
+              {t('backRow')}
             </p>
             <a
               href="/api#pricing"
               className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-primary hover:underline"
             >
-              API-Tarife ansehen
+              {t('backRowCta')}
               <ArrowRight className="h-3.5 w-3.5" />
             </a>
           </div>

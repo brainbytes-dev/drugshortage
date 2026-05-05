@@ -1,7 +1,9 @@
 'use client'
 
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import { useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
+import { useCallback, useMemo } from 'react'
+import { useTranslations } from 'next-intl'
 import {
   Select,
   SelectContent,
@@ -14,19 +16,23 @@ interface FilterBarProps {
   firmaList: string[]
 }
 
-// ✅ Moved outside component to prevent recreation on every render
-const STATUS_OPTIONS = [
-  { value: '1', label: '1 — Direkt gemeldet (Grün)' },
-  { value: '2', label: '2 — Gemeldet (Gelbgrün)' },
-  { value: '3', label: '3 — Sporadisch (Orange)' },
-  { value: '4', label: '4 — Nicht informiert (Rot)' },
-  { value: '5', label: '5 — Verhandlung (Gelb)' },
-] as const // ✅ Make readonly to prevent accidental mutations
-
 export function FilterBar({ firmaList }: FilterBarProps) {
+  const t = useTranslations('Filters')
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
+
+  // Translated status options (recomputed when locale changes via t)
+  const statusOptions = useMemo(
+    () => [
+      { value: '1', label: t('status1') },
+      { value: '2', label: t('status2') },
+      { value: '3', label: t('status3') },
+      { value: '4', label: t('status4') },
+      { value: '5', label: t('status5') },
+    ],
+    [t]
+  )
 
   const updateParam = useCallback(
     (key: string, value: string) => {
@@ -37,7 +43,11 @@ export function FilterBar({ firmaList }: FilterBarProps) {
         params.delete(key)
       }
       params.delete('page')
-      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+      const query = Object.fromEntries(params.entries())
+      router.replace(
+        { pathname, query } as Parameters<typeof router.replace>[0],
+        { scroll: false }
+      )
     },
     [router, pathname, searchParams]
   )
@@ -52,11 +62,11 @@ export function FilterBar({ firmaList }: FilterBarProps) {
         onValueChange={v => updateParam('status', v ?? 'all')}
       >
         <SelectTrigger className="w-[200px]">
-          <SelectValue placeholder="Status" />
+          <SelectValue placeholder={t('statusPlaceholder')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Alle Status</SelectItem>
-          {STATUS_OPTIONS.map(o => (
+          <SelectItem value="all">{t('allStatuses')}</SelectItem>
+          {statusOptions.map(o => (
             <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
           ))}
         </SelectContent>
@@ -67,10 +77,10 @@ export function FilterBar({ firmaList }: FilterBarProps) {
         onValueChange={v => updateParam('firma', v ?? 'all')}
       >
         <SelectTrigger className="w-[220px]">
-          <SelectValue placeholder="Firma" />
+          <SelectValue placeholder={t('firmaPlaceholder')} />
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value="all">Alle Firmen</SelectItem>
+          <SelectItem value="all">{t('allFirmen')}</SelectItem>
           {firmaList.map(f => (
             <SelectItem key={f} value={f}>{f}</SelectItem>
           ))}

@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import { FlaskConical, X } from 'lucide-react'
 import type { AtcGruppeStats } from '@/lib/types'
 
@@ -10,6 +11,7 @@ interface AtcGruppenSheetProps {
 }
 
 export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
+  const t = useTranslations('AtcGruppen')
   const [search, setSearch] = useState('')
   const [open, setOpen] = useState(false)
   const router = useRouter()
@@ -40,7 +42,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
 
   function handleAtcClick(atcCode: string) {
     setOpen(false)
-    router.push(`/?atc=${encodeURIComponent(atcCode)}`, { scroll: false })
+    router.push({ pathname: '/', query: { atc: atcCode } }, { scroll: false })
   }
 
   return (
@@ -50,7 +52,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
         className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-md border px-4 py-2 text-sm font-medium hover:bg-muted transition-colors whitespace-nowrap"
       >
         <FlaskConical className="h-4 w-4 text-primary" />
-        ATC-Gruppen
+        {t('title')}
         <span className="ml-1 rounded-full bg-primary/10 px-2 py-0.5 text-xs text-primary font-semibold">
           {atcGruppen.length}
         </span>
@@ -65,14 +67,14 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
             {/* Header */}
             <div className="flex items-start justify-between gap-4 border-b px-6 py-4 shrink-0">
               <div>
-                <h2 className="text-[15px] font-semibold text-foreground">ATC-Gruppen</h2>
+                <h2 className="text-[15px] font-semibold text-foreground">{t('title')}</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Betroffene Wirkstoffgruppen nach Anzahl aktiver Engpässe. Gruppe anklicken zum Filtern.
+                  {t('description')}
                 </p>
               </div>
               <button
                 onClick={() => setOpen(false)}
-                aria-label="Schliessen"
+                aria-label={t('closeAria')}
                 className="shrink-0 rounded-lg p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               >
                 <X className="h-4 w-4" />
@@ -83,7 +85,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
             <div className="px-6 pt-4 pb-2 shrink-0">
               <input
                 type="search"
-                placeholder="ATC-Code oder Bezeichnung…"
+                placeholder={t('searchPlaceholder')}
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 className="w-full rounded-md border bg-background px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-ring"
@@ -114,7 +116,7 @@ export function AtcGruppenSheet({ atcGruppen }: AtcGruppenSheetProps) {
                 )
               })}
               {filtered.length === 0 && (
-                <p className="py-8 text-center text-sm text-muted-foreground">Keine Treffer</p>
+                <p className="py-8 text-center text-sm text-muted-foreground">{t('emptyState')}</p>
               )}
             </div>
           </div>

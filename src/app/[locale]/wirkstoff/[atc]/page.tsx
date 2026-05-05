@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
+import { Link } from '@/i18n/navigation'
 import { getShortagesByAtc, getSubstanzByAtc, getAllProductsByAtc } from '@/lib/db'
 import { toSlug } from '@/lib/slug'
 import { WatchlistForm } from '@/components/watchlist-form'
@@ -15,37 +16,41 @@ export const revalidate = 3600
 
 type FilterKey = 'all' | 'in_shortage' | 'available' | 'off_market'
 
-const FILTERS: { key: FilterKey; label: string; dot?: string }[] = [
-  { key: 'all',         label: 'Alle' },
-  { key: 'in_shortage', label: 'Im Engpass',    dot: 'bg-destructive' },
-  { key: 'available',   label: 'Verfügbar',     dot: 'bg-emerald-500' },
-  { key: 'off_market',  label: 'Ausser Handel', dot: 'bg-muted-foreground/50' },
-]
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { atc } = await params
-  const [shortages, substanz] = await Promise.all([
+  const [shortages, substanz, t] = await Promise.all([
     getShortagesByAtc(atc),
     getSubstanzByAtc(atc).catch(() => null),
+    getTranslations('Wirkstoff'),
   ])
   const count = shortages.length
   return {
-    title: `${substanz ? `${substanz} (${atc})` : `ATC ${atc}`} — Lieferengpässe Schweiz | engpass.radar`,
-    description: count > 0
-      ? `Alle Lieferengpässe für ${substanz ?? atc} in der Schweiz. ATC-Code ${atc}. Täglich aktualisiert.`
-      : undefined,
+    title: substanz ? t('metaTitleWithSubstanz', { substanz, atc }) : t('metaTitleAtcOnly', { atc }),
+    description: count > 0 ? t('metaDescription', { substanz: substanz ?? atc, atc }) : undefined,
     alternates: { canonical: `https://engpassradar.ch/wirkstoff/${atc}` },
   }
 }
 
-const STATUS_LABEL: Record<string, { label: string; dot: string; text: string }> = {
-  in_shortage: { label: 'Engpass',   dot: 'bg-destructive',           text: 'text-destructive' },
-  available:   { label: 'Verfügbar', dot: 'bg-emerald-500',           text: 'text-emerald-600 dark:text-emerald-400' },
-  off_market:  { label: 'Ausser Handel', dot: 'bg-muted-foreground',  text: 'text-muted-foreground' },
-}
-
 export default async function WirkstoffPage({ params, searchParams }: PageProps) {
-  const [{ atc }, { filter: rawFilter }] = await Promise.all([params, searchParams])
+  const [{ atc }, { filter: rawFilter }, t] = await Promise.all([
+    params,
+    searchParams,
+    getTranslations('Wirkstoff'),
+  ])
+
+  const FILTERS: { key: FilterKey; label: string; dot?: string }[] = [
+    { key: 'all',         label: t('filterAll') },
+    { key: 'in_shortage', label: t('filterInShortage'), dot: 'bg-destructive' },
+    { key: 'available',   label: t('filterAvailable'),  dot: 'bg-emerald-500' },
+    { key: 'off_market',  label: t('filterOffMarket'),  dot: 'bg-muted-foreground/50' },
+  ]
+
+  const STATUS_LABEL: Record<string, { label: string; dot: string; text: string }> = {
+    in_shortage: { label: t('statusInShortage'), dot: 'bg-destructive',          text: 'text-destructive' },
+    available:   { label: t('statusAvailable'),  dot: 'bg-emerald-500',          text: 'text-emerald-600 dark:text-emerald-400' },
+    off_market:  { label: t('statusOffMarket'),  dot: 'bg-muted-foreground',     text: 'text-muted-foreground' },
+  }
+
   const activeFilter: FilterKey = (FILTERS.find(f => f.key === rawFilter)?.key) ?? 'in_shortage'
 
   const [shortages, substanz, allProducts] = await Promise.all([
@@ -82,8 +87,8 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
         '@type': 'MedicalWebPage',
         '@id': `https://www.engpassradar.ch/wirkstoff/${atc}`,
         url: `https://www.engpassradar.ch/wirkstoff/${atc}`,
-        name: `${substanz ? `${substanz} (${atc})` : `ATC ${atc}`} Lieferengpass Schweiz | engpass.radar`,
-        description: `${shortageCount} Präparat${shortageCount !== 1 ? 'e' : ''} mit dem Wirkstoff ${substanz ?? atc} ${shortageCount !== 1 ? 'sind' : 'ist'} aktuell nicht lieferbar in der Schweiz.`,
+        name: substanz ? t('jsonLdNameWithSubstanz', { substanz, atc }) : t('jsonLdNameAtcOnly', { atc }),
+        description: t('jsonLdDescription', { count: shortageCount, substanz: substanz ?? atc }),
         about: {
           '@type': 'MedicalEntity',
           name: substanz ?? atc,
@@ -94,7 +99,7 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.engpassradar.ch' },
+          { '@type': 'ListItem', position: 1, name: t('breadcrumbHome'), item: 'https://www.engpassradar.ch' },
           { '@type': 'ListItem', position: 2, name: substanz ?? `ATC ${atc}`, item: `https://www.engpassradar.ch/wirkstoff/${atc}` },
         ],
       },
@@ -109,17 +114,17 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
       <section className="border-b border-border/40">
         <div className="max-w-4xl mx-auto px-4 py-10 sm:py-14">
           <Link
-            href={`/?atc=${atc}`}
+            href={{ pathname: '/', query: { atc } }}
             className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors group mb-8"
           >
             <ArrowLeft className="h-3 w-3 group-hover:-translate-x-0.5 transition-transform duration-150" />
-            Alle {atc}-Engpässe
+            {t('backLink', { atc })}
           </Link>
 
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">Wirkstoff</span>
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary">{t('eyebrow')}</span>
               <span className="text-muted-foreground/40 text-xs">—</span>
               <span className="font-mono text-xs text-muted-foreground">{atc}</span>
             </div>
@@ -129,39 +134,38 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
             </h1>
 
             <p className="text-base text-muted-foreground leading-relaxed">
-              <span className="font-semibold text-foreground tabular-nums">{shortageCount} Präparat{shortageCount !== 1 ? 'e' : ''}</span>{' '}
-              {shortageCount !== 1 ? 'sind' : 'ist'} aktuell nicht lieferbar in der Schweiz.
-              {avgTage > 0 && <> Ø Engpassdauer: <span className="font-medium text-foreground tabular-nums">{avgTage} Tage</span>.</>}
+              {t('headlineSummary', { count: shortageCount })}
+              {avgTage > 0 && t('averageDuration', { days: avgTage })}
             </p>
 
             {/* Stats row */}
             <div className="flex flex-wrap items-center gap-5 pt-1">
               <div>
                 <p className="text-2xl font-black tabular-nums leading-none text-destructive">{shortageCount}</p>
-                <p className="text-[11px] text-muted-foreground mt-0.5">Im Engpass</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiInShortage')}</p>
               </div>
               {hasFullCatalog && availableCount > 0 && (
                 <div>
                   <p className="text-2xl font-black tabular-nums leading-none text-emerald-600 dark:text-emerald-400">{availableCount}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Verfügbar</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiAvailable')}</p>
                 </div>
               )}
               {hasFullCatalog && offMarketCount > 0 && (
                 <div>
                   <p className="text-2xl font-black tabular-nums leading-none text-muted-foreground">{offMarketCount}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Ausser Handel</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiOffMarket')}</p>
                 </div>
               )}
               {avgTage > 0 && (
                 <div>
                   <p className="text-2xl font-black tabular-nums leading-none">{avgTage}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Ø Tage</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiAverageDays')}</p>
                 </div>
               )}
               {firmen.length > 0 && (
                 <div>
                   <p className="text-2xl font-black tabular-nums leading-none">{firmen.length}</p>
-                  <p className="text-[11px] text-muted-foreground mt-0.5">Firmen im Engpass</p>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiCompaniesAffected')}</p>
                 </div>
               )}
             </div>
@@ -179,11 +183,10 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
               const count = filterCounts[f.key]
               if (count === 0 && f.key !== 'all') return null
               const isActive = activeFilter === f.key
-              const href = `/wirkstoff/${atc}?filter=${f.key}`
               return (
                 <Link
                   key={f.key}
-                  href={href}
+                  href={{ pathname: '/wirkstoff/[atc]', params: { atc }, query: { filter: f.key } }}
                   scroll={false}
                   className={[
                     'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors duration-150',
@@ -204,15 +207,16 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
         {hasFullCatalog ? (
           <section className="space-y-1">
             <p className="text-xs text-muted-foreground pb-1">
-              {filteredProducts.length} Präparat{filteredProducts.length !== 1 ? 'e' : ''}
-              {activeFilter !== 'all' ? ` (gefiltert von ${totalCatalog})` : ''}
+              {activeFilter !== 'all'
+                ? t('productCountFiltered', { count: filteredProducts.length, total: totalCatalog })
+                : t('productCountAll', { count: filteredProducts.length })}
             </p>
             <div className="divide-y divide-border/40">
               {filteredProducts.map(p => {
                 const st = STATUS_LABEL[p.status]
                 const href = p.shortage
-                  ? `/medikament/${p.shortage.slug ?? toSlug(p.bezeichnung)}`
-                  : `/gtin/${p.gtin}`
+                  ? { pathname: '/medikament/[slug]' as const, params: { slug: p.shortage.slug ?? toSlug(p.bezeichnung) } }
+                  : { pathname: '/gtin/[gtin]' as const, params: { gtin: p.gtin } }
                 const isClickable = p.status !== 'off_market'
 
                 return isClickable ? (
@@ -221,11 +225,23 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
                     href={href}
                     className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-6 py-3.5 hover:bg-muted/20 -mx-4 px-4 rounded-lg transition-colors duration-150"
                   >
-                    <ProductRow p={p} st={st} />
+                    <ProductRow
+                      p={p}
+                      st={st}
+                      manufacturerUnknownLabel={t('manufacturerUnknown')}
+                      daysLabel={t('daysLabel')}
+                      fromDateFormatter={(date) => t('fromDate', { date })}
+                    />
                   </Link>
                 ) : (
                   <div key={p.gtin} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-6 py-3.5 opacity-50">
-                    <ProductRow p={p} st={st} />
+                    <ProductRow
+                      p={p}
+                      st={st}
+                      manufacturerUnknownLabel={t('manufacturerUnknown')}
+                      daysLabel={t('daysLabel')}
+                      fromDateFormatter={(date) => t('fromDate', { date })}
+                    />
                   </div>
                 )
               })}
@@ -234,12 +250,12 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
         ) : (
           /* Fallback: only shortages (ODDB not fully imported yet) */
           <section className="space-y-3">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">Betroffene Präparate</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">{t('fallbackHeading')}</h2>
             <div className="divide-y divide-border/40">
               {shortages.map(s => (
                 <Link
                   key={s.gtin}
-                  href={`/medikament/${s.slug ?? toSlug(s.bezeichnung)}`}
+                  href={{ pathname: '/medikament/[slug]', params: { slug: s.slug ?? toSlug(s.bezeichnung) } }}
                   className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 sm:gap-6 py-3.5 hover:bg-muted/20 -mx-4 px-4 rounded-lg transition-colors duration-150"
                 >
                   <div className="space-y-0.5 min-w-0">
@@ -250,12 +266,12 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
                     <div className="text-right">
                       <p className="text-xs text-muted-foreground">{s.statusText}</p>
                       {s.datumLieferfahigkeit && s.datumLieferfahigkeit !== 'offen' && (
-                        <p className="text-xs text-muted-foreground/60">ab {s.datumLieferfahigkeit}</p>
+                        <p className="text-xs text-muted-foreground/60">{t('fromDate', { date: s.datumLieferfahigkeit })}</p>
                       )}
                     </div>
                     <div className="text-right shrink-0">
                       <p className="text-sm font-semibold tabular-nums leading-none">{s.tageSeitMeldung}</p>
-                      <p className="text-[11px] text-muted-foreground">Tage</p>
+                      <p className="text-[11px] text-muted-foreground">{t('daysLabel')}</p>
                     </div>
                     <svg className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-150 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -270,7 +286,7 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
         <WatchlistForm atcCode={atc} atcName={substanz ?? atc} />
 
         <p className="text-xs text-muted-foreground border-t border-border/40 pt-5">
-          Engpass-Daten: drugshortage.ch ·{hasFullCatalog ? ' Produktkatalog: ODDB / Swissmedic ·' : ''} keine Gewähr auf Vollständigkeit
+          {hasFullCatalog ? t('footerSourceFull') : t('footerSourceShortagesOnly')}
         </p>
       </div>
     </main>
@@ -281,9 +297,15 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
 function ProductRow({
   p,
   st,
+  manufacturerUnknownLabel,
+  daysLabel,
+  fromDateFormatter,
 }: {
   p: { bezeichnung: string; firma: string | null; shortage: { statusText?: string; datumLieferfahigkeit?: string; tageSeitMeldung?: number } | null; status: string }
   st: { label: string; dot: string; text: string }
+  manufacturerUnknownLabel: string
+  daysLabel: string
+  fromDateFormatter: (date: string) => string
 }) {
   return (
     <>
@@ -298,7 +320,7 @@ function ProductRow({
           </span>
         </div>
         <p className="text-xs text-muted-foreground">
-          {p.firma ?? <span className="opacity-40">Hersteller n. v.</span>}
+          {p.firma ?? <span className="opacity-40">{manufacturerUnknownLabel}</span>}
         </p>
       </div>
       {p.shortage && (
@@ -306,12 +328,12 @@ function ProductRow({
           <div className="text-right">
             <p className="text-xs text-muted-foreground">{p.shortage.statusText}</p>
             {p.shortage.datumLieferfahigkeit && p.shortage.datumLieferfahigkeit !== 'offen' && (
-              <p className="text-xs text-muted-foreground/60">ab {p.shortage.datumLieferfahigkeit}</p>
+              <p className="text-xs text-muted-foreground/60">{fromDateFormatter(p.shortage.datumLieferfahigkeit)}</p>
             )}
           </div>
           <div className="text-right shrink-0">
             <p className="text-sm font-semibold tabular-nums leading-none">{p.shortage.tageSeitMeldung}</p>
-            <p className="text-[11px] text-muted-foreground">Tage</p>
+            <p className="text-[11px] text-muted-foreground">{daysLabel}</p>
           </div>
           <svg className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-150 shrink-0 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

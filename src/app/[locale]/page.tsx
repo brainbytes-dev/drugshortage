@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimelineWithActive, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt, queryHistoricalShortages, getHistoricalCount, getHeroStats } from '@/lib/db'
 import { getKPIStatsCached as getKPIStats } from '@/lib/db-cached-example'
 import { KPICards } from '@/components/kpi-cards'
@@ -19,9 +21,12 @@ interface PageProps {
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
-export const metadata: Metadata = {
-  title: 'Lieferengpass Medikamente Schweiz | engpass.radar',
-  description: 'Alle aktuellen Medikamenten-Lieferengpässe der Schweiz — täglich aus drugshortage.ch und BWL aktualisiert. Suche nach Wirkstoff, Firma oder ATC-Code. Öffentlich zugänglich, ohne Registrierung.',
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Home')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
 export default async function DashboardPage({ searchParams }: PageProps) {
@@ -51,7 +56,22 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     sort: params.sort,
   }
 
-  const [response, kpi, overview, bwlGtins, weeklyTimeline, offMarketResponse, , , historicalResponse, historicalCount, heroStats] = await Promise.all([
+  const [
+    response,
+    kpi,
+    overview,
+    bwlGtins,
+    weeklyTimeline,
+    offMarketResponse,
+    ,
+    ,
+    historicalResponse,
+    historicalCount,
+    heroStats,
+    tHome,
+    tFaq,
+    tSd,
+  ] = await Promise.all([
     isOffMarket || isHistorical ? Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }) : queryShortages(query),
     getKPIStats(),
     getOverviewStats(),
@@ -70,9 +90,72 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     isHistorical ? queryHistoricalShortages(historicalQuery) : Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }),
     getHistoricalCount().catch(() => 0),
     getHeroStats().catch(() => null),
+    getTranslations('Home'),
+    getTranslations('Faq'),
+    getTranslations('HomeStructuredData'),
   ])
 
   const historicalTotal = isHistorical ? historicalResponse.total : historicalCount
+
+  const steps = [
+    { step: tHome('step1Number'), title: tHome('step1Title'), body: tHome('step1Body') },
+    { step: tHome('step2Number'), title: tHome('step2Title'), body: tHome('step2Body') },
+    { step: tHome('step3Number'), title: tHome('step3Title'), body: tHome('step3Body') },
+  ]
+
+  const categories = [
+    {
+      cat: tHome('categoryDataTitle'),
+      items: [
+        { label: tHome('dataItem1Label'), desc: tHome('dataItem1Desc') },
+        { label: tHome('dataItem2Label'), desc: tHome('dataItem2Desc') },
+        { label: tHome('dataItem3Label'), desc: tHome('dataItem3Desc') },
+        { label: tHome('dataItem4Label'), desc: tHome('dataItem4Desc') },
+      ],
+    },
+    {
+      cat: tHome('categorySearchTitle'),
+      items: [
+        { label: tHome('searchItem1Label'), desc: tHome('searchItem1Desc') },
+        { label: tHome('searchItem2Label'), desc: tHome('searchItem2Desc') },
+        { label: tHome('searchItem3Label'), desc: tHome('searchItem3Desc') },
+        { label: tHome('searchItem4Label'), desc: tHome('searchItem4Desc') },
+      ],
+    },
+    {
+      cat: tHome('categoryApiTitle'),
+      items: [
+        { label: tHome('apiItem1Label'), desc: tHome('apiItem1Desc') },
+        { label: tHome('apiItem2Label'), desc: tHome('apiItem2Desc') },
+        { label: tHome('apiItem3Label'), desc: tHome('apiItem3Desc') },
+        { label: tHome('apiItem4Label'), desc: tHome('apiItem4Desc') },
+      ],
+    },
+  ]
+
+  // FAQ keys — used both in JSON-LD and the accordion below.
+  // faq5 / faq6 contain inline links and use t.rich for rendering, but their
+  // plain-text variants (`faq5APlain`, `faq6APlain`) feed the JSON-LD payload.
+  const faqItems: { qKey: string; aKey: string; aPlainKey: string; rich?: boolean }[] = [
+    { qKey: 'faq1Q', aKey: 'faq1A', aPlainKey: 'faq1A' },
+    { qKey: 'faq2Q', aKey: 'faq2A', aPlainKey: 'faq2A' },
+    { qKey: 'faq3Q', aKey: 'faq3A', aPlainKey: 'faq3A' },
+    { qKey: 'faq4Q', aKey: 'faq4A', aPlainKey: 'faq4A' },
+    { qKey: 'faq5Q', aKey: 'faq5ARich', aPlainKey: 'faq5APlain', rich: true },
+    { qKey: 'faq6Q', aKey: 'faq6ARich', aPlainKey: 'faq6APlain', rich: true },
+    { qKey: 'faq7Q', aKey: 'faq7A', aPlainKey: 'faq7A' },
+    { qKey: 'faq8Q', aKey: 'faq8A', aPlainKey: 'faq8A' },
+  ]
+
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqItems.map(({ qKey, aPlainKey }) => ({
+      '@type': 'Question',
+      name: tFaq(qKey),
+      acceptedAnswer: { '@type': 'Answer', text: tFaq(aPlainKey) },
+    })),
+  }
 
   return (
     <>
@@ -88,26 +171,34 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 "@id": "https://engpassradar.ch/#organization",
                 "name": "engpass.radar",
                 "url": "https://engpassradar.ch",
-                "description": "Aggregierte Übersicht aller gemeldeten Medikamenten-Lieferengpässe in der Schweiz — täglich aktualisiert.",
+                "description": tSd('organizationDescription'),
                 "sameAs": ["https://github.com/brainbytes-dev/engpassradar"],
-                "founder": { "@type": "Person", "name": "Henrik Rühe", "jobTitle": "Neurologe" }
+                "founder": { "@type": "Person", "name": "Henrik Rühe", "jobTitle": tSd('founderJobTitle') }
               },
               {
                 "@type": "Dataset",
                 "@id": "https://engpassradar.ch/#dataset",
-                "name": "Schweizer Medikamenten-Lieferengpässe",
-                "description": "Tägliche Aggregation aller offiziell gemeldeten Medikamenten-Lieferengpässe in der Schweiz. Quellen: drugshortage.ch, BWL-Pflichtlager, Spitalpharmazie USB. Angereichert mit Wirkstoff (ATC), GTIN, Swissmedic-Nummer und Severity-Score.",
+                "name": tSd('datasetName'),
+                "description": tSd('datasetDescription'),
                 "url": "https://engpassradar.ch",
                 "publisher": { "@id": "https://engpassradar.ch/#organization" },
                 "license": "https://engpassradar.ch/nutzungsbedingungen",
                 "inLanguage": "de-CH",
                 "temporalCoverage": "2023/..",
-                "spatialCoverage": { "@type": "Place", "name": "Schweiz", "geo": { "@type": "GeoShape", "addressCountry": "CH" } },
+                "spatialCoverage": { "@type": "Place", "name": tSd('spatialCoverageName'), "geo": { "@type": "GeoShape", "addressCountry": "CH" } },
                 "distribution": [
                   { "@type": "DataDownload", "encodingFormat": "text/csv", "contentUrl": "https://engpassradar.ch/api/export/csv" },
                   { "@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://engpassradar.ch/api/v1/shortages" }
                 ],
-                "keywords": ["Medikamenten-Engpass", "Lieferengpass Schweiz", "Arzneimittel", "drugshortage", "ATC", "Swissmedic", "Spitalapotheke"]
+                "keywords": [
+                  tSd('keyword1'),
+                  tSd('keyword2'),
+                  tSd('keyword3'),
+                  tSd('keyword4'),
+                  tSd('keyword5'),
+                  tSd('keyword6'),
+                  tSd('keyword7'),
+                ]
               },
               {
                 "@type": "WebSite",
@@ -122,7 +213,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 }
               }
             ]
-          }).replace(/</g, '\u003c')
+          }).replace(/</g, '<')
         }}
       />
       {/* Hero — Live-Zahl */}
@@ -185,26 +276,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       <section className="border-t border-border/40">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 py-24 sm:py-32">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
-            Wie es funktioniert
+            {tHome('howItWorksEyebrow')}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {[
-              {
-                step: '01',
-                title: 'Alle Quellen, ein Dashboard',
-                body: 'Die neuesten Engpass-Meldungen aus allen offiziellen Schweizer Quellen — täglich abgeglichen, ohne dass Sie selbst drei Portale prüfen müssen.',
-              },
-              {
-                step: '02',
-                title: 'Sofort zugeordnet',
-                body: 'Wirkstoff, ATC-Code und Hersteller sind automatisch ergänzt. Kein manuelles Nachschlagen, kein Copy-Paste zwischen Systemen.',
-              },
-              {
-                step: '03',
-                title: 'Finden statt suchen',
-                body: 'Volltextsuche, Filter nach Firma oder ATC-Gruppe, Detailseite pro Präparat. Öffentlich zugänglich, ohne Registrierung.',
-              },
-            ].map(({ step, title, body }) => (
+            {steps.map(({ step, title, body }) => (
               <div key={step}>
                 <p className="font-mono text-[11px] text-primary mb-5">{step}</p>
                 <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-foreground mb-3">{title}</h3>
@@ -219,38 +294,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       <section className="border-t border-border/40 bg-slate-50 dark:bg-[#0d1117]">
         <div className="max-w-7xl mx-auto px-4 sm:px-8 py-20 sm:py-24">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
-            Was Sie hier finden
+            {tHome('whatYouFindEyebrow')}
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border/30">
-            {[
-              {
-                cat: 'Daten',
-                items: [
-                  { label: 'Alle Quellen vereint', desc: 'drugshortage.ch + BWL + ODDB' },
-                  { label: 'Täglich aktualisiert', desc: 'Automatisch, Zeitstempel sichtbar' },
-                  { label: 'Severity Score', desc: 'Dauer · Alternativen · BWL-Status' },
-                  { label: 'Verlaufs-Timeline', desc: 'Wochen-Ansicht der Entwicklung' },
-                ],
-              },
-              {
-                cat: 'Suche & Filter',
-                items: [
-                  { label: 'Volltextsuche', desc: 'Wirkstoff, Produkt, Firma' },
-                  { label: 'ATC-Filter', desc: 'Alle betroffenen ATC-Gruppen' },
-                  { label: 'Status- & Firmenfilter', desc: 'Kombinierbar, ohne Reload' },
-                  { label: 'Alternativen-Vorschläge', desc: 'Wirkstoffgleiche Präparate' },
-                ],
-              },
-              {
-                cat: 'Schnittstellen',
-                items: [
-                  { label: 'CSV-Export', desc: 'Tagesaktuelle Rohdaten' },
-                  { label: 'REST API', desc: 'JSON, filterbar, ohne Registrierung' },
-                  { label: 'Webhooks', desc: 'Push bei neuen Engpässen (API-Plan)' },
-                  { label: 'Öffentlich zugänglich', desc: 'Kein Login, kein Paywall' },
-                ],
-              },
-            ].map(({ cat, items }) => (
+            {categories.map(({ cat, items }) => (
               <div key={cat} className="bg-slate-50 dark:bg-[#0d1117] px-6 sm:px-8 py-8 space-y-5">
                 <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 pb-4 border-b border-border/40">
                   {cat}
@@ -274,80 +321,47 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         type="application/ld+json"
         suppressHydrationWarning
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "FAQPage",
-            "mainEntity": [
-              { "@type": "Question", "name": "Wer steckt hinter engpass.radar?", "acceptedAnswer": { "@type": "Answer", "text": "engpass.radar ist ein unabhängiges Projekt von Henrik Rühe, Neurologe in der Schweiz. Kein Pharma-Sponsor, keine Werbung, keine Affiliate-Links. Entwickelt aus klinischem Eigenbedarf und in der Freizeit betrieben. Der Quellcode ist öffentlich einsehbar auf GitHub." } },
-              { "@type": "Question", "name": "Woher stammen die Daten?", "acceptedAnswer": { "@type": "Answer", "text": "Die Engpass-Meldungen kommen primär von drugshortage.ch. Ergänzend werden die Daten des Bundesamts für wirtschaftliche Landesversorgung (BWL) und die Shortage-Liste der Spitalpharmazie des Universitätsspitals Basel einbezogen. Wirkstoff, ATC-Code, Swissmedic-Nummer und GTIN stammen aus der öffentlichen ODDB-Referenzdatenbank." } },
-              { "@type": "Question", "name": "Wie aktuell sind die Daten?", "acceptedAnswer": { "@type": "Answer", "text": "Die Daten werden täglich automatisch abgeglichen. Am Seitenkopf sehen Sie jederzeit, wann der letzte Import gelaufen ist. Sollte ein Abgleich einmal ausfallen, wird das am Zeitstempel sichtbar — kein nachgezogener Stand wird als aktuell ausgewiesen." } },
-              { "@type": "Question", "name": "Ist die Liste vollständig?", "acceptedAnswer": { "@type": "Answer", "text": "engpass.radar zeigt, was in den aggregierten Quellen gemeldet ist — nicht mehr und nicht weniger. Nicht gemeldete Engpässe erscheinen hier nicht. Für behördlich massgebliche Informationen gilt immer die Primärquelle." } },
-              { "@type": "Question", "name": "Kostet das etwas?", "acceptedAnswer": { "@type": "Answer", "text": "Das Dashboard, die Suche, die Detailseiten, der CSV-Export und die Basis-API sind öffentlich zugänglich. Kostenpflichtig sind höhere API-Kontingente, White-Label-Integrationen und SLA-gebundene Institutional-Pläne — adressiert an Software-Anbieter und Spitalapotheken-Ketten." } },
-              { "@type": "Question", "name": "Kann ich die Daten weiterverarbeiten oder in ein eigenes System einbinden?", "acceptedAnswer": { "@type": "Answer", "text": "Ja. Ein CSV-Export ist verfügbar, eine öffentliche REST-API steht unter engpassradar.ch/api-docs bereit. Der Free-Tier funktioniert ohne Anmeldung. Für produktive Integrationen gibt es Professional- und Institutional-Pläne mit höheren Kontingenten und SLA." } },
-              { "@type": "Question", "name": "Darf ich engpass.radar im Spital- oder Apotheken-Alltag einsetzen?", "acceptedAnswer": { "@type": "Answer", "text": "Ja — als Informations- und Monitoring-Werkzeug. Für pharmazeutische oder klinische Entscheide ist die Primärquelle (drugshortage.ch, Swissmedic, BWL) massgeblich. Der Monatsbericht und der Engpass-Signal-Newsletter sind zitierfähig und dürfen intern weitergegeben werden." } },
-              { "@type": "Question", "name": "Haftung und Gewähr", "acceptedAnswer": { "@type": "Answer", "text": "engpass.radar ist ein Informationswerkzeug, kein behördliches Register. Anzeige, Score und Alternativen-Hinweise werden automatisiert aggregiert; Fehler in der Primärquelle werden unverändert übernommen. Für klinische, pharmazeutische oder regulatorische Entscheidungen gelten ausschliesslich die offiziellen Quellen." } }
-            ]
-          }).replace(/</g, '\u003c')
+          __html: JSON.stringify(faqJsonLd).replace(/</g, '<')
         }}
       />
       <section id="faq" className="border-t border-border/40 bg-muted/[0.15]">
         <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
           <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
-            Häufige Fragen
+            {tFaq('title')}
           </h2>
           <div className="border-t border-border/40">
-            {([
-              {
-                q: 'Wer steckt hinter engpass.radar?',
-                a: <>engpass.radar ist ein unabhängiges Projekt von Henrik Rühe, Neurologe in der Schweiz. Kein Pharma-Sponsor, keine Werbung, keine Affiliate-Links. Entwickelt aus klinischem Eigenbedarf und in der Freizeit betrieben. Der Quellcode ist öffentlich einsehbar auf GitHub.</>,
-              },
-              {
-                q: 'Woher stammen die Daten?',
-                a: <>Die Engpass-Meldungen kommen primär von drugshortage.ch. Ergänzend werden die Daten des Bundesamts für wirtschaftliche Landesversorgung (BWL) und die Shortage-Liste der Spitalpharmazie des Universitätsspitals Basel einbezogen. Wirkstoff, ATC-Code, Swissmedic-Nummer und GTIN stammen aus der öffentlichen ODDB-Referenzdatenbank.</>,
-              },
-              {
-                q: 'Wie aktuell sind die Daten?',
-                a: <>Die Daten werden täglich automatisch abgeglichen. Am Seitenkopf sehen Sie jederzeit, wann der letzte Import gelaufen ist. Sollte ein Abgleich einmal ausfallen, wird das am Zeitstempel sichtbar — kein nachgezogener Stand wird als aktuell ausgewiesen.</>,
-              },
-              {
-                q: 'Ist die Liste vollständig?',
-                a: <>engpass.radar zeigt, was in den aggregierten Quellen gemeldet ist — nicht mehr und nicht weniger. Nicht gemeldete Engpässe erscheinen hier nicht. Für behördlich massgebliche Informationen gilt immer die Primärquelle.</>,
-              },
-              {
-                q: 'Kostet das etwas?',
-                a: <>Das Dashboard, die Suche, die Detailseiten, der CSV-Export und die Basis-API sind öffentlich zugänglich. Kostenpflichtig sind höhere API-Kontingente, White-Label-Integrationen und SLA-gebundene Institutional-Pläne — adressiert an Software-Anbieter und Spitalapotheken-Ketten. Details auf <a href="/api" className="font-mono text-[12px] text-primary hover:underline">/api</a>.</>,
-              },
-              {
-                q: 'Kann ich die Daten weiterverarbeiten oder in ein eigenes System einbinden?',
-                a: <>Ja. Ein CSV-Export ist verfügbar, eine öffentliche REST-API steht unter <a href="/api-docs" className="font-mono text-[12px] text-primary hover:underline">engpassradar.ch/api-docs</a> bereit. Der Free-Tier funktioniert ohne Anmeldung. Für produktive Integrationen gibt es Professional- und Institutional-Pläne mit höheren Kontingenten und SLA.</>,
-              },
-              {
-                q: 'Darf ich engpass.radar im Spital- oder Apotheken-Alltag einsetzen?',
-                a: <>Ja — als Informations- und Monitoring-Werkzeug. Für pharmazeutische oder klinische Entscheide ist die Primärquelle (drugshortage.ch, Swissmedic, BWL) massgeblich. Der Monatsbericht und der Engpass-Signal-Newsletter sind zitierfähig und dürfen intern weitergegeben werden.</>,
-              },
-              {
-                q: 'Haftung und Gewähr',
-                a: <>engpass.radar ist ein Informationswerkzeug, kein behördliches Register. Anzeige, Score und Alternativen-Hinweise werden automatisiert aggregiert; Fehler in der Primärquelle werden unverändert übernommen. Für klinische, pharmazeutische oder regulatorische Entscheidungen gelten ausschliesslich die offiziellen Quellen.</>,
-              },
-            ] as { q: string; a: React.ReactNode }[]).map(({ q, a }, i) => (
-              <details key={q} className="group border-b border-border/40">
-                <summary className="flex items-baseline gap-[14px] py-6 cursor-pointer list-none select-none">
-                  <span className="font-mono text-[11px] text-primary font-medium min-w-[28px] shrink-0 mt-[3px]">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
-                  <span className="flex-1 text-[16px] font-semibold leading-snug tracking-[-0.005em] group-hover:text-primary transition-colors duration-200">
-                    {q}
-                  </span>
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
-                    className="h-4 w-4 shrink-0 text-muted-foreground group-open:rotate-45 transition-transform duration-200 ease-out ml-4" aria-hidden>
-                    <path strokeLinecap="round" d="M8 2v12M2 8h12" />
-                  </svg>
-                </summary>
-                <p className="pl-[42px] pb-6 text-[14.5px] text-muted-foreground leading-[1.62] sm:pr-10">
-                  {a}
-                </p>
-              </details>
-            ))}
+            {faqItems.map(({ qKey, aKey, rich }, i) => {
+              const q = tFaq(qKey)
+              const answer = rich
+                ? tFaq.rich(aKey, {
+                    api: (chunks) => (
+                      <Link href="/api" className="font-mono text-[12px] text-primary hover:underline">{chunks}</Link>
+                    ),
+                    docs: (chunks) => (
+                      <Link href="/api-docs" className="font-mono text-[12px] text-primary hover:underline">{chunks}</Link>
+                    ),
+                  })
+                : tFaq(aKey)
+              return (
+                <details key={qKey} className="group border-b border-border/40">
+                  <summary className="flex items-baseline gap-[14px] py-6 cursor-pointer list-none select-none">
+                    <span className="font-mono text-[11px] text-primary font-medium min-w-[28px] shrink-0 mt-[3px]">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="flex-1 text-[16px] font-semibold leading-snug tracking-[-0.005em] group-hover:text-primary transition-colors duration-200">
+                      {q}
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
+                      className="h-4 w-4 shrink-0 text-muted-foreground group-open:rotate-45 transition-transform duration-200 ease-out ml-4" aria-hidden>
+                      <path strokeLinecap="round" d="M8 2v12M2 8h12" />
+                    </svg>
+                  </summary>
+                  <p className="pl-[42px] pb-6 text-[14.5px] text-muted-foreground leading-[1.62] sm:pr-10">
+                    {answer}
+                  </p>
+                </details>
+              )
+            })}
           </div>
         </div>
       </section>

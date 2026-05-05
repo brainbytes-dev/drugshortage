@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Calculator } from 'lucide-react'
 
 function Slider({
@@ -46,6 +47,7 @@ function Slider({
 }
 
 export function RoiCalculator() {
+  const t = useTranslations('RoiCalculator')
   const [employees, setEmployees] = useState(3)
   const [minutesPerDay, setMinutesPerDay] = useState(15)
   const [hourlyRate, setHourlyRate] = useState(90)
@@ -63,55 +65,55 @@ export function RoiCalculator() {
       <div className="flex items-center gap-2">
         <Calculator className="h-4 w-4 text-primary shrink-0" />
         <p className="text-[13px] font-semibold text-foreground">
-          Was kostet der manuelle Engpass-Check Ihre Institution?
+          {t('title')}
         </p>
       </div>
 
       <div className="space-y-5">
         <Slider
-          label="Mitarbeitende die täglich prüfen"
+          label={t('employeesLabel')}
           value={employees}
           min={1}
           max={10}
           step={1}
-          unit="Pers."
+          unit={t('employeesUnit')}
           onChange={setEmployees}
         />
         <Slider
-          label="Minuten pro Person täglich"
+          label={t('minutesLabel')}
           value={minutesPerDay}
           min={5}
           max={60}
           step={5}
-          unit="Min."
+          unit={t('minutesUnit')}
           onChange={setMinutesPerDay}
         />
         <Slider
-          label="Stundensatz (Apothekenpers.)"
+          label={t('hourlyRateLabel')}
           value={hourlyRate}
           min={60}
           max={150}
           step={10}
-          unit="CHF/h"
+          unit={t('hourlyRateUnit')}
           onChange={setHourlyRate}
         />
       </div>
 
       <div className="rounded-xl bg-background border border-border/50 p-4 space-y-3">
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>Personalaufwand/Monat</span>
+          <span>{t('monthlyEffort')}</span>
           <span className="font-semibold text-foreground tabular-nums">
             {monthlyHours.toFixed(1)} h · CHF {monthlyCost.toLocaleString('de-CH')}
           </span>
         </div>
         <div className="flex items-center justify-between text-xs text-muted-foreground">
-          <span>Klinik-System Abo</span>
+          <span>{t('subscription')}</span>
           <span className="font-semibold text-foreground tabular-nums">
             CHF {institutionalPrice}
           </span>
         </div>
         <div className="border-t border-border/40 pt-3 flex items-center justify-between">
-          <span className="text-xs font-semibold text-foreground">Monatliche Ersparnis</span>
+          <span className="text-xs font-semibold text-foreground">{t('savings')}</span>
           <span className={`text-sm font-extrabold tabular-nums ${
             isPositiveRoi ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'
           }`}>
@@ -122,11 +124,11 @@ export function RoiCalculator() {
 
       {isPositiveRoi && (
         <p className="text-[11px] text-muted-foreground">
-          Bei diesen Annahmen amortisiert sich das Abo in{' '}
+          {t('amortization')}{' '}
           <strong className="text-foreground">
-            {Math.round((institutionalPrice / monthlyCost) * workingDaysPerMonth)} Arbeitstagen
+            {t('amortizationDays', { days: Math.round((institutionalPrice / monthlyCost) * workingDaysPerMonth) })}
           </strong>{' '}
-          — der Rest ist eingesparte Zeit.
+          {t('amortizationSuffix')}
         </p>
       )}
     </div>

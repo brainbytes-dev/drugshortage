@@ -1,18 +1,14 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 import { ArrowLeft } from 'lucide-react'
 
-export const metadata: Metadata = {
-  title: 'API Dokumentation | engpassradar.ch',
-  description: 'Öffentliche REST API für Schweizer Arzneimittel-Lieferengpässe. Kein API-Key. JSON, CSV und Timeline-Daten frei verfügbar.',
-}
-
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'TechArticle',
-  headline: 'API Dokumentation — engpassradar.ch',
-  url: 'https://www.engpassradar.ch/api-docs',
-  publisher: { '@type': 'Organization', name: 'engpassradar.ch', url: 'https://www.engpassradar.ch' },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('ApiDocs')
+  return {
+    title: t('metaTitle'),
+    description: t('metaDescription'),
+  }
 }
 
 function MethodBadge({ method }: { method: 'GET' | 'POST' }) {
@@ -37,17 +33,17 @@ function Code({ children }: { children: string }) {
 
 type ParamRow = { name: string; type: string; required?: boolean; desc: string; example?: string }
 
-function ParamTable({ rows }: { rows: ParamRow[] }) {
+function ParamTable({ rows, labels }: { rows: ParamRow[]; labels: { parameter: string; type: string; required: string; description: string; example: string; yes: string } }) {
   return (
     <div className="overflow-x-auto rounded-lg border">
       <table className="w-full text-xs border-collapse">
         <thead>
           <tr className="border-b bg-muted/50">
-            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Parameter</th>
-            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Typ</th>
-            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Pflicht</th>
-            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Beschreibung</th>
-            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">Beispiel</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">{labels.parameter}</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">{labels.type}</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">{labels.required}</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">{labels.description}</th>
+            <th className="py-2 px-3 text-left font-semibold text-muted-foreground">{labels.example}</th>
           </tr>
         </thead>
         <tbody className="divide-y">
@@ -57,7 +53,7 @@ function ParamTable({ rows }: { rows: ParamRow[] }) {
               <td className="py-2 px-3 text-muted-foreground">{r.type}</td>
               <td className="py-2 px-3">
                 {r.required
-                  ? <span className="text-red-500 font-medium">ja</span>
+                  ? <span className="text-red-500 font-medium">{labels.yes}</span>
                   : <span className="text-muted-foreground">–</span>
                 }
               </td>
@@ -71,7 +67,26 @@ function ParamTable({ rows }: { rows: ParamRow[] }) {
   )
 }
 
-export default function ApiDocsPage() {
+export default async function ApiDocsPage() {
+  const t = await getTranslations('ApiDocs')
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'TechArticle',
+    headline: t('jsonLdHeadline'),
+    url: 'https://www.engpassradar.ch/api-docs',
+    publisher: { '@type': 'Organization', name: 'engpassradar.ch', url: 'https://www.engpassradar.ch' },
+  }
+
+  const tableLabels = {
+    parameter: t('tableParameter'),
+    type: t('tableType'),
+    required: t('tableRequired'),
+    description: t('tableDescription'),
+    example: t('tableExample'),
+    yes: t('yes'),
+  }
+
   return (
     <main className="min-h-screen bg-background">
       <script
@@ -82,59 +97,60 @@ export default function ApiDocsPage() {
 
         <Link href="/api" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
           <ArrowLeft className="h-4 w-4" />
-          Zur API-Übersicht
+          {t('backToOverview')}
         </Link>
 
         {/* Header */}
         <header className="space-y-3">
           <div className="flex items-center gap-3 flex-wrap">
-            <h1 className="text-2xl font-bold tracking-tight">API Dokumentation</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t('h1')}</h1>
             <span className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium">
-              v1 — öffentlich
+              {t('versionBadge')}
             </span>
           </div>
           <p className="text-muted-foreground text-sm leading-relaxed">
-            Freier Zugang zu allen Schweizer Arzneimittel-Lieferengpässen. Kein API-Key, kein Login erforderlich.
-            Bitte fair nutzen — max. ~300 Requests/Tag empfohlen.
+            {t('intro')}
           </p>
         </header>
 
         {/* API Pricing CTA */}
         <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <p className="text-sm text-foreground">
-            <span className="font-medium">Mehr als 100 Req/Std?</span>
-            {' '}Professional-Keys ab CHF 39/Monat — mit Severity Scoring und 10 000 Req/Tag.
+            <span className="font-medium">{t('upgradeBoxTitle')}</span>
+            {' '}{t('upgradeBoxBody')}
           </p>
           <Link
-            href="/api#pricing"
+            href={{ pathname: '/api', hash: 'pricing' }}
             className="shrink-0 inline-flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            API-Zugang & Preise →
+            {t('upgradeBoxCta')}
           </Link>
         </div>
 
         {/* Base URL */}
         <section className="space-y-2">
-          <h2 className="font-semibold text-base">Base URL</h2>
+          <h2 className="font-semibold text-base">{t('baseUrlTitle')}</h2>
           <Code>https://engpassradar.ch/api/v1</Code>
           <p className="text-xs text-muted-foreground">
-            Alle Antworten sind UTF-8 JSON. CORS ist aktiviert (<code className="font-mono bg-muted px-1 rounded">Access-Control-Allow-Origin: *</code>).
+            {t.rich('baseUrlNote', {
+              header: () => <code className="font-mono bg-muted px-1 rounded">Access-Control-Allow-Origin: *</code>,
+            })}
           </p>
         </section>
 
         {/* Endpoints overview */}
         <section className="space-y-3">
-          <h2 className="font-semibold text-base">Endpunkte</h2>
+          <h2 className="font-semibold text-base">{t('endpointsTitle')}</h2>
           <div className="rounded-lg border overflow-hidden divide-y text-sm">
             {[
-              { method: 'GET' as const, path: '/api/v1/shortages', desc: 'Paginierte Liste aller Engpässe' },
-              { method: 'GET' as const, path: '/api/v1/shortages/:gtin', desc: 'Einzelprodukt mit Score-Breakdown' },
-              { method: 'GET' as const, path: '/api/v1/stats', desc: 'Aggregierte Kennzahlen' },
-              { method: 'GET' as const, path: '/api/v1/timeline', desc: 'Wöchentliche Zeitreihe' },
-              { method: 'GET' as const, path: '/api/alternatives', desc: 'Alternativen für ein Produkt (GTIN)' },
-              { method: 'POST' as const, path: '/api/alternatives/batch', desc: 'Batch-Alternativen für bis zu 50 GTINs' },
-              { method: 'GET' as const, path: '/api/export/csv', desc: 'Gefilterte CSV-Export' },
-              { method: 'GET' as const, path: '/api/health', desc: 'System-Health-Check' },
+              { method: 'GET' as const, path: '/api/v1/shortages', desc: t('endpointShortagesList') },
+              { method: 'GET' as const, path: '/api/v1/shortages/:gtin', desc: t('endpointShortageDetail') },
+              { method: 'GET' as const, path: '/api/v1/stats', desc: t('endpointStats') },
+              { method: 'GET' as const, path: '/api/v1/timeline', desc: t('endpointTimeline') },
+              { method: 'GET' as const, path: '/api/alternatives', desc: t('endpointAlternatives') },
+              { method: 'POST' as const, path: '/api/alternatives/batch', desc: t('endpointAlternativesBatch') },
+              { method: 'GET' as const, path: '/api/export/csv', desc: t('endpointCsv') },
+              { method: 'GET' as const, path: '/api/health', desc: t('endpointHealth') },
             ].map(e => (
               <div key={e.path} className="flex items-center gap-3 px-4 py-3 bg-card">
                 <MethodBadge method={e.method} />
@@ -151,17 +167,20 @@ export default function ApiDocsPage() {
             <MethodBadge method="GET" />
             <h2 className="font-semibold text-base font-mono">/api/v1/shortages</h2>
           </div>
-          <p className="text-sm text-muted-foreground">Gibt eine paginierte, filterbare Liste aller gemeldeten Engpässe zurück.</p>
-          <ParamTable rows={[
-            { name: 'search', type: 'string', desc: 'Volltextsuche auf Bezeichnung, Firma, ATC-Code', example: 'pregabalin' },
-            { name: 'status', type: 'string', desc: 'Status-Code(s) 1–5, kommagetrennt', example: '1,4' },
-            { name: 'firma', type: 'string', desc: 'Exakter Firmenname', example: 'Sandoz' },
-            { name: 'atc', type: 'string', desc: 'ATC-Code-Präfix', example: 'C09' },
-            { name: 'neu', type: 'integer', desc: 'Nur Engpässe ≤ 7 Tage alt', example: '1' },
-            { name: 'page', type: 'integer', desc: 'Seitennummer (Standard: 1)', example: '2' },
-            { name: 'perPage', type: 'integer', desc: 'Einträge pro Seite (max: 200)', example: '100' },
-            { name: 'sort', type: 'string', desc: 'feld:asc oder feld:desc', example: 'tageSeitMeldung:desc' },
-          ]} />
+          <p className="text-sm text-muted-foreground">{t('shortagesIntro')}</p>
+          <ParamTable
+            labels={tableLabels}
+            rows={[
+              { name: 'search', type: 'string', desc: t('paramSearchDesc'), example: 'pregabalin' },
+              { name: 'status', type: 'string', desc: t('paramStatusDesc'), example: '1,4' },
+              { name: 'firma', type: 'string', desc: t('paramFirmaDesc'), example: 'Sandoz' },
+              { name: 'atc', type: 'string', desc: t('paramAtcDesc'), example: 'C09' },
+              { name: 'neu', type: 'integer', desc: t('paramNeuDesc'), example: '1' },
+              { name: 'page', type: 'integer', desc: t('paramPageDesc'), example: '2' },
+              { name: 'perPage', type: 'integer', desc: t('paramPerPageDesc'), example: '100' },
+              { name: 'sort', type: 'string', desc: t('paramSortDesc'), example: 'tageSeitMeldung:desc' },
+            ]}
+          />
           <Code>{`curl "https://engpassradar.ch/api/v1/shortages?atc=C09&status=1,4&perPage=20"
 
 {
@@ -195,11 +214,14 @@ export default function ApiDocsPage() {
             <h2 className="font-semibold text-base font-mono">/api/v1/shortages/<span className="text-muted-foreground">:gtin</span></h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Vollständige Details zu einem einzelnen Produkt inklusive <strong className="text-foreground">Severity Score Breakdown</strong>.
+            {t('shortageDetailIntro')} <strong className="text-foreground">{t('shortageDetailScoreBreakdown')}</strong>.
           </p>
-          <ParamTable rows={[
-            { name: 'gtin', type: 'string', required: true, desc: 'GTIN des Produkts (7–14 Ziffern), im URL-Pfad', example: '7680654320016' },
-          ]} />
+          <ParamTable
+            labels={tableLabels}
+            rows={[
+              { name: 'gtin', type: 'string', required: true, desc: t('paramGtinDesc'), example: '7680654320016' },
+            ]}
+          />
           <Code>{`curl "https://engpassradar.ch/api/v1/shortages/7680654320016"
 
 {
@@ -237,7 +259,7 @@ export default function ApiDocsPage() {
             <h2 className="font-semibold text-base font-mono">/api/v1/stats</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Aggregierte Kennzahlen der aktuellen Versorgungslage. Nützlich für Dashboards und Monitoring.
+            {t('statsIntro')}
           </p>
           <Code>{`curl "https://engpassradar.ch/api/v1/stats"
 
@@ -275,11 +297,14 @@ export default function ApiDocsPage() {
             <h2 className="font-semibold text-base font-mono">/api/v1/timeline</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Wöchentliche Zeitreihe: neue Engpässe und aktiver Bestand. Ideal für Trendanalysen.
+            {t('timelineIntro')}
           </p>
-          <ParamTable rows={[
-            { name: 'weeks', type: 'integer', desc: 'Anzahl Wochen zurück (4–260, Standard: 52)', example: '104' },
-          ]} />
+          <ParamTable
+            labels={tableLabels}
+            rows={[
+              { name: 'weeks', type: 'integer', desc: t('paramWeeksDesc'), example: '104' },
+            ]}
+          />
           <Code>{`curl "https://engpassradar.ch/api/v1/timeline?weeks=12"
 
 {
@@ -300,12 +325,14 @@ export default function ApiDocsPage() {
             <h2 className="font-semibold text-base font-mono">/api/alternatives</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Wirkstoffgleiche Alternativen für ein Produkt, aufgeteilt in gleiche Firma, Co-Marketing und alle Alternativen.
-            Antworten werden 24 Stunden gecacht.
+            {t('alternativesIntro')}
           </p>
-          <ParamTable rows={[
-            { name: 'gtin', type: 'string', required: true, desc: 'GTIN des Produkts', example: '7680654320016' },
-          ]} />
+          <ParamTable
+            labels={tableLabels}
+            rows={[
+              { name: 'gtin', type: 'string', required: true, desc: t('paramGtinSimpleDesc'), example: '7680654320016' },
+            ]}
+          />
           <Code>{`curl "https://engpassradar.ch/api/alternatives?gtin=7680654320016"
 
 {
@@ -327,7 +354,7 @@ export default function ApiDocsPage() {
             <h2 className="font-semibold text-base font-mono">/api/alternatives/batch</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Alternativenabfrage für bis zu 50 GTINs in einem einzigen Request. Deutlich effizienter als N Einzelanfragen.
+            {t('alternativesBatchIntro')}
           </p>
           <Code>{`curl -X POST "https://engpassradar.ch/api/alternatives/batch" \\
   -H "Content-Type: application/json" \\
@@ -339,7 +366,9 @@ export default function ApiDocsPage() {
 ]`}
           </Code>
           <p className="text-xs text-muted-foreground">
-            <code className="font-mono bg-muted px-1 rounded">data: null</code> wenn für eine GTIN noch keine gecachten Alternativen vorhanden sind.
+            {t.rich('alternativesBatchNote', {
+              code: () => <code className="font-mono bg-muted px-1 rounded">data: null</code>,
+            })}
           </p>
         </section>
 
@@ -350,14 +379,17 @@ export default function ApiDocsPage() {
             <h2 className="font-semibold text-base font-mono">/api/export/csv</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Gibt alle (gefilterten) Engpässe als CSV-Datei zurück. Direkt in Excel oder Python pandas importierbar.
+            {t('csvIntro')}
           </p>
-          <ParamTable rows={[
-            { name: 'search', type: 'string', desc: 'Volltextsuche', example: 'pregabalin' },
-            { name: 'status', type: 'string', desc: 'Status-Code(s), kommagetrennt', example: '1,4' },
-            { name: 'firma', type: 'string', desc: 'Exakter Firmenname', example: 'Novartis' },
-            { name: 'atc', type: 'string', desc: 'ATC-Code-Präfix', example: 'N06' },
-          ]} />
+          <ParamTable
+            labels={tableLabels}
+            rows={[
+              { name: 'search', type: 'string', desc: t('paramSearchDesc'), example: 'pregabalin' },
+              { name: 'status', type: 'string', desc: t('paramStatusDesc'), example: '1,4' },
+              { name: 'firma', type: 'string', desc: t('paramFirmaDesc'), example: 'Novartis' },
+              { name: 'atc', type: 'string', desc: t('paramAtcDesc'), example: 'N06' },
+            ]}
+          />
           <Code>{`# Alle Neuropharmaka-Engpässe als CSV herunterladen
 curl "https://engpassradar.ch/api/export/csv?atc=N06" -o n06-engpaesse.csv
 
@@ -366,7 +398,7 @@ import pandas as pd
 df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
           </Code>
           <p className="text-xs text-muted-foreground">
-            Felder: Bezeichnung, Firma, ATC-Code, Status, Lieferbar ab, Letzte Mutation, Tage seit Meldung, GTIN, Pharmacode, Erstmals gesehen
+            {t('csvFields')}
           </p>
         </section>
 
@@ -377,8 +409,10 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
             <h2 className="font-semibold text-base font-mono">/api/health</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            System-Health-Check. Gibt <code className="font-mono bg-muted px-1 rounded">200</code> wenn alle Systeme bereit,
-            <code className="font-mono bg-muted px-1 rounded">503</code> bei Problemen.
+            {t.rich('healthIntro', {
+              ok: () => <code className="font-mono bg-muted px-1 rounded">200</code>,
+              fail: () => <code className="font-mono bg-muted px-1 rounded">503</code>,
+            })}
           </p>
           <Code>{`curl "https://engpassradar.ch/api/health"
 
@@ -393,14 +427,14 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
 
         {/* Error codes */}
         <section className="space-y-3">
-          <h2 className="font-semibold text-base">HTTP Status Codes</h2>
+          <h2 className="font-semibold text-base">{t('statusCodesTitle')}</h2>
           <div className="rounded-lg border overflow-hidden divide-y text-xs">
             {[
-              { code: '200', desc: 'Erfolgreich' },
-              { code: '400', desc: 'Ungültige Parameter (z. B. falsche GTIN)' },
-              { code: '404', desc: 'Produkt nicht gefunden' },
-              { code: '500', desc: 'Interner Serverfehler' },
-              { code: '503', desc: 'System degradiert (nur bei /api/health)' },
+              { code: '200', desc: t('status200') },
+              { code: '400', desc: t('status400') },
+              { code: '404', desc: t('status404') },
+              { code: '500', desc: t('status500') },
+              { code: '503', desc: t('status503') },
             ].map(e => (
               <div key={e.code} className="flex items-center gap-4 px-4 py-2.5 bg-card">
                 <span className={`font-mono font-bold w-10 ${e.code.startsWith('2') ? 'text-emerald-600 dark:text-emerald-400' : e.code.startsWith('4') ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{e.code}</span>
@@ -412,7 +446,7 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
 
         {/* Caching */}
         <section className="space-y-3">
-          <h2 className="font-semibold text-base">Caching</h2>
+          <h2 className="font-semibold text-base">{t('cachingTitle')}</h2>
           <div className="rounded-lg border overflow-hidden divide-y text-xs">
             {[
               { endpoint: '/api/v1/shortages', ttl: '5 min', stale: '1 h' },
@@ -432,17 +466,17 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
 
         {/* Rate Limits & Pricing */}
         <section className="space-y-4">
-          <h2 className="font-semibold text-base">Rate Limits & API-Zugang</h2>
+          <h2 className="font-semibold text-base">{t('rateLimitsTitle')}</h2>
           <p className="text-sm text-muted-foreground">
-            Die API ist kostenlos für Forschung und kleine Teams. Für kommerzielle Integrationen bitte einen Plan wählen, der den Betrieb trägt.
+            {t('rateLimitsIntro')}
           </p>
           <div className="rounded-lg border overflow-hidden divide-y text-xs">
             {[
-              { tier: 'Free', limit: '100 Req/Stunde', key: 'Kein Key nötig', price: 'CHF 0' },
-              { tier: 'Research', limit: '2\'000 Req/Tag', key: 'Kostenlos, E-Mail-Bestätigung', price: 'CHF 0' },
-              { tier: 'Engpassradar Pro', limit: '10\'000 Req/Tag', key: 'API-Key via Stripe', price: 'CHF 39/Mo' },
-              { tier: 'Klinik-System', limit: '100\'000 Req/Tag', key: 'API-Key, Batch-Endpoints, Webhooks', price: 'CHF 199/Mo' },
-              { tier: 'Data License', limit: 'Unlimitiert', key: 'Bulk-Dump, White-Label, SLA', price: 'ab CHF 499/Mo' },
+              { tier: 'Free', limit: t('rateLimitFreeLimit'), key: t('rateLimitFreeKey'), price: 'CHF 0' },
+              { tier: 'Research', limit: t('rateLimitResearchLimit'), key: t('rateLimitResearchKey'), price: 'CHF 0' },
+              { tier: 'Engpassradar Pro', limit: t('rateLimitProLimit'), key: t('rateLimitProKey'), price: t('rateLimitProPrice') },
+              { tier: 'Klinik-System', limit: t('rateLimitKlinikLimit'), key: t('rateLimitKlinikKey'), price: t('rateLimitKlinikPrice') },
+              { tier: 'Data License', limit: t('rateLimitDataLimit'), key: t('rateLimitDataKey'), price: t('rateLimitDataPrice') },
             ].map(r => (
               <div key={r.tier} className="grid grid-cols-4 gap-2 px-4 py-2.5 bg-card items-center">
                 <span className="font-medium text-foreground">{r.tier}</span>
@@ -453,13 +487,13 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
             ))}
           </div>
           <div className="flex gap-3 text-sm">
-            <Link href="/api-keys" className="text-primary underline underline-offset-2">API-Key beantragen →</Link>
-            <Link href="/api-keys?tab=research" className="text-muted-foreground underline underline-offset-2">Research-Zugang (kostenlos)</Link>
+            <Link href="/api-keys" className="text-primary underline underline-offset-2">{t('rateLimitCtaApply')}</Link>
+            <Link href={{ pathname: '/api-keys', query: { tab: 'research' } }} className="text-muted-foreground underline underline-offset-2">{t('rateLimitCtaResearch')}</Link>
           </div>
           <div className="rounded-lg border overflow-hidden divide-y text-xs">
             {[
-              { code: '401', desc: 'Ungültiger oder inaktiver API-Key' },
-              { code: '429', desc: 'Rate-Limit überschritten — X-RateLimit-Reset enthält den Reset-Zeitstempel' },
+              { code: '401', desc: t('status401') },
+              { code: '429', desc: t('status429') },
             ].map(e => (
               <div key={e.code} className="flex items-center gap-4 px-4 py-2.5 bg-card">
                 <span className="font-mono font-bold w-10 text-amber-600 dark:text-amber-400">{e.code}</span>
@@ -480,15 +514,15 @@ X-Api-Tier: professional`}</Code>
 
         {/* Webhooks */}
         <section className="space-y-4">
-          <h2 className="font-semibold text-base">Webhooks</h2>
+          <h2 className="font-semibold text-base">{t('webhooksTitle')}</h2>
           <p className="text-sm text-muted-foreground">
-            Webhooks senden eine HTTP-POST-Anfrage an Ihre URL, sobald ein neuer Engpass gemeldet oder ein bestehender aufgelöst wird — ohne Polling, in Echtzeit.
+            {t('webhooksIntro')}
           </p>
           <div className="rounded-lg border overflow-hidden divide-y text-xs">
             {[
-              { event: 'shortage.created', desc: 'Neuer Engpass auf der Swissmedic-Liste' },
-              { event: 'shortage.resolved', desc: 'Engpass als aufgelöst markiert' },
-              { event: 'shortage.updated', desc: 'Änderung an bestehendem Engpass (Datum, Status)' },
+              { event: 'shortage.created', desc: t('webhookCreatedDesc') },
+              { event: 'shortage.resolved', desc: t('webhookResolvedDesc') },
+              { event: 'shortage.updated', desc: t('webhookUpdatedDesc') },
             ].map(r => (
               <div key={r.event} className="flex items-center gap-4 px-4 py-2.5 bg-card">
                 <code className="font-mono font-semibold text-primary shrink-0">{r.event}</code>
@@ -500,27 +534,27 @@ X-Api-Tier: professional`}</Code>
           {/* Upgrade prompt */}
           <div className="rounded-lg border border-primary/20 bg-primary/5 px-4 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
             <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground">Webhooks sind im Klinik-System verfügbar</p>
+              <p className="text-sm font-semibold text-foreground">{t('webhookUpgradeTitle')}</p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                Engpassradar Pro erhält Daten via API-Polling. Das Klinik-System (CHF&nbsp;199/Mo) sendet Push-Events direkt an Ihre Infrastruktur.
+                {t('webhookUpgradeBody')}
               </p>
             </div>
             <a
               href="/klinik-system"
               className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
-              Klinik-System anfragen →
+              {t('webhookUpgradeCta')}
             </a>
           </div>
         </section>
 
         {/* RSS */}
         <section className="space-y-3">
-          <h2 className="font-semibold text-base">RSS-Feeds</h2>
+          <h2 className="font-semibold text-base">{t('rssTitle')}</h2>
           <div className="rounded-lg border overflow-hidden divide-y text-xs">
             {[
-              { url: '/rss.xml', desc: 'Alle aktuellen Engpässe' },
-              { url: '/wirkstoff/{atc}/feed.xml', desc: 'Engpässe nach ATC-Gruppe (z. B. /wirkstoff/C09/feed.xml)' },
+              { url: '/rss.xml', desc: t('rssAllDesc') },
+              { url: '/wirkstoff/{atc}/feed.xml', desc: t('rssAtcDesc') },
             ].map(r => (
               <div key={r.url} className="flex items-center gap-4 px-4 py-2.5 bg-card">
                 <code className="font-mono text-foreground">{r.url}</code>
@@ -532,25 +566,24 @@ X-Api-Tier: professional`}</Code>
 
         {/* MCP Server */}
         <section className="space-y-4">
-          <h2 className="font-semibold text-base">MCP-Server (Claude / Copilot / Cursor)</h2>
+          <h2 className="font-semibold text-base">{t('mcpTitle')}</h2>
           <p className="text-sm text-muted-foreground">
-            Der MCP-Server stellt engpassradar-Daten als native Agent-Tools bereit — ohne Scraping, direkt im
-            Workflow von Claude Desktop, GitHub Copilot oder Cursor. Fragen wie{' '}
-            <span className="italic">&bdquo;Inhibace ist nicht lieferbar — was gibt es stattdessen für C09AA?&ldquo;</span>{' '}
-            werden damit zum direkten Datenbankaufruf.
+            {t('mcpIntroPart1')}{' '}
+            <span className="italic">{t('mcpIntroExample')}</span>{' '}
+            {t('mcpIntroPart2')}
           </p>
 
           {/* Tools */}
           <div className="rounded-lg border overflow-hidden divide-y text-xs">
             {[
-              { tool: 'search_shortages', desc: 'Volltext-Suche nach Produkt, Wirkstoff oder Firma' },
-              { tool: 'get_shortage', desc: 'Einzelprodukt per GTIN — inkl. Score, Preis, BWL-Status' },
-              { tool: 'find_alternatives', desc: 'Alternativen für ein Produkt im Engpass — mit eigenem Engpass-Status' },
-              { tool: 'check_atc_group', desc: 'Wie viele Produkte in einer ATC-Klasse sind betroffen? (C09, C09AA, …)' },
-              { tool: 'list_active_shortages', desc: 'Bulk-Liste aktiver Engpässe mit Filtern' },
-              { tool: 'get_company_status', desc: 'Firmenprofil: aktive Engpässe + Transparenz-Score' },
-              { tool: 'get_shortage_timeline', desc: 'Wochenweise Trendlinie der Engpass-Anzahl' },
-              { tool: 'get_weekly_summary', desc: 'KPI-Snapshot: total aktiv, kritisch, BWL-betroffen' },
+              { tool: 'search_shortages', desc: t('mcpToolSearchShortagesDesc') },
+              { tool: 'get_shortage', desc: t('mcpToolGetShortageDesc') },
+              { tool: 'find_alternatives', desc: t('mcpToolFindAlternativesDesc') },
+              { tool: 'check_atc_group', desc: t('mcpToolCheckAtcGroupDesc') },
+              { tool: 'list_active_shortages', desc: t('mcpToolListActiveShortagesDesc') },
+              { tool: 'get_company_status', desc: t('mcpToolGetCompanyStatusDesc') },
+              { tool: 'get_shortage_timeline', desc: t('mcpToolGetShortageTimelineDesc') },
+              { tool: 'get_weekly_summary', desc: t('mcpToolGetWeeklySummaryDesc') },
             ].map(r => (
               <div key={r.tool} className="flex items-start gap-4 px-4 py-2.5 bg-card">
                 <code className="font-mono font-semibold text-primary shrink-0 w-52">{r.tool}</code>
@@ -561,10 +594,11 @@ X-Api-Tier: professional`}</Code>
 
           {/* Smithery — primary setup */}
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Setup via Smithery (empfohlen)</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('mcpSmitheryEyebrow')}</p>
             <p className="text-xs text-muted-foreground">
-              Kein Download, kein Build. Der Server läuft gehostet auf{' '}
-              <code className="font-mono">mcp.engpassradar.ch</code> — Smithery verbindet Ihren AI-Client direkt damit.
+              {t.rich('mcpSmitheryBody', {
+                server: () => <code className="font-mono">mcp.engpassradar.ch</code>,
+              })}
             </p>
             <a
               href="https://smithery.ai/servers/info-re81/engpassradar"
@@ -572,17 +606,18 @@ X-Api-Tier: professional`}</Code>
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-4 py-2 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
             >
-              Auf Smithery installieren →
+              {t('mcpSmitheryCta')}
             </a>
           </div>
 
           {/* Manual config */}
           <div className="space-y-3">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Manuelle Konfiguration (Claude Desktop / Cursor)</p>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{t('mcpManualEyebrow')}</p>
             <p className="text-xs text-muted-foreground">
-              Für direkte HTTP-Verbindung ohne Smithery — in{' '}
-              <code className="font-mono">claude_desktop_config.json</code> (macOS:{' '}
-              <code className="font-mono">~/Library/Application Support/Claude/</code>) eintragen:
+              {t.rich('mcpManualBody', {
+                file: () => <code className="font-mono">claude_desktop_config.json</code>,
+                path: () => <code className="font-mono">~/Library/Application Support/Claude/</code>,
+              })}
             </p>
             <Code>{`{
   "mcpServers": {
@@ -593,7 +628,7 @@ X-Api-Tier: professional`}</Code>
   }
 }`}</Code>
             <p className="text-xs text-muted-foreground">
-              Mit Pro API-Key (10&apos;000 Req/Tag):
+              {t('mcpManualWithKey')}
             </p>
             <Code>{`{
   "mcpServers": {
@@ -606,9 +641,9 @@ X-Api-Tier: professional`}</Code>
           </div>
 
           <p className="text-xs text-muted-foreground">
-            Free-Tier (100 Req/h) ohne Key. Pro-Key (10&apos;000 Req/Tag) über{' '}
-            <Link href="/api-keys" className="underline underline-offset-2 hover:text-foreground">API-Keys</Link>.{' '}
-            Quellcode:{' '}
+            {t('mcpFooterIntro')}{' '}
+            <Link href="/api-keys" className="underline underline-offset-2 hover:text-foreground">{t('mcpFooterApiKeys')}</Link>.{' '}
+            {t('mcpFooterSource')}{' '}
             <a
               href="https://github.com/brainbytes-dev/engpassradar/tree/main/mcp"
               target="_blank"

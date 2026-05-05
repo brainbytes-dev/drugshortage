@@ -1,0 +1,230 @@
+{
+  "WatchlistConfirmed": {
+    "title": "Alerte activée",
+    "description": "Vous recevrez un e-mail dès que la situation de pénurie changera.",
+    "descriptionWithAtc": "Vous recevrez un e-mail dès que la situation de pénurie pour {atc} changera.",
+    "ctaViewShortages": "Voir les pénuries {atc}",
+    "backToDashboard": "Retour au tableau de bord"
+  },
+  "WatchlistError": {
+    "title": "Lien invalide",
+    "description": "Ce lien a expiré ou n'est pas valide. Veuillez vous inscrire à nouveau.",
+    "backToDashboard": "Retour au tableau de bord"
+  },
+  "WatchlistUnsubscribed": {
+    "title": "Alerte désactivée",
+    "description": "Vous ne recevrez plus d'alertes de pénurie.",
+    "descriptionWithAtc": "Vous ne recevrez plus d'alertes de pénurie pour {atc}.",
+    "backToDashboard": "Retour au tableau de bord"
+  },
+  "Filters": {
+    "statusPlaceholder": "Statut",
+    "firmaPlaceholder": "Fabricant",
+    "allStatuses": "Tous les statuts",
+    "allFirmen": "Tous les fabricants",
+    "status1": "1 — Signalé directement (Vert)",
+    "status2": "2 — Signalé (Jaune-vert)",
+    "status3": "3 — Sporadique (Orange)",
+    "status4": "4 — Non informé (Rouge)",
+    "status5": "5 — Négociation (Jaune)"
+  },
+  "Search": {
+    "placeholder": "Rechercher… (⌘K)",
+    "clearAria": "Effacer la recherche"
+  },
+  "StatusBadge": {
+    "status1": "1 — Signalé directement",
+    "status2": "2 — Signalé",
+    "status3": "3 — Sporadique",
+    "status4": "4 — Non informé",
+    "status5": "5 — Négociation"
+  },
+  "Kpi": {
+    "activeShortages": "Pénuries actives",
+    "activeShortagesSub": "actuellement signalées",
+    "historicalShortages": "Pénuries historiques",
+    "historicalShortagesSub": "clôturées / résolues",
+    "affectedSubstances": "Principes actifs concernés",
+    "affectedSubstancesSub": "selon la classification ATC",
+    "avgDuration": "Durée moy.",
+    "avgDurationValue": "{days} jours",
+    "avgDurationSub": "depuis le premier signalement"
+  },
+  "ShortagesTable": {
+    "colBezeichnung": "Préparation",
+    "colFirma": "Fabricant",
+    "colStatus": "Statut",
+    "colAvailableFrom": "Disponible dès",
+    "colDays": "Jours",
+    "colAtc": "ATC",
+    "colScore": "Score",
+    "emptyState": "Aucune pénurie trouvée",
+    "badgeNew": "NOUV.",
+    "badgeBwl": "BWL",
+    "paginationSummary": "{total} entrées · Page {page} / {totalPages}",
+    "firstPage": "Première page",
+    "previousPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "lastPage": "Dernière page",
+    "pageOfTotalAria": "Page, sur {totalPages}"
+  },
+  "OffMarketTable": {
+    "colBezeichnung": "Préparation",
+    "colFirma": "Fabricant",
+    "colAtc": "ATC",
+    "colGtin": "GTIN",
+    "colDate": "Date",
+    "emptyState": "Aucune entrée trouvée.",
+    "rangeOfTotal": "{start}–{end} sur {total}",
+    "firstPage": "Première page",
+    "previousPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "lastPage": "Dernière page"
+  },
+  "HistoricalTable": {
+    "colBezeichnung": "Préparation",
+    "colFirma": "Fabricant",
+    "colLastSeen": "Dernière activité",
+    "colFirstSeen": "Premier signalement",
+    "colOccurrences": "Occ.",
+    "colDuration": "Durée",
+    "colAtc": "ATC",
+    "emptyState": "Aucune entrée historique trouvée.",
+    "durationDays": "{days} j",
+    "rangeOfTotal": "{start}–{end} sur {total}",
+    "firstPage": "Première page",
+    "previousPage": "Page précédente",
+    "nextPage": "Page suivante",
+    "lastPage": "Dernière page"
+  },
+  "AtcTreemap": {
+    "title": "Pénuries par groupe de principes actifs (ATC)",
+    "emptyState": "Aucune donnée disponible",
+    "cellAria": "{code}: {bezeichnung} — {count, plural, one {# pénurie} other {# pénuries}}",
+    "tooltipShortages": "{count, plural, one {# pénurie} other {# pénuries}}"
+  },
+  "AtcGruppen": {
+    "title": "Groupes ATC",
+    "description": "Groupes de principes actifs concernés par nombre de pénuries actives. Cliquez sur un groupe pour filtrer.",
+    "searchPlaceholder": "Code ATC ou désignation…",
+    "emptyState": "Aucun résultat",
+    "closeAria": "Fermer"
+  },
+  "FirmaRanking": {
+    "title": "Classement des fabricants",
+    "descriptionRich": "Fabricants par nombre de ruptures d'approvisionnement actives, triés par évaluation de <link>drugshortage.ch</link>.",
+    "legendTitle": "Évaluation (source : drugshortage.ch)",
+    "legendTitleExtended": "Évaluation = transparence des signalements (source : drugshortage.ch)",
+    "searchPlaceholder": "Rechercher un fabricant…",
+    "emptyState": "Aucun résultat",
+    "closeAria": "Fermer",
+    "firmaCounts": "{open} ouvertes · {total} au total",
+    "ratingGood": "Bon",
+    "ratingMedium": "Moyen",
+    "ratingPoor": "Faible",
+    "ratingCritical": "Critique",
+    "ratingGoodDesc": "< 5 % de produits concernés",
+    "ratingMediumDesc": "5–15 % de produits concernés",
+    "ratingPoorDesc": "15–30 % de produits concernés",
+    "ratingCriticalDesc": "> 30 % de produits concernés",
+    "rating1Label": "Exclusif",
+    "rating1Desc": "Saisit lui-même les données, accès exclusif, engagé à les tenir à jour",
+    "rating2Label": "Actif",
+    "rating2Desc": "Saisit lui-même les données, sans accès exclusif",
+    "rating3Label": "Occasionnel",
+    "rating3Desc": "Signale occasionnellement des ruptures à ses clients",
+    "rating4Label": "Passif",
+    "rating4Desc": "N'informe pas directement les clients ; signalements via le réseau drugshortage.ch",
+    "rating5Label": "Négociation",
+    "rating5Desc": "Négociations en cours avec drugshortage.ch"
+  },
+  "FirmaShortages": {
+    "tabActive": "Pénuries actives",
+    "tabHistorical": "Historique",
+    "emptyActive": "Aucune pénurie active pour ce fabricant.",
+    "emptyHistorical": "Aucune entrée historique trouvée.",
+    "colBezeichnung": "Préparation",
+    "colStatus": "Statut",
+    "colDays": "Jours",
+    "colScore": "Score",
+    "badgeBwl": "BWL"
+  },
+  "ShortageDrawer": {
+    "closeAria": "Fermer",
+    "detailsHeading": "Détails",
+    "alternativesHeading": "Alternatives possibles",
+    "alternativesLoading": "Chargement des alternatives…",
+    "alternativesUnavailable": "Aucune alternative disponible.",
+    "alternativesNone": "Aucune alternative enregistrée.",
+    "alternativesAllHeading": "Préparations alternatives ({count})",
+    "coMarketingHeading": "Co-marketing (identique)",
+    "sameFirmaHeading": "Même fabricant (autre conditionnement)",
+    "typeOriginal": "Original",
+    "typeGeneric": "Générique",
+    "detailGtin": "GTIN",
+    "detailPharmacode": "Pharmacode",
+    "detailAvailableFrom": "Disponibilité prévue",
+    "detailExpectedDuration": "Durée prévue",
+    "detailLastMutation": "Dernière mise à jour",
+    "detailFirstReport": "Premier signalement",
+    "detailReportedBy": "Signalé par",
+    "detailFirmaInfo": "Info du fabricant",
+    "detailInfoType": "Type d'info",
+    "detailRemarks": "Remarques",
+    "detailDaysSinceReport": "Jours depuis le premier signalement",
+    "detailGenericGroup": "Groupe générique",
+    "detailFirstSeen": "Premier enregistrement (notre système)",
+    "sourceLine": "Source : <link>drugshortage.ch</link>"
+  },
+  "NeueMeldungen": {
+    "label": "Nouveaux signalements"
+  },
+  "ResetFilters": {
+    "resetAria": "Réinitialiser les filtres"
+  },
+  "ExportCsv": {
+    "label": "Export CSV"
+  },
+  "ThemeToggle": {
+    "toggleAria": "Changer de thème"
+  },
+  "WatchlistForm": {
+    "title": "Configurer une alerte de pénurie",
+    "description": "Recevez un e-mail dès que la situation pour {atcName} change.",
+    "freeBadge": "(3 gratuites)",
+    "emailLabel": "Adresse e-mail pour l'alerte",
+    "emailPlaceholder": "vous@email.ch",
+    "submitLabel": "Alerte",
+    "submitAria": "Configurer l'alerte pour {atcName}",
+    "successTitle": "E-mail de confirmation envoyé",
+    "successDescription": "Veuillez vérifier votre boîte de réception et confirmer l'alerte.",
+    "errorGeneric": "Erreur lors de la configuration de l'alerte.",
+    "errorConnection": "Erreur de connexion. Veuillez réessayer.",
+    "upgradeTitle": "Limite des alertes gratuites atteinte",
+    "upgradeDescription": "Vous avez déjà configuré 3 alertes gratuites. Pour des alertes illimitées et l'accès à l'API, Engpassradar Pro est disponible.",
+    "upgradeCta": "Engpassradar Pro — CHF 39/mois",
+    "upgradeAlternative": "Ou : <link>Système clinique pour pharmacies hospitalières</link>",
+    "upsellRich": "Alertes illimitées + accès API : <link>Engpassradar Pro dès CHF 39/mois →</link>"
+  },
+  "Newsletter": {
+    "emailPlaceholder": "vous@email.ch",
+    "submitting": "Inscription en cours…",
+    "compactSubmit": "S'abonner",
+    "compactSuccess": "Inscrit. Le premier numéro paraît le mardi.",
+    "compactError": "Échec de l'inscription. Veuillez réessayer.",
+    "genericError": "Une erreur est survenue. Veuillez réessayer.",
+    "eyebrow": "Signal de pénurie",
+    "headline": "Shortage Report Suisse — gratuit",
+    "subheadline": "Chaque mardi : les 5 pénuries les plus pertinentes de la semaine en 90 secondes — pour pharmacies et personnel hospitalier. Gratuit, désinscription possible à tout moment.",
+    "signupEmailLabel": "Adresse e-mail pour le Shortage Report",
+    "signupSubmit": "Recevoir le rapport",
+    "signupSubmitAria": "S'abonner au Shortage Report",
+    "signupSuccess": "Vous recevrez le Shortage Report actuel par e-mail — veuillez vérifier votre boîte de réception et confirmer votre inscription.",
+    "noSpam": "Pas de spam. Désinscription possible à tout moment."
+  },
+  "Donation": {
+    "amountChf": "CHF {amount}",
+    "customPlaceholder": "Montant",
+    "donateLabel": "Faire un don"
+  }
+}

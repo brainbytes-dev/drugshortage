@@ -2,7 +2,8 @@
 
 import { useMemo, useCallback, useState } from 'react'
 import { Treemap, ResponsiveContainer } from 'recharts'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
+import { useTranslations } from 'next-intl'
 import type { AtcGruppeStats } from '@/lib/types'
 
 interface AtcTreemapProps {
@@ -36,6 +37,7 @@ function getColor(value: number, max: number): { fill: string; textColor: string
 }
 
 export function AtcTreemap({ data }: AtcTreemapProps) {
+  const t = useTranslations('AtcTreemap')
   const router = useRouter()
   const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
@@ -57,13 +59,13 @@ export function AtcTreemap({ data }: AtcTreemapProps) {
 
     return (
       <g
-        onClick={() => router.push(`/?atc=${encodeURIComponent(name ?? '')}`, { scroll: false })}
+        onClick={() => router.push({ pathname: '/', query: { atc: name ?? '' } }, { scroll: false })}
         onMouseEnter={e => setTooltip({ name: name ?? '', bezeichnung: bezeichnung ?? '', value, x: e.clientX, y: e.clientY })}
         onMouseMove={e => setTooltip(t => t ? { ...t, x: e.clientX, y: e.clientY } : null)}
         onMouseLeave={() => setTooltip(null)}
         className="cursor-pointer"
         role="button"
-        aria-label={`${name}: ${bezeichnung} — ${value} Engpässe`}
+        aria-label={t('cellAria', { code: name ?? '', bezeichnung: bezeichnung ?? '', count: value })}
       >
         <rect
           x={x}
@@ -104,14 +106,14 @@ export function AtcTreemap({ data }: AtcTreemapProps) {
         )}
       </g>
     )
-  }, [router])
+  }, [router, t])
 
   if (data.length === 0) {
     return (
       <div className="rounded-lg border bg-card p-4">
-        <p className="text-sm font-medium mb-3">Engpässe nach Wirkstoffgruppe (ATC)</p>
+        <p className="text-sm font-medium mb-3">{t('title')}</p>
         <div className="h-[260px] flex items-center justify-center text-sm text-muted-foreground">
-          Keine Daten verfügbar
+          {t('emptyState')}
         </div>
       </div>
     )
@@ -119,7 +121,7 @@ export function AtcTreemap({ data }: AtcTreemapProps) {
 
   return (
     <div className="rounded-lg border bg-card p-4">
-      <p className="text-sm font-medium mb-3">Engpässe nach Wirkstoffgruppe (ATC)</p>
+      <p className="text-sm font-medium mb-3">{t('title')}</p>
       <ResponsiveContainer width="100%" height={260}>
         <Treemap
           data={treemapData}
@@ -138,7 +140,7 @@ export function AtcTreemap({ data }: AtcTreemapProps) {
           {tooltip.bezeichnung && (
             <p className="text-muted-foreground text-xs max-w-[220px] truncate">{tooltip.bezeichnung}</p>
           )}
-          <p className="text-primary font-medium mt-0.5">{tooltip.value} Engpässe</p>
+          <p className="text-primary font-medium mt-0.5">{t('tooltipShortages', { count: tooltip.value })}</p>
         </div>
       )}
     </div>

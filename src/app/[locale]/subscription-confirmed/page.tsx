@@ -1,12 +1,17 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 
-export const metadata: Metadata = {
-  title: 'Anmeldung bestätigt — engpass.radar',
-  robots: { index: false, follow: false },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('SubscriptionConfirmed')
+  return {
+    title: t('metaTitle'),
+    robots: { index: false, follow: false },
+  }
 }
 
-export default function SubscriptionConfirmedPage() {
+export default async function SubscriptionConfirmedPage() {
+  const t = await getTranslations('SubscriptionConfirmed')
   return (
     <main className="flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] px-4 text-center">
       <div className="max-w-md space-y-6">
@@ -18,20 +23,19 @@ export default function SubscriptionConfirmedPage() {
           </div>
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">Anmeldung bestätigt</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t('h1')}</h1>
           <p className="text-muted-foreground leading-relaxed">
-            Vielen Dank — Sie erhalten ab sofort den{' '}
-            <strong className="text-foreground">Engpass-Signal Newsletter</strong>.
+            {t.rich('body', {
+              newsletter: (chunks) => <strong className="text-foreground">{chunks}</strong>,
+            })}
           </p>
         </div>
-        <p className="text-sm text-muted-foreground">
-          Die erste Ausgabe wird an Sie gesendet, sobald neue relevante Engpässe vorliegen.
-        </p>
+        <p className="text-sm text-muted-foreground">{t('note')}</p>
         <Link
           href="/"
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
         >
-          Zum Dashboard
+          {t('cta')}
         </Link>
       </div>
     </main>

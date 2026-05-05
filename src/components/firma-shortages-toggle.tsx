@@ -1,7 +1,8 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { calculateScore, scoreLabel } from '@/lib/score'
 import { toSlug } from '@/lib/slug'
 import type { Shortage } from '@/lib/types'
@@ -33,6 +34,7 @@ interface Props {
 }
 
 export function FirmaShortagesToggle({ shortages, historicalShortages, historicalCount, bwlGtins }: Props) {
+  const t = useTranslations('FirmaShortages')
   const [view, setView] = useState<'active' | 'historical'>('active')
   const [sortKey, setSortKey] = useState<SortKey>('tageSeitMeldung')
   const [sortDir, setSortDir] = useState<SortDir>('desc')
@@ -95,7 +97,7 @@ export function FirmaShortagesToggle({ shortages, historicalShortages, historica
               : 'text-muted-foreground hover:text-foreground',
           ].join(' ')}
         >
-          Aktive Engpässe
+          {t('tabActive')}
           <span className={`ml-1.5 tabular-nums ${view === 'active' ? 'text-foreground' : 'text-muted-foreground/60'}`}>
             ({shortages.length})
           </span>
@@ -110,7 +112,7 @@ export function FirmaShortagesToggle({ shortages, historicalShortages, historica
                 : 'text-muted-foreground hover:text-foreground',
             ].join(' ')}
           >
-            Historisch
+            {t('tabHistorical')}
             <span className={`ml-1.5 tabular-nums ${view === 'historical' ? 'text-foreground' : 'text-muted-foreground/60'}`}>
               ({historicalCount})
             </span>
@@ -121,17 +123,17 @@ export function FirmaShortagesToggle({ shortages, historicalShortages, historica
       {/* Table */}
       {rows.length === 0 ? (
         <p className="text-sm text-muted-foreground py-8 text-center">
-          {view === 'active' ? 'Keine aktiven Engpässe für diese Firma.' : 'Keine historischen Einträge gefunden.'}
+          {view === 'active' ? t('emptyActive') : t('emptyHistorical')}
         </p>
       ) : (
         <div className="rounded-lg border border-border/60 overflow-hidden">
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-muted/40 border-b border-border/60">
-                {th('Bezeichnung', 'bezeichnung', 'left')}
-                {th('Status', 'statusCode', 'center')}
-                {th('Tage', 'tageSeitMeldung', 'right')}
-                {th('Score', 'score', 'right')}
+                {th(t('colBezeichnung'), 'bezeichnung', 'left')}
+                {th(t('colStatus'), 'statusCode', 'center')}
+                {th(t('colDays'), 'tageSeitMeldung', 'right')}
+                {th(t('colScore'), 'score', 'right')}
               </tr>
             </thead>
             <tbody className="divide-y divide-border/40">
@@ -146,14 +148,14 @@ export function FirmaShortagesToggle({ shortages, historicalShortages, historica
                     <td className="px-4 py-2.5 max-w-[300px]">
                       <span className="flex items-center gap-1.5 min-w-0">
                         <Link
-                          href={`/medikament/${s.slug ?? toSlug(s.bezeichnung)}`}
+                          href={{ pathname: '/medikament/[slug]', params: { slug: s.slug ?? toSlug(s.bezeichnung) } }}
                           className="truncate hover:text-primary hover:underline transition-colors"
                         >
                           {s.bezeichnung}
                         </Link>
                         {bwlSet.has(s.gtin) && (
                           <span className="shrink-0 text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">
-                            BWL
+                            {t('badgeBwl')}
                           </span>
                         )}
                       </span>

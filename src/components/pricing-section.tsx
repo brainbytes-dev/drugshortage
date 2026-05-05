@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
+import { useTranslations } from 'next-intl'
+import { Link } from '@/i18n/navigation'
 import { CheckCircle2, ArrowRight, Zap, X, ShieldCheck } from 'lucide-react'
-import { TIERS, type Tier } from '@/lib/pricing'
+import { TIERS, type Tier, type TierKey } from '@/lib/pricing'
 import { RoiCalculator } from '@/components/roi-calculator'
 
 function yearlyMonthlyEquivalent(yearlyAmount: number) {
@@ -12,7 +13,50 @@ function yearlyMonthlyEquivalent(yearlyAmount: number) {
 
 const PAID_TIERS = TIERS.filter(t => t.key !== 'free' && t.key !== 'research')
 
+const TIER_KEY_PREFIX: Record<TierKey, string> = {
+  free: 'tierFree',
+  research: 'tierResearch',
+  professional: 'tierProfessional',
+  institutional: 'tierInstitutional',
+  data_license: 'tierDataLicense',
+}
+
+const TIER_FEATURE_COUNT: Record<TierKey, number> = {
+  free: 4,
+  research: 4,
+  professional: 4,
+  institutional: 6,
+  data_license: 4,
+}
+
+type TierTranslator = ReturnType<typeof useTranslations<'Pricing'>>
+
+function tierLabel(t: TierTranslator, key: TierKey): string {
+  return t(`${TIER_KEY_PREFIX[key]}Label` as Parameters<TierTranslator>[0])
+}
+function tierPriceNote(t: TierTranslator, key: TierKey): string {
+  return t(`${TIER_KEY_PREFIX[key]}PriceNote` as Parameters<TierTranslator>[0])
+}
+function tierDailyLimit(t: TierTranslator, key: TierKey): string {
+  return t(`${TIER_KEY_PREFIX[key]}DailyLimit` as Parameters<TierTranslator>[0])
+}
+function tierRateLimit(t: TierTranslator, key: TierKey): string {
+  return t(`${TIER_KEY_PREFIX[key]}RateLimit` as Parameters<TierTranslator>[0])
+}
+function tierCta(t: TierTranslator, key: TierKey): string {
+  return t(`${TIER_KEY_PREFIX[key]}Cta` as Parameters<TierTranslator>[0])
+}
+function tierFeatures(t: TierTranslator, key: TierKey): string[] {
+  const count = TIER_FEATURE_COUNT[key]
+  const out: string[] = []
+  for (let i = 1; i <= count; i++) {
+    out.push(t(`${TIER_KEY_PREFIX[key]}Feature${i}` as Parameters<TierTranslator>[0]))
+  }
+  return out
+}
+
 function FreeTierRow({ tier, onResearch }: { tier: Tier; onResearch?: () => void }) {
+  const t = useTranslations('Pricing')
   const isResearch = tier.key === 'research'
   return (
     <div className={`flex flex-col gap-4 rounded-xl border px-5 py-5 ${
@@ -23,13 +67,13 @@ function FreeTierRow({ tier, onResearch }: { tier: Tier; onResearch?: () => void
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
-            {tier.label}
+            {tierLabel(t, tier.key)}
           </p>
-          <p className="text-[22px] font-bold text-foreground mt-1 leading-none">Kostenlos</p>
-          <p className="text-[11px] text-muted-foreground mt-1">{tier.priceNote}</p>
+          <p className="text-[22px] font-bold text-foreground mt-1 leading-none">{t('free')}</p>
+          <p className="text-[11px] text-muted-foreground mt-1">{tierPriceNote(t, tier.key)}</p>
         </div>
         <span className="shrink-0 rounded-md px-2.5 py-1 text-[11px] font-semibold bg-muted text-muted-foreground">
-          {tier.dailyLimit}
+          {tierDailyLimit(t, tier.key)}
         </span>
       </div>
       {isResearch && onResearch ? (
@@ -37,11 +81,11 @@ function FreeTierRow({ tier, onResearch }: { tier: Tier; onResearch?: () => void
           onClick={onResearch}
           className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[12px] font-semibold transition-colors bg-secondary text-secondary-foreground border border-border hover:bg-muted"
         >
-          {tier.cta}
+          {tierCta(t, tier.key)}
           <ArrowRight className="h-3 w-3" />
         </button>
       ) : (
-        <Link
+        <a
           href={tier.ctaHref}
           className={`inline-flex w-full items-center justify-center gap-1.5 rounded-lg px-4 py-2.5 text-[12px] font-semibold transition-colors ${
             isResearch
@@ -49,15 +93,16 @@ function FreeTierRow({ tier, onResearch }: { tier: Tier; onResearch?: () => void
               : 'border border-border/80 bg-background text-foreground hover:bg-muted'
           }`}
         >
-          {tier.cta}
+          {tierCta(t, tier.key)}
           <ArrowRight className="h-3 w-3" />
-        </Link>
+        </a>
       )}
     </div>
   )
 }
 
 function ResearchModal({ onClose }: { onClose: () => void }) {
+  const t = useTranslations('Pricing')
   const [email, setEmail] = useState('')
   const [reason, setReason] = useState('')
   const [loading, setLoading] = useState(false)
@@ -82,7 +127,7 @@ function ResearchModal({ onClose }: { onClose: () => void }) {
       body: JSON.stringify({ email, reason }),
     })
     const d = await res.json()
-    if (!res.ok) setError(d.error ?? 'Fehler beim Senden')
+    if (!res.ok) setError(d.error ?? t('researchErrorFallback'))
     else setSent(true)
     setLoading(false)
   }
@@ -93,43 +138,43 @@ function ResearchModal({ onClose }: { onClose: () => void }) {
       <div className="relative w-full max-w-sm rounded-2xl border bg-card shadow-xl p-6 space-y-5">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Research</p>
-            <p className="text-lg font-bold mt-0.5">Key beantragen</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{t('researchBadge')}</p>
+            <p className="text-lg font-bold mt-0.5">{t('researchModalTitle')}</p>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors mt-0.5">
+          <button onClick={onClose} aria-label={t('closeLabel')} className="text-muted-foreground hover:text-foreground transition-colors mt-0.5">
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {sent ? (
           <p className="text-sm text-muted-foreground py-2">
-            Falls Ihre Angaben einer Berechtigung entsprechen, erhalten Sie den Key per E-Mail.
+            {t('researchSentMessage')}
           </p>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <p className="text-xs text-muted-foreground">
-              Kostenloser Key für Forschung und akademische Institutionen (2&apos;000 Anfragen/Tag).
+              {t('researchIntro')}
             </p>
             <div className="space-y-1">
-              <label className="text-xs font-medium text-foreground">Institutionelle E-Mail</label>
+              <label className="text-xs font-medium text-foreground">{t('researchEmailLabel')}</label>
               <input
                 ref={inputRef}
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@unibas.ch"
+                placeholder={t('researchEmailPlaceholder')}
                 className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
               />
-              <p className="text-[11px] text-muted-foreground">Automatisch akzeptiert: .edu, .ac.*, Schweizer Uni- und Forschungsdomains</p>
+              <p className="text-[11px] text-muted-foreground">{t('researchEmailHint')}</p>
             </div>
             <div className="space-y-1">
               <label className="text-xs font-medium text-foreground">
-                Verwendungszweck <span className="font-normal text-muted-foreground">(bei privater E-Mail obligatorisch)</span>
+                {t('researchReasonLabel')} <span className="font-normal text-muted-foreground">{t('researchReasonNote')}</span>
               </label>
               <textarea
                 className="w-full border rounded-lg px-3 py-2 text-sm min-h-[72px] resize-none bg-background focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
-                placeholder="Kurze Beschreibung des Forschungsprojekts…"
+                placeholder={t('researchReasonPlaceholder')}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
               />
@@ -140,7 +185,7 @@ function ResearchModal({ onClose }: { onClose: () => void }) {
               disabled={loading || !email}
               className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
             >
-              {loading ? 'Wird geprüft…' : 'Key beantragen'}
+              {loading ? t('researchSubmitting') : t('researchSubmit')}
               {!loading && <ArrowRight className="h-3.5 w-3.5" />}
             </button>
           </form>
@@ -153,6 +198,7 @@ function ResearchModal({ onClose }: { onClose: () => void }) {
 type CheckoutModalState = { tier: Tier; yearly: boolean }
 
 function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose: () => void }) {
+  const t = useTranslations('Pricing')
   const { tier, yearly } = state
   const [email, setEmail] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -162,7 +208,7 @@ function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose:
     monthlyNum !== null && yearly && tier.yearlyAmountCHF
       ? yearlyMonthlyEquivalent(tier.yearlyAmountCHF)
       : monthlyNum
-  const billingLabel = yearly ? 'jährlich abgerechnet' : 'monatlich kündbar'
+  const billingLabel = yearly ? t('billingLabelYearly') : t('billingLabelMonthly')
   const paymentLink = yearly ? tier.paymentLinkYearly : tier.paymentLinkMonthly
 
   useEffect(() => {
@@ -179,6 +225,9 @@ function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose:
     window.location.href = url
   }
 
+  // Translated tier features for checkout summary
+  const features = tierFeatures(t, tier.key)
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
@@ -187,26 +236,26 @@ function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose:
         {/* Header */}
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{tier.label}</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{tierLabel(t, tier.key)}</p>
             <div className="flex items-baseline gap-1 mt-0.5">
               {displayPrice !== null ? (
                 <>
                   <span className="text-2xl font-extrabold tracking-tight">CHF&nbsp;{displayPrice}</span>
-                  <span className="text-xs text-muted-foreground">/ Mo. — {billingLabel}</span>
+                  <span className="text-xs text-muted-foreground">{t('perMonthFull', { billingLabel })}</span>
                 </>
               ) : (
-                <span className="text-lg font-bold">Auf Anfrage</span>
+                <span className="text-lg font-bold">{t('onRequest')}</span>
               )}
             </div>
           </div>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors mt-0.5">
+          <button onClick={onClose} aria-label={t('closeLabel')} className="text-muted-foreground hover:text-foreground transition-colors mt-0.5">
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Feature summary */}
         <ul className="space-y-1.5">
-          {tier.features.slice(0, 3).map((f) => (
+          {features.slice(0, 3).map((f) => (
             <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
               <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 shrink-0 text-emerald-500" />
               {f}
@@ -219,18 +268,18 @@ function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose:
         {/* Email form */}
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="space-y-1">
-            <label className="text-xs font-medium text-foreground">Ihre E-Mail-Adresse</label>
+            <label className="text-xs font-medium text-foreground">{t('checkoutEmailLabel')}</label>
             <input
               ref={inputRef}
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@beispiel.ch"
+              placeholder={t('checkoutEmailPlaceholder')}
               className="w-full rounded-lg border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 transition-shadow"
             />
             <p className="text-[11px] text-muted-foreground">
-              Ihr API-Key und Dashboard-Link werden an diese Adresse gesendet.
+              {t('checkoutEmailHint')}
             </p>
           </div>
           <button
@@ -238,13 +287,13 @@ function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose:
             disabled={!email}
             className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-xs font-semibold text-primary-foreground hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm"
           >
-            Weiter zu Stripe
+            {t('checkoutSubmit')}
             <ArrowRight className="h-3.5 w-3.5" />
           </button>
         </form>
 
         <p className="text-[11px] text-muted-foreground text-center">
-          Sichere Zahlung via Stripe. Jederzeit kündbar.
+          {t('checkoutFooter')}
         </p>
       </div>
     </div>
@@ -252,6 +301,7 @@ function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose:
 }
 
 function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; onCheckout: (t: Tier, y: boolean) => void }) {
+  const t = useTranslations('Pricing')
   const monthlyNum = tier.price !== null ? parseInt(tier.price, 10) : null
   const displayPrice =
     monthlyNum !== null && yearly && monthlyNum > 0 && tier.yearlyAmountCHF
@@ -263,6 +313,7 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
       : null
 
   const hasPaymentLink = yearly ? !!tier.paymentLinkYearly : !!tier.paymentLinkMonthly
+  const features = tierFeatures(t, tier.key)
 
   return (
     <div
@@ -276,7 +327,7 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
         <div className="absolute -top-3.5 inset-x-0 flex justify-center">
           <span className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold text-primary-foreground shadow-sm">
             <Zap className="h-3 w-3" />
-            Beliebt
+            {t('popularBadge')}
           </span>
         </div>
       )}
@@ -286,7 +337,7 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
         <p className={`text-[11px] font-bold uppercase tracking-widest ${
           tier.highlight ? 'text-primary' : 'text-muted-foreground'
         }`}>
-          {tier.label}
+          {tierLabel(t, tier.key)}
         </p>
 
         <div className="min-h-[52px] space-y-0.5">
@@ -296,33 +347,33 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
                 <span className="text-3xl font-extrabold tracking-tight text-foreground">
                   CHF&nbsp;{displayPrice}
                 </span>
-                <span className="text-xs text-muted-foreground">/ Mo.</span>
+                <span className="text-xs text-muted-foreground">{t('perMonthShort')}</span>
               </div>
               {annualSavings !== null && annualSavings > 0 ? (
                 <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                  Sie sparen CHF&nbsp;{annualSavings} pro Jahr
+                  {t('savingsPerYear', { amount: annualSavings })}
                 </p>
               ) : (
                 !yearly && (
-                  <p className="text-[11px] text-muted-foreground">{tier.priceNote}</p>
+                  <p className="text-[11px] text-muted-foreground">{tierPriceNote(t, tier.key)}</p>
                 )
               )}
             </>
           ) : (
             <>
-              <p className="text-xl font-bold text-foreground">Auf Anfrage</p>
-              <p className="text-[11px] text-muted-foreground">{tier.priceNote}</p>
+              <p className="text-xl font-bold text-foreground">{t('onRequest')}</p>
+              <p className="text-[11px] text-muted-foreground">{tierPriceNote(t, tier.key)}</p>
             </>
           )}
         </div>
 
         <div className="rounded-lg bg-muted/60 px-3 py-2">
-          <p className="text-[11px] font-semibold text-foreground">{tier.dailyLimit}</p>
-          <p className="text-[10px] text-muted-foreground mt-0.5">{tier.rateLimit}</p>
+          <p className="text-[11px] font-semibold text-foreground">{tierDailyLimit(t, tier.key)}</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">{tierRateLimit(t, tier.key)}</p>
         </div>
 
         <ul className="space-y-2 flex-1">
-          {tier.features.map((f) => (
+          {features.map((f) => (
             <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
               <CheckCircle2 className={`h-3.5 w-3.5 mt-0.5 shrink-0 ${
                 tier.highlight ? 'text-primary' : 'text-emerald-500'
@@ -341,7 +392,7 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
                 : 'border bg-background text-foreground hover:bg-muted'
             }`}
           >
-            {tier.cta}
+            {tierCta(t, tier.key)}
             <ArrowRight className="h-3 w-3" />
           </button>
         ) : (
@@ -353,7 +404,7 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
                 : 'border bg-background text-foreground hover:bg-muted'
             }`}
           >
-            {tier.cta}
+            {tierCta(t, tier.key)}
             <ArrowRight className="h-3 w-3" />
           </a>
         )}
@@ -363,6 +414,7 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
 }
 
 export function PricingSection() {
+  const t = useTranslations('Pricing')
   const [yearly, setYearly] = useState(false)
   const [checkoutModal, setCheckoutModal] = useState<CheckoutModalState | null>(null)
   const [researchModal, setResearchModal] = useState(false)
@@ -390,10 +442,10 @@ export function PricingSection() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6 mb-14">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-3">
-              Tarife & Preise
+              {t('eyebrow')}
             </p>
             <p className="text-[14px] text-muted-foreground max-w-sm leading-relaxed">
-              Alle Preise in CHF, exkl. MwSt. Monatliche Kündigung jederzeit möglich.
+              {t('subtitle')}
             </p>
           </div>
           {/* Billing toggle */}
@@ -404,7 +456,7 @@ export function PricingSection() {
                 !yearly ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Monatlich
+              {t('billingMonthly')}
             </button>
             <button
               onClick={() => setYearly(true)}
@@ -412,9 +464,9 @@ export function PricingSection() {
                 yearly ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
-              Jährlich
+              {t('billingYearly')}
               <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 text-[10px] font-bold leading-none">
-                2 Mt. gratis
+                {t('billingYearlyBadge')}
               </span>
             </button>
           </div>
@@ -434,7 +486,7 @@ export function PricingSection() {
               key={tier.key}
               tier={tier}
               yearly={yearly}
-              onCheckout={(t, y) => setCheckoutModal({ tier: t, yearly: y })}
+              onCheckout={(tt, y) => setCheckoutModal({ tier: tt, yearly: y })}
             />
           ))}
         </div>
@@ -444,31 +496,31 @@ export function PricingSection() {
           <ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
           <div>
             <p className="text-[12px] font-semibold text-emerald-800 dark:text-emerald-300">
-              30-Tage-Garantie — kein Kleingedrucktes
+              {t('guaranteeTitle')}
             </p>
             <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400/80 mt-0.5 leading-relaxed">
-              Falls unser System ausfällt und Sie einen Engpass verpassen, der auf unserer Plattform nicht aktuell war, erhalten Sie den Monat kostenfrei. Volle Rückerstattung innert 30 Tagen auf Anfrage, ohne Begründung.
+              {t('guaranteeBody')}
             </p>
           </div>
         </div>
 
         <p className="mt-6 text-[12px] text-muted-foreground">
-          Alle Tarife beinhalten GTIN, Pharmacode, ATC-Code, Severity Score und tagesaktuelle Engpass-Daten.{' '}
+          {t('endpointsHint')}{' '}
           <Link href="/api-docs" className="underline hover:text-foreground">
-            Vollständige Endpunkte →
+            {t('endpointsLink')}
           </Link>
         </p>
 
         {/* ROI Calculator — für Klinik-System */}
         <div className="mt-16 max-w-2xl">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-4">
-            Kalkulator
+            {t('calculatorEyebrow')}
           </p>
           <h3 className="text-[18px] font-semibold tracking-tight text-foreground mb-2">
-            Lohnt sich das Klinik-System für Ihre Institution?
+            {t('calculatorTitle')}
           </h3>
           <p className="text-[13px] text-muted-foreground mb-6 leading-relaxed">
-            Tägliches Engpass-Monitoring kostet Personalzeit. Rechnen Sie nach, ab wann sich das Klinik-System amortisiert.
+            {t('calculatorIntro')}
           </p>
           <RoiCalculator />
         </div>
@@ -479,6 +531,7 @@ export function PricingSection() {
 }
 
 export function FinalCtaSection() {
+  const t = useTranslations('Pricing')
   const [checkoutModal, setCheckoutModal] = useState<CheckoutModalState | null>(null)
   const [researchModal, setResearchModal] = useState(false)
   const professionalTier = TIERS.find(t => t.key === 'professional')!
@@ -493,31 +546,31 @@ export function FinalCtaSection() {
       )}
       <div className="max-w-2xl mx-auto px-4 py-20 sm:py-28 text-center">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-6">
-          Loslegen
+          {t('finalEyebrow')}
         </p>
         <h2 className="text-[clamp(28px,3.5vw,48px)] font-semibold tracking-[-0.025em] text-foreground leading-[1.1] mb-5">
-          Jetzt integrieren.
+          {t('finalTitle')}
         </h2>
         <p className="text-[14px] text-muted-foreground leading-[1.6] mb-10">
-          Kostenlos testen — ohne Key, ohne Login. Für produktive Integrationen gibt es Professional- und Institutional-Pläne.
+          {t('finalSubtitle')}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <button
             onClick={() => setCheckoutModal({ tier: professionalTier, yearly: false })}
             className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Professional abonnieren
+            {t('finalCtaPro')}
             <ArrowRight className="h-4 w-4" />
           </button>
           <button
             onClick={() => setResearchModal(true)}
             className="inline-flex items-center gap-2 rounded-lg border border-border/80 bg-muted/40 px-5 py-2.5 text-sm font-semibold text-foreground hover:bg-muted transition-colors"
           >
-            Research-Key beantragen
+            {t('finalCtaResearch')}
           </button>
         </div>
         <p className="text-[12px] text-muted-foreground mt-6">
-          Fragen?{' '}
+          {t('finalContact')}{' '}
           <a href="mailto:api@engpassradar.ch" className="underline hover:text-foreground">
             api@engpassradar.ch
           </a>

@@ -1,12 +1,14 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 
 const PRESETS = [10, 25, 50]
 
 export function DonationWidget() {
+  const t = useTranslations('Donation')
   const [amount, setAmount] = useState<string>('')
   const [loading, setLoading] = useState(false)
 
@@ -32,14 +34,14 @@ export function DonationWidget() {
           disabled={loading}
           onClick={() => donate(p)}
         >
-          CHF {p}
+          {t('amountChf', { amount: p })}
         </Button>
       ))}
       <div className="flex gap-1">
         <Input
           type="number"
           min={5}
-          placeholder="Betrag"
+          placeholder={t('customPlaceholder')}
           className="w-24 h-9 text-sm"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
@@ -50,7 +52,7 @@ export function DonationWidget() {
           disabled={loading || !amount || Number(amount) < 5}
           onClick={() => donate(Number(amount))}
         >
-          Spenden
+          {t('donateLabel')}
         </Button>
       </div>
     </div>

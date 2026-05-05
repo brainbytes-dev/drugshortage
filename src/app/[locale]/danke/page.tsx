@@ -1,12 +1,17 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import { getTranslations } from 'next-intl/server'
+import { Link } from '@/i18n/navigation'
 
-export const metadata: Metadata = {
-  title: 'Vielen Dank — engpassradar.ch',
-  robots: { index: false, follow: false },
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Danke')
+  return {
+    title: t('metaTitle'),
+    robots: { index: false, follow: false },
+  }
 }
 
-export default function DankePage() {
+export default async function DankePage() {
+  const t = await getTranslations('Danke')
   return (
     <main className="flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] px-4 text-center">
       <div className="max-w-md space-y-6">
@@ -18,16 +23,18 @@ export default function DankePage() {
           </div>
         </div>
         <div className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight">Vielen Dank!</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{t('h1')}</h1>
           <p className="text-muted-foreground leading-relaxed">
-            Ihre Unterstützung hilft, <strong className="text-foreground">Engpassradar</strong> als unabhängiges Instrument für das Schweizer Gesundheitswesen zu betreiben.
+            {t.rich('body', {
+              brand: (chunks) => <strong className="text-foreground">{chunks}</strong>,
+            })}
           </p>
         </div>
         <Link
           href="/"
           className="inline-flex items-center gap-2 rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity"
         >
-          Zum Dashboard
+          {t('cta')}
         </Link>
       </div>
     </main>

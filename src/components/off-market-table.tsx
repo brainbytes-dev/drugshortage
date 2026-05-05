@@ -1,8 +1,9 @@
 'use client'
 
 import { useRef, useEffect, useTransition } from 'react'
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
-import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { useRouter, usePathname, Link } from '@/i18n/navigation'
+import { useTranslations, useFormatter } from 'next-intl'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
 } from '@/components/ui/table'
@@ -19,6 +20,8 @@ interface OffMarketTableProps {
 }
 
 export function OffMarketTable({ data, total, page, perPage }: OffMarketTableProps) {
+  const t = useTranslations('OffMarketTable')
+  const format = useFormatter()
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
@@ -44,8 +47,12 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
     scrollToTable.current = true
     const p = new URLSearchParams(searchParams.toString())
     p.set('page', String(newPage))
+    const query = Object.fromEntries(p.entries())
     startTransition(() => {
-      router.replace(`${pathname}?${p.toString()}`, { scroll: false })
+      router.replace(
+        { pathname, query } as Parameters<typeof router.replace>[0],
+        { scroll: false }
+      )
     })
   }
 
@@ -58,18 +65,18 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
         <Table>
           <TableHeader>
             <TableRow className="hover:bg-transparent border-border/40">
-              <TableHead className="font-semibold text-foreground pl-4">Bezeichnung</TableHead>
-              <TableHead className="font-semibold text-foreground">Firma</TableHead>
-              <TableHead className="font-semibold text-foreground">ATC</TableHead>
-              <TableHead className="font-semibold text-foreground">GTIN</TableHead>
-              <TableHead className="font-semibold text-foreground pr-4">Datum</TableHead>
+              <TableHead className="font-semibold text-foreground pl-4">{t('colBezeichnung')}</TableHead>
+              <TableHead className="font-semibold text-foreground">{t('colFirma')}</TableHead>
+              <TableHead className="font-semibold text-foreground">{t('colAtc')}</TableHead>
+              <TableHead className="font-semibold text-foreground">{t('colGtin')}</TableHead>
+              <TableHead className="font-semibold text-foreground pr-4">{t('colDate')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={5} className="text-center text-muted-foreground py-12">
-                  Keine Einträge gefunden.
+                  {t('emptyState')}
                 </TableCell>
               </TableRow>
             ) : (
@@ -80,7 +87,7 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
                 >
                   <TableCell className="pl-4 font-medium text-sm max-w-xs">
                     <Link
-                      href={`/gtin/${row.gtin}`}
+                      href={{ pathname: '/gtin/[gtin]', params: { gtin: row.gtin } }}
                       className="line-clamp-2 leading-snug hover:underline underline-offset-2"
                     >
                       {row.bezeichnung}
@@ -89,7 +96,7 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
                   <TableCell className="text-sm">
                     {row.firma ? (
                       <Link
-                        href={`/firma/${toSlug(row.firma)}`}
+                        href={{ pathname: '/firma/[slug]', params: { slug: toSlug(row.firma) } }}
                         className="text-primary hover:underline underline-offset-2"
                         onClick={e => e.stopPropagation()}
                       >
@@ -119,7 +126,7 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
       {totalPages > 1 && (
         <div className="flex items-center justify-between px-1">
           <p className="text-sm text-muted-foreground tabular-nums">
-            {start}–{end} von {total.toLocaleString('de-CH')}
+            {t('rangeOfTotal', { start, end, total: format.number(total) })}
           </p>
           <div className="flex items-center gap-1">
             <Button
@@ -127,7 +134,7 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
               className="h-8 w-8"
               disabled={page <= 1}
               onClick={() => navigate(1)}
-              aria-label="Erste Seite"
+              aria-label={t('firstPage')}
             >
               <ChevronsLeft className="h-4 w-4" />
             </Button>
@@ -136,7 +143,7 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
               className="h-8 w-8"
               disabled={page <= 1}
               onClick={() => navigate(page - 1)}
-              aria-label="Vorherige Seite"
+              aria-label={t('previousPage')}
             >
               <ChevronLeft className="h-4 w-4" />
             </Button>
@@ -148,7 +155,7 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
               className="h-8 w-8"
               disabled={page >= totalPages}
               onClick={() => navigate(page + 1)}
-              aria-label="Nächste Seite"
+              aria-label={t('nextPage')}
             >
               <ChevronRight className="h-4 w-4" />
             </Button>
@@ -157,7 +164,7 @@ export function OffMarketTable({ data, total, page, perPage }: OffMarketTablePro
               className="h-8 w-8"
               disabled={page >= totalPages}
               onClick={() => navigate(totalPages)}
-              aria-label="Letzte Seite"
+              aria-label={t('lastPage')}
             >
               <ChevronsRight className="h-4 w-4" />
             </Button>

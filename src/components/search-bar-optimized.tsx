@@ -1,11 +1,14 @@
 'use client'
 
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
 import { useCallback, useTransition, useState, useEffect, useRef } from 'react'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
 export function SearchBar() {
+  const t = useTranslations('Search')
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -59,8 +62,12 @@ export function SearchBar() {
           params.delete('search')
         }
         params.delete('page')
+        const query = Object.fromEntries(params.entries())
         startTransition(() => {
-          router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+          router.replace(
+            { pathname, query } as Parameters<typeof router.replace>[0],
+            { scroll: false }
+          )
         })
       }, 300) // ✅ Only navigate after 300ms of no typing
     },
@@ -72,8 +79,12 @@ export function SearchBar() {
     const params = new URLSearchParams(searchParams.toString())
     params.delete('search')
     params.delete('page')
+    const query = Object.fromEntries(params.entries())
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+      router.replace(
+        { pathname, query } as Parameters<typeof router.replace>[0],
+        { scroll: false }
+      )
     })
   }, [router, pathname, searchParams])
 
@@ -82,7 +93,7 @@ export function SearchBar() {
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
       <Input
         ref={inputRef}
-        placeholder="Suchen… (⌘K)"
+        placeholder={t('placeholder')}
         value={value}
         onChange={handleChange}
         className={value ? 'pl-9 pr-8' : 'pl-9'}
@@ -90,7 +101,7 @@ export function SearchBar() {
       {value && (
         <button
           onClick={clearSearch}
-          aria-label="Suche zurücksetzen"
+          aria-label={t('clearAria')}
           className="absolute right-2.5 top-1/2 -translate-y-1/2 rounded-sm p-0.5 text-muted-foreground hover:text-foreground transition-colors"
         >
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">

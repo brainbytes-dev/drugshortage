@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
 import { notFound } from 'next/navigation'
+import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
+import { Link } from '@/i18n/navigation'
 import { getOffMarketByGtin, getOddbByGtin } from '@/lib/db'
 
 interface PageProps {
@@ -10,34 +11,23 @@ interface PageProps {
 
 export const revalidate = 3600
 
-const AUTH_STATUS_LABELS: Record<string, { label: string; variant: string }> = {
-  A: { label: 'Zugelassen', variant: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800' },
-  E: { label: 'Erloschen', variant: 'text-destructive bg-destructive/10 border-destructive/30' },
-  S: { label: 'Sistiert', variant: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' },
-}
-
-const CATEGORY_LABELS: Record<string, { label: string; variant: string }> = {
-  AUSSER_HANDEL: { label: 'Ausser Handel', variant: 'text-destructive bg-destructive/10 border-destructive/30' },
-  VERTRIEBSEINSTELLUNG: { label: 'Vertriebseinstellung', variant: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' },
-  ERLOSCHEN: { label: 'Nicht mehr erhältlich', variant: 'text-destructive bg-destructive/10 border-destructive/30' },
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { gtin } = await params
-  const [offMarket, oddb] = await Promise.all([
+  const [offMarket, oddb, t] = await Promise.all([
     getOffMarketByGtin(gtin).catch(() => []),
     getOddbByGtin(gtin).catch(() => null),
+    getTranslations('Gtin'),
   ])
-  const name = oddb?.bezeichnungDe ?? offMarket[0]?.bezeichnung ?? `GTIN ${gtin}`
+  const name = oddb?.bezeichnungDe ?? offMarket[0]?.bezeichnung ?? t('fallbackName', { gtin })
   const offMarketLabels = offMarket.map(e =>
-    e.category === 'AUSSER_HANDEL' ? 'ausser Handel' :
-    e.category === 'VERTRIEBSEINSTELLUNG' ? 'Vertriebseinstellung' : 'Zulassung erloschen'
+    e.category === 'AUSSER_HANDEL' ? t('offMarketLabelAusserHandel') :
+    e.category === 'VERTRIEBSEINSTELLUNG' ? t('offMarketLabelVertriebseinstellung') : t('offMarketLabelErloschen')
   )
-  const statusText = offMarketLabels.length > 0 ? ` · ${offMarketLabels.join(', ')}` : ''
-  const substanzText = oddb?.substanz ? ` (${oddb.substanz})` : ''
+  const statusText = offMarketLabels.length > 0 ? `${t('metaStatusSeparator')}${offMarketLabels.join(', ')}` : ''
+  const substanzText = oddb?.substanz ? t('metaSubstanzPart', { substanz: oddb.substanz }) : ''
   return {
-    title: `${name} — Produktdetail | engpass.radar`,
-    description: `${name}${substanzText} — GTIN ${gtin}${statusText}. Swissmedic-Produktdaten, Preis und Zulassungsstatus auf engpassradar.ch.`,
+    title: t('metaTitle', { name }),
+    description: t('metaDescriptionBase', { name, substanz: substanzText, gtin, status: statusText }),
     alternates: { canonical: `https://engpassradar.ch/gtin/${gtin}` },
   }
 }
@@ -45,12 +35,25 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function GtinPage({ params }: PageProps) {
   const { gtin } = await params
 
-  const [offMarket, oddb] = await Promise.all([
+  const [offMarket, oddb, t] = await Promise.all([
     getOffMarketByGtin(gtin).catch((err) => { console.error('[gtin/page] getOffMarketByGtin failed', err); return [] }),
     getOddbByGtin(gtin).catch((err) => { console.error('[gtin/page] getOddbByGtin failed', err); return null }),
+    getTranslations('Gtin'),
   ])
 
   if (offMarket.length === 0 && !oddb) notFound()
+
+  const AUTH_STATUS_LABELS: Record<string, { label: string; variant: string }> = {
+    A: { label: t('authStatusZugelassen'), variant: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800' },
+    E: { label: t('authStatusErloschen'),  variant: 'text-destructive bg-destructive/10 border-destructive/30' },
+    S: { label: t('authStatusSistiert'),   variant: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' },
+  }
+
+  const CATEGORY_LABELS: Record<string, { label: string; variant: string }> = {
+    AUSSER_HANDEL:        { label: t('categoryAusserHandel'),        variant: 'text-destructive bg-destructive/10 border-destructive/30' },
+    VERTRIEBSEINSTELLUNG: { label: t('categoryVertriebseinstellung'), variant: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' },
+    ERLOSCHEN:            { label: t('categoryErloschen'),            variant: 'text-destructive bg-destructive/10 border-destructive/30' },
+  }
 
   const bezeichnung = oddb?.bezeichnungDe ?? offMarket[0]?.bezeichnung ?? gtin
   const firma = offMarket[0]?.firma ?? null
@@ -65,7 +68,7 @@ export default async function GtinPage({ params }: PageProps) {
         '@type': 'MedicalWebPage',
         '@id': `https://www.engpassradar.ch/gtin/${gtin}`,
         url: `https://www.engpassradar.ch/gtin/${gtin}`,
-        name: `${bezeichnung} — engpass.radar`,
+        name: t('jsonLdName', { name: bezeichnung }),
         about: {
           '@type': 'MedicalEntity',
           name: bezeichnung,
@@ -76,7 +79,7 @@ export default async function GtinPage({ params }: PageProps) {
       {
         '@type': 'BreadcrumbList',
         itemListElement: [
-          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.engpassradar.ch' },
+          { '@type': 'ListItem', position: 1, name: t('breadcrumbHome'), item: 'https://www.engpassradar.ch' },
           { '@type': 'ListItem', position: 2, name: bezeichnung, item: `https://www.engpassradar.ch/gtin/${gtin}` },
         ],
       },
@@ -98,7 +101,7 @@ export default async function GtinPage({ params }: PageProps) {
             className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors group mb-8"
           >
             <ArrowLeft className="h-3 w-3 group-hover:-translate-x-0.5 transition-transform duration-150" />
-            Zur Übersicht
+            {t('backLink')}
           </Link>
 
           <div className="space-y-4">
@@ -106,7 +109,7 @@ export default async function GtinPage({ params }: PageProps) {
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
                 <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/50" />
-                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">Produkt</span>
+                <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">{t('eyebrow')}</span>
               </div>
               <span className="text-muted-foreground/40 text-xs">—</span>
               <span className="font-mono text-xs text-muted-foreground">{gtin}</span>
@@ -132,7 +135,7 @@ export default async function GtinPage({ params }: PageProps) {
                 })}
                 {authStatusInfo && (
                   <span className={`inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium ${authStatusInfo.variant}`}>
-                    {authStatusInfo.label} ({authStatus})
+                    {t('authStatusWithCode', { label: authStatusInfo.label, code: authStatus ?? '' })}
                   </span>
                 )}
               </div>
@@ -145,25 +148,25 @@ export default async function GtinPage({ params }: PageProps) {
       <div className="max-w-4xl mx-auto px-4 py-10 space-y-10">
 
         <section>
-          <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-1">Details</h2>
+          <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground mb-1">{t('sectionDetails')}</h2>
           <dl className="divide-y divide-border/40">
             {firma && (
               <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
-                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">Firma</dt>
+                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">{t('labelFirma')}</dt>
                 <dd className="text-sm font-medium sm:text-right">{firma}</dd>
               </div>
             )}
 
             <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
-              <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">GTIN</dt>
+              <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">{t('labelGtin')}</dt>
               <dd className="text-sm font-mono sm:text-right">{gtin}</dd>
             </div>
 
             {atcCode && (
               <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
-                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">ATC-Code</dt>
+                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">{t('labelAtcCode')}</dt>
                 <dd className="text-sm sm:text-right">
-                  <Link href={`/wirkstoff/${atcCode}`} className="font-mono hover:text-muted-foreground transition-colors underline">
+                  <Link href={{ pathname: '/wirkstoff/[atc]', params: { atc: atcCode } }} className="font-mono hover:text-muted-foreground transition-colors underline">
                     {atcCode}
                   </Link>
                 </dd>
@@ -172,35 +175,35 @@ export default async function GtinPage({ params }: PageProps) {
 
             {oddb?.substanz && (
               <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
-                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">Wirkstoff</dt>
+                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">{t('labelSubstance')}</dt>
                 <dd className="text-sm font-medium sm:text-right">{oddb.substanz}</dd>
               </div>
             )}
 
             {oddb?.prodno && (
               <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
-                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">Swissmedic-Nr</dt>
+                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">{t('labelSwissmedicNo')}</dt>
                 <dd className="text-sm font-mono sm:text-right">{oddb.prodno}</dd>
               </div>
             )}
 
             {oddb?.ppub != null && (
               <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
-                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">Publikumspreis (PPUB)</dt>
+                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">{t('labelPpub')}</dt>
                 <dd className="text-sm font-mono sm:text-right">CHF {oddb.ppub.toFixed(2)}</dd>
               </div>
             )}
 
             {oddb?.pexf != null && (
               <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
-                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">Fabrikabgabepreis (PEXF)</dt>
+                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">{t('labelPexf')}</dt>
                 <dd className="text-sm font-mono sm:text-right">CHF {oddb.pexf.toFixed(2)}</dd>
               </div>
             )}
 
             {gtin.startsWith('7680') && (
               <div className="py-3 flex flex-col sm:flex-row sm:items-start sm:justify-between gap-0.5 sm:gap-4">
-                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">Fachinformation (AIPS)</dt>
+                <dt className="text-sm text-muted-foreground shrink-0 sm:w-52">{t('labelAips')}</dt>
                 <dd className="text-sm sm:text-right">
                   <a
                     href={`https://swissmedicinfo-pro.ch/showText.aspx?textType=FI&lang=DE&authNr=${parseInt(gtin.substring(4, 9), 10)}&supportMultipleResults=1`}
@@ -218,13 +221,13 @@ export default async function GtinPage({ params }: PageProps) {
 
         {oddb?.zusammensetzung && (
           <section className="space-y-2">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">Zusammensetzung</h2>
+            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-muted-foreground">{t('sectionComposition')}</h2>
             <p className="text-sm text-muted-foreground leading-relaxed">{oddb.zusammensetzung}</p>
           </section>
         )}
 
         <p className="text-xs text-muted-foreground border-t border-border/40 pt-5">
-          Daten von ODDB / Swissmedic · keine Gewähr auf Vollständigkeit
+          {t('footerSource')}
         </p>
       </div>
     </main>

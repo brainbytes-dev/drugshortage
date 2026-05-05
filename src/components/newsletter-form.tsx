@@ -1,8 +1,10 @@
 'use client'
 
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
 
 export function NewsletterForm() {
+  const t = useTranslations('Newsletter')
   const [email, setEmail] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'success' | 'error'>('idle')
 
@@ -28,7 +30,7 @@ export function NewsletterForm() {
   if (state === 'success') {
     return (
       <p className="text-sm text-muted-foreground text-center py-2">
-        Angemeldet. Erste Ausgabe erscheint dienstags.
+        {t('compactSuccess')}
       </p>
     )
   }
@@ -39,7 +41,7 @@ export function NewsletterForm() {
         type="email"
         value={email}
         onChange={e => setEmail(e.target.value)}
-        placeholder="ihre@email.ch"
+        placeholder={t('emailPlaceholder')}
         required
         disabled={state === 'loading'}
         className="flex-1 min-w-0 rounded-lg border border-border bg-background px-4 py-2.5 text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
@@ -49,11 +51,11 @@ export function NewsletterForm() {
         disabled={state === 'loading'}
         className="rounded-lg bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:opacity-90 transition-opacity whitespace-nowrap disabled:opacity-50"
       >
-        {state === 'loading' ? 'Wird angemeldet…' : 'Abonnieren'}
+        {state === 'loading' ? t('submitting') : t('compactSubmit')}
       </button>
       {state === 'error' && (
         <p className="text-xs text-destructive w-full text-center">
-          Fehler beim Anmelden. Bitte nochmals versuchen.
+          {t('compactError')}
         </p>
       )}
     </form>

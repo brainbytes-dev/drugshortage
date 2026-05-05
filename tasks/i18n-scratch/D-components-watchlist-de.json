@@ -1,0 +1,230 @@
+{
+  "WatchlistConfirmed": {
+    "title": "Alert aktiviert",
+    "description": "Sie erhalten eine E-Mail, sobald sich die Engpass-Lage ändert.",
+    "descriptionWithAtc": "Sie erhalten eine E-Mail, sobald sich die Engpass-Lage für {atc} ändert.",
+    "ctaViewShortages": "{atc}-Engpässe ansehen",
+    "backToDashboard": "Zurück zum Dashboard"
+  },
+  "WatchlistError": {
+    "title": "Ungültiger Link",
+    "description": "Dieser Link ist abgelaufen oder ungültig. Bitte registrieren Sie sich erneut.",
+    "backToDashboard": "Zurück zum Dashboard"
+  },
+  "WatchlistUnsubscribed": {
+    "title": "Alert deaktiviert",
+    "description": "Sie erhalten keine weiteren Engpass-Alerts.",
+    "descriptionWithAtc": "Sie erhalten keine weiteren Engpass-Alerts für {atc}.",
+    "backToDashboard": "Zurück zum Dashboard"
+  },
+  "Filters": {
+    "statusPlaceholder": "Status",
+    "firmaPlaceholder": "Firma",
+    "allStatuses": "Alle Status",
+    "allFirmen": "Alle Firmen",
+    "status1": "1 — Direkt gemeldet (Grün)",
+    "status2": "2 — Gemeldet (Gelbgrün)",
+    "status3": "3 — Sporadisch (Orange)",
+    "status4": "4 — Nicht informiert (Rot)",
+    "status5": "5 — Verhandlung (Gelb)"
+  },
+  "Search": {
+    "placeholder": "Suchen… (⌘K)",
+    "clearAria": "Suche zurücksetzen"
+  },
+  "StatusBadge": {
+    "status1": "1 — Direkt gemeldet",
+    "status2": "2 — Gemeldet",
+    "status3": "3 — Sporadisch",
+    "status4": "4 — Nicht informiert",
+    "status5": "5 — Verhandlung"
+  },
+  "Kpi": {
+    "activeShortages": "Aktive Engpässe",
+    "activeShortagesSub": "aktuell gemeldet",
+    "historicalShortages": "Historische Engpässe",
+    "historicalShortagesSub": "abgeschlossen / gelöst",
+    "affectedSubstances": "Betroffene Wirkstoffe",
+    "affectedSubstancesSub": "gemäss ATC-Klassifikation",
+    "avgDuration": "Ø Dauer",
+    "avgDurationValue": "{days} Tage",
+    "avgDurationSub": "seit erster Meldung"
+  },
+  "ShortagesTable": {
+    "colBezeichnung": "Bezeichnung",
+    "colFirma": "Firma",
+    "colStatus": "Status",
+    "colAvailableFrom": "Lieferbar ab",
+    "colDays": "Tage",
+    "colAtc": "ATC",
+    "colScore": "Score",
+    "emptyState": "Keine Engpässe gefunden",
+    "badgeNew": "NEU",
+    "badgeBwl": "BWL",
+    "paginationSummary": "{total} Einträge · Seite {page} / {totalPages}",
+    "firstPage": "Erste Seite",
+    "previousPage": "Vorherige Seite",
+    "nextPage": "Nächste Seite",
+    "lastPage": "Letzte Seite",
+    "pageOfTotalAria": "Seite, von {totalPages}"
+  },
+  "OffMarketTable": {
+    "colBezeichnung": "Bezeichnung",
+    "colFirma": "Firma",
+    "colAtc": "ATC",
+    "colGtin": "GTIN",
+    "colDate": "Datum",
+    "emptyState": "Keine Einträge gefunden.",
+    "rangeOfTotal": "{start}–{end} von {total}",
+    "firstPage": "Erste Seite",
+    "previousPage": "Vorherige Seite",
+    "nextPage": "Nächste Seite",
+    "lastPage": "Letzte Seite"
+  },
+  "HistoricalTable": {
+    "colBezeichnung": "Bezeichnung",
+    "colFirma": "Firma",
+    "colLastSeen": "Zuletzt aktiv",
+    "colFirstSeen": "Erste Meldung",
+    "colOccurrences": "Anz.",
+    "colDuration": "Dauer",
+    "colAtc": "ATC",
+    "emptyState": "Keine historischen Einträge gefunden.",
+    "durationDays": "{days} T",
+    "rangeOfTotal": "{start}–{end} von {total}",
+    "firstPage": "Erste Seite",
+    "previousPage": "Vorherige Seite",
+    "nextPage": "Nächste Seite",
+    "lastPage": "Letzte Seite"
+  },
+  "AtcTreemap": {
+    "title": "Engpässe nach Wirkstoffgruppe (ATC)",
+    "emptyState": "Keine Daten verfügbar",
+    "cellAria": "{code}: {bezeichnung} — {count, plural, one {# Engpass} other {# Engpässe}}",
+    "tooltipShortages": "{count, plural, one {# Engpass} other {# Engpässe}}"
+  },
+  "AtcGruppen": {
+    "title": "ATC-Gruppen",
+    "description": "Betroffene Wirkstoffgruppen nach Anzahl aktiver Engpässe. Gruppe anklicken zum Filtern.",
+    "searchPlaceholder": "ATC-Code oder Bezeichnung…",
+    "emptyState": "Keine Treffer",
+    "closeAria": "Schliessen"
+  },
+  "FirmaRanking": {
+    "title": "Firmen-Ranking",
+    "descriptionRich": "Hersteller nach Anzahl aktiver Lieferengpässe, sortiert nach Bewertung von <link>drugshortage.ch</link>.",
+    "legendTitle": "Bewertung (Quelle: drugshortage.ch)",
+    "legendTitleExtended": "Bewertung = Melde-Transparenz (Quelle: drugshortage.ch)",
+    "searchPlaceholder": "Firma suchen…",
+    "emptyState": "Keine Treffer",
+    "closeAria": "Schliessen",
+    "firmaCounts": "{open} offen · {total} total",
+    "ratingGood": "Gut",
+    "ratingMedium": "Mittel",
+    "ratingPoor": "Schlecht",
+    "ratingCritical": "Kritisch",
+    "ratingGoodDesc": "< 5 % Produkte betroffen",
+    "ratingMediumDesc": "5–15 % Produkte betroffen",
+    "ratingPoorDesc": "15–30 % Produkte betroffen",
+    "ratingCriticalDesc": "> 30 % Produkte betroffen",
+    "rating1Label": "Exklusiv",
+    "rating1Desc": "Gibt Daten selbst ein, exklusiver Zugang, verpflichtet à jour zu halten",
+    "rating2Label": "Aktiv",
+    "rating2Desc": "Gibt Daten selbst ein, kein exklusiver Zugang",
+    "rating3Label": "Vereinzelt",
+    "rating3Desc": "Meldet vereinzelt Lieferengpässe an Kunden",
+    "rating4Label": "Passiv",
+    "rating4Desc": "Informiert Kunden nicht direkt; Meldungen durch drugshortage.ch-Netzwerk",
+    "rating5Label": "Verhandlung",
+    "rating5Desc": "Verhandlungen mit drugshortage.ch laufen"
+  },
+  "FirmaShortages": {
+    "tabActive": "Aktive Engpässe",
+    "tabHistorical": "Historisch",
+    "emptyActive": "Keine aktiven Engpässe für diese Firma.",
+    "emptyHistorical": "Keine historischen Einträge gefunden.",
+    "colBezeichnung": "Bezeichnung",
+    "colStatus": "Status",
+    "colDays": "Tage",
+    "colScore": "Score",
+    "badgeBwl": "BWL"
+  },
+  "ShortageDrawer": {
+    "closeAria": "Schliessen",
+    "detailsHeading": "Details",
+    "alternativesHeading": "Mögliche Alternativen",
+    "alternativesLoading": "Alternativen werden geladen…",
+    "alternativesUnavailable": "Keine Alternativen verfügbar.",
+    "alternativesNone": "Keine Alternativen erfasst.",
+    "alternativesAllHeading": "Alternativpräparate ({count})",
+    "coMarketingHeading": "Co-Marketing (identisch)",
+    "sameFirmaHeading": "Gleiche Firma (andere Packung)",
+    "typeOriginal": "Original",
+    "typeGeneric": "Generikum",
+    "detailGtin": "GTIN",
+    "detailPharmacode": "Pharmacode",
+    "detailAvailableFrom": "Voraussichtlich lieferbar",
+    "detailExpectedDuration": "Voraussichtliche Dauer",
+    "detailLastMutation": "Letzte Mutation",
+    "detailFirstReport": "Erste Meldung",
+    "detailReportedBy": "Gemeldet durch",
+    "detailFirmaInfo": "Info durch Firma",
+    "detailInfoType": "Art der Info",
+    "detailRemarks": "Bemerkungen",
+    "detailDaysSinceReport": "Tage seit erster Meldung",
+    "detailGenericGroup": "Generic Group",
+    "detailFirstSeen": "Erste Erfassung (unser System)",
+    "sourceLine": "Quelle: <link>drugshortage.ch</link>"
+  },
+  "NeueMeldungen": {
+    "label": "Neue Meldungen"
+  },
+  "ResetFilters": {
+    "resetAria": "Filter zurücksetzen"
+  },
+  "ExportCsv": {
+    "label": "CSV Export"
+  },
+  "ThemeToggle": {
+    "toggleAria": "Theme wechseln"
+  },
+  "WatchlistForm": {
+    "title": "Engpass-Alert einrichten",
+    "description": "E-Mail erhalten sobald sich die Lage für {atcName} ändert.",
+    "freeBadge": "(3 kostenlos)",
+    "emailLabel": "E-Mail-Adresse für Alert",
+    "emailPlaceholder": "ihre@email.ch",
+    "submitLabel": "Alert",
+    "submitAria": "Alert für {atcName} einrichten",
+    "successTitle": "Bestätigungs-E-Mail gesendet",
+    "successDescription": "Bitte prüfen Sie Ihr Postfach und bestätigen Sie den Alert.",
+    "errorGeneric": "Fehler beim Einrichten des Alerts.",
+    "errorConnection": "Verbindungsfehler. Bitte versuchen Sie es erneut.",
+    "upgradeTitle": "Limit für kostenlose Alerts erreicht",
+    "upgradeDescription": "Sie haben bereits 3 kostenlose Watchlist-Alerts eingerichtet. Für unbegrenzte Alerts und API-Zugang steht Engpassradar Pro zur Verfügung.",
+    "upgradeCta": "Engpassradar Pro — CHF 39/Mo",
+    "upgradeAlternative": "Oder: <link>Klinik-System für Spitalapotheken</link>",
+    "upsellRich": "Unbegrenzte Alerts + API-Zugang: <link>Engpassradar Pro ab CHF 39/Mo →</link>"
+  },
+  "Newsletter": {
+    "emailPlaceholder": "ihre@email.ch",
+    "submitting": "Wird angemeldet…",
+    "compactSubmit": "Abonnieren",
+    "compactSuccess": "Angemeldet. Erste Ausgabe erscheint dienstags.",
+    "compactError": "Fehler beim Anmelden. Bitte nochmals versuchen.",
+    "genericError": "Ein Fehler ist aufgetreten. Bitte erneut versuchen.",
+    "eyebrow": "Engpass-Signal",
+    "headline": "Shortage Report Schweiz — kostenlos",
+    "subheadline": "Jeden Dienstag: Die 5 relevantesten Engpässe der Woche in 90 Sekunden — kuratiert für Apotheken und Spitalfachpersonal. Kostenlos, jederzeit abmeldbar.",
+    "signupEmailLabel": "E-Mail-Adresse für Shortage Report",
+    "signupSubmit": "Report erhalten",
+    "signupSubmitAria": "Shortage Report abonnieren",
+    "signupSuccess": "Sie erhalten den aktuellen Shortage Report per E-Mail — bitte prüfen Sie Ihr Postfach und bestätigen Sie Ihre Anmeldung.",
+    "noSpam": "Kein Spam. Jederzeit abmeldbar."
+  },
+  "Donation": {
+    "amountChf": "CHF {amount}",
+    "customPlaceholder": "Betrag",
+    "donateLabel": "Spenden"
+  }
+}
