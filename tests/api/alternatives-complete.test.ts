@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { GET } from '@/app/api/alternatives/route'
 import { prisma } from '@/lib/prisma-optimized'
 
-vi.mock('@/lib/prisma-optimized', () => ({
+jest.mock('@/lib/prisma-optimized', () => ({
   prisma: {
     alternativesCache: {
       findUnique: vi.fn(),

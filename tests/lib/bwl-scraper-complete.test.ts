@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fetchBwlData } from '@/lib/bwl-scraper'
 import * as XLSX from 'xlsx'
 
-vi.mock('xlsx')
+jest.mock('xlsx')
 
 describe('BWL Scraper - Complete Coverage', () => {
   beforeEach(() => {

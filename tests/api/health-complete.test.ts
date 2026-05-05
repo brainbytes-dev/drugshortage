@@ -3,8 +3,8 @@ import { GET } from '@/app/api/health/route'
 import * as dbMonitoring from '@/lib/db-monitoring'
 import * as cacheLru from '@/lib/cache-lru'
 
-vi.mock('@/lib/db-monitoring')
-vi.mock('@/lib/cache-lru')
+jest.mock('@/lib/db-monitoring')
+jest.mock('@/lib/cache-lru')
 
 describe('GET /api/health - Complete Coverage', () => {
   beforeEach(() => {

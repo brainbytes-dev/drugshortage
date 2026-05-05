@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { fetchOddbProducts } from '@/lib/oddb-scraper'
 import { XMLParser } from 'fast-xml-parser'
 
-vi.mock('fast-xml-parser')
+jest.mock('fast-xml-parser')
 
 describe('ODDB Scraper - Complete Coverage', () => {
   beforeEach(() => {

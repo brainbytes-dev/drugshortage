@@ -12,8 +12,8 @@ import { getCachedLRU, lruCache } from '@/lib/cache-lru'
 import { queryShortages } from '@/lib/db'
 import type { ShortagesQuery } from '@/lib/types'
 
-vi.mock('@/lib/cache-lru')
-vi.mock('@/lib/db')
+jest.mock('@/lib/cache-lru')
+jest.mock('@/lib/db')
 
 describe('queryShortagesCached', () => {
   beforeEach(() => {

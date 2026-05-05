@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { POST } from '@/app/api/alternatives/batch/route'
 import { prisma } from '@/lib/prisma-optimized'
 
-vi.mock('@/lib/prisma-optimized', () => ({
+jest.mock('@/lib/prisma-optimized', () => ({
   prisma: {
     alternativesCache: {
       findMany: vi.fn(),
