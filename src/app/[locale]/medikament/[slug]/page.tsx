@@ -1,19 +1,22 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { getShortageBySlug, getOddbByGtin, getHistoricalByGengrp, getBwlGtins } from '@/lib/db'
 import { calculateScore, scoreLabel } from '@/lib/score'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
 
 interface PageProps {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: string; slug: string }>
 }
 
 export const revalidate = 3600
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = await params
+  const { locale, slug } = await params
   const [shortage, t] = await Promise.all([
     getShortageBySlug(slug),
     getTranslations('Medikament'),
@@ -24,6 +27,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const oddb = await getOddbByGtin(shortage.gtin).catch(() => null)
+  const { canonical, languages } = buildPageAlternates(
+    '/medikament/[slug]',
+    locale as Locale,
+    { slug },
+  )
 
   return {
     title: oddb?.substanz
@@ -32,7 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: oddb?.substanz
       ? t('metaDescriptionWithSubstanz', { name: shortage.bezeichnung, substanz: oddb.substanz, firma: shortage.firma })
       : t('metaDescriptionNoSubstanz', { name: shortage.bezeichnung, firma: shortage.firma }),
-    alternates: { canonical: `https://engpassradar.ch/medikament/${slug}` },
+    alternates: { canonical, languages },
   }
 }
 
@@ -81,8 +89,10 @@ export default async function MedikamentPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-medikament"
         type="application/ld+json"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
@@ -109,7 +119,7 @@ export default async function MedikamentPage({ params }: PageProps) {
                 ],
               },
             ],
-          }).replace(/</g, '<'),
+          }).replace(/</g, '\\u003c'),
         }}
       />
 

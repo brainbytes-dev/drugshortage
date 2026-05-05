@@ -1,13 +1,19 @@
 import type { Metadata } from 'next'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
+import Script from 'next/script'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { ArrowLeft } from 'lucide-react'
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const t = await getTranslations('ApiDocs')
+  const { locale } = await params
+  const { canonical, languages } = buildPageAlternates('/api-docs', locale as Locale)
   return {
     title: t('metaTitle'),
     description: t('metaDescription'),
+    alternates: { canonical, languages },
   }
 }
 
@@ -89,9 +95,11 @@ export default async function ApiDocsPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-api-docs"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\u003c') }}
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
 

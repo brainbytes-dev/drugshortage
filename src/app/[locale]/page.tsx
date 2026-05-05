@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
+import Script from 'next/script'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
@@ -21,11 +24,14 @@ interface PageProps {
 
 export const revalidate = 3600 // ISR: revalidate every hour
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const t = await getTranslations('Home')
+  const { locale } = await params
+  const { canonical, languages } = buildPageAlternates('/', locale as Locale)
   return {
     title: t('metaTitle'),
     description: t('metaDescription'),
+    alternates: { canonical, languages },
   }
 }
 
@@ -159,9 +165,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <script
+      <Script
+        id="ld-home-graph"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -213,7 +220,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                 }
               }
             ]
-          }).replace(/</g, '<')
+          }).replace(/</g, '\\u003c')
         }}
       />
       {/* Hero — Live-Zahl */}
@@ -317,11 +324,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────── */}
-      <script
+      <Script
+        id="ld-home-faq"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqJsonLd).replace(/</g, '<')
+          __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')
         }}
       />
       <section id="faq" className="border-t border-border/40 bg-muted/[0.15]">

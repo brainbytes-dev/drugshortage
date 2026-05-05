@@ -1,13 +1,18 @@
 import type { Metadata } from 'next'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
 import { getTranslations } from 'next-intl/server'
 import { CheckCircle2, ArrowRight, Clock, BarChart3, Bell } from 'lucide-react'
 import { KlinikSystemForm } from '@/components/klinik-system-form'
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const t = await getTranslations('KlinikSystem')
+  const { locale } = await params
+  const { canonical, languages } = buildPageAlternates('/klinik-system', locale as Locale)
   return {
     title: t('metaTitle'),
     description: t('metaDescription'),
+    alternates: { canonical, languages },
   }
 }
 

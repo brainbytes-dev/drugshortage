@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
@@ -6,9 +7,11 @@ import { Link } from '@/i18n/navigation'
 import { getShortagesByAtc, getSubstanzByAtc, getAllProductsByAtc } from '@/lib/db'
 import { toSlug } from '@/lib/slug'
 import { WatchlistForm } from '@/components/watchlist-form'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
 
 interface PageProps {
-  params: Promise<{ atc: string }>
+  params: Promise<{ locale: string; atc: string }>
   searchParams: Promise<{ filter?: string }>
 }
 
@@ -17,17 +20,22 @@ export const revalidate = 3600
 type FilterKey = 'all' | 'in_shortage' | 'available' | 'off_market'
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { atc } = await params
+  const { locale, atc } = await params
   const [shortages, substanz, t] = await Promise.all([
     getShortagesByAtc(atc),
     getSubstanzByAtc(atc).catch(() => null),
     getTranslations('Wirkstoff'),
   ])
   const count = shortages.length
+  const { canonical, languages } = buildPageAlternates(
+    '/wirkstoff/[atc]',
+    locale as Locale,
+    { atc },
+  )
   return {
     title: substanz ? t('metaTitleWithSubstanz', { substanz, atc }) : t('metaTitleAtcOnly', { atc }),
     description: count > 0 ? t('metaDescription', { substanz: substanz ?? atc, atc }) : undefined,
-    alternates: { canonical: `https://engpassradar.ch/wirkstoff/${atc}` },
+    alternates: { canonical, languages },
   }
 }
 
@@ -108,7 +116,7 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
 
   return (
     <main className="min-h-screen bg-background">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '<') }} />
+      <Script id="ld-wirkstoff" type="application/ld+json" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
 
       {/* ─── Header ──────────────────────────────────────────────────── */}
       <section className="border-b border-border/40">

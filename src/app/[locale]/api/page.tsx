@@ -1,15 +1,20 @@
 import type { Metadata } from 'next'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 import { ArrowRight, Code2 } from 'lucide-react'
 
 import { PricingSection, FinalCtaSection } from '@/components/pricing-section'
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const t = await getTranslations('ApiHub')
+  const { locale } = await params
+  const { canonical, languages } = buildPageAlternates('/api', locale as Locale)
   return {
     title: t('metaTitle'),
     description: t('metaDescription'),
+    alternates: { canonical, languages },
   }
 }
 

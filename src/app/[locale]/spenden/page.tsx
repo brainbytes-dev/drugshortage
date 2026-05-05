@@ -1,14 +1,19 @@
 import type { Metadata } from 'next'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft, Heart } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { DonationWidget } from '@/components/donation-widget'
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const t = await getTranslations('Spenden')
+  const { locale } = await params
+  const { canonical, languages } = buildPageAlternates('/spenden', locale as Locale)
   return {
     title: t('metaTitle'),
     description: t('metaDescription'),
+    alternates: { canonical, languages },
   }
 }
 

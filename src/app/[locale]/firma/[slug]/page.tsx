@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -12,6 +13,8 @@ import {
 } from '@/lib/db'
 import { calculateScore, scoreLabel } from '@/lib/score'
 import { FirmaShortagesToggle } from '@/components/firma-shortages-toggle'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
 
 export const revalidate = 3600
 
@@ -26,18 +29,23 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>
+  params: Promise<{ locale: string; slug: string }>
 }): Promise<Metadata> {
-  const { slug } = await params
+  const { locale, slug } = await params
   const [firma, t] = await Promise.all([
     getFirmaBySlug(slug),
     getTranslations('Firma'),
   ])
   if (!firma) return { title: t('metaTitleNotFound') }
+  const { canonical, languages } = buildPageAlternates(
+    '/firma/[slug]',
+    locale as Locale,
+    { slug },
+  )
   return {
     title: t('metaTitle', { firma }),
     description: t('metaDescription', { firma }),
-    alternates: { canonical: `https://engpassradar.ch/firma/${slug}` },
+    alternates: { canonical, languages },
   }
 }
 
@@ -107,8 +115,10 @@ export default async function FirmaPage({
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-firma"
         type="application/ld+json"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
@@ -129,7 +139,7 @@ export default async function FirmaPage({
                 ],
               },
             ],
-          }).replace(/</g, '<'),
+          }).replace(/</g, '\\u003c'),
         }}
       />
 

@@ -10,15 +10,9 @@ import { ScrollToTop } from '@/components/scroll-to-top'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { routing, type Locale } from '@/i18n/routing'
+import { LOCALE_OG } from '@/lib/i18n-meta'
 
 const inter = Inter({ subsets: ['latin'] })
-
-const OG_LOCALE: Record<Locale, string> = {
-  de: 'de_CH',
-  en: 'en_US',
-  fr: 'fr_CH',
-  it: 'it_CH',
-}
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -44,7 +38,7 @@ export async function generateMetadata({
       title: t('ogTitle'),
       description: t('ogDescription'),
       url: 'https://engpassradar.ch',
-      locale: OG_LOCALE[locale as Locale],
+      locale: LOCALE_OG[locale as Locale],
       images: [
         {
           url: '/opengraph-image',
@@ -65,12 +59,9 @@ export async function generateMetadata({
         { url: '/favicon-dark.svg', type: 'image/svg+xml', media: '(prefers-color-scheme: dark)' },
       ],
     },
-    alternates: {
-      canonical: locale === routing.defaultLocale ? '/' : `/${locale}`,
-      languages: Object.fromEntries(
-        routing.locales.map((l) => [l, l === routing.defaultLocale ? '/' : `/${l}`])
-      ),
-    },
+    // No `alternates` here — every page below sets its own via
+    // buildPageAlternates(), and a layout-level canonical would otherwise
+    // bleed the home URL onto pages without their own metadata.
   }
 }
 
@@ -116,8 +107,10 @@ export default async function LocaleLayout({
         )}
       </head>
       <body className={`${inter.className} antialiased overflow-x-hidden`}>
-        <script
+        <Script
+          id="ld-website"
           type="application/ld+json"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
@@ -133,7 +126,7 @@ export default async function LocaleLayout({
                 },
                 'query-input': 'required name=search_term_string',
               },
-            }).replace(/</g, '<'),
+            }).replace(/</g, '\\u003c'),
           }}
         />
         <NextIntlClientProvider>

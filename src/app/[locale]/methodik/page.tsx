@@ -1,4 +1,7 @@
 import type { Metadata } from 'next'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
+import Script from 'next/script'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
@@ -6,11 +9,14 @@ import { prisma } from '@/lib/prisma-optimized'
 
 export const dynamic = 'force-dynamic'
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const t = await getTranslations('Methodik')
+  const { locale } = await params
+  const { canonical, languages } = buildPageAlternates('/methodik', locale as Locale)
   return {
     title: t('metaTitle'),
     description: t('metaDescription'),
+    alternates: { canonical, languages },
   }
 }
 
@@ -119,10 +125,12 @@ export default async function MetodikPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-methodik"
         type="application/ld+json"
+        strategy="beforeInteractive"
         suppressHydrationWarning
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '<') }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
       <div className="max-w-3xl mx-auto px-4 pt-16 pb-24 sm:pb-32">

@@ -1,18 +1,21 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
 import { Link } from '@/i18n/navigation'
 import { getOffMarketByGtin, getOddbByGtin } from '@/lib/db'
+import { buildPageAlternates } from '@/lib/i18n-meta'
+import type { Locale } from '@/i18n/routing'
 
 interface PageProps {
-  params: Promise<{ gtin: string }>
+  params: Promise<{ locale: string; gtin: string }>
 }
 
 export const revalidate = 3600
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { gtin } = await params
+  const { locale, gtin } = await params
   const [offMarket, oddb, t] = await Promise.all([
     getOffMarketByGtin(gtin).catch(() => []),
     getOddbByGtin(gtin).catch(() => null),
@@ -25,10 +28,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   )
   const statusText = offMarketLabels.length > 0 ? `${t('metaStatusSeparator')}${offMarketLabels.join(', ')}` : ''
   const substanzText = oddb?.substanz ? t('metaSubstanzPart', { substanz: oddb.substanz }) : ''
+  const { canonical, languages } = buildPageAlternates(
+    '/gtin/[gtin]',
+    locale as Locale,
+    { gtin },
+  )
   return {
     title: t('metaTitle', { name }),
     description: t('metaDescriptionBase', { name, substanz: substanzText, gtin, status: statusText }),
-    alternates: { canonical: `https://engpassradar.ch/gtin/${gtin}` },
+    alternates: { canonical, languages },
   }
 }
 
@@ -88,9 +96,11 @@ export default async function GtinPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-gtin"
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '<') }}
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
       {/* Page header */}
