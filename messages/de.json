@@ -1,0 +1,88 @@
+{
+  "Meta": {
+    "title": "Lieferengpass Medikamente Schweiz | engpass.radar",
+    "description": "Alle aktuellen Medikamenten-Lieferengpässe der Schweiz — täglich aus drugshortage.ch und BWL aktualisiert. Suche nach Wirkstoff, Firma oder ATC-Code. Kostenlos, kein Login.",
+    "ogTitle": "Lieferengpass Medikamente Schweiz | engpass.radar",
+    "ogDescription": "Tagesaktuelle Medikamenten-Lieferengpässe der Schweiz — Severity Score, Alternativen, ATC-Filter. Aus drugshortage.ch, BWL und ODDB.",
+    "ogImageAlt": "engpass.radar — Schweizer Medikamenten-Lieferengpässe",
+    "twitterTitle": "engpass.radar — Schweizer Medikamenten-Lieferengpässe",
+    "twitterDescription": "Tagesaktuelle Engpässe, Severity Scores und Alternativen. Kostenlos, ohne Login."
+  },
+  "StructuredData": {
+    "siteDescription": "Aktuelle Lieferengpässe bei Medikamenten in der Schweiz — täglich aktualisiert."
+  },
+  "Common": {
+    "loading": "Lädt …",
+    "error": "Ein Fehler ist aufgetreten.",
+    "retry": "Erneut versuchen",
+    "close": "Schliessen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "previous": "Vorherige",
+    "more": "Mehr",
+    "search": "Suchen",
+    "showAll": "Alle anzeigen"
+  },
+  "Header": {
+    "navHome": "Home",
+    "navFaq": "FAQ",
+    "navMethodik": "Methodik",
+    "navApi": "API",
+    "donateButton": "Spenden",
+    "donateAria": "Engpassradar unterstützen",
+    "donateTitle": "Engpassradar unterstützen",
+    "donateBody": "Engpassradar ist kostenlos und unabhängig. Mit einer Spende helfen Sie, Server, Daten und Weiterentwicklung zu finanzieren.",
+    "menuOpen": "Menü öffnen",
+    "menuClose": "Menü schliessen",
+    "mobileTagline": "Schweizer Medikamenten-Engpässe"
+  },
+  "Footer": {
+    "primarySource": "Primärdaten von",
+    "primarySourceSuffix": "· täglich aktualisiert",
+    "impressum": "Impressum",
+    "datenschutz": "Datenschutz",
+    "agb": "AGB",
+    "githubAria": "GitHub",
+    "copyright": "engpass.radar"
+  },
+  "LanguageSwitcher": {
+    "ariaLabel": "Sprache wählen",
+    "currentLabel": "Aktuelle Sprache",
+    "de": "Deutsch",
+    "en": "English",
+    "fr": "Français",
+    "it": "Italiano"
+  },
+  "Hero": {
+    "sourcesAria": "Datenquellen und Abgleichstatus",
+    "sourcesLabel": "Abgleich heute · drugshortage.ch · BWL · USB Basel · ODDB",
+    "activeAria": "{count} aktive Engpässe",
+    "headline": "Medikamente in der Schweiz sind aktuell als nicht lieferbar gemeldet.",
+    "subline": "Aggregiert aus drugshortage.ch, BWL-Pflichtlager und der USB-Basel-Liste. Täglich abgeglichen, öffentlich zugänglich.",
+    "methodologyLink": "Methodik & Quellen →",
+    "deltaNew": "Neu seit KW {week}",
+    "deltaResolved": "Beendet seit KW {week}",
+    "deltaLongTerm": "≥ 6 Monate aktiv",
+    "deltaHistorical": "Historische Fälle",
+    "deltaHistoricalSuffix": "seit 2018",
+    "searchLabel": "Suchen",
+    "searchPlaceholder": "Wirkstoff, Handelsname, ATC-Code oder Firma",
+    "searchSubmitAria": "Suche starten",
+    "filterResetTip": "Filter zurücksetzen",
+    "filterResetAria": "Filter zurücksetzen",
+    "exportCsvTip": "Aktuelle Ansicht als CSV exportieren",
+    "exportCsvAria": "CSV exportieren",
+    "newReportsButton": "Neue Meldungen"
+  },
+  "NotFound": {
+    "badge": "Seite nicht gefunden",
+    "headlinePrefix": "Diese Seite",
+    "headlineHighlight": "fehlt.",
+    "body": "Das Präparat oder die URL existiert nicht mehr — vielleicht wurde der Engpass aufgelöst oder der Link ist veraltet.",
+    "ctaHome": "Zur Übersicht",
+    "ctaNew": "Neue Meldungen",
+    "hintBefore": "Engpässe werden täglich aktualisiert —",
+    "hintLink": "alle aktiven Meldungen",
+    "hintAfter": "finden Sie auf der Startseite."
+  }
+}

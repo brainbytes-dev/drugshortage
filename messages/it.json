@@ -1,0 +1,88 @@
+{
+  "Meta": {
+    "title": "Carenze di medicinali Svizzera | engpass.radar",
+    "description": "Tutte le carenze attuali di medicinali in Svizzera — aggiornate quotidianamente da drugshortage.ch e UFAE. Ricerca per principio attivo, ditta o codice ATC. Gratuito, senza registrazione.",
+    "ogTitle": "Carenze di medicinali Svizzera | engpass.radar",
+    "ogDescription": "Carenze di medicinali svizzeri aggiornate quotidianamente — punteggio di gravità, alternative, filtro ATC. Fonti: drugshortage.ch, UFAE e ODDB.",
+    "ogImageAlt": "engpass.radar — Carenze di medicinali in Svizzera",
+    "twitterTitle": "engpass.radar — Carenze di medicinali in Svizzera",
+    "twitterDescription": "Carenze aggiornate, punteggi di gravità e alternative. Gratuito, senza login."
+  },
+  "StructuredData": {
+    "siteDescription": "Carenze attuali di medicinali in Svizzera — aggiornate quotidianamente."
+  },
+  "Common": {
+    "loading": "Caricamento …",
+    "error": "Si è verificato un errore.",
+    "retry": "Riprova",
+    "close": "Chiudi",
+    "back": "Indietro",
+    "next": "Avanti",
+    "previous": "Precedente",
+    "more": "Altro",
+    "search": "Cerca",
+    "showAll": "Mostra tutto"
+  },
+  "Header": {
+    "navHome": "Home",
+    "navFaq": "FAQ",
+    "navMethodik": "Metodologia",
+    "navApi": "API",
+    "donateButton": "Donare",
+    "donateAria": "Sostenere engpass.radar",
+    "donateTitle": "Sostenere engpass.radar",
+    "donateBody": "engpass.radar è gratuito e indipendente. La sua donazione contribuisce a server, dati e sviluppo continuo.",
+    "menuOpen": "Apri menu",
+    "menuClose": "Chiudi menu",
+    "mobileTagline": "Carenze di medicinali in Svizzera"
+  },
+  "Footer": {
+    "primarySource": "Dati primari da",
+    "primarySourceSuffix": "· aggiornati quotidianamente",
+    "impressum": "Note legali",
+    "datenschutz": "Privacy",
+    "agb": "Termini",
+    "githubAria": "GitHub",
+    "copyright": "engpass.radar"
+  },
+  "LanguageSwitcher": {
+    "ariaLabel": "Seleziona lingua",
+    "currentLabel": "Lingua attuale",
+    "de": "Deutsch",
+    "en": "English",
+    "fr": "Français",
+    "it": "Italiano"
+  },
+  "Hero": {
+    "sourcesAria": "Fonti dati e stato di sincronizzazione",
+    "sourcesLabel": "Sincronizzato oggi · drugshortage.ch · UFAE · USB Basilea · ODDB",
+    "activeAria": "{count} carenze attive",
+    "headline": "medicinali in Svizzera sono attualmente segnalati come non disponibili.",
+    "subline": "Aggregati da drugshortage.ch, scorta obbligatoria UFAE e lista USB Basilea. Sincronizzati quotidianamente, accesso pubblico.",
+    "methodologyLink": "Metodologia & fonti →",
+    "deltaNew": "Nuovi dalla SC {week}",
+    "deltaResolved": "Risolti dalla SC {week}",
+    "deltaLongTerm": "≥ 6 mesi attivi",
+    "deltaHistorical": "Casi storici",
+    "deltaHistoricalSuffix": "dal 2018",
+    "searchLabel": "Cerca",
+    "searchPlaceholder": "Principio attivo, nome commerciale, codice ATC o ditta",
+    "searchSubmitAria": "Avvia ricerca",
+    "filterResetTip": "Reimposta filtri",
+    "filterResetAria": "Reimposta filtri",
+    "exportCsvTip": "Esporta la vista attuale come CSV",
+    "exportCsvAria": "Esporta CSV",
+    "newReportsButton": "Nuove segnalazioni"
+  },
+  "NotFound": {
+    "badge": "Pagina non trovata",
+    "headlinePrefix": "Questa pagina è",
+    "headlineHighlight": "mancante.",
+    "body": "Il preparato o l'URL non esiste più — la carenza potrebbe essere stata risolta o il link è obsoleto.",
+    "ctaHome": "Torna alla panoramica",
+    "ctaNew": "Nuove segnalazioni",
+    "hintBefore": "Le carenze sono aggiornate quotidianamente —",
+    "hintLink": "tutte le segnalazioni attive",
+    "hintAfter": "si trovano sulla home page."
+  }
+}

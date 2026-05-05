@@ -1,0 +1,88 @@
+{
+  "Meta": {
+    "title": "Ruptures de stock de médicaments Suisse | engpass.radar",
+    "description": "Toutes les ruptures de stock actuelles de médicaments en Suisse — mises à jour quotidiennement depuis drugshortage.ch et l'OFAE. Recherche par principe actif, fabricant ou code ATC. Gratuit, sans inscription.",
+    "ogTitle": "Ruptures de stock de médicaments Suisse | engpass.radar",
+    "ogDescription": "Ruptures de médicaments suisses au jour le jour — score de gravité, alternatives, filtre ATC. Sources : drugshortage.ch, OFAE et ODDB.",
+    "ogImageAlt": "engpass.radar — Ruptures de stock de médicaments en Suisse",
+    "twitterTitle": "engpass.radar — Ruptures de médicaments en Suisse",
+    "twitterDescription": "Ruptures à jour, scores de gravité et alternatives. Gratuit, sans connexion."
+  },
+  "StructuredData": {
+    "siteDescription": "Ruptures de stock actuelles de médicaments en Suisse — mises à jour quotidiennement."
+  },
+  "Common": {
+    "loading": "Chargement …",
+    "error": "Une erreur est survenue.",
+    "retry": "Réessayer",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "more": "Plus",
+    "search": "Rechercher",
+    "showAll": "Tout afficher"
+  },
+  "Header": {
+    "navHome": "Accueil",
+    "navFaq": "FAQ",
+    "navMethodik": "Méthodologie",
+    "navApi": "API",
+    "donateButton": "Faire un don",
+    "donateAria": "Soutenir engpass.radar",
+    "donateTitle": "Soutenir engpass.radar",
+    "donateBody": "engpass.radar est gratuit et indépendant. Votre don finance les serveurs, les données et le développement continu.",
+    "menuOpen": "Ouvrir le menu",
+    "menuClose": "Fermer le menu",
+    "mobileTagline": "Ruptures de médicaments en Suisse"
+  },
+  "Footer": {
+    "primarySource": "Données primaires de",
+    "primarySourceSuffix": "· mises à jour quotidiennement",
+    "impressum": "Mentions légales",
+    "datenschutz": "Confidentialité",
+    "agb": "CGU",
+    "githubAria": "GitHub",
+    "copyright": "engpass.radar"
+  },
+  "LanguageSwitcher": {
+    "ariaLabel": "Choisir la langue",
+    "currentLabel": "Langue actuelle",
+    "de": "Deutsch",
+    "en": "English",
+    "fr": "Français",
+    "it": "Italiano"
+  },
+  "Hero": {
+    "sourcesAria": "Sources de données et statut de synchronisation",
+    "sourcesLabel": "Synchronisé aujourd'hui · drugshortage.ch · OFAE · USB Bâle · ODDB",
+    "activeAria": "{count} ruptures actives",
+    "headline": "médicaments en Suisse sont actuellement signalés comme indisponibles.",
+    "subline": "Agrégés depuis drugshortage.ch, le stockage obligatoire OFAE et la liste de l'USB Bâle. Synchronisés quotidiennement, accès public.",
+    "methodologyLink": "Méthodologie & sources →",
+    "deltaNew": "Nouveaux depuis SC {week}",
+    "deltaResolved": "Résolus depuis SC {week}",
+    "deltaLongTerm": "≥ 6 mois actifs",
+    "deltaHistorical": "Cas historiques",
+    "deltaHistoricalSuffix": "depuis 2018",
+    "searchLabel": "Rechercher",
+    "searchPlaceholder": "Principe actif, nom commercial, code ATC ou fabricant",
+    "searchSubmitAria": "Lancer la recherche",
+    "filterResetTip": "Réinitialiser les filtres",
+    "filterResetAria": "Réinitialiser les filtres",
+    "exportCsvTip": "Exporter la vue actuelle en CSV",
+    "exportCsvAria": "Exporter CSV",
+    "newReportsButton": "Nouveaux signalements"
+  },
+  "NotFound": {
+    "badge": "Page introuvable",
+    "headlinePrefix": "Cette page est",
+    "headlineHighlight": "manquante.",
+    "body": "Le produit ou l'URL n'existe plus — la rupture a peut-être été résolue ou le lien est obsolète.",
+    "ctaHome": "Retour à l'aperçu",
+    "ctaNew": "Nouveaux signalements",
+    "hintBefore": "Les ruptures sont mises à jour quotidiennement —",
+    "hintLink": "tous les signalements actifs",
+    "hintAfter": "sont sur la page d'accueil."
+  }
+}

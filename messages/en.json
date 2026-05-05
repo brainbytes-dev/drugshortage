@@ -1,0 +1,88 @@
+{
+  "Meta": {
+    "title": "Drug Shortages Switzerland | engpass.radar",
+    "description": "All current drug shortages in Switzerland — updated daily from drugshortage.ch and BWL. Search by active substance, manufacturer or ATC code. Free, no login required.",
+    "ogTitle": "Drug Shortages Switzerland | engpass.radar",
+    "ogDescription": "Daily Swiss drug shortages — severity score, alternatives, ATC filter. Sourced from drugshortage.ch, BWL and ODDB.",
+    "ogImageAlt": "engpass.radar — Swiss drug shortages",
+    "twitterTitle": "engpass.radar — Swiss drug shortages",
+    "twitterDescription": "Up-to-date shortages, severity scores and alternatives. Free, no login."
+  },
+  "StructuredData": {
+    "siteDescription": "Current drug shortages in Switzerland — updated daily."
+  },
+  "Common": {
+    "loading": "Loading …",
+    "error": "An error occurred.",
+    "retry": "Try again",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "more": "More",
+    "search": "Search",
+    "showAll": "Show all"
+  },
+  "Header": {
+    "navHome": "Home",
+    "navFaq": "FAQ",
+    "navMethodik": "Methodology",
+    "navApi": "API",
+    "donateButton": "Donate",
+    "donateAria": "Support engpass.radar",
+    "donateTitle": "Support engpass.radar",
+    "donateBody": "engpass.radar is free and independent. Your donation helps cover servers, data and continued development.",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "mobileTagline": "Swiss drug shortages"
+  },
+  "Footer": {
+    "primarySource": "Primary data from",
+    "primarySourceSuffix": "· updated daily",
+    "impressum": "Imprint",
+    "datenschutz": "Privacy",
+    "agb": "Terms",
+    "githubAria": "GitHub",
+    "copyright": "engpass.radar"
+  },
+  "LanguageSwitcher": {
+    "ariaLabel": "Select language",
+    "currentLabel": "Current language",
+    "de": "Deutsch",
+    "en": "English",
+    "fr": "Français",
+    "it": "Italiano"
+  },
+  "Hero": {
+    "sourcesAria": "Data sources and sync status",
+    "sourcesLabel": "Synced today · drugshortage.ch · BWL · USB Basel · ODDB",
+    "activeAria": "{count} active shortages",
+    "headline": "medicines in Switzerland are currently reported as unavailable.",
+    "subline": "Aggregated from drugshortage.ch, the BWL mandatory stockpile and the USB Basel list. Synced daily, publicly accessible.",
+    "methodologyLink": "Methodology & sources →",
+    "deltaNew": "New since CW {week}",
+    "deltaResolved": "Resolved since CW {week}",
+    "deltaLongTerm": "≥ 6 months active",
+    "deltaHistorical": "Historical cases",
+    "deltaHistoricalSuffix": "since 2018",
+    "searchLabel": "Search",
+    "searchPlaceholder": "Active substance, brand name, ATC code or manufacturer",
+    "searchSubmitAria": "Run search",
+    "filterResetTip": "Reset filters",
+    "filterResetAria": "Reset filters",
+    "exportCsvTip": "Export current view as CSV",
+    "exportCsvAria": "Export CSV",
+    "newReportsButton": "New reports"
+  },
+  "NotFound": {
+    "badge": "Page not found",
+    "headlinePrefix": "This page is",
+    "headlineHighlight": "missing.",
+    "body": "The product or URL no longer exists — the shortage may have been resolved or the link is outdated.",
+    "ctaHome": "Back to overview",
+    "ctaNew": "New reports",
+    "hintBefore": "Shortages are updated daily —",
+    "hintLink": "all active reports",
+    "hintAfter": "are on the home page."
+  }
+}
