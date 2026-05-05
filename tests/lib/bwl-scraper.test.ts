@@ -15,7 +15,9 @@ describe('BWL Scraper - External data parsing', () => {
       // TODO: &amp; → &
     })
 
-    it('should throw when link not found', async () => {
+    // TODO: integration test — calls fetchBwlData() without mocking, makes real HTTP
+    // requests to the BWL website which may succeed or fail depending on network
+    it.skip('should throw when link not found', async () => {
       await expect(fetchBwlData()).rejects.toThrow('No XLSX link found')
     })
   })
@@ -33,7 +35,8 @@ describe('BWL Scraper - External data parsing', () => {
       // TODO: "  GTIN  " → "GTIN"
     })
 
-    it('should handle malformed XLSX', async () => {
+    // TODO: integration test — calls fetchBwlData() without mocking (live HTTP)
+    it.skip('should handle malformed XLSX', async () => {
       await expect(fetchBwlData()).rejects.toThrow()
     })
   })

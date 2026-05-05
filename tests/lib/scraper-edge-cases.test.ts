@@ -482,9 +482,10 @@ describe('Scraper Edge Cases', () => {
     })
 
     test('handles partial stats data', () => {
+      // Production reads row index 1 (after header row); include dummy header rows
       const html = `
-        <table><tr><td>100</td><td>50</td></tr></table>
-        <table><tr><td>10</td></tr></table>
+        <table><tr><th>Hdr</th></tr><tr><td>100</td><td>50</td></tr></table>
+        <table><tr><th>Hdr</th></tr><tr><td>10</td></tr></table>
       `
       const result = parseOverviewStats(html)
       expect(result.totalPackungen).toBe(100)

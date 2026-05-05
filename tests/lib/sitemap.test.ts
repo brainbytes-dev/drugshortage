@@ -1,3 +1,20 @@
+// Mock next-intl/routing before any imports to avoid ESM parse errors
+jest.mock('@/i18n/routing', () => ({
+  routing: {
+    locales: ['de', 'en', 'fr', 'it'],
+    defaultLocale: 'de',
+    pathnames: {
+      '/': '/',
+      '/methodik': { de: '/methodik', en: '/methodology', fr: '/methodologie', it: '/metodologia' },
+      '/api': { de: '/api', en: '/api', fr: '/api', it: '/api' },
+      '/api-docs': { de: '/api-docs', en: '/api-docs', fr: '/api-docs', it: '/api-docs' },
+      '/klinik-system': { de: '/klinik-system', en: '/hospital-system', fr: '/systeme-clinique', it: '/sistema-clinico' },
+      '/spenden': { de: '/spenden', en: '/donate', fr: '/faire-un-don', it: '/donare' },
+      '/medikament/[slug]': { de: '/medikament/[slug]', en: '/medication/[slug]', fr: '/medicament/[slug]', it: '/farmaco/[slug]' },
+    },
+  },
+}))
+
 import {
   buildSitemapIndexXml,
   buildSitemapPage,
@@ -61,12 +78,15 @@ describe('lib/sitemap', () => {
 
     const page = await buildSitemapPage(0)
 
-    expect(page).toHaveLength(7)
+    // 1 homepage + 5 static pages (methodik, api, api-docs, klinik-system, spenden) + 2 drugs = 8
+    expect(page).toHaveLength(8)
     expect(page[0]).toMatchObject({
-      url: 'https://engpassradar.ch',
+      url: 'https://engpassradar.ch/',
       priority: 1,
       changeFrequency: 'hourly',
     })
+    // Each entry now carries alternates.languages for i18n
+    expect(page[0]).toHaveProperty('alternates.languages')
     expect(page).toContainEqual(
       expect.objectContaining({
         url: 'https://engpassradar.ch/medikament/aspirin-500mg',
@@ -80,11 +100,13 @@ describe('lib/sitemap', () => {
     mockShortageCount.mockResolvedValue(50010)
     mockShortageFindMany.mockImplementation(async (args?: { select?: Record<string, unknown>; skip?: number; take?: number }) => {
       if (args?.select?.slug) {
-        expect(args.skip).toBe(49995)
-        expect(args.take).toBe(15)
+        // Page 0 uses 6 slots (1 homepage + 5 static), leaving 49994 drug slots.
+        // Page 1 drug section starts at skip=49994.
+        expect(args.skip).toBe(49994)
+        expect(args.take).toBe(16)
 
-        return Array.from({ length: 15 }, (_, index) => ({
-          slug: `drug-${49995 + index}`,
+        return Array.from({ length: 16 }, (_, index) => ({
+          slug: `drug-${49994 + index}`,
           lastSeenAt: new Date('2026-04-29T10:00:00.000Z'),
         }))
       }
@@ -94,8 +116,8 @@ describe('lib/sitemap', () => {
 
     const page = await buildSitemapPage(1)
 
-    expect(page).toHaveLength(15)
-    expect(page[0].url).toBe('https://engpassradar.ch/medikament/drug-49995')
+    expect(page).toHaveLength(16)
+    expect(page[0].url).toBe('https://engpassradar.ch/medikament/drug-49994')
     expect(page.some((entry) => entry.url === 'https://engpassradar.ch')).toBe(false)
   })
 

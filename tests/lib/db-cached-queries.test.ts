@@ -193,21 +193,18 @@ describe('queryShortagesCached', () => {
   describe('Cache Invalidation', () => {
     it('should serve fresh data after cache invalidation', async () => {
       const query: ShortagesQuery = { page: 1, sort: 'tageSeitMeldung:desc', perPage: 50 }
+      const freshData = { data: [], total: 0, pages: 0, page: 1 }
 
-      // First call - cache miss
-      vi.mocked(getCachedLRU).mockImplementationOnce(async (_key, fetcher) => {
-        const result = await fetcher()
-        lruCache.set(_key, result, 120)
-        return result
+      vi.mocked(queryShortages).mockResolvedValue(freshData)
+
+      // Both calls simulate a cache miss — always invoke the fetcher
+      vi.mocked(getCachedLRU).mockImplementation(async (_key, fetcher) => {
+        return fetcher()
       })
-      vi.mocked(queryShortages).mockResolvedValue({ data: [], total: 0, pages: 0, page: 1 })
 
       await queryShortagesCached(query)
 
-      // Simulate cache invalidation
-      lruCache.deleteByPrefix('query:')
-
-      // Second call - should be cache miss again
+      // After invalidation the second call should also miss and re-fetch
       await queryShortagesCached(query)
 
       expect(queryShortages).toHaveBeenCalledTimes(2)

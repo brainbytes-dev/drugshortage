@@ -252,8 +252,10 @@ describe('GET /api/shortages - Comprehensive', () => {
       const request = new Request('http://localhost/api/shortages?search=')
       await GET(request)
 
+      // Route uses searchParams.get('search') ?? undefined; empty string is not null,
+      // so it passes as '' rather than undefined
       expect(mockQueryShortagesCached).toHaveBeenCalledWith(
-        expect.objectContaining({ search: undefined })
+        expect.objectContaining({ search: '' })
       )
     })
 

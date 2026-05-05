@@ -27,7 +27,8 @@ describe('getKPIStatsOptimized()', () => {
 
   describe('Successful Aggregation', () => {
     it('should return all KPI stats', async () => {
-      // TODO: Test complete KPI stats structure
+      // Production getKPIStatsOptimized returns: totalActive, uniqueAtcGroups,
+      // avgDaysSinceMeldung, lastScrapedAt. topFirma/topFirmaCount were removed.
       ;(prisma.shortage.count as jest.Mock).mockResolvedValue(150)
       ;(prisma.shortage.groupBy as jest.Mock).mockResolvedValue([
         { firma: 'Roche', _count: { firma: 45 } },
@@ -46,10 +47,8 @@ describe('getKPIStatsOptimized()', () => {
       const stats = await getKPIStatsOptimized()
 
       expect(stats.totalActive).toBe(150)
-      expect(stats.topFirma).toBe('Roche')
-      expect(stats.topFirmaCount).toBe(45)
       expect(stats.uniqueAtcGroups).toBe(2)
-      expect(stats.avgDaysSinceMeldung).toBe(43) // Rounded
+      expect(stats.avgDaysSinceMeldung).toBe(43) // Rounded from 42.5
       expect(stats.lastScrapedAt).toBe('2026-04-15T10:00:00.000Z')
     })
 
@@ -57,8 +56,8 @@ describe('getKPIStatsOptimized()', () => {
       // TODO: Test all queries run concurrently
     })
 
-    it('should filter by isActive=true', async () => {
-      // TODO: Verify all queries filter active shortages
+    it('should filter by isActive=true and statusCode 1-5', async () => {
+      // Production ACTIVE_WHERE = { isActive: true, statusCode: { gte: 1, lte: 5 } }
       ;(prisma.shortage.count as jest.Mock).mockResolvedValue(0)
       ;(prisma.shortage.groupBy as jest.Mock).mockResolvedValue([])
       ;(prisma.shortage.findMany as jest.Mock).mockResolvedValue([])
@@ -68,14 +67,14 @@ describe('getKPIStatsOptimized()', () => {
       await getKPIStatsOptimized()
 
       expect(prisma.shortage.count).toHaveBeenCalledWith(
-        expect.objectContaining({ where: { isActive: true } })
+        expect.objectContaining({ where: { isActive: true, statusCode: { gte: 1, lte: 5 } } })
       )
     })
   })
 
   describe('Empty Dataset', () => {
     it('should handle zero active shortages', async () => {
-      // TODO: Test with no data
+      // topFirma/topFirmaCount are not in the production return type
       ;(prisma.shortage.count as jest.Mock).mockResolvedValue(0)
       ;(prisma.shortage.groupBy as jest.Mock).mockResolvedValue([])
       ;(prisma.shortage.findMany as jest.Mock).mockResolvedValue([])
@@ -85,8 +84,6 @@ describe('getKPIStatsOptimized()', () => {
       const stats = await getKPIStatsOptimized()
 
       expect(stats.totalActive).toBe(0)
-      expect(stats.topFirma).toBe('-')
-      expect(stats.topFirmaCount).toBe(0)
       expect(stats.uniqueAtcGroups).toBe(0)
       expect(stats.avgDaysSinceMeldung).toBe(0)
       expect(stats.lastScrapedAt).toBeNull()
