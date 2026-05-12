@@ -33,8 +33,8 @@ class LRUCache {
     const entry = this.cache.get(key) as CacheEntry<T> | undefined
     if (!entry) return null
 
-    // Check expiration
-    if (Date.now() > entry.expiresAt) {
+    // Check expiration (>= so zero-TTL entries expire immediately)
+    if (Date.now() >= entry.expiresAt) {
       this.delete(key)
       return null
     }

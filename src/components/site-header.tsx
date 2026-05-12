@@ -1,20 +1,28 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useTranslations } from 'next-intl'
 import { Heart, X } from 'lucide-react'
+import { Link, usePathname } from '@/i18n/navigation'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { DonationWidget } from '@/components/donation-widget'
+import { LanguageSwitcher } from '@/components/language-switcher'
 
-const NAV_LINKS = [
-  { href: '/', label: 'Home', num: '01' },
-  { href: '/#faq', label: 'FAQ', num: '02', isFaq: true },
-  { href: '/methodik', label: 'Methodik', num: '03' },
-  { href: '/api', label: 'API', num: '04' },
+type NavLink = {
+  href: '/' | '/methodik' | '/api'
+  labelKey: 'navHome' | 'navMethodik' | 'navApi'
+  num: string
+}
+
+const NAV_LINKS: NavLink[] = [
+  { href: '/', labelKey: 'navHome', num: '01' },
+  // FAQ is special: it's a hash on the home page, handled separately
+  { href: '/methodik', labelKey: 'navMethodik', num: '03' },
+  { href: '/api', labelKey: 'navApi', num: '04' },
 ]
 
 export function SiteHeader() {
+  const t = useTranslations('Header')
   const pathname = usePathname()
   void pathname // used for FAQ scroll detection only
   const [open, setOpen] = useState(false)
@@ -78,30 +86,30 @@ export function SiteHeader() {
 
           {/* Desktop nav */}
           <nav className="hidden sm:flex items-center gap-6 text-sm text-muted-foreground">
-            {NAV_LINKS.map(link =>
-              link.isFaq ? (
-                <a key={link.href} href={link.href} onClick={handleFaq}
-                  className="hover:text-foreground transition-colors">
-                  {link.label}
-                </a>
-              ) : (
-                <Link key={link.href} href={link.href}
-                  className="hover:text-foreground transition-colors">
-                  {link.label}
-                </Link>
-              )
-            )}
+            <Link href="/" className="hover:text-foreground transition-colors">
+              {t('navHome')}
+            </Link>
+            <a href="/#faq" onClick={handleFaq} className="hover:text-foreground transition-colors">
+              {t('navFaq')}
+            </a>
+            <Link href="/methodik" className="hover:text-foreground transition-colors">
+              {t('navMethodik')}
+            </Link>
+            <Link href="/api" className="hover:text-foreground transition-colors">
+              {t('navApi')}
+            </Link>
           </nav>
 
           <div className="flex items-center gap-2">
             <button
               onClick={() => setDonateOpen(true)}
               className="inline-flex items-center gap-1.5 h-8 rounded-md border border-border/60 bg-muted/40 px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-              aria-label="Engpassradar unterstützen"
+              aria-label={t('donateAria')}
             >
               <Heart className="h-3.5 w-3.5 text-red-500" />
-              <span className="hidden sm:inline">Spenden</span>
+              <span className="hidden sm:inline">{t('donateButton')}</span>
             </button>
+            <LanguageSwitcher />
             <div className="h-8 rounded-md border border-border/60 bg-muted/40">
               <ThemeToggle />
             </div>
@@ -110,7 +118,7 @@ export function SiteHeader() {
             <button
               className="sm:hidden relative z-50 flex flex-col justify-center items-center h-9 w-9 gap-[5px] group"
               onClick={() => open ? closeMenu() : openMenu()}
-              aria-label={open ? 'Menü schliessen' : 'Menü öffnen'}
+              aria-label={open ? t('menuClose') : t('menuOpen')}
             >
               <span className={`block h-px w-5 bg-foreground origin-center transition-all duration-300 ${open ? 'translate-y-[6px] rotate-45' : ''}`} />
               <span className={`block h-px bg-foreground origin-center transition-all duration-300 ${open ? 'w-0 opacity-0' : 'w-4'}`} />
@@ -128,14 +136,14 @@ export function SiteHeader() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Heart className="h-4 w-4 text-red-500" />
-                <h2 className="font-semibold text-sm">Engpassradar unterstützen</h2>
+                <h2 className="font-semibold text-sm">{t('donateTitle')}</h2>
               </div>
-              <button onClick={() => setDonateOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors">
+              <button onClick={() => setDonateOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors" aria-label={t('donateAria')}>
                 <X className="h-4 w-4" />
               </button>
             </div>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Engpassradar ist kostenlos und unabhängig. Mit einer Spende helfen Sie, Server, Daten und Weiterentwicklung zu finanzieren.
+              {t('donateBody')}
             </p>
             <DonationWidget />
           </div>
@@ -159,9 +167,14 @@ export function SiteHeader() {
 
           {/* Nav items */}
           <nav className="flex-1 flex flex-col justify-center gap-0">
-            {NAV_LINKS.map((link, i) => (
+            {[
+              { kind: 'link' as const, href: '/' as const, label: t('navHome'), num: '01' },
+              { kind: 'faq' as const, href: '/#faq', label: t('navFaq'), num: '02' },
+              { kind: 'link' as const, href: '/methodik' as const, label: t('navMethodik'), num: '03' },
+              { kind: 'link' as const, href: '/api' as const, label: t('navApi'), num: '04' },
+            ].map((link, i) => (
               <div
-                key={link.href}
+                key={`${link.href}-${link.label}`}
                 className="border-b border-border/20 overflow-hidden"
                 style={{
                   transition: `transform 420ms cubic-bezier(0.16,1,0.3,1) ${i * 60}ms, opacity 420ms ease ${i * 60}ms`,
@@ -169,7 +182,7 @@ export function SiteHeader() {
                   opacity: open ? 1 : 0,
                 }}
               >
-                {link.isFaq ? (
+                {link.kind === 'faq' ? (
                   <a
                     href={link.href}
                     onClick={handleFaq}
@@ -209,7 +222,7 @@ export function SiteHeader() {
             }}
           >
             <span className="font-mono">engpass.radar</span>
-            <span>Schweizer Medikamenten-Engpässe</span>
+            <span>{t('mobileTagline')}</span>
           </div>
         </div>
       </div>

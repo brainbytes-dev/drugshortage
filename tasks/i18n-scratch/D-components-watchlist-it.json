@@ -1,0 +1,230 @@
+{
+  "WatchlistConfirmed": {
+    "title": "Avviso attivato",
+    "description": "Riceverà un'e-mail non appena la situazione di carenza cambierà.",
+    "descriptionWithAtc": "Riceverà un'e-mail non appena la situazione di carenza per {atc} cambierà.",
+    "ctaViewShortages": "Visualizza le carenze {atc}",
+    "backToDashboard": "Torna al cruscotto"
+  },
+  "WatchlistError": {
+    "title": "Link non valido",
+    "description": "Questo link è scaduto o non valido. La preghiamo di registrarsi nuovamente.",
+    "backToDashboard": "Torna al cruscotto"
+  },
+  "WatchlistUnsubscribed": {
+    "title": "Avviso disattivato",
+    "description": "Non riceverà più avvisi di carenza.",
+    "descriptionWithAtc": "Non riceverà più avvisi di carenza per {atc}.",
+    "backToDashboard": "Torna al cruscotto"
+  },
+  "Filters": {
+    "statusPlaceholder": "Stato",
+    "firmaPlaceholder": "Produttore",
+    "allStatuses": "Tutti gli stati",
+    "allFirmen": "Tutti i produttori",
+    "status1": "1 — Segnalato direttamente (Verde)",
+    "status2": "2 — Segnalato (Giallo-verde)",
+    "status3": "3 — Sporadico (Arancione)",
+    "status4": "4 — Non informato (Rosso)",
+    "status5": "5 — Negoziazione (Giallo)"
+  },
+  "Search": {
+    "placeholder": "Cerca… (⌘K)",
+    "clearAria": "Cancella ricerca"
+  },
+  "StatusBadge": {
+    "status1": "1 — Segnalato direttamente",
+    "status2": "2 — Segnalato",
+    "status3": "3 — Sporadico",
+    "status4": "4 — Non informato",
+    "status5": "5 — Negoziazione"
+  },
+  "Kpi": {
+    "activeShortages": "Carenze attive",
+    "activeShortagesSub": "attualmente segnalate",
+    "historicalShortages": "Carenze storiche",
+    "historicalShortagesSub": "chiuse / risolte",
+    "affectedSubstances": "Principi attivi interessati",
+    "affectedSubstancesSub": "secondo classificazione ATC",
+    "avgDuration": "Durata media",
+    "avgDurationValue": "{days} giorni",
+    "avgDurationSub": "dalla prima segnalazione"
+  },
+  "ShortagesTable": {
+    "colBezeichnung": "Preparato",
+    "colFirma": "Produttore",
+    "colStatus": "Stato",
+    "colAvailableFrom": "Disponibile dal",
+    "colDays": "Giorni",
+    "colAtc": "ATC",
+    "colScore": "Punteggio",
+    "emptyState": "Nessuna carenza trovata",
+    "badgeNew": "NUOVO",
+    "badgeBwl": "BWL",
+    "paginationSummary": "{total} voci · Pagina {page} / {totalPages}",
+    "firstPage": "Prima pagina",
+    "previousPage": "Pagina precedente",
+    "nextPage": "Pagina successiva",
+    "lastPage": "Ultima pagina",
+    "pageOfTotalAria": "Pagina, di {totalPages}"
+  },
+  "OffMarketTable": {
+    "colBezeichnung": "Preparato",
+    "colFirma": "Produttore",
+    "colAtc": "ATC",
+    "colGtin": "GTIN",
+    "colDate": "Data",
+    "emptyState": "Nessuna voce trovata.",
+    "rangeOfTotal": "{start}–{end} di {total}",
+    "firstPage": "Prima pagina",
+    "previousPage": "Pagina precedente",
+    "nextPage": "Pagina successiva",
+    "lastPage": "Ultima pagina"
+  },
+  "HistoricalTable": {
+    "colBezeichnung": "Preparato",
+    "colFirma": "Produttore",
+    "colLastSeen": "Ultima attività",
+    "colFirstSeen": "Prima segnalazione",
+    "colOccurrences": "Occ.",
+    "colDuration": "Durata",
+    "colAtc": "ATC",
+    "emptyState": "Nessuna voce storica trovata.",
+    "durationDays": "{days} g",
+    "rangeOfTotal": "{start}–{end} di {total}",
+    "firstPage": "Prima pagina",
+    "previousPage": "Pagina precedente",
+    "nextPage": "Pagina successiva",
+    "lastPage": "Ultima pagina"
+  },
+  "AtcTreemap": {
+    "title": "Carenze per gruppo di principi attivi (ATC)",
+    "emptyState": "Nessun dato disponibile",
+    "cellAria": "{code}: {bezeichnung} — {count, plural, one {# carenza} other {# carenze}}",
+    "tooltipShortages": "{count, plural, one {# carenza} other {# carenze}}"
+  },
+  "AtcGruppen": {
+    "title": "Gruppi ATC",
+    "description": "Gruppi di principi attivi interessati per numero di carenze attive. Cliccare su un gruppo per filtrare.",
+    "searchPlaceholder": "Codice ATC o denominazione…",
+    "emptyState": "Nessun risultato",
+    "closeAria": "Chiudi"
+  },
+  "FirmaRanking": {
+    "title": "Classifica produttori",
+    "descriptionRich": "Produttori per numero di carenze di fornitura attive, ordinati per valutazione di <link>drugshortage.ch</link>.",
+    "legendTitle": "Valutazione (fonte: drugshortage.ch)",
+    "legendTitleExtended": "Valutazione = trasparenza delle segnalazioni (fonte: drugshortage.ch)",
+    "searchPlaceholder": "Cerca produttore…",
+    "emptyState": "Nessun risultato",
+    "closeAria": "Chiudi",
+    "firmaCounts": "{open} aperte · {total} totali",
+    "ratingGood": "Buono",
+    "ratingMedium": "Medio",
+    "ratingPoor": "Scarso",
+    "ratingCritical": "Critico",
+    "ratingGoodDesc": "< 5% di prodotti interessati",
+    "ratingMediumDesc": "5–15% di prodotti interessati",
+    "ratingPoorDesc": "15–30% di prodotti interessati",
+    "ratingCriticalDesc": "> 30% di prodotti interessati",
+    "rating1Label": "Esclusivo",
+    "rating1Desc": "Inserisce i dati direttamente, accesso esclusivo, impegnato a tenerli aggiornati",
+    "rating2Label": "Attivo",
+    "rating2Desc": "Inserisce i dati direttamente, senza accesso esclusivo",
+    "rating3Label": "Occasionale",
+    "rating3Desc": "Segnala occasionalmente carenze ai clienti",
+    "rating4Label": "Passivo",
+    "rating4Desc": "Non informa direttamente i clienti; segnalazioni tramite la rete drugshortage.ch",
+    "rating5Label": "Negoziazione",
+    "rating5Desc": "Negoziazioni in corso con drugshortage.ch"
+  },
+  "FirmaShortages": {
+    "tabActive": "Carenze attive",
+    "tabHistorical": "Storico",
+    "emptyActive": "Nessuna carenza attiva per questo produttore.",
+    "emptyHistorical": "Nessuna voce storica trovata.",
+    "colBezeichnung": "Preparato",
+    "colStatus": "Stato",
+    "colDays": "Giorni",
+    "colScore": "Punteggio",
+    "badgeBwl": "BWL"
+  },
+  "ShortageDrawer": {
+    "closeAria": "Chiudi",
+    "detailsHeading": "Dettagli",
+    "alternativesHeading": "Possibili alternative",
+    "alternativesLoading": "Caricamento alternative…",
+    "alternativesUnavailable": "Nessuna alternativa disponibile.",
+    "alternativesNone": "Nessuna alternativa registrata.",
+    "alternativesAllHeading": "Preparati alternativi ({count})",
+    "coMarketingHeading": "Co-marketing (identico)",
+    "sameFirmaHeading": "Stesso produttore (altra confezione)",
+    "typeOriginal": "Originale",
+    "typeGeneric": "Generico",
+    "detailGtin": "GTIN",
+    "detailPharmacode": "Pharmacode",
+    "detailAvailableFrom": "Disponibilità prevista",
+    "detailExpectedDuration": "Durata prevista",
+    "detailLastMutation": "Ultimo aggiornamento",
+    "detailFirstReport": "Prima segnalazione",
+    "detailReportedBy": "Segnalato da",
+    "detailFirmaInfo": "Info dal produttore",
+    "detailInfoType": "Tipo di info",
+    "detailRemarks": "Osservazioni",
+    "detailDaysSinceReport": "Giorni dalla prima segnalazione",
+    "detailGenericGroup": "Gruppo generico",
+    "detailFirstSeen": "Primo rilevamento (nostro sistema)",
+    "sourceLine": "Fonte: <link>drugshortage.ch</link>"
+  },
+  "NeueMeldungen": {
+    "label": "Nuove segnalazioni"
+  },
+  "ResetFilters": {
+    "resetAria": "Reimposta filtri"
+  },
+  "ExportCsv": {
+    "label": "Esporta CSV"
+  },
+  "ThemeToggle": {
+    "toggleAria": "Cambia tema"
+  },
+  "WatchlistForm": {
+    "title": "Configura avviso di carenza",
+    "description": "Riceva un'e-mail non appena la situazione per {atcName} cambia.",
+    "freeBadge": "(3 gratuiti)",
+    "emailLabel": "Indirizzo e-mail per l'avviso",
+    "emailPlaceholder": "lei@email.ch",
+    "submitLabel": "Avviso",
+    "submitAria": "Configura avviso per {atcName}",
+    "successTitle": "E-mail di conferma inviata",
+    "successDescription": "La preghiamo di controllare la sua casella di posta e confermare l'avviso.",
+    "errorGeneric": "Errore durante la configurazione dell'avviso.",
+    "errorConnection": "Errore di connessione. La preghiamo di riprovare.",
+    "upgradeTitle": "Limite di avvisi gratuiti raggiunto",
+    "upgradeDescription": "Lei ha già configurato 3 avvisi gratuiti. Per avvisi illimitati e accesso API è disponibile Engpassradar Pro.",
+    "upgradeCta": "Engpassradar Pro — CHF 39/mese",
+    "upgradeAlternative": "Oppure: <link>Sistema clinico per farmacie ospedaliere</link>",
+    "upsellRich": "Avvisi illimitati + accesso API: <link>Engpassradar Pro da CHF 39/mese →</link>"
+  },
+  "Newsletter": {
+    "emailPlaceholder": "lei@email.ch",
+    "submitting": "Iscrizione in corso…",
+    "compactSubmit": "Iscriviti",
+    "compactSuccess": "Iscritto. Il primo numero esce il martedì.",
+    "compactError": "Iscrizione non riuscita. La preghiamo di riprovare.",
+    "genericError": "Si è verificato un errore. La preghiamo di riprovare.",
+    "eyebrow": "Segnale di carenza",
+    "headline": "Shortage Report Svizzera — gratuito",
+    "subheadline": "Ogni martedì: le 5 carenze più rilevanti della settimana in 90 secondi — curato per farmacie e personale ospedaliero. Gratuito, cancellabile in qualsiasi momento.",
+    "signupEmailLabel": "Indirizzo e-mail per lo Shortage Report",
+    "signupSubmit": "Ricevi il report",
+    "signupSubmitAria": "Iscriviti allo Shortage Report",
+    "signupSuccess": "Riceverà lo Shortage Report attuale per e-mail — la preghiamo di controllare la sua casella di posta e confermare l'iscrizione.",
+    "noSpam": "Niente spam. Cancellabile in qualsiasi momento."
+  },
+  "Donation": {
+    "amountChf": "CHF {amount}",
+    "customPlaceholder": "Importo",
+    "donateLabel": "Donare"
+  }
+}

@@ -28,7 +28,9 @@ class MemoryCache {
   get<T>(key: string): T | null {
     const entry = this.cache.get(key) as CacheEntry<T> | undefined
     if (!entry) return null
-    if (Date.now() > entry.expiresAt) {
+    // `>=` so that ttlSeconds <= 0 expires immediately (expiresAt == Date.now()
+    // at set-time would otherwise survive a same-millisecond read).
+    if (Date.now() >= entry.expiresAt) {
       this.cache.delete(key)
       return null
     }

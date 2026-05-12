@@ -14,6 +14,8 @@ process.env.STRIPE_PRICE_INSTITUTIONAL_MONTHLY = PRICE_INST_MONTHLY
 process.env.STRIPE_PRICE_INSTITUTIONAL_YEARLY = PRICE_INST_YEARLY
 process.env.API_KEY_JWT_SECRET = 'test-secret-32-chars-minimum-len'
 process.env.NEXT_PUBLIC_SITE_URL = 'https://engpassradar.ch'
+// API_KEY_ENCRYPTION_SECRET must be a 64-hex-char string (32 bytes)
+process.env.API_KEY_ENCRYPTION_SECRET = 'a'.repeat(64)
 
 // ── Mocks ──────────────────────────────────────────────────────────────────
 jest.mock('jose', () => ({

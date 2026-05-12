@@ -46,7 +46,8 @@ describe('toSlug', () => {
 
     it('should remove commas and periods', () => {
       expect(toSlug('Product, 500mg')).toBe('product-500mg')
-      expect(toSlug('Dr. Müller')).toBe('dr-muller')
+      // Production code converts ü→ue (Swiss-German convention), so Dr. Müller → dr-mueller
+      expect(toSlug('Dr. Müller')).toBe('dr-mueller')
     })
 
     it('should remove ampersands', () => {
@@ -169,7 +170,8 @@ describe('toSlug', () => {
 
     it('should handle Vitamin B12 + Folsäure', () => {
       const result = toSlug('Vitamin B12 + Folsäure')
-      expect(result).toBe('vitamin-b12-folsaure')
+      // Production code converts ä→ae (Swiss-German convention), so Folsäure → folsaeure
+      expect(result).toBe('vitamin-b12-folsaeure')
     })
 
     it('should handle Schmerzmittel/Fiebermittel', () => {

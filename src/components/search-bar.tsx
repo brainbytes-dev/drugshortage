@@ -1,11 +1,14 @@
 'use client'
 
-import { useRouter, useSearchParams, usePathname } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
 import { useCallback, useTransition, useState, useEffect, useRef } from 'react'
+import { useTranslations } from 'next-intl'
 import { Input } from '@/components/ui/input'
 import { Search } from 'lucide-react'
 
 export function SearchBar() {
+  const t = useTranslations('Search')
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -42,8 +45,12 @@ export function SearchBar() {
         params.delete('search')
       }
       params.delete('page')
+      const query = Object.fromEntries(params.entries())
       startTransition(() => {
-        router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+        router.replace(
+          { pathname, query } as Parameters<typeof router.replace>[0],
+          { scroll: false }
+        )
       })
     },
     [router, pathname, searchParams]
@@ -54,7 +61,7 @@ export function SearchBar() {
       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
         ref={inputRef}
-        placeholder="Suchen… (⌘K)"
+        placeholder={t('placeholder')}
         value={value}
         onChange={handleChange}
         className="pl-9"

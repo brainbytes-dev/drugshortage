@@ -2,9 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Ratelimit } from '@upstash/ratelimit'
 import { Redis } from '@upstash/redis'
 import { createHash } from 'crypto'
+import createIntlMiddleware from 'next-intl/middleware'
 import { prisma } from '@/lib/prisma'
+import { routing } from '@/i18n/routing'
 
 // proxy.ts (Next.js 16) — always Node.js runtime, Prisma is allowed here.
+
+const intlMiddleware = createIntlMiddleware(routing)
 
 const TIER_LIMITS: Record<string, number> = {
   free: 100,
@@ -46,20 +50,7 @@ function tooMany(tier: string, limit: number, resetSec: number) {
   )
 }
 
-export async function proxy(req: NextRequest) {
-  const host = req.headers.get('host') ?? ''
-
-  // mcp.engpassradar.ch → /api/mcp (all methods)
-  if (host.startsWith('mcp.')) {
-    const url = req.nextUrl.clone()
-    url.pathname = '/api/mcp'
-    return NextResponse.rewrite(url)
-  }
-
-  const { pathname } = req.nextUrl
-  const isProtected = pathname.startsWith('/api/v1/') || pathname.startsWith('/api/export/')
-  if (!isProtected) return NextResponse.next()
-
+async function handleProtectedApi(req: NextRequest): Promise<NextResponse> {
   const authHeader = req.headers.get('authorization') ?? ''
   const bearerKey = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : null
 
@@ -123,6 +114,40 @@ export async function proxy(req: NextRequest) {
   return res
 }
 
+export async function proxy(req: NextRequest) {
+  const host = req.headers.get('host') ?? ''
+  const { pathname } = req.nextUrl
+
+  // mcp.engpassradar.ch → /api/mcp (all methods)
+  if (host.startsWith('mcp.')) {
+    const url = req.nextUrl.clone()
+    url.pathname = '/api/mcp'
+    return NextResponse.rewrite(url)
+  }
+
+  // Protected API routes: rate-limit only, no i18n
+  if (pathname.startsWith('/api/v1/') || pathname.startsWith('/api/export/')) {
+    return handleProtectedApi(req)
+  }
+
+  // Other API route handlers (route.ts under /api/*): pass through, no i18n
+  // Note: the `/api` marketing PAGE is matched by i18n below (different path).
+  if (pathname.startsWith('/api/')) {
+    return NextResponse.next()
+  }
+
+  // Everything else (including the `/api` marketing page exactly): i18n routing
+  return intlMiddleware(req)
+}
+
 export const config = {
-  matcher: ['/api/v1/:path*', '/api/export/:path*', '/((?!_next/static|_next/image|favicon).*)'],
+  matcher: [
+    // Protected API routes (rate-limited)
+    '/api/v1/:path*',
+    '/api/export/:path*',
+    // i18n-handled routes: everything except internal paths and files with extensions.
+    // We keep `/api/*` here so non-protected API routes still pass through `proxy()`
+    // (they short-circuit to NextResponse.next()), and so `/api` exactly hits i18n.
+    '/((?!_next|_vercel|.*\\..*).*)',
+  ],
 }

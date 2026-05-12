@@ -1,8 +1,10 @@
 'use client'
 
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import { useState, useEffect, useRef, useTransition } from 'react'
+import { useTranslations } from 'next-intl'
 import { Sparkles, X, Download } from 'lucide-react'
+import { Link, useRouter } from '@/i18n/navigation'
 import { FirmaRankingSheet } from '@/components/firma-ranking-sheet-optimized'
 import { AtcGruppenSheet } from '@/components/atc-gruppen-sheet-optimized'
 import type { HeroStats } from '@/lib/db'
@@ -18,6 +20,7 @@ function fmtCH(n: number): string {
 }
 
 export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount, longTermPct, historicalTotal, isoWeek, firmenRanking, atcGruppen }: HeroProps) {
+  const t = useTranslations('Hero')
   const router = useRouter()
   const searchParams = useSearchParams()
   const [, startTransition] = useTransition()
@@ -35,13 +38,24 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
   const neuActive = searchParams.get('neu') === '1'
   const hasActiveFilter = !!searchParams.get('search') || neuActive
 
+  function pushHomeWithParams(params: URLSearchParams, opts: { replace?: boolean; scroll?: boolean } = {}) {
+    const query: Record<string, string> = {}
+    params.forEach((v, k) => { query[k] = v })
+    const href = { pathname: '/' as const, query, hash: 'dashboard' }
+    if (opts.replace) {
+      router.replace(href, { scroll: opts.scroll ?? true })
+    } else {
+      router.push(href, { scroll: opts.scroll ?? true })
+    }
+  }
+
   function clearFilters() {
     const p = new URLSearchParams(searchParams.toString())
     p.delete('search')
     p.delete('neu')
     p.delete('page')
     setQuery('')
-    router.push(`/?${p.toString()}#dashboard`)
+    pushHomeWithParams(p)
   }
 
   function exportCsv() {
@@ -65,7 +79,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
       }
       params.delete('page')
       startTransition(() => {
-        router.replace(`/?${params.toString()}#dashboard`, { scroll: false })
+        pushHomeWithParams(params, { replace: true, scroll: false })
       })
     }, 300)
   }
@@ -80,7 +94,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
       params.delete('search')
     }
     params.delete('page')
-    router.push(`/?${params.toString()}#dashboard`)
+    pushHomeWithParams(params)
   }
 
   function toggleNeu() {
@@ -91,7 +105,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
       p.set('neu', '1')
       p.delete('page')
     }
-    router.push(`/?${p.toString()}#dashboard`)
+    pushHomeWithParams(p)
   }
 
   return (
@@ -107,9 +121,9 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           <PulseDot />
           <span
             className="font-mono text-[11.5px] text-muted-foreground tracking-[0.04em] uppercase"
-            aria-label="Datenquellen und Abgleichstatus"
+            aria-label={t('sourcesAria')}
           >
-            Abgleich heute · drugshortage.ch · BWL · USB Basel · ODDB
+            {t('sourcesLabel')}
           </span>
         </div>
 
@@ -120,28 +134,27 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           <div>
             <p
               className="font-sans text-[clamp(128px,14vw,184px)] font-semibold leading-[0.88] tracking-[-0.055em] text-foreground tabular-nums mb-5"
-              aria-label={`${activeCount} aktive Engpässe`}
+              aria-label={t('activeAria', { count: activeCount })}
             >
               {fmtCH(activeCount)}
             </p>
             <h1 className="text-[34px] font-medium tracking-[-0.02em] leading-[1.15] text-foreground m-0 max-w-[720px]">
-              Medikamente in der Schweiz sind aktuell als nicht lieferbar gemeldet.
+              {t('headline')}
             </h1>
             <p className="text-base text-muted-foreground mt-[18px] max-w-[580px] leading-[1.55]">
-              Aggregiert aus drugshortage.ch, BWL-Pflichtlager und der
-              USB-Basel-Liste. Täglich abgeglichen, öffentlich zugänglich.{' '}
-              <a href="/methodik" className="font-mono text-[13px] text-primary hover:underline">
-                Methodik & Quellen →
-              </a>
+              {t('subline')}{' '}
+              <Link href="/methodik" className="font-mono text-[13px] text-primary hover:underline">
+                {t('methodologyLink')}
+              </Link>
             </p>
           </div>
 
           {/* Right: delta rows */}
           <div className="flex flex-col gap-5 lg:border-l lg:border-border lg:pl-8 border-t border-border pt-6 lg:pt-0">
-            <DeltaRow label={`Neu seit KW ${isoWeek}`} value={`+${newThisWeek}`} tone="neutral" />
-            <DeltaRow label={`Beendet seit KW ${isoWeek}`} value={`−${resolvedThisWeek}`} tone="good" />
-            <DeltaRow label="≥ 6 Monate aktiv" value={fmtCH(longTermCount)} suffix={`${longTermPct} %`} />
-            <DeltaRow label="Historische Fälle" value={fmtCH(historicalTotal)} suffix="seit 2018" />
+            <DeltaRow label={t('deltaNew', { week: isoWeek })} value={`+${newThisWeek}`} tone="neutral" />
+            <DeltaRow label={t('deltaResolved', { week: isoWeek })} value={`−${resolvedThisWeek}`} tone="good" />
+            <DeltaRow label={t('deltaLongTerm')} value={fmtCH(longTermCount)} suffix={`${longTermPct} %`} />
+            <DeltaRow label={t('deltaHistorical')} value={fmtCH(historicalTotal)} suffix={t('deltaHistoricalSuffix')} />
           </div>
         </div>
 
@@ -153,7 +166,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
             htmlFor="hero-search"
             className="block text-[11.5px] font-medium text-muted-foreground tracking-[0.03em] uppercase mb-2.5"
           >
-            Suchen
+            {t('searchLabel')}
           </label>
           {/* Mobile: search row + buttons row stacked. sm+: single row */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
@@ -169,12 +182,12 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
                   value={query}
                   onChange={e => handleQueryChange(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && submitSearch(query)}
-                  placeholder="Wirkstoff, Handelsname, ATC-Code oder Firma"
+                  placeholder={t('searchPlaceholder')}
                   className="min-w-0 flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
                 />
                 <button
                   onClick={() => submitSearch(query)}
-                  aria-label="Suche starten"
+                  aria-label={t('searchSubmitAria')}
                   className="font-mono text-[11px] text-muted-foreground px-[7px] py-[3px] border border-border/80 rounded shrink-0"
                 >
                   ↵
@@ -184,20 +197,20 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
               {/* Stacked icon column — mobile only */}
               <div className="sm:hidden flex flex-col shrink-0 self-stretch gap-[3px]">
                 {hasActiveFilter && (
-                  <Tip label="Filter zurücksetzen">
+                  <Tip label={t('filterResetTip')}>
                     <button
                       onClick={clearFilters}
-                      aria-label="Filter zurücksetzen"
+                      aria-label={t('filterResetAria')}
                       className="flex flex-1 items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </Tip>
                 )}
-                <Tip label="Aktuelle Ansicht als CSV exportieren">
+                <Tip label={t('exportCsvTip')}>
                   <button
                     onClick={exportCsv}
-                    aria-label="CSV exportieren"
+                    aria-label={t('exportCsvAria')}
                     className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     style={{ flex: hasActiveFilter ? '1' : undefined, paddingTop: hasActiveFilter ? undefined : '0', height: hasActiveFilter ? undefined : '100%' }}
                   >
@@ -219,7 +232,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
                 ].join(' ')}
               >
                 <Sparkles className="h-3.5 w-3.5 shrink-0" />
-                Neue Meldungen
+                {t('newReportsButton')}
               </button>
               {firmenRanking.length > 0 && <FirmaRankingSheet firmenRanking={firmenRanking} />}
               {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
@@ -227,20 +240,20 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
               {/* CSV + filter reset — desktop only, far right */}
               <div className="hidden sm:flex flex-col self-stretch shrink-0 gap-[3px] ml-auto">
                 {hasActiveFilter && (
-                  <Tip label="Filter zurücksetzen">
+                  <Tip label={t('filterResetTip')}>
                     <button
                       onClick={clearFilters}
-                      aria-label="Filter zurücksetzen"
+                      aria-label={t('filterResetAria')}
                       className="flex flex-1 items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </Tip>
                 )}
-                <Tip label="Aktuelle Ansicht als CSV exportieren">
+                <Tip label={t('exportCsvTip')}>
                   <button
                     onClick={exportCsv}
-                    aria-label="CSV exportieren"
+                    aria-label={t('exportCsvAria')}
                     className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     style={{ flex: hasActiveFilter ? '1' : undefined, height: hasActiveFilter ? undefined : '100%' }}
                   >

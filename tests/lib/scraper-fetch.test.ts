@@ -290,7 +290,8 @@ describe('fetchAndParseCompleted', () => {
       }
     })
 
-    const result = await fetchAndParseCompleted()
+    // fetchAndParseCompleted(enrich=true) triggers detail enrichment; default is false
+    const result = await fetchAndParseCompleted(true)
     expect(result[0].bemerkungen).toBe('Resolved via alternative supplier')
   })
 })

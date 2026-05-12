@@ -2,18 +2,41 @@ import type { MetadataRoute } from 'next'
 import { getCachedLRU } from './cache-lru'
 import { prisma } from './prisma-optimized'
 import { toSlug } from './slug'
+import { buildLocaleUrl, LOCALE_HREFLANG, SITE_URL } from './i18n-meta'
+import { routing } from '@/i18n/routing'
 
-export const SITEMAP_BASE_URL = 'https://engpassradar.ch'
+export const SITEMAP_BASE_URL = SITE_URL
 export const SITEMAP_REVALIDATE_SECONDS = 86400
-export const SITEMAP_URL_LIMIT = 50000
+// Sitemap spec allows 50k URLs per file. With 4 hreflang alternates per
+// URL each entry is ~5x larger, which pushes a 50k chunk over Vercel's
+// 19 MB ISR fallback limit (was 31.88 MB → FALLBACK_BODY_TOO_LARGE).
+// 10k URLs ≈ 6.4 MB per chunk — comfortable headroom for growth.
+export const SITEMAP_URL_LIMIT = 10000
 
 const SITEMAP_CACHE_TTL_SECONDS = 3600
 
-const STATIC_PAGES = [
-  { path: '/methodik', priority: 0.7, changeFrequency: 'monthly' as const },
-  { path: '/datenschutz', priority: 0.3, changeFrequency: 'monthly' as const },
-  { path: '/nutzungsbedingungen', priority: 0.3, changeFrequency: 'monthly' as const },
-  { path: '/api-docs', priority: 0.5, changeFrequency: 'monthly' as const },
+type StaticHref =
+  | '/'
+  | '/methodik'
+  | '/api-docs'
+  | '/api'
+  | '/klinik-system'
+  | '/spenden'
+
+// Only indexed pages belong in the sitemap. The legal pages (datenschutz,
+// impressum, nutzungsbedingungen) and transactional pages (danke,
+// subscription-confirmed, api-keys/success) are noindex and intentionally
+// excluded.
+const STATIC_PAGES: Array<{
+  href: StaticHref
+  priority: number
+  changeFrequency: 'hourly' | 'daily' | 'weekly' | 'monthly'
+}> = [
+  { href: '/methodik', priority: 0.7, changeFrequency: 'monthly' },
+  { href: '/api', priority: 0.6, changeFrequency: 'monthly' },
+  { href: '/api-docs', priority: 0.5, changeFrequency: 'monthly' },
+  { href: '/klinik-system', priority: 0.6, changeFrequency: 'monthly' },
+  { href: '/spenden', priority: 0.4, changeFrequency: 'monthly' },
 ]
 
 type SitemapCounts = {
@@ -35,6 +58,25 @@ function escapeXml(value: string): string {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&apos;')
+}
+
+/**
+ * For a given canonical href, return the default-locale URL and the
+ * `alternates.languages` map for all configured locales plus `x-default`.
+ * Wrapper around the shared helper in `i18n-meta.ts`, kept here so the
+ * sitemap call sites stay terse.
+ */
+function withAlternates(href: string, params?: Record<string, string>): {
+  url: string
+  alternates: Record<string, string>
+} {
+  const alternates: Record<string, string> = {}
+  for (const locale of routing.locales) {
+    alternates[LOCALE_HREFLANG[locale]] = buildLocaleUrl(href, locale, params)
+  }
+  const url = alternates[LOCALE_HREFLANG[routing.defaultLocale]]
+  alternates['x-default'] = url
+  return { url, alternates }
 }
 
 function getSectionSlice(
@@ -199,58 +241,71 @@ export async function buildSitemapPage(id: number): Promise<MetadataRoute.Sitema
   const result: MetadataRoute.Sitemap = []
 
   if (homepageSlice) {
+    const { url, alternates } = withAlternates('/')
     result.push({
-      url: SITEMAP_BASE_URL,
+      url,
       lastModified: now,
       changeFrequency: 'hourly',
       priority: 1,
+      alternates: { languages: alternates },
     })
   }
 
   if (staticSlice) {
     for (const page of STATIC_PAGES.slice(staticSlice.skip, staticSlice.skip + staticSlice.take)) {
+      const { url, alternates } = withAlternates(page.href)
       result.push({
-        url: `${SITEMAP_BASE_URL}${page.path}`,
+        url,
         lastModified: now,
         changeFrequency: page.changeFrequency,
         priority: page.priority,
+        alternates: { languages: alternates },
       })
     }
   }
 
   for (const entry of drugEntries) {
+    if (!entry.slug) continue
+    const { url, alternates } = withAlternates('/medikament/[slug]', { slug: entry.slug })
     result.push({
-      url: `${SITEMAP_BASE_URL}/medikament/${entry.slug}`,
+      url,
       lastModified: entry.lastSeenAt ?? now,
       changeFrequency: 'daily',
       priority: 0.8,
+      alternates: { languages: alternates },
     })
   }
 
   for (const entry of atcEntries) {
+    const { url, alternates } = withAlternates('/wirkstoff/[atc]', { atc: entry.atcCode })
     result.push({
-      url: `${SITEMAP_BASE_URL}/wirkstoff/${entry.atcCode}`,
+      url,
       lastModified: entry._max.lastSeenAt ?? now,
       changeFrequency: 'daily',
       priority: 0.7,
+      alternates: { languages: alternates },
     })
   }
 
   for (const entry of firmEntries) {
+    const { url, alternates } = withAlternates('/firma/[slug]', { slug: entry.slug })
     result.push({
-      url: `${SITEMAP_BASE_URL}/firma/${entry.slug}`,
+      url,
       lastModified: now,
       changeFrequency: 'daily',
       priority: 0.6,
+      alternates: { languages: alternates },
     })
   }
 
   for (const entry of gtinEntries) {
+    const { url, alternates } = withAlternates('/gtin/[gtin]', { gtin: entry.gtin })
     result.push({
-      url: `${SITEMAP_BASE_URL}/gtin/${entry.gtin}`,
+      url,
       lastModified: entry._max.fetchedAt ?? now,
       changeFrequency: 'weekly',
       priority: 0.5,
+      alternates: { languages: alternates },
     })
   }
 

@@ -88,22 +88,24 @@ describe('LRUCache - Complete Coverage', () => {
 
   describe('LRU Eviction', () => {
     it('should evict least recently used entry when size limit is reached', () => {
-      // Set small max size for testing
-      const smallCache = new (lruCache.constructor as any)(0.001) // 0.001 MB = ~1KB
+      // Each 500-char string ≈ 1004 bytes (JSON.stringify adds quotes, ×2 for UTF-16).
+      // 0.0022 MB = 2306 bytes: holds 2 entries (2008) but not 3 (3012).
+      const smallCache = new (lruCache.constructor as any)(0.0022)
 
-      smallCache.set('key1', 'a'.repeat(500), 300) // ~500 bytes
-      smallCache.set('key2', 'b'.repeat(500), 300) // ~500 bytes
+      smallCache.set('key1', 'a'.repeat(500), 300)
+      smallCache.set('key2', 'b'.repeat(500), 300)
 
-      // This should trigger eviction of key1
+      // Adding key3 forces eviction of key1 (LRU)
       smallCache.set('key3', 'c'.repeat(500), 300)
 
-      expect(smallCache.get('key1')).toBeNull() // Evicted
+      expect(smallCache.get('key1')).toBeNull() // Evicted (oldest)
       expect(smallCache.get('key2')).toBe('b'.repeat(500))
       expect(smallCache.get('key3')).toBe('c'.repeat(500))
     })
 
     it('should update LRU order on access', () => {
-      const smallCache = new (lruCache.constructor as any)(0.001)
+      // Same sizing as above: room for 2 but not 3 entries
+      const smallCache = new (lruCache.constructor as any)(0.0022)
 
       smallCache.set('key1', 'a'.repeat(500), 300)
       smallCache.set('key2', 'b'.repeat(500), 300)
@@ -111,11 +113,11 @@ describe('LRUCache - Complete Coverage', () => {
       // Access key1 - should move it to end (most recently used)
       smallCache.get('key1')
 
-      // Add key3 - should evict key2 (now LRU)
+      // Add key3 - should evict key2 (now LRU, since key1 was just accessed)
       smallCache.set('key3', 'c'.repeat(500), 300)
 
       expect(smallCache.get('key1')).toBe('a'.repeat(500)) // Not evicted
-      expect(smallCache.get('key2')).toBeNull() // Evicted
+      expect(smallCache.get('key2')).toBeNull() // Evicted (became LRU after key1 access)
       expect(smallCache.get('key3')).toBe('c'.repeat(500))
     })
 
@@ -136,17 +138,20 @@ describe('LRUCache - Complete Coverage', () => {
     })
 
     it('should handle multiple evictions in one set operation', () => {
-      const smallCache = new (lruCache.constructor as any)(0.001)
+      // Each 200-char string ≈ 404 bytes; 800-char string ≈ 1604 bytes.
+      // 0.0018 MB = 1887 bytes: holds 3 small entries (1212) but adding large (1604)
+      // requires evicting all three to make room.
+      const smallCache = new (lruCache.constructor as any)(0.0018)
 
       smallCache.set('key1', 'a'.repeat(200), 300)
       smallCache.set('key2', 'b'.repeat(200), 300)
       smallCache.set('key3', 'c'.repeat(200), 300)
 
-      // This should evict multiple entries
+      // This should evict multiple entries to make room for the large entry
       smallCache.set('large', 'x'.repeat(800), 300)
 
       expect(smallCache.get('large')).toBe('x'.repeat(800))
-      // Old entries should be evicted
+      // All small entries evicted to make room
       expect(smallCache.get('key1')).toBeNull()
       expect(smallCache.get('key2')).toBeNull()
     })
@@ -154,15 +159,16 @@ describe('LRUCache - Complete Coverage', () => {
 
   describe('Size Estimation', () => {
     it('should estimate size correctly for strings', () => {
-      lruCache.set('test', 'hello', 60)
+      // Use a large enough string so the MB value exceeds toFixed(2) rounding threshold
+      lruCache.set('test', 'x'.repeat(100_000), 60)
       const stats = getCacheStats()
 
-      // Should have non-zero size
+      // 100k chars * 2 bytes = 200KB → 0.19MB, clearly > 0 after toFixed(2)
       expect(parseFloat(stats.currentSizeMB)).toBeGreaterThan(0)
     })
 
     it('should estimate size correctly for objects', () => {
-      const largeObj = { data: 'x'.repeat(1000), nested: { more: 'data' } }
+      const largeObj = { data: 'x'.repeat(100_000), nested: { more: 'data' } }
       lruCache.set('obj', largeObj, 60)
 
       const stats = getCacheStats()
@@ -219,10 +225,15 @@ describe('LRUCache - Complete Coverage', () => {
     it('should calculate utilization percentage correctly', () => {
       lruCache.clear()
 
-      // Default max is 100MB, add ~50MB of data
-      lruCache.set('large', 'x'.repeat(50 * 1024 * 1024), 60)
+      // estimateSize uses JSON.stringify(str).length * 2; for a 500k-char string
+      // that's ~1MB. Use a 25MB-equivalent target: store several 1MB entries.
+      // Simpler: use a custom small cache to keep memory usage low in tests.
+      const testCache = new (lruCache.constructor as any)(1) // 1MB max
 
-      const stats = getCacheStats()
+      // Store ~500KB of data: 250k chars × 2 bytes = 500KB → 50% of 1MB
+      testCache.set('large', 'x'.repeat(250_000), 60)
+
+      const stats = testCache.getStats()
       const utilization = parseFloat(stats.utilizationPercent)
 
       expect(utilization).toBeGreaterThan(45)

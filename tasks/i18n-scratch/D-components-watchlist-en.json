@@ -1,0 +1,230 @@
+{
+  "WatchlistConfirmed": {
+    "title": "Alert activated",
+    "description": "You will receive an email as soon as the shortage situation changes.",
+    "descriptionWithAtc": "You will receive an email as soon as the shortage situation for {atc} changes.",
+    "ctaViewShortages": "View {atc} shortages",
+    "backToDashboard": "Back to dashboard"
+  },
+  "WatchlistError": {
+    "title": "Invalid link",
+    "description": "This link has expired or is invalid. Please register again.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "WatchlistUnsubscribed": {
+    "title": "Alert deactivated",
+    "description": "You will no longer receive shortage alerts.",
+    "descriptionWithAtc": "You will no longer receive shortage alerts for {atc}.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "Filters": {
+    "statusPlaceholder": "Status",
+    "firmaPlaceholder": "Manufacturer",
+    "allStatuses": "All statuses",
+    "allFirmen": "All manufacturers",
+    "status1": "1 — Directly reported (Green)",
+    "status2": "2 — Reported (Yellow-green)",
+    "status3": "3 — Sporadic (Orange)",
+    "status4": "4 — Not informed (Red)",
+    "status5": "5 — Negotiation (Yellow)"
+  },
+  "Search": {
+    "placeholder": "Search… (⌘K)",
+    "clearAria": "Clear search"
+  },
+  "StatusBadge": {
+    "status1": "1 — Directly reported",
+    "status2": "2 — Reported",
+    "status3": "3 — Sporadic",
+    "status4": "4 — Not informed",
+    "status5": "5 — Negotiation"
+  },
+  "Kpi": {
+    "activeShortages": "Active shortages",
+    "activeShortagesSub": "currently reported",
+    "historicalShortages": "Historical shortages",
+    "historicalShortagesSub": "closed / resolved",
+    "affectedSubstances": "Affected active substances",
+    "affectedSubstancesSub": "per ATC classification",
+    "avgDuration": "Avg. duration",
+    "avgDurationValue": "{days} days",
+    "avgDurationSub": "since first report"
+  },
+  "ShortagesTable": {
+    "colBezeichnung": "Product",
+    "colFirma": "Manufacturer",
+    "colStatus": "Status",
+    "colAvailableFrom": "Available from",
+    "colDays": "Days",
+    "colAtc": "ATC",
+    "colScore": "Score",
+    "emptyState": "No shortages found",
+    "badgeNew": "NEW",
+    "badgeBwl": "BWL",
+    "paginationSummary": "{total} entries · Page {page} / {totalPages}",
+    "firstPage": "First page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page",
+    "pageOfTotalAria": "Page, of {totalPages}"
+  },
+  "OffMarketTable": {
+    "colBezeichnung": "Product",
+    "colFirma": "Manufacturer",
+    "colAtc": "ATC",
+    "colGtin": "GTIN",
+    "colDate": "Date",
+    "emptyState": "No entries found.",
+    "rangeOfTotal": "{start}–{end} of {total}",
+    "firstPage": "First page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page"
+  },
+  "HistoricalTable": {
+    "colBezeichnung": "Product",
+    "colFirma": "Manufacturer",
+    "colLastSeen": "Last active",
+    "colFirstSeen": "First report",
+    "colOccurrences": "Cnt.",
+    "colDuration": "Duration",
+    "colAtc": "ATC",
+    "emptyState": "No historical entries found.",
+    "durationDays": "{days} d",
+    "rangeOfTotal": "{start}–{end} of {total}",
+    "firstPage": "First page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "lastPage": "Last page"
+  },
+  "AtcTreemap": {
+    "title": "Shortages by active substance group (ATC)",
+    "emptyState": "No data available",
+    "cellAria": "{code}: {bezeichnung} — {count, plural, one {# shortage} other {# shortages}}",
+    "tooltipShortages": "{count, plural, one {# shortage} other {# shortages}}"
+  },
+  "AtcGruppen": {
+    "title": "ATC groups",
+    "description": "Affected active substance groups by number of active shortages. Click a group to filter.",
+    "searchPlaceholder": "ATC code or name…",
+    "emptyState": "No matches",
+    "closeAria": "Close"
+  },
+  "FirmaRanking": {
+    "title": "Manufacturer ranking",
+    "descriptionRich": "Manufacturers by number of active drug shortages, sorted by rating from <link>drugshortage.ch</link>.",
+    "legendTitle": "Rating (source: drugshortage.ch)",
+    "legendTitleExtended": "Rating = reporting transparency (source: drugshortage.ch)",
+    "searchPlaceholder": "Search manufacturer…",
+    "emptyState": "No matches",
+    "closeAria": "Close",
+    "firmaCounts": "{open} open · {total} total",
+    "ratingGood": "Good",
+    "ratingMedium": "Medium",
+    "ratingPoor": "Poor",
+    "ratingCritical": "Critical",
+    "ratingGoodDesc": "< 5% of products affected",
+    "ratingMediumDesc": "5–15% of products affected",
+    "ratingPoorDesc": "15–30% of products affected",
+    "ratingCriticalDesc": "> 30% of products affected",
+    "rating1Label": "Exclusive",
+    "rating1Desc": "Submits data themselves, exclusive access, committed to keeping it current",
+    "rating2Label": "Active",
+    "rating2Desc": "Submits data themselves, no exclusive access",
+    "rating3Label": "Occasional",
+    "rating3Desc": "Reports drug shortages to customers occasionally",
+    "rating4Label": "Passive",
+    "rating4Desc": "Does not inform customers directly; reports come via the drugshortage.ch network",
+    "rating5Label": "Negotiation",
+    "rating5Desc": "Negotiations with drugshortage.ch are ongoing"
+  },
+  "FirmaShortages": {
+    "tabActive": "Active shortages",
+    "tabHistorical": "Historical",
+    "emptyActive": "No active shortages for this manufacturer.",
+    "emptyHistorical": "No historical entries found.",
+    "colBezeichnung": "Product",
+    "colStatus": "Status",
+    "colDays": "Days",
+    "colScore": "Score",
+    "badgeBwl": "BWL"
+  },
+  "ShortageDrawer": {
+    "closeAria": "Close",
+    "detailsHeading": "Details",
+    "alternativesHeading": "Possible alternatives",
+    "alternativesLoading": "Loading alternatives…",
+    "alternativesUnavailable": "No alternatives available.",
+    "alternativesNone": "No alternatives recorded.",
+    "alternativesAllHeading": "Alternative products ({count})",
+    "coMarketingHeading": "Co-marketing (identical)",
+    "sameFirmaHeading": "Same manufacturer (different pack)",
+    "typeOriginal": "Original",
+    "typeGeneric": "Generic",
+    "detailGtin": "GTIN",
+    "detailPharmacode": "Pharmacode",
+    "detailAvailableFrom": "Expected to be available",
+    "detailExpectedDuration": "Expected duration",
+    "detailLastMutation": "Last update",
+    "detailFirstReport": "First report",
+    "detailReportedBy": "Reported by",
+    "detailFirmaInfo": "Info from manufacturer",
+    "detailInfoType": "Type of info",
+    "detailRemarks": "Remarks",
+    "detailDaysSinceReport": "Days since first report",
+    "detailGenericGroup": "Generic group",
+    "detailFirstSeen": "First recorded (our system)",
+    "sourceLine": "Source: <link>drugshortage.ch</link>"
+  },
+  "NeueMeldungen": {
+    "label": "New reports"
+  },
+  "ResetFilters": {
+    "resetAria": "Reset filters"
+  },
+  "ExportCsv": {
+    "label": "CSV export"
+  },
+  "ThemeToggle": {
+    "toggleAria": "Switch theme"
+  },
+  "WatchlistForm": {
+    "title": "Set up shortage alert",
+    "description": "Receive an email as soon as the situation for {atcName} changes.",
+    "freeBadge": "(3 free)",
+    "emailLabel": "Email address for alert",
+    "emailPlaceholder": "you@email.com",
+    "submitLabel": "Alert",
+    "submitAria": "Set up alert for {atcName}",
+    "successTitle": "Confirmation email sent",
+    "successDescription": "Please check your inbox and confirm the alert.",
+    "errorGeneric": "Failed to set up the alert.",
+    "errorConnection": "Connection error. Please try again.",
+    "upgradeTitle": "Free alert limit reached",
+    "upgradeDescription": "You have already set up 3 free watchlist alerts. For unlimited alerts and API access, Engpassradar Pro is available.",
+    "upgradeCta": "Engpassradar Pro — CHF 39/mo",
+    "upgradeAlternative": "Or: <link>Clinic system for hospital pharmacies</link>",
+    "upsellRich": "Unlimited alerts + API access: <link>Engpassradar Pro from CHF 39/mo →</link>"
+  },
+  "Newsletter": {
+    "emailPlaceholder": "you@email.com",
+    "submitting": "Subscribing…",
+    "compactSubmit": "Subscribe",
+    "compactSuccess": "Subscribed. The first issue arrives on Tuesdays.",
+    "compactError": "Subscription failed. Please try again.",
+    "genericError": "An error occurred. Please try again.",
+    "eyebrow": "Shortage signal",
+    "headline": "Shortage Report Switzerland — free",
+    "subheadline": "Every Tuesday: the 5 most relevant shortages of the week in 90 seconds — curated for pharmacies and hospital staff. Free, unsubscribe anytime.",
+    "signupEmailLabel": "Email address for Shortage Report",
+    "signupSubmit": "Get the report",
+    "signupSubmitAria": "Subscribe to Shortage Report",
+    "signupSuccess": "You will receive the latest Shortage Report by email — please check your inbox and confirm your subscription.",
+    "noSpam": "No spam. Unsubscribe anytime."
+  },
+  "Donation": {
+    "amountChf": "CHF {amount}",
+    "customPlaceholder": "Amount",
+    "donateLabel": "Donate"
+  }
+}
