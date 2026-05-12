@@ -7,7 +7,11 @@ import { routing } from '@/i18n/routing'
 
 export const SITEMAP_BASE_URL = SITE_URL
 export const SITEMAP_REVALIDATE_SECONDS = 86400
-export const SITEMAP_URL_LIMIT = 50000
+// Sitemap spec allows 50k URLs per file. With 4 hreflang alternates per
+// URL each entry is ~5x larger, which pushes a 50k chunk over Vercel's
+// 19 MB ISR fallback limit (was 31.88 MB → FALLBACK_BODY_TOO_LARGE).
+// 10k URLs ≈ 6.4 MB per chunk — comfortable headroom for growth.
+export const SITEMAP_URL_LIMIT = 10000
 
 const SITEMAP_CACHE_TTL_SECONDS = 3600
 
