@@ -11,6 +11,7 @@ import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
 import { routing, type Locale } from '@/i18n/routing'
 import { LOCALE_OG } from '@/lib/i18n-meta'
+import { Analytics } from '@vercel/analytics/next'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -138,6 +139,7 @@ export default async function LocaleLayout({
             <ScrollToTop />
           </ThemeProvider>
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   )
