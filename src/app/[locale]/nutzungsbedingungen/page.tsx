@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 
@@ -23,9 +24,10 @@ export default async function NutzungsbedingungenPage() {
 
   return (
     <main className="bg-background">
-      <script
+      <Script
+        id="ld-nutzungsbedingungen"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <div className="max-w-2xl mx-auto px-6 py-16 space-y-10">

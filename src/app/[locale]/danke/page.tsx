@@ -16,8 +16,8 @@ export default async function DankePage() {
     <main className="flex flex-col items-center justify-center min-h-[calc(100vh-3.5rem)] px-4 text-center">
       <div className="max-w-md space-y-6">
         <div className="flex justify-center">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10">
-            <svg className="h-8 w-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-status-resolved-soft">
+            <svg className="h-8 w-8 text-status-resolved" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
             </svg>
           </div>

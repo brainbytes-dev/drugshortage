@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Inter, Fraunces, IBM_Plex_Mono } from 'next/font/google'
 import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
@@ -13,7 +13,25 @@ import { routing, type Locale } from '@/i18n/routing'
 import { LOCALE_OG } from '@/lib/i18n-meta'
 import { Analytics } from '@vercel/analytics/next'
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap',
+  axes: ['opsz'],
+})
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-mono',
+  display: 'swap',
+})
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
@@ -83,7 +101,7 @@ export default async function LocaleLayout({
   const tDataset = await getTranslations({ locale, namespace: 'StructuredData' })
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning className={`${inter.variable} ${fraunces.variable} ${ibmPlexMono.variable}`}>
       <head>
         {process.env.NEXT_PUBLIC_GA_ID && (
           <>
@@ -107,10 +125,11 @@ export default async function LocaleLayout({
           </>
         )}
       </head>
-      <body className={`${inter.className} antialiased overflow-x-hidden`}>
-        <script
-        type="application/ld+json"
-        suppressHydrationWarning
+      <body className="font-sans antialiased overflow-x-hidden">
+        <Script
+          id="ld-website"
+          type="application/ld+json"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',

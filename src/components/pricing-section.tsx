@@ -134,7 +134,7 @@ function ResearchModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-foreground/40" onClick={onClose} />
       <div className="relative w-full max-w-sm rounded-2xl border bg-card shadow-xl p-6 space-y-5">
         <div className="flex items-start justify-between gap-2">
           <div>
@@ -230,7 +230,7 @@ function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose:
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-foreground/40" onClick={onClose} />
       <div className="relative w-full max-w-sm rounded-2xl border bg-card shadow-xl p-6 space-y-5">
 
         {/* Header */}
@@ -257,7 +257,7 @@ function CheckoutModal({ state, onClose }: { state: CheckoutModalState; onClose:
         <ul className="space-y-1.5">
           {features.slice(0, 3).map((f) => (
             <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
-              <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 shrink-0 text-emerald-500" />
+              <CheckCircle2 className="h-3.5 w-3.5 mt-0.5 shrink-0 text-status-resolved" />
               {f}
             </li>
           ))}
@@ -350,7 +350,7 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
                 <span className="text-xs text-muted-foreground">{t('perMonthShort')}</span>
               </div>
               {annualSavings !== null && annualSavings > 0 ? (
-                <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                <p className="text-[11px] text-status-resolved font-medium">
                   {t('savingsPerYear', { amount: annualSavings })}
                 </p>
               ) : (
@@ -376,7 +376,7 @@ function PaidCard({ tier, yearly, onCheckout }: { tier: Tier; yearly: boolean; o
           {features.map((f) => (
             <li key={f} className="flex items-start gap-2 text-xs text-muted-foreground">
               <CheckCircle2 className={`h-3.5 w-3.5 mt-0.5 shrink-0 ${
-                tier.highlight ? 'text-primary' : 'text-emerald-500'
+                tier.highlight ? 'text-primary' : 'text-status-resolved'
               }`} />
               {f}
             </li>
@@ -449,23 +449,23 @@ export function PricingSection() {
             </p>
           </div>
           {/* Billing toggle */}
-          <div className="inline-flex items-center gap-1 rounded-full border border-border/60 bg-muted/40 p-1 self-center sm:self-auto">
+          <div className="inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 p-1 self-center sm:self-auto">
             <button
               onClick={() => setYearly(false)}
-              className={`rounded-full px-5 py-2 text-xs font-semibold transition-all ${
-                !yearly ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
+              className={`rounded-full px-5 min-h-10 text-xs font-semibold transition-colors min-w-24 ${
+                !yearly ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {t('billingMonthly')}
             </button>
             <button
               onClick={() => setYearly(true)}
-              className={`rounded-full px-5 py-2 text-xs font-semibold transition-all flex items-center gap-2 ${
-                yearly ? 'bg-background shadow text-foreground' : 'text-muted-foreground hover:text-foreground'
+              className={`rounded-full px-5 min-h-10 text-xs font-semibold transition-colors flex items-center gap-2 min-w-32 justify-center ${
+                yearly ? 'bg-background shadow-sm text-foreground' : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {t('billingYearly')}
-              <span className="rounded-full bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.5 text-[10px] font-bold leading-none">
+              <span className="rounded-full bg-status-resolved-soft text-status-resolved px-2 py-0.5 text-[10px] font-semibold leading-none">
                 {t('billingYearlyBadge')}
               </span>
             </button>
@@ -492,13 +492,13 @@ export function PricingSection() {
         </div>
 
         {/* Guarantee */}
-        <div className="mt-10 flex items-start gap-3 rounded-xl border border-emerald-200 dark:border-emerald-900/50 bg-emerald-50/60 dark:bg-emerald-950/20 px-5 py-4">
-          <ShieldCheck className="h-4 w-4 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+        <div className="mt-10 flex items-start gap-3 rounded-lg border border-border bg-status-resolved-soft px-5 py-4">
+          <ShieldCheck className="h-4 w-4 mt-1 shrink-0 text-status-resolved" />
           <div>
-            <p className="text-[12px] font-semibold text-emerald-800 dark:text-emerald-300">
+            <p className="text-xs font-semibold text-status-resolved">
               {t('guaranteeTitle')}
             </p>
-            <p className="text-[11px] text-emerald-700/80 dark:text-emerald-400/80 mt-0.5 leading-relaxed">
+            <p className="text-[11px] text-foreground/80 mt-1 leading-relaxed">
               {t('guaranteeBody')}
             </p>
           </div>

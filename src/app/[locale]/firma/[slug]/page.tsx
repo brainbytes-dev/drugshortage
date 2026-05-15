@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { ArrowLeft } from 'lucide-react'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
@@ -49,19 +50,19 @@ export async function generateMetadata({
 }
 
 const STATUS_DOT_COLORS: Record<number, string> = {
-  1: 'bg-emerald-500',
-  2: 'bg-lime-500',
-  3: 'bg-amber-500',
-  4: 'bg-red-500',
-  5: 'bg-yellow-500',
+  1: 'bg-status-resolved',
+  2: 'bg-status-resolved',
+  3: 'bg-status-longterm',
+  4: 'bg-status-active',
+  5: 'bg-status-new',
 }
 
 const STATUS_TEXT_COLORS: Record<number, string> = {
-  1: 'text-emerald-600 dark:text-emerald-400',
-  2: 'text-lime-600 dark:text-lime-400',
-  3: 'text-amber-600 dark:text-amber-400',
-  4: 'text-red-600 dark:text-red-400',
-  5: 'text-yellow-600 dark:text-yellow-400',
+  1: 'text-status-resolved',
+  2: 'text-status-resolved',
+  3: 'text-status-longterm',
+  4: 'text-status-active',
+  5: 'text-status-new',
 }
 
 export default async function FirmaPage({
@@ -114,9 +115,10 @@ export default async function FirmaPage({
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-firma"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
@@ -180,7 +182,7 @@ export default async function FirmaPage({
               </div>
               <div className="w-px h-8 bg-border/60 hidden sm:block" />
               <div>
-                <p className={`text-3xl font-black tabular-nums leading-none ${noInfoPct >= 50 ? 'text-red-600 dark:text-red-400' : noInfoPct >= 25 ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}`}>
+                <p className={`text-3xl font-black tabular-nums leading-none ${noInfoPct >= 50 ? 'text-status-active' : noInfoPct >= 25 ? 'text-status-longterm' : 'text-status-resolved'}`}>
                   {noInfoPct}%
                 </p>
                 <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiNoInfo')}</p>

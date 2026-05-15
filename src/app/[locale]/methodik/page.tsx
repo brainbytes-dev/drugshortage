@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { buildPageAlternates } from '@/lib/i18n-meta'
 import type { Locale } from '@/i18n/routing'
 import { getTranslations } from 'next-intl/server'
@@ -56,21 +57,21 @@ export default async function MetodikPage() {
       name: t('sourceBwlName'),
       url: 'https://www.bwl.admin.ch/de/meldestelle-heilmittel',
       badge: t('sourceBwlBadge'),
-      badgeColor: 'bg-amber-500/10 text-amber-600 dark:text-amber-400',
+      badgeColor: 'bg-status-longterm-soft text-status-longterm',
       desc: t('sourceBwlDesc'),
     },
     {
       name: 'ODDB / ywesee',
       url: 'https://www.oddb.org',
       badge: t('sourceOddbBadge'),
-      badgeColor: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+      badgeColor: 'bg-status-resolved-soft text-status-resolved',
       desc: t('sourceOddbDesc'),
     },
     {
       name: t('sourceUsbName'),
       url: 'https://www.spitalpharmazie-basel.ch',
       badge: t('sourceUsbBadge'),
-      badgeColor: 'bg-violet-500/10 text-violet-600 dark:text-violet-400',
+      badgeColor: 'bg-primary-soft text-primary',
       desc: t('sourceUsbDesc'),
     },
   ]
@@ -90,10 +91,10 @@ export default async function MetodikPage() {
   ]
 
   const tiers = [
-    { range: '80–100', label: t('tierCriticalLabel'), color: 'text-red-600 dark:text-red-400', desc: t('tierCriticalDesc') },
-    { range: '60–79', label: t('tierHighLabel'), color: 'text-orange-600 dark:text-orange-400', desc: t('tierHighDesc') },
-    { range: '40–59', label: t('tierMediumLabel'), color: 'text-yellow-600 dark:text-yellow-400', desc: t('tierMediumDesc') },
-    { range: '0–39', label: t('tierLowLabel'), color: 'text-emerald-600 dark:text-emerald-400', desc: t('tierLowDesc') },
+    { range: '80–100', label: t('tierCriticalLabel'), color: 'text-status-active', desc: t('tierCriticalDesc') },
+    { range: '60–79', label: t('tierHighLabel'), color: 'text-status-longterm', desc: t('tierHighDesc') },
+    { range: '40–59', label: t('tierMediumLabel'), color: 'text-status-longterm', desc: t('tierMediumDesc') },
+    { range: '0–39', label: t('tierLowLabel'), color: 'text-status-resolved', desc: t('tierLowDesc') },
   ]
 
   const transparencyRows: [string, string, string][] = [
@@ -124,10 +125,10 @@ export default async function MetodikPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-methodik"
         type="application/ld+json"
-        suppressHydrationWarning
-        
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 
@@ -399,8 +400,8 @@ export default async function MetodikPage() {
           </p>
           <ul className="space-y-3">
             {limitations.map((item, i) => (
-              <li key={i} className="flex gap-3 text-sm text-muted-foreground leading-[1.7]">
-                <span className="font-mono text-[11px] text-primary shrink-0 mt-[3px]">{String(i + 1).padStart(2, '0')}</span>
+              <li key={i} className="flex gap-3 text-sm text-muted-foreground leading-relaxed">
+                <span className="font-mono text-[11px] text-primary shrink-0 mt-1">{String(i + 1).padStart(2, '0')}</span>
                 <span>{item}</span>
               </li>
             ))}

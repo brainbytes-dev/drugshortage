@@ -76,8 +76,8 @@ export function SiteHeader() {
 
   return (
     <>
-      <header className="bg-background/80 backdrop-blur-md sticky top-0 z-50 border-b border-border/40">
-        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+      <header className="bg-background sticky top-0 z-50 border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/" className="group shrink-0">
             <span className="text-lg font-semibold tracking-tight group-hover:opacity-70 transition-opacity">
               engpass<span className="text-primary">.radar</span>
@@ -89,9 +89,9 @@ export function SiteHeader() {
             <Link href="/" className="hover:text-foreground transition-colors">
               {t('navHome')}
             </Link>
-            <a href="/#faq" onClick={handleFaq} className="hover:text-foreground transition-colors">
+            <Link href={{ pathname: '/', hash: 'faq' }} onClick={handleFaq} className="hover:text-foreground transition-colors">
               {t('navFaq')}
-            </a>
+            </Link>
             <Link href="/methodik" className="hover:text-foreground transition-colors">
               {t('navMethodik')}
             </Link>
@@ -106,7 +106,7 @@ export function SiteHeader() {
               className="inline-flex items-center gap-1.5 h-8 rounded-md border border-border/60 bg-muted/40 px-2.5 text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
               aria-label={t('donateAria')}
             >
-              <Heart className="h-3.5 w-3.5 text-red-500" />
+              <Heart className="h-3.5 w-3.5 text-status-active" />
               <span className="hidden sm:inline">{t('donateButton')}</span>
             </button>
             <LanguageSwitcher />
@@ -114,15 +114,15 @@ export function SiteHeader() {
               <ThemeToggle />
             </div>
 
-            {/* Burger — mobile only */}
+            {/* Burger — mobile only, 44px touch target */}
             <button
-              className="sm:hidden relative z-50 flex flex-col justify-center items-center h-9 w-9 gap-[5px] group"
+              className="sm:hidden relative z-50 flex flex-col justify-center items-center h-11 w-11 gap-1.5 group"
               onClick={() => open ? closeMenu() : openMenu()}
               aria-label={open ? t('menuClose') : t('menuOpen')}
             >
-              <span className={`block h-px w-5 bg-foreground origin-center transition-all duration-300 ${open ? 'translate-y-[6px] rotate-45' : ''}`} />
-              <span className={`block h-px bg-foreground origin-center transition-all duration-300 ${open ? 'w-0 opacity-0' : 'w-4'}`} />
-              <span className={`block h-px w-5 bg-foreground origin-center transition-all duration-300 ${open ? '-translate-y-[6px] -rotate-45' : ''}`} />
+              <span className={`block h-px w-5 bg-foreground origin-center transition-all duration-200 ${open ? 'translate-y-1.5 rotate-45' : ''}`} />
+              <span className={`block h-px bg-foreground origin-center transition-all duration-200 ${open ? 'w-0 opacity-0' : 'w-4'}`} />
+              <span className={`block h-px w-5 bg-foreground origin-center transition-all duration-200 ${open ? '-translate-y-1.5 -rotate-45' : ''}`} />
             </button>
           </div>
         </div>
@@ -131,11 +131,11 @@ export function SiteHeader() {
       {/* Donation popup */}
       {donateOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setDonateOpen(false)} />
+          <div className="absolute inset-0 bg-foreground/40" onClick={() => setDonateOpen(false)} />
           <div className="relative w-full max-w-sm rounded-2xl border bg-card shadow-xl p-6 space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Heart className="h-4 w-4 text-red-500" />
+                <Heart className="h-4 w-4 text-status-active" />
                 <h2 className="font-semibold text-sm">{t('donateTitle')}</h2>
               </div>
               <button onClick={() => setDonateOpen(false)} className="text-muted-foreground hover:text-foreground transition-colors" aria-label={t('donateAria')}>
@@ -160,7 +160,7 @@ export function SiteHeader() {
         }}
       >
         {/* Background */}
-        <div className="absolute inset-0 bg-background/97 backdrop-blur-xl" onClick={() => closeMenu()} />
+        <div className="absolute inset-0 bg-background" onClick={() => closeMenu()} />
 
         {/* Content */}
         <div className="relative h-full flex flex-col px-8 pt-24 pb-10">

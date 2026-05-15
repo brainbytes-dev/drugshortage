@@ -49,8 +49,8 @@ export function calculateScore(shortage: Shortage, isBwl: boolean): ScoreBreakdo
 }
 
 export function scoreLabel(score: number): { label: string; color: string } {
-  if (score >= 80) return { label: 'Kritisch', color: 'text-red-600 dark:text-red-400' }
-  if (score >= 60) return { label: 'Hoch', color: 'text-orange-600 dark:text-orange-400' }
-  if (score >= 40) return { label: 'Mittel', color: 'text-yellow-600 dark:text-yellow-400' }
-  return { label: 'Niedrig', color: 'text-emerald-600 dark:text-emerald-400' }
+  if (score >= 80) return { label: 'Kritisch', color: 'text-status-active' }
+  if (score >= 60) return { label: 'Hoch', color: 'text-status-longterm' }
+  if (score >= 40) return { label: 'Mittel', color: 'text-status-longterm' }
+  return { label: 'Niedrig', color: 'text-status-resolved' }
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
 
@@ -41,9 +42,10 @@ export default async function ImpressumPage() {
 
   return (
     <main className="bg-background">
-      <script
+      <Script
+        id="ld-impressum"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <div className="max-w-2xl mx-auto px-6 py-16 space-y-10">
@@ -54,12 +56,12 @@ export default async function ImpressumPage() {
 
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t('operatorTitle')}</h2>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             HM Consulting Rühe<br />
             Buchenweg 18<br />
             {t('operatorCity')}
           </p>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('operatorResponsible')}
           </p>
           <p className="text-muted-foreground">
@@ -72,17 +74,17 @@ export default async function ImpressumPage() {
 
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t('vatTitle')}</h2>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('vatBody')}
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t('sourcesTitle')}</h2>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('sourcesIntro')}
           </p>
-          <ul className="text-[15px] text-muted-foreground list-disc list-outside ml-5 space-y-2 leading-relaxed">
+          <ul className="text-sm text-muted-foreground list-disc list-outside ml-5 space-y-2 leading-relaxed">
             <li>
               <a href="https://www.drugshortage.ch" target="_blank" rel="noopener noreferrer" className="underline hover:text-foreground">
                 drugshortage.ch
@@ -102,44 +104,44 @@ export default async function ImpressumPage() {
               {t('sourceOddbDesc')}
             </li>
           </ul>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('sourcesDisclaimer')}
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t('liabilityTitle')}</h2>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('liabilityBody1')}
           </p>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('liabilityBody2')}
           </p>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('liabilityBody3')}
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t('linksTitle')}</h2>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('linksBody')}
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t('copyrightTitle')}</h2>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('copyrightBody')}
           </p>
         </section>
 
         <section className="space-y-3">
           <h2 className="text-lg font-semibold">{t('privacyTitle')}</h2>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t('privacyBody1')}
           </p>
-          <p className="text-[15px] text-muted-foreground leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {t.rich('privacyBody2', {
               link: (chunks) => (
                 <Link href="/datenschutz" className="underline hover:text-foreground">

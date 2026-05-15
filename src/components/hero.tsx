@@ -27,12 +27,10 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
   const [query, setQuery] = useState(searchParams.get('search') ?? '')
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
 
-  // Sync input when URL changes externally (e.g. clear filters)
   useEffect(() => {
     startTransition(() => setQuery(searchParams.get('search') ?? ''))
   }, [searchParams])
 
-  // Cleanup debounce on unmount
   useEffect(() => () => { if (debounceRef.current) clearTimeout(debounceRef.current) }, [])
 
   const neuActive = searchParams.get('neu') === '1'
@@ -110,47 +108,43 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
 
   return (
     <div className="w-full bg-background">
-      {/* Outer container matches dashboard max-w-7xl px-4 exactly */}
-      <div className="max-w-7xl mx-auto px-4 pt-[72px] pb-6">
-
-        {/* Inner section: eyebrow + grid get extra horizontal breathing room */}
-        <div className="px-10">
+      <div className="max-w-7xl mx-auto px-4 pt-16 pb-8 sm:px-10 sm:pt-20">
 
         {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2.5 mb-11">
+        <div className="inline-flex items-center gap-3 mb-12">
           <PulseDot />
           <span
-            className="font-mono text-[11.5px] text-muted-foreground tracking-[0.04em] uppercase"
+            className="font-mono text-[11px] text-muted-foreground tracking-[0.04em] uppercase"
             aria-label={t('sourcesAria')}
           >
             {t('sourcesLabel')}
           </span>
         </div>
 
-        {/* Two-column grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-[72px] items-end">
+        {/* Two-column grid: big number + delta rows */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-16 items-end">
 
-          {/* Left: big number + headline */}
+          {/* Left: H1 = the live count itself */}
           <div>
-            <p
-              className="font-sans text-[clamp(128px,14vw,184px)] font-semibold leading-[0.88] tracking-[-0.055em] text-foreground tabular-nums mb-5"
+            <h1
+              className="font-serif text-[clamp(96px,13vw,168px)] font-semibold leading-[0.88] tracking-[-0.04em] text-foreground tabular-nums mb-4"
               aria-label={t('activeAria', { count: activeCount })}
             >
               {fmtCH(activeCount)}
-            </p>
-            <h1 className="text-[34px] font-medium tracking-[-0.02em] leading-[1.15] text-foreground m-0 max-w-[720px]">
-              {t('headline')}
             </h1>
-            <p className="text-base text-muted-foreground mt-[18px] max-w-[580px] leading-[1.55]">
+            <p className="text-2xl sm:text-3xl font-semibold tracking-tight leading-tight text-foreground max-w-[720px]">
+              {t('headline')}
+            </p>
+            <p className="text-base text-muted-foreground mt-5 max-w-[580px] leading-relaxed">
               {t('subline')}{' '}
-              <Link href="/methodik" className="font-mono text-[13px] text-primary hover:underline">
+              <Link href="/methodik" className="font-mono text-xs text-primary hover:underline">
                 {t('methodologyLink')}
               </Link>
             </p>
           </div>
 
           {/* Right: delta rows */}
-          <div className="flex flex-col gap-5 lg:border-l lg:border-border lg:pl-8 border-t border-border pt-6 lg:pt-0">
+          <div className="flex flex-col gap-5 lg:border-l lg:border-border-strong lg:pl-8 border-t border-border-strong pt-6 lg:pt-0">
             <DeltaRow label={t('deltaNew', { week: isoWeek })} value={`+${newThisWeek}`} tone="neutral" />
             <DeltaRow label={t('deltaResolved', { week: isoWeek })} value={`−${resolvedThisWeek}`} tone="good" />
             <DeltaRow label={t('deltaLongTerm')} value={fmtCH(longTermCount)} suffix={`${longTermPct} %`} />
@@ -158,23 +152,20 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           </div>
         </div>
 
-        </div>{/* end px-10 inner */}
-
-        {/* Search + buttons — outer px-4 width = same as table */}
+        {/* Search + actions */}
         <div className="mt-16">
           <label
             htmlFor="hero-search"
-            className="block text-[11.5px] font-medium text-muted-foreground tracking-[0.03em] uppercase mb-2.5"
+            className="block font-mono text-[11px] font-medium text-muted-foreground tracking-[0.04em] uppercase mb-3"
           >
             {t('searchLabel')}
           </label>
-          {/* Mobile: search row + buttons row stacked. sm+: single row */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch">
 
-            {/* Row 1 (mobile) / left part (desktop): search input + stacked icons */}
+            {/* Search input + mobile icon column */}
             <div className="flex min-w-0 flex-1 items-stretch gap-2">
-              <div className="flex min-w-0 flex-1 items-center gap-3.5 px-5 py-4 bg-muted/40 border border-border/80 rounded-lg">
-                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" className="text-muted-foreground shrink-0" aria-hidden>
+              <div className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3 bg-muted/40 border border-border-strong rounded-lg">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" className="text-muted-foreground shrink-0" aria-hidden>
                   <circle cx="9" cy="9" r="6" /><path d="M14 14l4 4" strokeLinecap="round" />
                 </svg>
                 <input
@@ -183,27 +174,27 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
                   onChange={e => handleQueryChange(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && submitSearch(query)}
                   placeholder={t('searchPlaceholder')}
-                  className="min-w-0 flex-1 border-none outline-none bg-transparent font-sans text-base text-foreground placeholder:text-muted-foreground/60"
+                  className="min-w-0 flex-1 border-none outline-none bg-transparent text-base text-foreground placeholder:text-muted-foreground/60"
                 />
                 <button
                   onClick={() => submitSearch(query)}
                   aria-label={t('searchSubmitAria')}
-                  className="font-mono text-[11px] text-muted-foreground px-[7px] py-[3px] border border-border/80 rounded shrink-0"
+                  className="font-mono text-[11px] text-muted-foreground px-2 py-1 border border-border-strong rounded shrink-0 min-h-11 min-w-11 sm:min-h-8 sm:min-w-8 flex items-center justify-center"
                 >
                   ↵
                 </button>
               </div>
 
-              {/* Stacked icon column — mobile only */}
-              <div className="sm:hidden flex flex-col shrink-0 self-stretch gap-[3px]">
+              {/* Mobile icon column */}
+              <div className="sm:hidden flex flex-col shrink-0 self-stretch gap-1">
                 {hasActiveFilter && (
                   <Tip label={t('filterResetTip')}>
                     <button
                       onClick={clearFilters}
                       aria-label={t('filterResetAria')}
-                      className="flex flex-1 items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      className="flex flex-1 min-h-11 items-center justify-center rounded border border-border-strong bg-muted/40 px-3 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
-                      <X className="h-3.5 w-3.5" />
+                      <X className="h-4 w-4" />
                     </button>
                   </Tip>
                 )}
@@ -211,42 +202,41 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
                   <button
                     onClick={exportCsv}
                     aria-label={t('exportCsvAria')}
-                    className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                    style={{ flex: hasActiveFilter ? '1' : undefined, paddingTop: hasActiveFilter ? undefined : '0', height: hasActiveFilter ? undefined : '100%' }}
+                    className="flex flex-1 min-h-11 items-center justify-center rounded border border-border-strong bg-muted/40 px-3 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                   >
-                    <Download className="h-3.5 w-3.5" />
+                    <Download className="h-4 w-4" />
                   </button>
                 </Tip>
               </div>
             </div>
 
-            {/* Row 2 (mobile) / right part (desktop): action buttons */}
+            {/* Action buttons */}
             <div className="flex flex-wrap items-stretch gap-2">
               <button
                 onClick={toggleNeu}
                 className={[
-                  'inline-flex flex-1 sm:flex-none shrink-0 items-center justify-center gap-1.5 rounded-lg border px-4 py-2 text-sm font-medium transition-colors whitespace-nowrap',
+                  'inline-flex flex-1 sm:flex-none shrink-0 items-center justify-center gap-2 rounded-lg border px-4 min-h-11 sm:min-h-10 text-sm font-medium transition-colors whitespace-nowrap min-w-[140px]',
                   neuActive
-                    ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'
-                    : 'border-border/80 bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted',
+                    ? 'border-status-new bg-status-new-soft text-status-new'
+                    : 'border-border-strong bg-muted/40 text-muted-foreground hover:text-foreground hover:bg-muted',
                 ].join(' ')}
               >
-                <Sparkles className="h-3.5 w-3.5 shrink-0" />
+                <Sparkles className="h-4 w-4 shrink-0" />
                 {t('newReportsButton')}
               </button>
               {firmenRanking.length > 0 && <FirmaRankingSheet firmenRanking={firmenRanking} />}
               {atcGruppen.length > 0 && <AtcGruppenSheet atcGruppen={atcGruppen} />}
 
-              {/* CSV + filter reset — desktop only, far right */}
-              <div className="hidden sm:flex flex-col self-stretch shrink-0 gap-[3px] ml-auto">
+              {/* Desktop secondary icons */}
+              <div className="hidden sm:flex flex-col self-stretch shrink-0 gap-1 ml-auto">
                 {hasActiveFilter && (
                   <Tip label={t('filterResetTip')}>
                     <button
                       onClick={clearFilters}
                       aria-label={t('filterResetAria')}
-                      className="flex flex-1 items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+                      className="flex flex-1 items-center justify-center rounded border border-border-strong bg-muted/40 px-3 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                     >
-                      <X className="h-3.5 w-3.5" />
+                      <X className="h-4 w-4" />
                     </button>
                   </Tip>
                 )}
@@ -254,10 +244,9 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
                   <button
                     onClick={exportCsv}
                     aria-label={t('exportCsvAria')}
-                    className="flex items-center justify-center rounded border border-border/80 bg-muted/40 px-2.5 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-                    style={{ flex: hasActiveFilter ? '1' : undefined, height: hasActiveFilter ? undefined : '100%' }}
+                    className="flex flex-1 items-center justify-center rounded border border-border-strong bg-muted/40 px-3 text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
                   >
-                    <Download className="h-3.5 w-3.5" />
+                    <Download className="h-4 w-4" />
                   </button>
                 </Tip>
               </div>
@@ -266,7 +255,7 @@ export function Hero({ activeCount, newThisWeek, resolvedThisWeek, longTermCount
           </div>
         </div>
 
-      </div>{/* end max-w-7xl */}
+      </div>
     </div>
   )
 }
@@ -275,7 +264,7 @@ function Tip({ label, children }: { label: string; children: React.ReactNode }) 
   return (
     <div className="group relative flex flex-col flex-1">
       {children}
-      <span className="pointer-events-none absolute bottom-[calc(100%+6px)] left-1/2 -translate-x-1/2 whitespace-nowrap rounded bg-popover border border-border px-2 py-1 text-[11px] text-foreground shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50">
+      <span className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-2 whitespace-nowrap rounded bg-popover border border-border px-2 py-1 text-[11px] text-foreground shadow-sm opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50">
         {label}
       </span>
     </div>
@@ -286,10 +275,10 @@ function PulseDot() {
   return (
     <span
       aria-hidden="true"
-      className="relative flex h-[7px] w-[7px] shrink-0"
+      className="relative flex h-2 w-2 shrink-0"
     >
-      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[oklch(0.58_0.13_150)] opacity-75" />
-      <span className="relative inline-flex rounded-full h-[7px] w-[7px] bg-[oklch(0.58_0.13_150)]" />
+      <span className="motion-safe:animate-ping absolute inline-flex h-full w-full rounded-full bg-status-resolved opacity-75" />
+      <span className="relative inline-flex rounded-full h-2 w-2 bg-status-resolved" />
     </span>
   )
 }
@@ -302,19 +291,19 @@ function DeltaRow({ label, value, tone = 'neutral', suffix }: {
 }) {
   const valueClass =
     tone === 'good'
-      ? 'text-[oklch(0.58_0.13_150)]'
+      ? 'text-status-resolved'
       : tone === 'bad'
-      ? 'text-[oklch(0.58_0.21_27)]'
+      ? 'text-status-active'
       : 'text-foreground'
 
   return (
     <div>
-      <p className="text-[12px] text-muted-foreground tracking-[0.02em] mb-1.5">{label}</p>
-      <div className="flex items-baseline gap-2.5">
-        <span className={`font-sans text-[28px] font-semibold tracking-[-0.01em] tabular-nums ${valueClass}`}>
+      <p className="text-xs text-muted-foreground mb-1.5">{label}</p>
+      <div className="flex items-baseline gap-2">
+        <span className={`text-2xl font-semibold tracking-tight tabular-nums ${valueClass}`}>
           {value}
         </span>
-        {suffix && <span className="text-[13px] text-muted-foreground">{suffix}</span>}
+        {suffix && <span className="text-xs text-muted-foreground">{suffix}</span>}
       </div>
     </div>
   )

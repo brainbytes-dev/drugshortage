@@ -114,7 +114,7 @@ function Dashboard({ token }: { token: string }) {
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">
             {t('linkInvalid')}{' '}
-            <a href="/api-keys" className="underline">{t('requestNewLink')}</a>
+            <Link href="/api-keys" className="underline">{t('requestNewLink')}</Link>
           </p>
         </CardContent>
       </Card>
@@ -162,8 +162,8 @@ function Dashboard({ token }: { token: string }) {
         </div>
 
         {newKey && (
-          <div className="rounded-md border border-emerald-200 bg-emerald-50 dark:bg-emerald-950/30 dark:border-emerald-800 p-3 space-y-1">
-            <p className="text-xs font-semibold text-emerald-700 dark:text-emerald-400">{t('newKeyTitle')}</p>
+          <div className="rounded-md border border-border bg-status-resolved-soft p-3 space-y-1">
+            <p className="text-xs font-semibold text-status-resolved">{t('newKeyTitle')}</p>
             <div className="flex items-center gap-1">
               <code className="text-xs font-mono break-all">{newKey}</code>
               <CopyButton value={newKey} />
@@ -176,10 +176,10 @@ function Dashboard({ token }: { token: string }) {
         {(data.tier === 'free' || data.tier === 'research') && pct >= 80 && (
           <div className={`rounded-lg border px-4 py-3 space-y-2 ${
             pct >= 100
-              ? 'border-destructive/40 bg-destructive/5'
-              : 'border-amber-300/60 dark:border-amber-700/40 bg-amber-50/60 dark:bg-amber-950/20'
+              ? 'border-status-active/40 bg-status-active-soft'
+              : 'border-status-longterm/40 bg-status-longterm-soft'
           }`}>
-            <p className={`text-[12px] font-semibold ${pct >= 100 ? 'text-destructive' : 'text-amber-800 dark:text-amber-300'}`}>
+            <p className={`text-[12px] font-semibold ${pct >= 100 ? 'text-status-active' : 'text-status-longterm'}`}>
               {pct >= 100
                 ? t('limitReached')
                 : t('limitNearing', { percent: pct })}
@@ -405,7 +405,7 @@ function ApiKeysContent() {
       </div>
       {!token && (
         <div className="rounded-md border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
-          {t('newHereHint')} <a href="/api#pricing" className="underline hover:text-foreground">{t('newHereHintLink')}</a>{t('newHereHintSuffix')}
+          {t('newHereHint')} <Link href={{ pathname: '/api', hash: 'pricing' }} className="underline hover:text-foreground">{t('newHereHintLink')}</Link>{t('newHereHintSuffix')}
         </div>
       )}
       {token

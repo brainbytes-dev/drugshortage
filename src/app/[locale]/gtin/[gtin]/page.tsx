@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
@@ -51,14 +52,14 @@ export default async function GtinPage({ params }: PageProps) {
   if (offMarket.length === 0 && !oddb) notFound()
 
   const AUTH_STATUS_LABELS: Record<string, { label: string; variant: string }> = {
-    A: { label: t('authStatusZugelassen'), variant: 'text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800' },
-    E: { label: t('authStatusErloschen'),  variant: 'text-destructive bg-destructive/10 border-destructive/30' },
-    S: { label: t('authStatusSistiert'),   variant: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' },
+    A: { label: t('authStatusZugelassen'), variant: 'text-status-resolved bg-status-resolved-soft border-status-resolved/30' },
+    E: { label: t('authStatusErloschen'),  variant: 'text-status-active bg-status-active-soft border-status-active/30' },
+    S: { label: t('authStatusSistiert'),   variant: 'text-status-longterm bg-status-longterm-soft border-status-longterm/30' },
   }
 
   const CATEGORY_LABELS: Record<string, { label: string; variant: string }> = {
     AUSSER_HANDEL:        { label: t('categoryAusserHandel'),        variant: 'text-destructive bg-destructive/10 border-destructive/30' },
-    VERTRIEBSEINSTELLUNG: { label: t('categoryVertriebseinstellung'), variant: 'text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-800' },
+    VERTRIEBSEINSTELLUNG: { label: t('categoryVertriebseinstellung'), variant: 'text-status-longterm bg-status-longterm-soft border-status-longterm/30' },
     ERLOSCHEN:            { label: t('categoryErloschen'),            variant: 'text-destructive bg-destructive/10 border-destructive/30' },
   }
 
@@ -95,9 +96,10 @@ export default async function GtinPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-gtin"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
 

@@ -8,7 +8,7 @@ export default function Icon() {
     (
       <div
         style={{
-          background: 'white',
+          background: '#fbfaf6',
           borderRadius: '7px',
           width: '100%',
           height: '100%',
@@ -23,8 +23,8 @@ export default function Icon() {
           gap: 0,
         }}
       >
-        <span style={{ color: '#252525' }}>e</span>
-        <span style={{ color: '#2d8f8f' }}>.r</span>
+        <span style={{ color: '#252420' }}>e</span>
+        <span style={{ color: '#3a4dab' }}>.r</span>
       </div>
     ),
     size,

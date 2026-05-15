@@ -47,8 +47,8 @@ export function KlinikSystemForm() {
   if (status === 'success') {
     return (
       <div ref={containerRef} className="flex flex-col items-center gap-4 py-8 text-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-950/40">
-          <CheckCircle2 className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-status-resolved-soft">
+          <CheckCircle2 className="h-8 w-8 text-status-resolved" />
         </div>
         <div>
           <p className="text-[18px] font-semibold text-foreground">{t('successTitle')}</p>

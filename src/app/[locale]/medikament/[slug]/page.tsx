@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
@@ -88,9 +89,10 @@ export default async function MedikamentPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-medikament"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
@@ -177,7 +179,7 @@ export default async function MedikamentPage({ params }: PageProps) {
               </Link>
 
               {isBwl && (
-                <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-md px-2 py-0.5">
+                <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wide text-status-longterm bg-status-longterm-soft border border-status-longterm/30 rounded-md px-2 py-0.5">
                   {t('badgeBwl')}
                 </span>
               )}

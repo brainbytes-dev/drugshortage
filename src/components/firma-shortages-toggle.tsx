@@ -8,11 +8,11 @@ import { toSlug } from '@/lib/slug'
 import type { Shortage } from '@/lib/types'
 
 const STATUS_TEXT_COLORS: Record<number, string> = {
-  1: 'text-emerald-600 dark:text-emerald-400',
-  2: 'text-lime-600 dark:text-lime-400',
-  3: 'text-amber-600 dark:text-amber-400',
-  4: 'text-red-600 dark:text-red-400',
-  5: 'text-yellow-600 dark:text-yellow-400',
+  1: 'text-status-resolved',
+  2: 'text-status-resolved',
+  3: 'text-status-longterm',
+  4: 'text-status-active',
+  5: 'text-status-new',
 }
 
 type SortKey = 'bezeichnung' | 'statusCode' | 'tageSeitMeldung' | 'score'
@@ -154,7 +154,7 @@ export function FirmaShortagesToggle({ shortages, historicalShortages, historica
                           {s.bezeichnung}
                         </Link>
                         {bwlSet.has(s.gtin) && (
-                          <span className="shrink-0 text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">
+                          <span className="shrink-0 text-[10px] font-semibold text-status-longterm bg-status-longterm-soft px-1.5 py-0.5 rounded">
                             {t('badgeBwl')}
                           </span>
                         )}

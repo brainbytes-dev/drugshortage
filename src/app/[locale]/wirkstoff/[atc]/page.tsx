@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
 import { ArrowLeft } from 'lucide-react'
@@ -47,15 +48,15 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
 
   const FILTERS: { key: FilterKey; label: string; dot?: string }[] = [
     { key: 'all',         label: t('filterAll') },
-    { key: 'in_shortage', label: t('filterInShortage'), dot: 'bg-destructive' },
-    { key: 'available',   label: t('filterAvailable'),  dot: 'bg-emerald-500' },
+    { key: 'in_shortage', label: t('filterInShortage'), dot: 'bg-status-active' },
+    { key: 'available',   label: t('filterAvailable'),  dot: 'bg-status-resolved' },
     { key: 'off_market',  label: t('filterOffMarket'),  dot: 'bg-muted-foreground/50' },
   ]
 
   const STATUS_LABEL: Record<string, { label: string; dot: string; text: string }> = {
-    in_shortage: { label: t('statusInShortage'), dot: 'bg-destructive',          text: 'text-destructive' },
-    available:   { label: t('statusAvailable'),  dot: 'bg-emerald-500',          text: 'text-emerald-600 dark:text-emerald-400' },
-    off_market:  { label: t('statusOffMarket'),  dot: 'bg-muted-foreground',     text: 'text-muted-foreground' },
+    in_shortage: { label: t('statusInShortage'), dot: 'bg-status-active',     text: 'text-status-active' },
+    available:   { label: t('statusAvailable'),  dot: 'bg-status-resolved',   text: 'text-status-resolved' },
+    off_market:  { label: t('statusOffMarket'),  dot: 'bg-muted-foreground',  text: 'text-muted-foreground' },
   }
 
   const activeFilter: FilterKey = (FILTERS.find(f => f.key === rawFilter)?.key) ?? 'in_shortage'
@@ -115,9 +116,7 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
 
   return (
     <main className="min-h-screen bg-background">
-      <script
-        type="application/ld+json"
-        suppressHydrationWarning dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
+      <Script id="ld-wirkstoff" type="application/ld+json" strategy="beforeInteractive" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }} />
 
       {/* ─── Header ──────────────────────────────────────────────────── */}
       <section className="border-b border-border/40">
@@ -155,7 +154,7 @@ export default async function WirkstoffPage({ params, searchParams }: PageProps)
               </div>
               {hasFullCatalog && availableCount > 0 && (
                 <div>
-                  <p className="text-2xl font-black tabular-nums leading-none text-emerald-600 dark:text-emerald-400">{availableCount}</p>
+                  <p className="text-2xl font-black tabular-nums leading-none text-status-resolved">{availableCount}</p>
                   <p className="text-[11px] text-muted-foreground mt-0.5">{t('kpiAvailable')}</p>
                 </div>
               )}
@@ -323,7 +322,7 @@ function ProductRow({
           <p className="font-medium text-sm leading-snug group-hover:text-primary transition-colors duration-150 truncate">
             {p.bezeichnung}
           </p>
-          <span className={`inline-flex items-center gap-1 shrink-0 text-[10px] font-semibold uppercase tracking-wide ${st.text}`}>
+          <span className={`inline-flex items-center gap-1 shrink-0 text-[11px] font-semibold uppercase tracking-wide ${st.text}`}>
             <span className={`h-1.5 w-1.5 rounded-full ${st.dot}`} />
             {st.label}
           </span>

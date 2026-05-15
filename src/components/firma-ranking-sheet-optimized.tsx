@@ -79,7 +79,7 @@ export function FirmaRankingSheet({ firmenRanking }: FirmaRankingSheetProps) {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => setOpen(false)} aria-hidden />
+          <div className="absolute inset-0 bg-foreground/40" onClick={() => setOpen(false)} aria-hidden />
 
           <div className="relative z-10 w-full max-w-lg max-h-[90vh] flex flex-col rounded-2xl border bg-card shadow-xl">
 

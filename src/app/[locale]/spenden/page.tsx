@@ -30,8 +30,8 @@ export default async function SpendenPage() {
 
         <div className="space-y-3">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/10">
-              <Heart className="h-5 w-5 text-red-500" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-status-active-soft">
+              <Heart className="h-5 w-5 text-status-active" />
             </div>
             <h1 className="text-2xl font-bold tracking-tight">{t('h1')}</h1>
           </div>

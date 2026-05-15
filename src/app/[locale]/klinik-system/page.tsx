@@ -3,6 +3,7 @@ import { buildPageAlternates } from '@/lib/i18n-meta'
 import type { Locale } from '@/i18n/routing'
 import { getTranslations } from 'next-intl/server'
 import { CheckCircle2, ArrowRight, Clock, BarChart3, Bell } from 'lucide-react'
+import { Link } from '@/i18n/navigation'
 import { KlinikSystemForm } from '@/components/klinik-system-form'
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -122,7 +123,7 @@ export default async function KlinikSystemPage() {
                 <ul className="space-y-3">
                   {INCLUDES.map(item => (
                     <li key={item} className="flex items-start gap-2.5 text-[13px] text-muted-foreground">
-                      <CheckCircle2 className="h-4 w-4 mt-0.5 shrink-0 text-emerald-500" />
+                      <CheckCircle2 className="h-4 w-4 mt-1 shrink-0 text-status-resolved" />
                       {item}
                     </li>
                   ))}
@@ -214,13 +215,13 @@ export default async function KlinikSystemPage() {
             <p className="text-[13px] text-muted-foreground">
               {t('backRow')}
             </p>
-            <a
-              href="/api#pricing"
+            <Link
+              href={{ pathname: '/api', hash: 'pricing' }}
               className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-primary hover:underline"
             >
               {t('backRowCta')}
               <ArrowRight className="h-3.5 w-3.5" />
-            </a>
+            </Link>
           </div>
         </section>
 

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { buildPageAlternates } from '@/lib/i18n-meta'
 import type { Locale } from '@/i18n/routing'
 import { getTranslations } from 'next-intl/server'
@@ -18,8 +19,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 
 function MethodBadge({ method }: { method: 'GET' | 'POST' }) {
   const colors = {
-    GET: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20',
-    POST: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20',
+    GET: 'bg-status-resolved-soft text-status-resolved border border-status-resolved/30',
+    POST: 'bg-status-new-soft text-status-new border border-status-new/30',
   }
   return (
     <span className={`inline-block rounded px-2 py-0.5 text-xs font-mono font-bold ${colors[method]}`}>
@@ -58,7 +59,7 @@ function ParamTable({ rows, labels }: { rows: ParamRow[]; labels: { parameter: s
               <td className="py-2 px-3 text-muted-foreground">{r.type}</td>
               <td className="py-2 px-3">
                 {r.required
-                  ? <span className="text-red-500 font-medium">{labels.yes}</span>
+                  ? <span className="text-status-active font-medium">{labels.yes}</span>
                   : <span className="text-muted-foreground">–</span>
                 }
               </td>
@@ -94,9 +95,10 @@ export default async function ApiDocsPage() {
 
   return (
     <main className="min-h-screen bg-background">
-      <script
+      <Script
+        id="ld-api-docs"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
       />
       <div className="max-w-3xl mx-auto px-4 py-12 space-y-12">
@@ -110,7 +112,7 @@ export default async function ApiDocsPage() {
         <header className="space-y-3">
           <div className="flex items-center gap-3 flex-wrap">
             <h1 className="text-2xl font-bold tracking-tight">{t('h1')}</h1>
-            <span className="text-xs bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium">
+            <span className="text-xs bg-status-resolved-soft text-status-resolved border border-status-resolved/30 px-2 py-0.5 rounded-full font-medium">
               {t('versionBadge')}
             </span>
           </div>
@@ -443,7 +445,7 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
               { code: '503', desc: t('status503') },
             ].map(e => (
               <div key={e.code} className="flex items-center gap-4 px-4 py-2.5 bg-card">
-                <span className={`font-mono font-bold w-10 ${e.code.startsWith('2') ? 'text-emerald-600 dark:text-emerald-400' : e.code.startsWith('4') ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}`}>{e.code}</span>
+                <span className={`font-mono font-semibold w-10 ${e.code.startsWith('2') ? 'text-status-resolved' : e.code.startsWith('4') ? 'text-status-longterm' : 'text-status-active'}`}>{e.code}</span>
                 <span className="text-muted-foreground">{e.desc}</span>
               </div>
             ))}
@@ -502,7 +504,7 @@ df = pd.read_csv("https://engpassradar.ch/api/export/csv?atc=N06")`}
               { code: '429', desc: t('status429') },
             ].map(e => (
               <div key={e.code} className="flex items-center gap-4 px-4 py-2.5 bg-card">
-                <span className="font-mono font-bold w-10 text-amber-600 dark:text-amber-400">{e.code}</span>
+                <span className="font-mono font-semibold w-10 text-status-longterm">{e.code}</span>
                 <span className="text-muted-foreground">{e.desc}</span>
               </div>
             ))}
@@ -545,12 +547,12 @@ X-Api-Tier: professional`}</Code>
                 {t('webhookUpgradeBody')}
               </p>
             </div>
-            <a
+            <Link
               href="/klinik-system"
               className="shrink-0 inline-flex items-center gap-1.5 rounded-lg bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
             >
               {t('webhookUpgradeCta')}
-            </a>
+            </Link>
           </div>
         </section>
 

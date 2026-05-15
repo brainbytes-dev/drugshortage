@@ -34,7 +34,7 @@ export function NeueMeldungenButton() {
       className={[
         'inline-flex h-8 items-center gap-1.5 rounded-md border px-3 text-sm font-medium transition-colors shrink-0',
         isActive
-          ? 'border-emerald-500 bg-emerald-50 text-emerald-700 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400'
+          ? 'border-status-new bg-status-new-soft text-status-new'
           : 'border-border text-muted-foreground hover:text-foreground hover:bg-muted',
       ].join(' ')}
     >

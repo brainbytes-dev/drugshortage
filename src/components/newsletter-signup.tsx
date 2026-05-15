@@ -43,7 +43,7 @@ export function NewsletterSignup() {
       <div className="flex flex-col items-center gap-4">
         <div className="flex items-center justify-center gap-3">
           <svg
-            className="h-6 w-6 text-green-500 shrink-0"
+            className="h-6 w-6 text-status-resolved shrink-0"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -115,7 +115,7 @@ export function NewsletterSignup() {
         </p>
 
         {status === 'error' && (
-          <p className="mt-2 text-sm text-red-500">
+          <p className="mt-2 text-sm text-status-active">
             {errorMessage}
           </p>
         )}

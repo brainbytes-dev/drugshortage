@@ -115,7 +115,7 @@ export function RoiCalculator() {
         <div className="border-t border-border/40 pt-3 flex items-center justify-between">
           <span className="text-xs font-semibold text-foreground">{t('savings')}</span>
           <span className={`text-sm font-extrabold tabular-nums ${
-            isPositiveRoi ? 'text-emerald-600 dark:text-emerald-400' : 'text-muted-foreground'
+            isPositiveRoi ? 'text-status-resolved' : 'text-muted-foreground'
           }`}>
             {isPositiveRoi ? '+' : ''}CHF {savings.toLocaleString('de-CH')}
           </span>

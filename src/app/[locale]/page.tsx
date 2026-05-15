@@ -1,12 +1,11 @@
 import type { Metadata } from 'next'
+import Script from 'next/script'
 import { buildPageAlternates } from '@/lib/i18n-meta'
 import type { Locale } from '@/i18n/routing'
 import { Suspense } from 'react'
 import { getTranslations } from 'next-intl/server'
 import { Link } from '@/i18n/navigation'
-import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimelineWithActive, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt, queryHistoricalShortages, getHistoricalCount, getHeroStats } from '@/lib/db'
-import { getKPIStatsCached as getKPIStats } from '@/lib/db-cached-example'
-import { KPICards } from '@/components/kpi-cards'
+import { queryShortages, getOverviewStats, getBwlGtins, getWeeklyTimelineWithActive, queryOffMarketDrugs, getOffMarketStats, getLastScrapedAt, queryHistoricalShortages, getHeroStats } from '@/lib/db'
 import { ShortagesTable } from '@/components/shortages-table'
 import { OffMarketTable } from '@/components/off-market-table'
 import { HistoricalTable } from '@/components/historical-table'
@@ -63,7 +62,6 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   const [
     response,
-    kpi,
     overview,
     bwlGtins,
     weeklyTimeline,
@@ -71,14 +69,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     ,
     ,
     historicalResponse,
-    historicalCount,
     heroStats,
     tHome,
     tFaq,
     tSd,
   ] = await Promise.all([
     isOffMarket || isHistorical ? Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }) : queryShortages(query),
-    getKPIStats(),
     getOverviewStats(),
     isOffMarket || isHistorical ? Promise.resolve([] as string[]) : getBwlGtins().catch(() => [] as string[]),
     getWeeklyTimelineWithActive().catch(() => []),
@@ -93,14 +89,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     getOffMarketStats().catch(() => ({ ausserHandel: 0, vertriebseingestellt: 0, erloschen: 0 })),
     getLastScrapedAt().catch(() => null),
     isHistorical ? queryHistoricalShortages(historicalQuery) : Promise.resolve({ data: [], total: 0, page: 1, perPage: 50 }),
-    getHistoricalCount().catch(() => 0),
     getHeroStats().catch(() => null),
     getTranslations('Home'),
     getTranslations('Faq'),
     getTranslations('HomeStructuredData'),
   ])
-
-  const historicalTotal = isHistorical ? historicalResponse.total : historicalCount
 
   const steps = [
     { step: tHome('step1Number'), title: tHome('step1Title'), body: tHome('step1Body') },
@@ -164,9 +157,10 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   return (
     <>
-      <script
+      <Script
+        id="ld-home-graph"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -232,12 +226,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
       {/* Dashboard */}
       <main id="dashboard" className="bg-background">
-      <div className="max-w-7xl mx-auto px-4 pt-3 pb-6 space-y-3">
-
-        {/* KPI Cards — hidden, stats now shown in hero */}
-        <div className="hidden">
-          <KPICards stats={kpi} historicalCount={historicalTotal} />
-        </div>
+      <div className="max-w-7xl mx-auto px-4 pt-4 pb-8 space-y-4">
 
         {/* Table */}
         <Suspense fallback={null}>
@@ -267,7 +256,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </Suspense>
 
         {/* Charts section */}
-        <section id="statistik" className="scroll-mt-16 space-y-3">
+        <section id="statistik" className="scroll-mt-16 space-y-4">
           <LazyTimelineChart initialData={weeklyTimeline} />
           {overview && overview.atcGruppen.length > 0 && (
             <LazyAtcTreemap data={overview.atcGruppen} />
@@ -278,40 +267,47 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </main>
 
       {/* ── Wie es funktioniert ─────────────────────────────────── */}
-      <section className="border-t border-border/40">
+      <section className="border-t border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-8 py-24 sm:py-32">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary mb-14">
             {tHome('howItWorksEyebrow')}
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <h2 className="sr-only">{tHome('howItWorksEyebrow')}</h2>
+          <ol className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {steps.map(({ step, title, body }) => (
-              <div key={step}>
-                <p className="font-mono text-[11px] text-primary mb-5">{step}</p>
-                <h3 className="text-[17px] font-semibold tracking-[-0.01em] text-foreground mb-3">{title}</h3>
-                <p className="text-[14px] text-muted-foreground leading-[1.65]">{body}</p>
-              </div>
+              <li key={step}>
+                <p className="font-mono text-[11px] text-primary mb-4">{step}</p>
+                <h3 className="text-base font-semibold tracking-tight text-foreground mb-2">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{body}</p>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
-      {/* ── Was Sie hier finden ─────────────────────────────────── */}
-      <section className="border-t border-border/40 bg-slate-50 dark:bg-[#0d1117]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-20 sm:py-24">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+      {/* ── Was Sie hier finden — Editorial enumeration, no card grid ─ */}
+      <section className="border-t border-border">
+        <div className="max-w-3xl mx-auto px-4 sm:px-8 py-20 sm:py-24">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary mb-14">
             {tHome('whatYouFindEyebrow')}
           </p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-px bg-border/30">
-            {categories.map(({ cat, items }) => (
-              <div key={cat} className="bg-slate-50 dark:bg-[#0d1117] px-6 sm:px-8 py-8 space-y-5">
-                <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/60 pb-4 border-b border-border/40">
-                  {cat}
-                </p>
-                <ul className="space-y-4">
+          <h2 className="sr-only">{tHome('whatYouFindEyebrow')}</h2>
+          <div className="space-y-16">
+            {categories.map(({ cat, items }, catIdx) => (
+              <div key={cat} className="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-6">
+                <div>
+                  <p className="font-mono text-[11px] text-muted-foreground">
+                    {String(catIdx + 1).padStart(2, '0')}
+                  </p>
+                  <h3 className="text-sm font-semibold text-foreground mt-2 tracking-tight">
+                    {cat}
+                  </h3>
+                </div>
+                <ul className="space-y-5">
                   {items.map(({ label, desc }) => (
                     <li key={label}>
-                      <p className="text-[14px] font-semibold text-foreground leading-snug">{label}</p>
-                      <p className="text-[12px] text-muted-foreground mt-0.5">{desc}</p>
+                      <p className="text-sm font-semibold text-foreground leading-snug">{label}</p>
+                      <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{desc}</p>
                     </li>
                   ))}
                 </ul>
@@ -322,46 +318,48 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </section>
 
       {/* ── FAQ ─────────────────────────────────────────────────── */}
-      <script
+      <Script
+        id="ld-home-faq"
         type="application/ld+json"
-        suppressHydrationWarning
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(faqJsonLd).replace(/</g, '\\u003c')
         }}
       />
-      <section id="faq" className="border-t border-border/40 bg-muted/[0.15]">
+      <section id="faq" className="border-t border-border bg-muted/30">
         <div className="max-w-3xl mx-auto px-4 py-20 sm:py-28">
-          <h2 className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-14">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.18em] text-primary mb-14">
             {tFaq('title')}
-          </h2>
-          <div className="border-t border-border/40">
+          </p>
+          <h2 className="sr-only">{tFaq('title')}</h2>
+          <div className="border-t border-border">
             {faqItems.map(({ qKey, aKey, rich }, i) => {
               const q = tFaq(qKey)
               const answer = rich
                 ? tFaq.rich(aKey, {
                     api: (chunks) => (
-                      <Link href="/api" className="font-mono text-[12px] text-primary hover:underline">{chunks}</Link>
+                      <Link href="/api" className="font-mono text-xs text-primary hover:underline">{chunks}</Link>
                     ),
                     docs: (chunks) => (
-                      <Link href="/api-docs" className="font-mono text-[12px] text-primary hover:underline">{chunks}</Link>
+                      <Link href="/api-docs" className="font-mono text-xs text-primary hover:underline">{chunks}</Link>
                     ),
                   })
                 : tFaq(aKey)
               return (
-                <details key={qKey} className="group border-b border-border/40">
-                  <summary className="flex items-baseline gap-[14px] py-6 cursor-pointer list-none select-none">
-                    <span className="font-mono text-[11px] text-primary font-medium min-w-[28px] shrink-0 mt-[3px]">
+                <details key={qKey} className="group border-b border-border">
+                  <summary className="flex items-baseline gap-4 py-6 cursor-pointer list-none select-none">
+                    <span className="font-mono text-[11px] text-primary font-medium min-w-8 shrink-0 mt-1">
                       {String(i + 1).padStart(2, '0')}
                     </span>
-                    <span className="flex-1 text-[16px] font-semibold leading-snug tracking-[-0.005em] group-hover:text-primary transition-colors duration-200">
+                    <span className="flex-1 text-base font-semibold leading-snug tracking-tight group-hover:text-primary transition-colors duration-150">
                       {q}
                     </span>
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"
-                      className="h-4 w-4 shrink-0 text-muted-foreground group-open:rotate-45 transition-transform duration-200 ease-out ml-4" aria-hidden>
+                      className="h-4 w-4 shrink-0 text-muted-foreground group-open:rotate-45 transition-transform duration-150 ease-out ml-4" aria-hidden>
                       <path strokeLinecap="round" d="M8 2v12M2 8h12" />
                     </svg>
                   </summary>
-                  <p className="pl-[42px] pb-6 text-[14.5px] text-muted-foreground leading-[1.62] sm:pr-10">
+                  <p className="pl-12 pb-6 text-sm text-muted-foreground leading-relaxed sm:pr-10">
                     {answer}
                   </p>
                 </details>
@@ -372,7 +370,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       </section>
 
       {/* ── Newsletter ──────────────────────────────────────── */}
-      <section className="border-t border-border/40">
+      <section className="border-t border-border">
         <div className="max-w-xl mx-auto px-4 py-20 sm:py-28 text-center">
           <NewsletterSignup />
         </div>

@@ -167,7 +167,7 @@ export function ShortageDrawer({ shortage, onClose }: ShortageDrawerProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+        className="absolute inset-0 bg-foreground/40"
         onClick={onClose}
         aria-hidden
       />

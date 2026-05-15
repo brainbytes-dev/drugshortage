@@ -136,12 +136,12 @@ export function ShortagesTable({ shortages, total, page, perPage, bwlGtins }: Sh
                     <span className="flex items-center gap-1.5 min-w-0">
                       <span className="truncate">{s.bezeichnung}</span>
                       {s.tageSeitMeldung <= NEU_THRESHOLD_DAYS && (
-                        <span className="shrink-0 text-[10px] font-bold tracking-wide text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/40 px-1 py-0.5 rounded">
+                        <span className="shrink-0 text-[10px] font-semibold tracking-wide text-status-resolved bg-status-resolved-soft px-1.5 py-0.5 rounded">
                           {t('badgeNew')}
                         </span>
                       )}
                       {bwlSet.has(s.gtin) && (
-                        <span className="shrink-0 text-[10px] font-bold tracking-wide text-amber-700 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/40 px-1 py-0.5 rounded">
+                        <span className="shrink-0 text-[10px] font-semibold tracking-wide text-status-longterm bg-status-longterm-soft px-1.5 py-0.5 rounded">
                           {t('badgeBwl')}
                         </span>
                       )}

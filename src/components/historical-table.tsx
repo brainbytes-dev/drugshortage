@@ -153,7 +153,7 @@ export function HistoricalTable({ data, total, page, perPage }: HistoricalTableP
                   </TableCell>
                   <TableCell className="text-right pr-4">
                     {row.occurrenceCount > 1 ? (
-                      <span className="inline-flex items-center justify-center rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 text-xs font-semibold px-2 py-0.5 tabular-nums">
+                      <span className="inline-flex items-center justify-center rounded-full bg-status-longterm-soft text-status-longterm text-xs font-semibold px-2 py-0.5 tabular-nums">
                         {row.occurrenceCount}×
                       </span>
                     ) : (

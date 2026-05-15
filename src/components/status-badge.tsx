@@ -10,11 +10,11 @@ interface StatusBadgeProps {
 }
 
 const STATUS_CLASSES: Record<number, string> = {
-  1: 'bg-green-100 text-green-800 border-green-200',
-  2: 'bg-lime-100 text-lime-800 border-lime-200',
-  3: 'bg-orange-100 text-orange-800 border-orange-200',
-  4: 'bg-red-100 text-red-800 border-red-200',
-  5: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  1: 'bg-status-resolved-soft text-status-resolved border-status-resolved/30',
+  2: 'bg-status-resolved-soft text-status-resolved border-status-resolved/30',
+  3: 'bg-status-longterm-soft text-status-longterm border-status-longterm/30',
+  4: 'bg-status-active-soft text-status-active border-status-active/30',
+  5: 'bg-status-new-soft text-status-new border-status-new/30',
 }
 
 const STATUS_KEYS: Record<number, string> = {
